@@ -127,7 +127,7 @@ function gListen() {
   window._listenSay = function () {
     const q = window._curQ;
     if (q.mode === 'name') speak(q.right.L); // 字母名 → 词典真人音
-    else speakSoundText(`${q.right.s}, ${q.right.s}, ${q.right.words[0].w}`, q.right.words[0].w); // 字母音 → 系统语音
+    else speakChain([{ text: q.right.L, rate: 1 }, { text: q.right.words[0].w, rate: 0.55 }]); // 字母音 = 名 + 慢速代表词
   };
   window.listenAns = function (btn, L) {
     const q = window._curQ;
