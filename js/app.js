@@ -344,20 +344,20 @@ function stopAllSpeech() {
   __inflight.clear();
   __curAudio = null;
 }
-/* 预热：只下载不播放；登记在途，用户一点击即被让路 */
-function prewarmWord(text) {
+/* 预热：只下载不播放；登记在途，用户一点击即被让路；onFail 用于感知坏词组（如含生僻词的短语） */
+function prewarmWord(text, onFail) {
   if (!text) return;
   try {
     const a = new Audio(DICT_AUDIO_URL(text));
     a.preload = 'auto';
     __inflight.add(a);
     a.oncanplay = () => { __inflight.delete(a); };
-    a.onerror = () => { __inflight.delete(a); };
+    a.onerror = () => { __inflight.delete(a); if (onFail) onFail(); };
   } catch (e) {}
 }
-/* 核心播放：全新 Audio + 唯一声源保证（epoch）+ 重试一次 */
+/* 核心播放：全新 Audio + 唯一声源保证（epoch）+ 重试一次；timeoutMs 可选（连读链传短超时保持节奏） */
 let __audioEpoch = 0;
-function playDictAudio(text, rate, onEnd, onFail, isRetry) {
+function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs) {
   const epoch = ++__audioEpoch; // 新请求让之前所有待播/在播音频作废
   rate = 1; // mobile compat: always normal speed
   const a = new Audio(DICT_AUDIO_URL(text));
@@ -371,7 +371,7 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry) {
   const fail = () => {
     if (done) return;
     done = true; clearG(); disarm(); __inflight.delete(a); // 解除全部回调：迟到的加载绝不再出声
-    if (!isRetry) { playDictAudio(text, rate, onEnd, onFail, true); return; } // 自动重试一次
+    if (!isRetry) { playDictAudio(text, rate, onEnd, onFail, true, timeoutMs); return; } // 自动重试一次
     const now = Date.now();
     if (now - __dictFailNotified > 30000) { __dictFailNotified = now; toast('📶 发音加载失败，请检查网络后重试'); }
     if (onFail) onFail();
@@ -384,7 +384,7 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry) {
     if (done || epoch !== __audioEpoch) { disarm(); return; } // 已被更新的一次点击取代：绝不出声
     try { a.currentTime = 0; } catch (e) {}
     clearG(); // 清掉还在等待的加载超时，避免播放中被误杀重播
-    guard = setTimeout(fail, __firstPlayDone ? 9000 : 12000);
+    guard = setTimeout(fail, timeoutMs || (__firstPlayDone ? 9000 : 12000));
     const p = a.play();
     __firstPlayDone = true;
     if (p && p.catch) p.catch(() => { if (epoch === __audioEpoch) fail(); });
@@ -392,7 +392,7 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry) {
   if (a.readyState >= 1) { stopAllSpeechExcept(a); go(); }
   else {
     a.oncanplay = () => { a.oncanplay = null; stopAllSpeechExcept(a); go(); };
-    guard = setTimeout(fail, __firstPlayDone ? 9000 : 12000);
+    guard = setTimeout(fail, timeoutMs || (__firstPlayDone ? 9000 : 12000));
   }
 }
 /* 让路：暂停除 a 以外的所有在途音频（预热队列立刻腾出连接） */
