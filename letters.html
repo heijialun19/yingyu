@@ -47,12 +47,12 @@ function renderGrid() {
   }).join('');
 }
 
-function pick(i) { cur = i; q1ok = q2ok = false; renderGrid(); renderStage(); window.scrollTo({ top: $('#letterStage').offsetTop - 90, behavior: 'smooth' }); }
+function pick(i) { cur = i; q1ok = q2ok = false; renderGrid(); renderStage(true); window.scrollTo({ top: $('#letterStage').offsetTop - 90, behavior: 'smooth' }); }
 
 /* ---------------- 详情舞台 ---------------- */
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
-function renderStage() {
+function renderStage(speakIt) {
   const l = LETTERS[cur];
   const learned = !!Store.d.letters[l.L];
   const type = l.v ? '会唱歌的元音宝宝' : '有含义的辅音朋友';
@@ -131,7 +131,7 @@ function renderStage() {
       </div>
       <p style="color:#5C6273;font-size:.78rem;margin-top:10px">💡 小提示：点单词卡片可以听发音；红色 a e i o u 是"歌手"，蓝色辅音是"画家"。</p>
     </div>`;
-  sayName();
+  if (speakIt) sayName(); // 只有用户点击切换时才朗读；首次打开页面保持安静
 }
 
 /* 自然拼读三连：字母名 / 字母音 / 拼读口诀（读音 + 象形故事结合） */
@@ -181,12 +181,12 @@ function nextAfterLearn() { pick(Math.min(cur + 1, LETTERS.length - 1)); }
 function prevL() { pick(Math.max(cur - 1, 0)); }
 function nextL() { pick(Math.min(cur + 1, LETTERS.length - 1)); }
 
-/* 初始：定位到第一个没学的字母 */
+/* 初始：定位到第一个没学的字母（安静加载，不自动发音） */
 (function init() {
   let idx = LETTERS.findIndex(l => !Store.d.letters[l.L]);
   if (idx < 0) idx = 0;
   cur = idx;
-  renderGrid(); renderStage();
+  renderGrid(); renderStage(false);
 })();
 </script>
 </body>
