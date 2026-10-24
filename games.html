@@ -126,7 +126,8 @@ function gListen() {
   };
   window._listenSay = function () {
     const q = window._curQ;
-    speak(q.mode === 'name' ? q.right.L : `${q.right.s}. ${q.right.s}. ${q.right.words[0].w}.`, 'en-US', 0.7);
+    if (q.mode === 'name') speak(q.right.L); // 字母名 → 词典真人音
+    else speakSoundText(`${q.right.s}, ${q.right.s}, ${q.right.words[0].w}`, q.right.words[0].w); // 字母音 → 系统语音
   };
   window.listenAns = function (btn, L) {
     const q = window._curQ;
