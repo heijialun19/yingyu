@@ -1,9 +1,9 @@
 /* 小鸟英语乐园 Service Worker：离线可用 + 秒开 */
-const CACHE = 'birdie-abc-v13';
+const CACHE = 'birdie-abc-v14';
 const CORE = [
   './', './index.html', './letters.html', './words.html', './books.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html',
-  './css/style.css?v=13', './js/words-data.js?v=13', './js/data.js?v=13', './js/app.js?v=13',
+  './css/style.css?v=14', './js/words-data.js?v=14', './js/data.js?v=14', './js/app.js?v=14',
   './manifest.json', './icon.svg'
 ];
 self.addEventListener('install', e => {
