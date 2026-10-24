@@ -176,7 +176,7 @@ function checkBadges() {
   const s1Ids = GRAMMAR_LEVELS.filter(l => l.stage === 's1').map(l => l.id);
   if (s1Ids.every(id => d.grammar[id])) awardBadge('grammar8');
   if (grammarDoneCount() >= GRAMMAR_LEVELS.length) awardBadge('grammar1');
-  if (Object.keys(d.books || {}).length >= 6) awardBadge('reader6');
+  if (Object.keys(d.books || {}).length >= BOOKS_TOTAL) awardBadge('reader6');
   if (d.streak.count >= 3) awardBadge('streak3');
   if (d.streak.count >= 7) awardBadge('streak7');
   if (d.stars >= 100) awardBadge('star100');
