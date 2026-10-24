@@ -90,6 +90,7 @@ const Store = {
       letters: {},                   // {A: {t}}
       words: {},                     // {cat: {box, due}}  box:0-5 记忆盒子
       grammar: {},                   // {g1: {t, stars}}
+      books: {},                     // {b1: {t}} 读过的绘本
       streak: { count: 0, last: '' },
       daily: { date: '', tasks: { letter: false, words: false, game: false }, bonus: false },
       activity: {}                   // {2026-10-24: {letters,words,games,grammar,stars}}
@@ -120,7 +121,7 @@ Store.load();
 /* ---------------- 打卡 + 活动记录 ---------------- */
 function markActivity(type) {
   const t = todayStr();
-  const a = Store.d.activity[t] || (Store.d.activity[t] = { letters: 0, words: 0, games: 0, grammar: 0, stars: 0 });
+  const a = Store.d.activity[t] || (Store.d.activity[t] = { letters: 0, words: 0, games: 0, grammar: 0, books: 0, stars: 0 });
   a[type] = (a[type] || 0) + 1;
   const s = Store.d.streak;
   if (s.last !== t) {
@@ -146,7 +147,7 @@ function completeDailyTask(kind) { // 'letter' | 'words' | 'game'
 function addStars(n) {
   Store.d.stars += n;
   const t = todayStr();
-  const a = Store.d.activity[t] || (Store.d.activity[t] = { letters: 0, words: 0, games: 0, grammar: 0, stars: 0 });
+  const a = Store.d.activity[t] || (Store.d.activity[t] = { letters: 0, words: 0, games: 0, grammar: 0, books: 0, stars: 0 });
   a.stars = (a.stars || 0) + n;
   sfx.star(); checkBadges(); Store.save(); updateNavStats();
 }
@@ -175,6 +176,7 @@ function checkBadges() {
   const s1Ids = GRAMMAR_LEVELS.filter(l => l.stage === 's1').map(l => l.id);
   if (s1Ids.every(id => d.grammar[id])) awardBadge('grammar8');
   if (grammarDoneCount() >= GRAMMAR_LEVELS.length) awardBadge('grammar1');
+  if (Object.keys(d.books || {}).length >= 6) awardBadge('reader6');
   if (d.streak.count >= 3) awardBadge('streak3');
   if (d.streak.count >= 7) awardBadge('streak7');
   if (d.stars >= 100) awardBadge('star100');
@@ -454,6 +456,13 @@ function speechEnv() {
     </div>`);
 })();
 
+/* ---------------- PWA：离线可用 + 装到主屏 ---------------- */
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
 /* ---------------- 音效（WebAudio 合成，零音频文件） ---------------- */
 let AC = null;
 function ac() {
@@ -485,6 +494,7 @@ const NAV_ITEMS = [
   { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
   { id: 'letters', href: 'letters.html', emoji: '🏝️', label: '字母岛' },
   { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词镇' },
+  { id: 'books',   href: 'books.html',   emoji: '📚', label: '绘本馆' },
   { id: 'grammar', href: 'grammar.html', emoji: '🏭', label: '句子工厂' },
   { id: 'games',   href: 'games.html',   emoji: '🎡', label: '游戏乐园' },
   { id: 'parents', href: 'parents.html', emoji: '👨‍👩‍👧', label: '家长中心' },
