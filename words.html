@@ -1,11 +1,11 @@
-﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=25">
+<link rel="stylesheet" href="css/style.css?v=26">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -62,7 +62,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=29"></script>
+<script src="js/app.js?v=30"></script>
 <script src="js/sentence.js?v=27"></script>
 <script>
 renderNav('words'); renderDecor();
@@ -180,11 +180,13 @@ function renderBrowse() {
       <button class="theme-tab ${poolMode === 'wrong' ? 'on' : ''}" onclick="showPool('wrong')">📓 错题本（${wrongWords().length}）</button>
     </div>
 
+    <div class="tab-label">📍 选择年级</div>
     <div class="theme-tabs" id="gradeTabs">
       ${GRADES.map(gr => `<button class="theme-tab ${gr.id === curGrade && !poolMode ? 'on' : ''}" style="color:${gr.themes[0].color};${gr.id === curGrade && !poolMode ? 'background:#FFF7DA' : ''}" onclick="switchGrade('${gr.id}')">
         <span class="te">${gr.emoji}</span>${gr.id === (Store.d.grade || '') ? '🏠' : ''}${gr.name}</button>`).join('')}
     </div>
 
+    <div class="tab-label">📚 选择主题</div>
     <div class="theme-tabs">
       ${g.themes.map(t2 => `<button class="theme-tab ${t2.id === curTheme ? 'on' : ''}" style="color:${t2.color}" onclick="switchTheme('${t2.id}')">
         <span class="te">${t2.emoji}</span>${t2.name}</button>`).join('')}

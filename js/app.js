@@ -543,6 +543,20 @@ function renderNav(activeId) {
     if (Store.d.soundOn) sfx.pop();
   });
   $('#profileBtn').addEventListener('click', openProfileModal);
+
+  /* 底部标签栏（手机端 App 风格，桌面端由 CSS 隐藏）：像优秀儿童 App 一样，
+     把最常用的 5 个地方固定在拇指够得着的底部，句子工厂/家长中心从首页进入 */
+  const TABS = [
+    { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
+    { id: 'letters', href: 'letters.html', emoji: '🏝️', label: '字母' },
+    { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词' },
+    { id: 'books',   href: 'books.html',   emoji: '📚', label: '绘本' },
+    { id: 'games',   href: 'games.html',   emoji: '🎡', label: '游戏' },
+  ];
+  document.body.insertAdjacentHTML('beforeend', `
+    <nav class="bottom-nav" aria-label="底部导航">
+      ${TABS.map(n => `<a class="bnav ${n.id === activeId ? 'on' : ''}" href="${n.href}"><span class="nav-emoji">${n.emoji}</span>${n.label}</a>`).join('')}
+    </nav>`);
 }
 function updateNavStats() {
   const s = $('#navStars'), pr = $('#navProfile'), pb = $('#profileBtn');

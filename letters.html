@@ -1,11 +1,11 @@
-﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>字母岛 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=25">
+<link rel="stylesheet" href="css/style.css?v=26">
 </head>
 <body>
 <main>
@@ -36,7 +36,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=29"></script>
+<script src="js/app.js?v=30"></script>
 <script src="js/sentence.js?v=27"></script>
 <script>
 renderNav('letters'); renderDecor();
@@ -115,7 +115,7 @@ function renderStage(speakIt) {
           🎵 拼读小口诀：<b>${l.L} 的名字读 "${l.L}"</b>，
           它在单词里发 <b>${l.szh}</b> 的音——
           听听 <b>${l.words[0].w}</b> ${l.words[0].e} 开头的那个音！
-          <span style="color:#5C6273;display:block;margin-top:4px">（点上方「📢 字母音」慢速听，点「🎵 完整口诀」听三遍）</span>
+          <span style="color:#5C6273;display:block;margin-top:4px">（点上方按钮听发音，想多听几遍就多点几次）</span>
         </div>
       </div>
       ${l.py ? `<div class="py-note">🌉 <b>拼音小桥梁：</b>${l.py}</div>` : ''}
