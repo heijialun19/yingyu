@@ -401,8 +401,18 @@ function stopAllSpeechExcept(keep) {
 }
 
 /* 统一朗读入口：只走词典真人发音。失败保持安静（绝不出现机器音）。 */
+/* 声音被关掉时，点发音按钮给一声轻提示——否则用户只会觉得「网站坏了」。
+   toast 本身没有去重，连续点击会叠罗汉，这里自己节流 2.5 秒。 */
+let __soundHintAt = 0;
+function soundOffHint() {
+  const now = Date.now();
+  if (now - __soundHintAt < 2500) return;
+  __soundHintAt = now;
+  toast('🔇 声音关着呢，点右上角（或底部「我的」里）的喇叭 🔊 打开');
+}
+
 function speak(text, lang = 'en-US', rate = 0.85) {
-  if (!Store.d.soundOn) return;
+  if (!Store.d.soundOn) { soundOffHint(); return; }
   const t = String(text).trim(); if (!t) return;
   if (lang.startsWith('zh')) return; // 词典不支持中文句：中文不朗读
   stopAllSpeech();
@@ -412,7 +422,7 @@ function speak(text, lang = 'en-US', rate = 0.85) {
 /* 链式朗读：读完一句自动读下一句；单段失败（已自动重试过）跳过继续，
    连续失败 3 次才整链停止——不因个别词失败打断整段朗读（绝不切机器音） */
 function speakChain(items) {
-  if (!Store.d.soundOn) return;
+  if (!Store.d.soundOn) { soundOffHint(); return; }
   stopAllSpeech();
   let stopped = false, fails = 0;
   const next = i => {

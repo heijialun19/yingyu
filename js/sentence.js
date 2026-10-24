@@ -87,7 +87,7 @@ function __prewarmChunk(tokens, i) {
 }
 
 function speakSentence(text, el) {
-  if (!Store.d.soundOn) return;
+  if (!Store.d.soundOn) { soundOffHint(); return; }
   const t = String(text).trim(); if (!t) return;
   stopAllSpeech();
   const tokens = t.split(/\s+/).filter(Boolean);
