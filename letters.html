@@ -105,7 +105,7 @@ function renderStage(speakIt) {
 
       <div class="word-mini-row">
         ${l.words.map(w => `
-          <div class="word-mini" onclick="sayWord(this,'${w.w}')" title="点我听发音">
+          <div class="word-mini" onclick="sayWord(this,'${w.w}')" title="点我三读：标准 → 慢速拼读 → 标准">
             <div class="we">${w.e}</div>
             <b>${w.w}</b><span>${w.zh}</span>
             ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : ''}
