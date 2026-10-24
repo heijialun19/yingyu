@@ -1,9 +1,9 @@
 /* 小鸟英语乐园 Service Worker：离线可用 + 秒开 */
-const CACHE = 'birdie-abc-v8';
+const CACHE = 'birdie-abc-v9';
 const CORE = [
   './', './index.html', './letters.html', './words.html', './books.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html',
-  './css/style.css?v=8', './js/words-data.js?v=7', './js/data.js?v=7', './js/app.js?v=7',
+  './css/style.css?v=9', './js/words-data.js?v=9', './js/data.js?v=9', './js/app.js?v=9',
   './manifest.json', './icon.svg'
 ];
 self.addEventListener('install', e => {
@@ -12,6 +12,8 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
+/* 收到新版本激活指令 */
+self.addEventListener('message', e => { if (e.data === 'SKIP_WAITING') self.skipWaiting(); });
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET') return;
