@@ -208,6 +208,20 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 }
 .opt .oe { font-size: 34px; }
 .opt:hover { transform: translateY(-3px); }
+.mini-speaker {
+  display: inline-block; vertical-align: middle; margin: 0 4px; cursor: pointer;
+  background: #fff; border: 3px solid var(--lemon); border-radius: 50%;
+  width: 44px; height: 44px; font-size: 20px; line-height: 1;
+  box-shadow: 0 3px 0 rgba(45,49,66,.12); transition: .12s;
+}
+.mini-speaker:hover { transform: translateY(-2px); }
+.mini-speaker:active { transform: translateY(1px); box-shadow: none; }
+
+/* 微信提示条 */
+.wechat-tip {
+  position: relative; z-index: 60; background: #FFF3D6; border-bottom: 3px solid var(--lemon);
+  padding: 10px 16px; font-size: .85rem; font-weight: 700; text-align: center;
+}
 .opt.good { border-color: var(--mint); background: #E5F9E9; animation: pop .4s; }
 .opt.bad  { border-color: var(--coral); background: #FFE9E9; animation: shake .4s; }
 @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }
