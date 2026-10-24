@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -78,7 +78,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=27"></script>
+<script src="js/app.js?v=28"></script>
 <script src="js/sentence.js?v=27"></script>
 <script>
 renderNav('index'); renderDecor();
@@ -136,6 +136,14 @@ function showHome() {
     document.getElementById('reviewBanner').style.display = '';
     document.getElementById('revText').textContent = due.slice(0,4).join('、') + (due.length>4?' 等 '+due.length+' 个':'');
   }
+
+  /* 今日三任务：完成打勾，三个全完成奖励 5 颗星星 */
+  const tk = Store.d.daily.tasks;
+  document.getElementById('taskStrip').innerHTML =
+    `<span>📋 今日任务</span>` +
+    `<span class="${tk.letter ? 'tdone' : ''}">${tk.letter ? '✅' : '⬜'} 🏝️ 学字母</span>` +
+    `<span class="${tk.words ? 'tdone' : ''}">${tk.words ? '✅' : '⬜'} 🏘️ 练单词</span>` +
+    `<span class="${tk.game ? 'tdone' : ''}">${tk.game ? '✅' : '⬜'} 🎮 玩游戏</span>`;
 
   const islands = skipLetters ? [
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },

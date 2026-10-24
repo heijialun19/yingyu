@@ -92,7 +92,7 @@ const Store = {
       grammar: {},                   // {g1: {t, stars}}
       books: {},                     // {b1: {t}} 读过的绘本
       streak: { count: 0, last: '' },
-      daily: { date: '', tasks: { letter: false, words: false, game: false }, bonus: false },
+      daily: { date: '', tasks: { letter: false, words: false, game: false }, bonus: false, studySec: 0, break15: false, break30: false },
       activity: {}                   // {2026-10-24: {letters,words,games,grammar,stars}}
     };
   },
@@ -105,7 +105,9 @@ const Store = {
     for (const k of Object.keys(def)) if (this.d[k] === undefined) this.d[k] = def[k];
     // 年级以档案为准
     this.d.grade = Profiles.active().grade || this.d.grade;
-    if (this.d.daily.date !== todayStr()) this.d.daily = { date: todayStr(), tasks: { letter: false, words: false, game: false }, bonus: false };
+    if (this.d.daily.date !== todayStr()) this.d.daily = { date: todayStr(), tasks: { letter: false, words: false, game: false }, bonus: false, studySec: 0, break15: false, break30: false };
+    // 已跳过字母岛的孩子：字母任务自动视为完成，保证「三任务全勤」奖励可达
+    if (this.d.lettersSkip) this.d.daily.tasks.letter = true;
     return this.d;
   },
   save() {
@@ -142,6 +144,41 @@ function completeDailyTask(kind) { // 'letter' | 'words' | 'game'
   }
   Store.save();
 }
+
+/* ---------------- 护眼休息提醒 ----------------
+   家长中心的建议是"每天 15 分钟"：连续学习满 15 分钟温和提醒休息一次，
+   满 30 分钟建议收工。只统计页面可见的时间（切到后台不计时），
+   每档每天最多提醒一次。 */
+function restTip(msg) {
+  sfx.pop();
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="modal-mask" id="restMask" onclick="if(event.target===this)closeRestTip()">
+      <div class="modal card" style="text-align:center;max-width:420px">
+        <div style="font-size:60px">🌿</div>
+        <h2 style="justify-content:center">休息一下吧！</h2>
+        <p style="color:#5C6273;font-size:.95rem;line-height:1.9;margin:8px 0 16px">${msg}</p>
+        <button class="btn mint big" style="width:100%" onclick="closeRestTip()">好的 ☀️</button>
+      </div>
+    </div>`);
+}
+function closeRestTip() { const m = document.getElementById('restMask'); if (m) m.remove(); }
+function __studyTick() {
+  if (document.visibilityState !== 'visible') return;
+  const d = Store.d.daily;
+  d.studySec = (d.studySec || 0) + 60;
+  if (d.studySec >= 15 * 60 && d.studySec < 16 * 60 && !d.break15) {
+    d.break15 = true; Store.save();
+    restTip('已经连续学了 <b>15 分钟</b>啦！站起来看看窗外的远处，让眼睛休息 5 分钟，再回来继续 🌿');
+    return;
+  }
+  if (d.studySec >= 30 * 60 && d.studySec < 31 * 60 && !d.break30) {
+    d.break30 = true; Store.save();
+    restTip('今天已经学了 <b>30 分钟</b>，进步够多啦！去玩一会儿，明天再来找啾啾吧 🐤');
+    return;
+  }
+  Store.save();
+}
+setInterval(__studyTick, 60000);
 
 /* ---------------- 星星与徽章 ---------------- */
 function addStars(n) {
@@ -247,7 +284,7 @@ function gameDone() { markActivity('games'); completeDailyTask('game'); }
 function markAllLettersKnown() {
   LETTERS.forEach(l => { if (!Store.d.letters[l.L]) Store.d.letters[l.L] = { t: Date.now() }; });
   Store.d.lettersSkip = true;
-  addStars(5); markActivity('letters'); Store.save(); checkBadges();
+  addStars(5); markActivity('letters'); completeDailyTask('letter'); Store.save(); checkBadges();
   sfx.win(); confetti();
   toast('OK! Now we start from words!');
 }
