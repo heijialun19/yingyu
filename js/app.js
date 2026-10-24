@@ -338,46 +338,6 @@ function speak(text, lang = 'en-US', rate = 0.85) {
   });
 }
 
-/* 百度TTS：可读拼读拟音（ah/buh/kuh…），专供字母拼读音。真实单词仍走词典真人音。 */
-const BAIDU_TTS_URL = t => `https://fanyi.baidu.com/gettts?lan=en&text=` + encodeURIComponent(t) + `&spd=3&source=web`;
-function playBaiduTTS(text, rate, onEnd, onFail) {
-  const a = new Audio();
-  a.referrerPolicy = 'no-referrer'; // must set BEFORE src, else baidu blocks cross-site referer
-  a.preload = 'auto';
-  a.src = BAIDU_TTS_URL(text); // Baidu hotlink: cross-site referer blocked
-  a.preload = `auto`;
-  __curAudio = a;
-  let done = false, guard = null;
-  const clearG = () => { if (guard) { clearTimeout(guard); guard = null; } };
-  const end = () => { if (!done) { done = true; clearG(); if (onEnd) onEnd(); } };
-  const fail = () => { if (done) return; done = true; clearG(); try { a.pause(); } catch (e) {} if (onFail) onFail(); };
-  a.onended = end; a.onerror = fail;
-  a.onplaying = () => clearG();
-  const pr = Math.max(0.5, Math.min(1.5, rate || 1));
-  const go = () => {
-    try { a.currentTime = 0; } catch (e) {}
-    try { a.preservesPitch = true; a.mozPreservesPitch = true; a.webkitPreservesPitch = true; } catch (e) {}
-    try { a.playbackRate = pr; } catch (e) {}
-    guard = setTimeout(fail, 5000);
-    const p = a.play();
-    if (p && p.catch) p.catch(fail);
-  };
-  if (a.readyState >= 1) go(); else { a.oncanplay = () => { a.oncanplay = null; go(); }; guard = setTimeout(fail, 5000); }
-}
-function speakSeq(items) {
-  if (!Store.d.soundOn) return;
-  stopAllSpeech();
-  let stopped = false;
-  const next = i => {
-    if (stopped || i >= items.length) return;
-    const it = items[i];
-    const fail = () => { stopped = true; };
-    if (it.src === `baidu`) playBaiduTTS(it.text, it.rate, () => next(i + 1), fail);
-    else playDictAudio(it.text, it.rate, () => next(i + 1), fail);
-  };
-  next(0);
-}
-
 /* 链式朗读：读完一句自动读下一句；某段失败则整链停止（不切机器音） */
 function speakChain(items) {
   if (!Store.d.soundOn) return;
