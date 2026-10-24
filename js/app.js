@@ -384,7 +384,7 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry) {
     if (done || epoch !== __audioEpoch) { disarm(); return; } // 已被更新的一次点击取代：绝不出声
     try { a.currentTime = 0; } catch (e) {}
     clearG(); // 清掉还在等待的加载超时，避免播放中被误杀重播
-    guard = setTimeout(fail, __firstPlayDone ? 7000 : 10000);
+    guard = setTimeout(fail, __firstPlayDone ? 9000 : 12000);
     const p = a.play();
     __firstPlayDone = true;
     if (p && p.catch) p.catch(() => { if (epoch === __audioEpoch) fail(); });
@@ -392,7 +392,7 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry) {
   if (a.readyState >= 1) { stopAllSpeechExcept(a); go(); }
   else {
     a.oncanplay = () => { a.oncanplay = null; stopAllSpeechExcept(a); go(); };
-    guard = setTimeout(fail, __firstPlayDone ? 7000 : 10000);
+    guard = setTimeout(fail, __firstPlayDone ? 9000 : 12000);
   }
 }
 /* 让路：暂停除 a 以外的所有在途音频（预热队列立刻腾出连接） */
@@ -409,16 +409,19 @@ function speak(text, lang = 'en-US', rate = 0.85) {
   playDictAudio(t, rate, null, null);
 }
 
-/* 链式朗读：读完一句自动读下一句；某段失败则整链停止（不切机器音） */
+/* 链式朗读：读完一句自动读下一句；单段失败（已自动重试过）跳过继续，
+   连续失败 3 次才整链停止——不因个别词失败打断整段朗读（绝不切机器音） */
 function speakChain(items) {
   if (!Store.d.soundOn) return;
   stopAllSpeech();
-  let stopped = false;
+  let stopped = false, fails = 0;
   const next = i => {
     if (stopped || i >= items.length) return;
     const it = items[i];
     if (it.onStart) try { it.onStart(); } catch (e) {}
-    playDictAudio(it.text, it.rate, () => next(i + 1), () => { stopped = true; });
+    playDictAudio(it.text, it.rate,
+      () => next(i + 1),
+      () => { if (++fails >= 3) stopped = true; else next(i + 1); });
   };
   next(0);
 }
