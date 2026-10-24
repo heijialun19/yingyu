@@ -299,6 +299,7 @@ const youdaoUrl = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encod
 let __curAudio = null;
 const __audioCache = new Map();
 let __engineCooldownUntil = 0; // 有道故障后的冷静期：期间全部走系统语音，避免音色来回切换
+let __firstPlayDone = false;   // 首次播放（冷启动）超时放宽
 function stopAllSpeech() {
   if (__curAudio) { try { __curAudio.onended = __curAudio.onerror = null; __curAudio.pause(); } catch (e) {} }
   try { speechSynthesis.cancel(); } catch (e) {}
@@ -316,28 +317,39 @@ function playYoudao(text, rate, onEnd, onFail) {
     __audioCache.set(text, a);
   }
   __curAudio = a;
-  let done = false;
-  const end = () => { if (!done) { done = true; clearTimeout(guard); if (onEnd) onEnd(); } };
+  let done = false, launched = false, guard = null;
+  const clearG = () => { if (guard) { clearTimeout(guard); guard = null; } };
+  const end = () => { if (!done) { done = true; clearG(); if (onEnd) onEnd(); } };
   const fail = () => {
     if (done) return;
-    done = true; clearTimeout(guard);
-    try { a.pause(); } catch (e) {} // 关键：掐断迟到加载的音频，防止和兜底语音重叠出双声
+    done = true; clearG();
+    try { a.pause(); } catch (e) {} // 掐断迟到加载的音频，防止和兜底语音重叠出双声
     __engineCooldownUntil = Date.now() + 45000; // 45秒冷静期统一用系统语音，保证音色一致
     if (onFail) onFail();
   };
   a.onended = end; a.onerror = fail;
   // 空音频（接口返回异常内容）立即判定失败
   a.onloadedmetadata = () => { if (isFinite(a.duration) && a.duration === 0) fail(); };
-  // 关键：一旦真正开始播放就取消超时——超时只负责"加载不出来"，不掐正在播的慢速长音频
-  a.onplaying = () => { if (guard) clearTimeout(guard); };
-  try { a.currentTime = 0; } catch (e) {}
-  // 变速朗读（慢速拼读用同一真人录音，保持音高不变卡通化）
+  // 一旦真正开始播放就取消超时——超时只负责"加载不出来"，不掐正在播的慢速长音频
+  a.onplaying = () => clearG();
   const pr = Math.max(0.5, Math.min(1.5, rate || 1));
-  try { a.preservesPitch = true; a.mozPreservesPitch = true; a.webkitPreservesPitch = true; } catch (e) {}
-  try { a.playbackRate = pr; } catch (e) {}
-  let guard = setTimeout(fail, 3500); // 3.5 秒没开始播放就整体降级
-  const p = a.play();
-  if (p && p.catch) p.catch(fail);
+  const timeout = __firstPlayDone ? 3500 : 8000; // 手机冷启动首播（DNS+TLS+拉流）放宽到 8 秒
+  const go = () => {
+    if (launched || done) return;
+    launched = true;
+    // 变速在加载完成后再设置（iOS 未加载时设非 1 倍速可能拒播），并保持音高不变
+    try { a.preservesPitch = true; a.mozPreservesPitch = true; a.webkitPreservesPitch = true; } catch (e) {}
+    try { a.playbackRate = pr; } catch (e) {}
+    guard = setTimeout(fail, timeout);
+    const p = a.play();
+    __firstPlayDone = true;
+    if (p && p.catch) p.catch(fail);
+  };
+  if (a.readyState >= 1) go();
+  else {
+    a.oncanplay = go; // 加载好 → 设倍速 → 播放
+    guard = setTimeout(fail, timeout); // 加载阶段同样受超时保护
+  }
 }
 
 /* 统一朗读入口（按内容自动路由引擎，音色保持一致）：
@@ -396,6 +408,8 @@ function unlockAudioChannels() {
   if (!__audioUnlockDone) {
     __audioUnlockDone = true;
     try {
+      // 预热连接（DNS/TLS/keep-alive）+ 尝试解锁 <audio> 通道
+      prewarmWord('hi');
       const a = new Audio(youdaoUrl('hi'));
       a.volume = 0;
       const p = a.play();
