@@ -294,13 +294,19 @@ function synthSpeak(text, lang = 'en-US', rate = 0.85, onEnd) {
   } catch (e) { if (onEnd) onEnd(); }
 }
 
-/* 有道词典发音 */
+/* 有道词典发音（全站统一的真人女声） */
 const youdaoUrl = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
 let __curAudio = null;
 const __audioCache = new Map();
+let __engineCooldownUntil = 0; // 有道故障后的冷静期：期间全部走系统语音，避免音色来回切换
 function stopAllSpeech() {
   if (__curAudio) { try { __curAudio.onended = __curAudio.onerror = null; __curAudio.pause(); } catch (e) {} }
   try { speechSynthesis.cancel(); } catch (e) {}
+}
+/* 预热：提前把单词的音频拉到缓存（答题前预热，答对回显零延迟） */
+function prewarmWord(text) {
+  if (__audioCache.has(text) || !text) return;
+  try { const a = new Audio(youdaoUrl(text)); a.preload = 'auto'; __audioCache.set(text, a); } catch (e) {}
 }
 function playYoudao(text, rate, onEnd, onFail) {
   let a = __audioCache.get(text);
@@ -312,57 +318,53 @@ function playYoudao(text, rate, onEnd, onFail) {
   __curAudio = a;
   let done = false;
   const end = () => { if (!done) { done = true; clearTimeout(guard); if (onEnd) onEnd(); } };
-  const fail = () => { if (!done) { done = true; clearTimeout(guard); if (onFail) onFail(); } };
+  const fail = () => {
+    if (done) return;
+    done = true; clearTimeout(guard);
+    try { a.pause(); } catch (e) {} // 关键：掐断迟到加载的音频，防止和兜底语音重叠出双声
+    __engineCooldownUntil = Date.now() + 45000; // 45秒冷静期统一用系统语音，保证音色一致
+    if (onFail) onFail();
+  };
   a.onended = end; a.onerror = fail;
   // 空音频（接口返回异常内容）立即判定失败
   a.onloadedmetadata = () => { if (isFinite(a.duration) && a.duration === 0) fail(); };
+  // 关键：一旦真正开始播放就取消超时——超时只负责"加载不出来"，不掐正在播的慢速长音频
+  a.onplaying = () => { if (guard) clearTimeout(guard); };
   try { a.currentTime = 0; } catch (e) {}
   // 变速朗读（慢速拼读用同一真人录音，保持音高不变卡通化）
   const pr = Math.max(0.5, Math.min(1.5, rate || 1));
   try { a.preservesPitch = true; a.mozPreservesPitch = true; a.webkitPreservesPitch = true; } catch (e) {}
   try { a.playbackRate = pr; } catch (e) {}
-  const guard = setTimeout(fail, 6000); // 弱网 6 秒没出声就回退
+  let guard = setTimeout(fail, 3500); // 3.5 秒没开始播放就整体降级
   const p = a.play();
   if (p && p.catch) p.catch(fail);
 }
 
-/* 统一朗读入口（按内容自动路由引擎）：
-   - 真实英文单词/句子 → 有道词典真人发音（失败回退系统语音）
-   - 中文文本 → 系统语音（国产手机/iOS 都内置中文语音；有道不支持中文句子）
-   - 拟音节文本（fuh/kwuh 等教学读音）→ 系统语音（合成器读假词没问题，有道会 500） */
+/* 统一朗读入口（按内容自动路由引擎，音色保持一致）：
+   - 真实英文单词/句子/字母名/字母音组合 → 有道词典真人女声（全站统一音色）
+   - 中文文本 → 系统语音（有道不支持中文句）
+   - 有道故障 → 45 秒冷静期内全部走系统语音（宁可整体换音色，不来回切换） */
 function speak(text, lang = 'en-US', rate = 0.85) {
   if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
   const t = String(text).trim(); if (!t) return;
   stopAllSpeech();
-  if (lang.startsWith('zh')) {
-    synthSpeak(t, lang, rate);
-    return;
-  }
+  if (lang.startsWith('zh')) { synthSpeak(t, lang, rate); return; }
+  if (Date.now() < __engineCooldownUntil) { synthSpeak(t, lang, rate); return; }
   playYoudao(t, rate, null, () => synthSpeak(t, lang, rate));
 }
 function speakCN(text, rate = 0.95) { speak(text, 'zh-CN', rate); }
 
-/* 字母音/口诀朗读：拟音节走系统语音；没有系统语音的环境（如微信）用"三读代表词"兜底 */
-function speakSoundText(text, fallbackWord) {
+/* 链式朗读：读完一句自动读下一句；冷却期或有道失败则整链走系统语音（音色一致） */
+function speakChain(items) {
   if (!Store.d.soundOn) return;
   stopAllSpeech();
-  if ('speechSynthesis' in window && speechEnv().synthAvailable) { synthSpeak(text, 'en-US', 0.8); return; }
-  if (fallbackWord) speakWordDouble(fallbackWord);
-}
-
-/* 链式朗读：读完一句自动读下一句；有道失败则整链回退系统语音 */
-function speakChain(items) {
-  if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
-  stopAllSpeech();
+  const synthAll = () => { try { speechSynthesis.cancel(); } catch (e) {} items.forEach(x => synthSpeak(x.text, x.lang || 'en-US', x.rate || 0.85)); };
+  if (Date.now() < __engineCooldownUntil) { synthAll(); return; }
   let failed = false;
   const next = i => {
     if (failed || i >= items.length) return;
     const it = items[i];
-    playYoudao(it.text, it.rate, () => next(i + 1), () => {
-      failed = true;
-      try { speechSynthesis.cancel(); } catch (e) {}
-      items.forEach(x => synthSpeak(x.text, x.lang || 'en-US', x.rate || 0.85));
-    });
+    playYoudao(it.text, it.rate, () => next(i + 1), () => { failed = true; synthAll(); });
   };
   next(0);
 }
