@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>句子工厂 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=15">
+<link rel="stylesheet" href="css/style.css?v=17">
 </head>
 <body>
 <main>
@@ -16,9 +16,9 @@
   <div id="app"></div>
 <div style=text-align:center;margin-top:20px;font-size:.75rem><a href=disclaimer.html style=color:#78909C>📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=15"></script>
-<script src="js/data.js?v=15"></script>
-<script src="js/app.js?v=15"></script>
+<script src="js/words-data.js?v=17"></script>
+<script src="js/data.js?v=17"></script>
+<script src="js/app.js?v=17"></script>
 <script>
 renderNav('grammar'); renderDecor();
 
@@ -362,7 +362,7 @@ function playChant() {
   // 提取口诀里出现的英文单词（去重，保留出现顺序）
   const words = [...new Set((lv.chant.match(/[A-Za-z']+/g) || []).map(w => w.replace(/'s$/, '')))].filter(w => w.length > 1);
   if (!words.length) { toast('🎵 大声跟着屏幕上的口诀念两遍吧！'); return; }
-  speakChain(words.map(w => ({ text: w, rate: 0.85 })));
+  speakChain(words.map(w => ({ text: w, rate: 1 })));
   toast('🎵 跟着念两遍吧！');
 }
 
