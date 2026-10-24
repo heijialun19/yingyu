@@ -314,6 +314,8 @@ function playYoudao(text, rate, onEnd, onFail) {
   const end = () => { if (!done) { done = true; clearTimeout(guard); if (onEnd) onEnd(); } };
   const fail = () => { if (!done) { done = true; clearTimeout(guard); if (onFail) onFail(); } };
   a.onended = end; a.onerror = fail;
+  // 空音频（接口返回异常内容）立即判定失败
+  a.onloadedmetadata = () => { if (isFinite(a.duration) && a.duration === 0) fail(); };
   try { a.currentTime = 0; } catch (e) {}
   // 变速朗读（慢速拼读用同一真人录音，保持音高不变卡通化）
   const pr = Math.max(0.5, Math.min(1.5, rate || 1));
@@ -324,14 +326,29 @@ function playYoudao(text, rate, onEnd, onFail) {
   if (p && p.catch) p.catch(fail);
 }
 
-/* 统一朗读入口：先有道，失败自动系统语音 */
+/* 统一朗读入口（按内容自动路由引擎）：
+   - 真实英文单词/句子 → 有道词典真人发音（失败回退系统语音）
+   - 中文文本 → 系统语音（国产手机/iOS 都内置中文语音；有道不支持中文句子）
+   - 拟音节文本（fuh/kwuh 等教学读音）→ 系统语音（合成器读假词没问题，有道会 500） */
 function speak(text, lang = 'en-US', rate = 0.85) {
   if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
   const t = String(text).trim(); if (!t) return;
   stopAllSpeech();
+  if (lang.startsWith('zh')) {
+    synthSpeak(t, lang, rate);
+    return;
+  }
   playYoudao(t, rate, null, () => synthSpeak(t, lang, rate));
 }
 function speakCN(text, rate = 0.95) { speak(text, 'zh-CN', rate); }
+
+/* 字母音/口诀朗读：拟音节走系统语音；没有系统语音的环境（如微信）用"三读代表词"兜底 */
+function speakSoundText(text, fallbackWord) {
+  if (!Store.d.soundOn) return;
+  stopAllSpeech();
+  if ('speechSynthesis' in window && speechEnv().synthAvailable) { synthSpeak(text, 'en-US', 0.8); return; }
+  if (fallbackWord) speakWordDouble(fallbackWord);
+}
 
 /* 链式朗读：读完一句自动读下一句；有道失败则整链回退系统语音 */
 function speakChain(items) {
@@ -372,15 +389,18 @@ function speakWordDouble(word) {
 /* ---------------- 移动端声音解锁与诊断 ----------------
    iOS/部分安卓：第一次出声必须在手指点击事件内触发。
    首次触碰时静音播放一小段，同时解锁 <audio> 通道和 speechSynthesis 引擎。 */
-let __speechUnlocked = false;
+let __speechUnlocked = false, __audioUnlockDone = false;
 function unlockAudioChannels() {
-  try {
-    const a = new Audio(youdaoUrl('hi'));
-    a.volume = 0;
-    const p = a.play();
-    if (p && p.catch) p.catch(() => {});
-    setTimeout(() => { try { a.pause(); } catch (e) {} }, 1500);
-  } catch (e) {}
+  if (!__audioUnlockDone) {
+    __audioUnlockDone = true;
+    try {
+      const a = new Audio(youdaoUrl('hi'));
+      a.volume = 0;
+      const p = a.play();
+      if (p && p.catch) p.catch(() => {});
+      setTimeout(() => { try { a.pause(); } catch (e) {} }, 1500);
+    } catch (e) {}
+  }
   if (!__speechUnlocked && 'speechSynthesis' in window) {
     __speechUnlocked = true;
     try {
