@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>字母岛 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=15">
+<link rel="stylesheet" href="css/style.css?v=17">
 </head>
 <body>
 <main>
@@ -28,9 +28,9 @@
   </section>
 <div style=text-align:center;margin-top:20px;font-size:.75rem><a href=disclaimer.html style=color:#78909C>📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=15"></script>
-<script src="js/data.js?v=15"></script>
-<script src="js/app.js?v=15"></script>
+<script src="js/words-data.js?v=17"></script>
+<script src="js/data.js?v=17"></script>
+<script src="js/app.js?v=17"></script>
 <script>
 renderNav('letters'); renderDecor();
 
@@ -305,8 +305,8 @@ function saySound() {
   /* 拼读音：全部真人录音。超慢速两遍把词首拼读音拖长（A→"啊…"），
      再常速一遍收尾——课堂领读的标准做法，无任何机器合成音。 */
   speakChain([
-    { text: w, rate: 0.5 },
-    { text: w, rate: 0.5 },
+    { text: w, rate: 1 },
+    { text: w, rate: 1 },
     { text: w, rate: 1 }
   ]);
 }
@@ -317,7 +317,7 @@ function sayChant() {
   /* 完整口诀：字母名 → 超慢词（听清拼读音）→ 常速词，全真人录音 */
   speakChain([
     { text: l.L, rate: 1 },
-    { text: w, rate: 0.5 },
+    { text: w, rate: 1 },
     { text: w, rate: 1 }
   ]);
 }
