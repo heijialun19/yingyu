@@ -269,7 +269,7 @@ function renderGradePicker(sel) {
     </button>`).join('');
 }
 
-/* ---------------- 语音核心：词典真人发音（有道MP3）优先，系统语音兜底 ----------------
+/* ---------------- 语音核心：词典标准发音（有道MP3）优先，系统语音兜底 ----------------
    手机浏览器（尤其微信/国产内核）的 speechSynthesis 极不可靠；
    有道词典发音接口返回高质量 MP3，国内实测 0.2 秒可达，单词/句子/中文都支持；
    Audio 元件在点击手势内 play() 即可出声，兼容所有手机浏览器。
@@ -296,10 +296,10 @@ function synthSpeak(text, lang = 'en-US', rate = 0.85, onEnd) {
   } catch (e) { if (onEnd) onEnd(); }
 }
 
-/* 有道词典发音（全站统一的真人女声） */
-const youdaoUrl = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
+/* 词典标准发音（公开接口，浏览器直接请求，与本站服务器无关） */
+const DICT_AUDIO_URL = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
 let __curAudio = null;
-let __engineCooldownUntil = 0; // 有道故障后的冷静期：期间全部走系统语音，避免音色来回切换
+let __engineCooldownUntil = 0; // 发音服务故障后的冷静期：期间全部走系统语音，避免音色来回切换
 let __firstPlayDone = false;   // 首次播放（冷启动）超时放宽
 function stopAllSpeech() {
   if (__curAudio) { try { __curAudio.onended = __curAudio.onerror = null; __curAudio.pause(); } catch (e) {} }
@@ -308,12 +308,12 @@ function stopAllSpeech() {
 /* 预热：提前把单词的音频拉到 HTTP 缓存（答题前预热，答对回显零延迟） */
 function prewarmWord(text) {
   if (!text) return;
-  try { const a = new Audio(youdaoUrl(text)); a.preload = 'auto'; } catch (e) {}
+  try { const a = new Audio(DICT_AUDIO_URL(text)); a.preload = 'auto'; } catch (e) {}
 }
 /* 每次播放都创建新 Audio 对象（不复用——避免 currentTime 残留导致重复播放时秒触发 onended）
    浏览器 HTTP 缓存会自动处理数据复用，不会重复下载 */
-function playYoudao(text, rate, onEnd, onFail) {
-  const a = new Audio(youdaoUrl(text));
+function playDictAudio(text, rate, onEnd, onFail) {
+  const a = new Audio(DICT_AUDIO_URL(text));
   a.preload = 'auto';
   __curAudio = a;
   let done = false;
@@ -350,14 +350,14 @@ function playYoudao(text, rate, onEnd, onFail) {
 /* 统一朗读入口（按内容自动路由引擎，音色保持一致）：
    - 真实英文单词/句子/字母名/字母音组合 → 有道词典真人女声（全站统一音色）
    - 中文文本 → 系统语音（有道不支持中文句）
-   - 有道故障 → 45 秒冷静期内全部走系统语音（宁可整体换音色，不来回切换） */
+   - 发音服务故障 → 45 秒冷静期内全部走系统语音（宁可整体换音色，不来回切换） */
 function speak(text, lang = 'en-US', rate = 0.85) {
   if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
   const t = String(text).trim(); if (!t) return;
   stopAllSpeech();
   if (lang.startsWith('zh')) { synthSpeak(t, lang, rate); return; }
   if (Date.now() < __engineCooldownUntil) { synthSpeak(t, lang, rate); return; }
-  playYoudao(t, rate, null, () => synthSpeak(t, lang, rate));
+  playDictAudio(t, rate, null, () => synthSpeak(t, lang, rate));
 }
 function speakCN(text, rate = 0.95) { speak(text, 'zh-CN', rate); }
 
@@ -371,7 +371,7 @@ function speakChain(items) {
   const next = i => {
     if (failed || i >= items.length) return;
     const it = items[i];
-    playYoudao(it.text, it.rate, () => next(i + 1), () => { failed = true; synthAll(); });
+    playDictAudio(it.text, it.rate, () => next(i + 1), () => { failed = true; synthAll(); });
   };
   next(0);
 }
@@ -405,7 +405,7 @@ function unlockAudioChannels() {
     try {
       // 预热连接（DNS/TLS/keep-alive）+ 尝试解锁 <audio> 通道
       prewarmWord('hi');
-      const a = new Audio(youdaoUrl('hi'));
+      const a = new Audio(DICT_AUDIO_URL('hi'));
       a.volume = 0;
       const p = a.play();
       if (p && p.catch) p.catch(() => {});
@@ -431,7 +431,7 @@ function speechEnv() {
   try { voices = speechSynthesis.getVoices() || []; } catch (e) {}
   return {
     available: true, // 有道发音 + 系统语音双引擎，总有方案
-    engine: '词典真人发音（有道）+ 系统语音兜底',
+    engine: '词典标准发音（有道）+ 系统语音兜底',
     synthAvailable: has,
     unlocked: __speechUnlocked,
     voiceCount: voices.length,
@@ -444,7 +444,7 @@ function speechEnv() {
   if (!/MicroMessenger/i.test(navigator.userAgent)) return;
   document.body.insertAdjacentHTML('afterbegin', `
     <div class="wechat-tip" onclick="this.remove()">
-      📱 本站已用<b>词典真人发音</b>，微信里一般能正常出声；若仍无声，请点右上角「···」→「在浏览器打开」
+      📱 本站已用<b>词典标准发音</b>，微信里一般能正常出声；若仍无声，请点右上角「···」→「在浏览器打开」
       <span style="float:right;cursor:pointer">✕</span>
     </div>`);
 })();
