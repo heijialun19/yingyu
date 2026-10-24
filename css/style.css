@@ -54,7 +54,7 @@ ruby rt { font-size: .5em; color: var(--ink2); letter-spacing: 1px; }
 .nav-emoji { font-size: 22px; }
 .nav-link:hover { background: #FFF1D6; transform: translateY(-2px); }
 .nav-link.on { background: #FFE7A0; border-color: var(--lemon); color: var(--ink); font-weight: 700; }
-.nav-stats { display: flex; gap: 8px; align-items: center; }
+.nav-stats { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; min-width: 0; }
 .chip {
   display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
   background: #fff; border: 2px solid var(--lake); color: var(--ink);
@@ -471,10 +471,15 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 }
 @media (max-width: 620px) {
   html { font-size: 16px; }
-  .nav { border-radius: 24px; }
-  .nav-link { padding: 4px 7px; font-size: .66rem; }
-  .nav-emoji { font-size: 19px; }
+  .nav { border-radius: 24px; padding: 6px 12px; }
+  .nav-link { padding: 4px 6px; font-size: .62rem; }
+  .nav-emoji { font-size: 17px; }
+  .nav-stats .chip { font-size: .72rem; padding: 4px 8px; gap: 3px; }
+  #streakChip { display: none; } /* 手机上隐藏火焰，节省空间 */
   .brand-txt { display: none; }
   .letter-hero .glyph { font-size: 5rem; }
   .mem-grid { gap: 8px; }
+  main { padding: 14px 10px 60px; }
+  .card { padding: 14px; }
+  canvas#tracePad { max-width: 100%; height: auto; }
 }
