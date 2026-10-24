@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -78,7 +78,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=31"></script>
+<script src="js/app.js?v=32"></script>
 <script src="js/sentence.js?v=27"></script>
 <script>
 renderNav('index'); renderDecor();
@@ -90,10 +90,18 @@ renderNav('index'); renderDecor();
   document.getElementById('welcome').style.display = '';
   document.getElementById('home').style.display = 'none';
   let pick = '🐤', grade = 'g1';
-  document.getElementById('introAvatars').innerHTML = AVATARS.map(a =>
-    `<button class="avatar-chip ${a===pick?'on':''}" data-a="${a}">${a}</button>`).join('');
+  const selectAvatar = b => {
+    document.querySelectorAll('#introAvatars .avatar-chip').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); pick = b.dataset.a; sfx.pop();
+  };
+  document.getElementById('introAvatars').innerHTML = AVATARS.map(a => avatarChipHtml(a, a === pick)).join('');
   document.querySelectorAll('#introAvatars .avatar-chip').forEach(b =>
-    b.onclick = () => { document.querySelectorAll('#introAvatars .avatar-chip').forEach(x=>x.classList.remove('on')); b.classList.add('on'); pick=b.dataset.a; sfx.pop(); });
+    b.onclick = () => {
+      const wasLocked = !!b.dataset.price;
+      avatarTap(b); // 带星星的头像会先走解锁流程
+      if (wasLocked && b.dataset.price) return; // 星不够或取消了，不选中
+      selectAvatar(b);
+    });
   document.getElementById('introGrade').innerHTML = GRADES.map(g =>
     `<button data-g="${g.id}" class="${g.id===grade?'on':''}">${g.emoji}${g.name}</button>`).join('');
   document.querySelectorAll('#introGrade button').forEach(b =>

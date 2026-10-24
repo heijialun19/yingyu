@@ -302,11 +302,14 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .profile-tool summary { cursor: pointer; font-weight: 700; font-size: .9rem; color: var(--ink2); }
 .avatar-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .avatar-chip {
+  position: relative;
   width: 46px; height: 46px; font-size: 26px; border-radius: 14px; cursor: pointer;
   background: #fff; border: 3px solid #E8EAF0; transition: .13s;
 }
 .avatar-chip:hover { transform: translateY(-2px); }
 .avatar-chip.on { border-color: var(--grape); background: #F4EFFF; }
+.avatar-chip.locked { opacity: .78; }
+.avatar-chip .lock-mark { position: absolute; right: 1px; bottom: 0; font-size: 12px; font-style: normal; }
 .pos-lesson { margin-top: 16px; }
 .pos-lesson summary { cursor: pointer; font-weight: 700; font-size: .95rem; list-style: none; }
 .pos-lesson summary::-webkit-details-marker { display: none; }

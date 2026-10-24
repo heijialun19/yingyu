@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -62,7 +62,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=31"></script>
+<script src="js/app.js?v=32"></script>
 <script src="js/sentence.js?v=27"></script>
 <script>
 renderNav('words'); renderDecor();
@@ -283,6 +283,9 @@ function startPractice() {
 function startReview() {
   let due = dueWords();
   if (!due.length) { toast('今天没有要复习的单词，先学新的吧！'); return; }
+  // 字母岛小练习可能带进词库之外的词（如 X-ray），词库里查不到的跳过，避免复习崩溃
+  due = due.filter(w => ALL[w]);
+  if (!due.length) { toast('今天没有要复习的单词，先学新的吧！'); return; }
   const more = due.length > 12 ? `（还有 ${due.length - 12} 个明天继续）` : '';
   due = due.slice(0, 12); // 每天最多复习 12 个，不贪多
   const qs = due.map(w => {
@@ -340,7 +343,7 @@ function renderQuizEnd() {
   const perfect = s.score === s.qs.length && s.qs.length > 0;
   const bonus = perfect ? 2 : 0;
   if (bonus) addStars(bonus);
-  if (s.kind === 'practice') completeDailyTask('words');
+  if (s.kind === 'practice' || s.kind === 'review') completeDailyTask('words'); // 练新词和复习都算每日任务
   if (perfect) confetti();
   sfx.win();
   $('#app').innerHTML = `

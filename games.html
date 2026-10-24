@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -18,7 +18,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=31"></script>
+<script src="js/app.js?v=32"></script>
 <script src="js/sentence.js?v=27"></script>
 <script>
 renderNav('games'); renderDecor();
@@ -306,7 +306,8 @@ function gSentence(pool) {
     const ok = o === q.ans;
     feedback(btn, ok);
     if (ok) {
-      if (S.first) { S.score++; addStars(1); flyStar(btn); }
+      // 只计分不发星：星星在游戏结束统一结算（与其他游戏一致，避免双重发星）
+      if (S.first) { S.score++; flyStar(btn); }
       sfx.correct();
       $('#sexp2').innerHTML = `✅ <b>${q.zh}</b>`;
       speakSentence(q.zh.split('.')[0]);

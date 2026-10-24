@@ -21,6 +21,8 @@ function todayStr(off = 0) {
 const PROFILES_KEY = 'birdie_abc_profiles_v2';
 const LEGACY_KEY = 'birdie_abc_v1';
 const AVATARS = ['🐤','🐰','🐯','🐼','🦊','🐸','🐙','🦄','🐝','🐳','🐨','🦁'];
+/* 限定头像：用星星解锁（星星的消费出口，让奖励有真实目标） */
+const AVATAR_PRICES = { '🐼':30, '🦊':30, '🐙':50, '🦄':80, '🐳':80, '🦁':120 };
 
 const Profiles = {
   meta: null, // { list: [{id,name,avatar,grade,created}], activeId }
@@ -93,6 +95,7 @@ const Store = {
       books: {},                     // {b1: {t}} 读过的绘本
       streak: { count: 0, last: '' },
       daily: { date: '', tasks: { letter: false, words: false, game: false }, bonus: false, studySec: 0, break15: false, break30: false },
+      unlocked: {},                  // {emoji: true} 星星解锁的限定头像
       activity: {}                   // {2026-10-24: {letters,words,games,grammar,stars}}
     };
   },
@@ -106,8 +109,8 @@ const Store = {
     // 年级以档案为准
     this.d.grade = Profiles.active().grade || this.d.grade;
     if (this.d.daily.date !== todayStr()) this.d.daily = { date: todayStr(), tasks: { letter: false, words: false, game: false }, bonus: false, studySec: 0, break15: false, break30: false };
-    // 已跳过字母岛的孩子：字母任务自动视为完成，保证「三任务全勤」奖励可达
-    if (this.d.lettersSkip) this.d.daily.tasks.letter = true;
+    // 已跳过字母岛、或 26 个字母全学完的孩子：字母任务自动视为完成，保证「三任务全勤」奖励可达
+    if (this.d.lettersSkip || Object.keys(this.d.letters || {}).length >= 26) this.d.daily.tasks.letter = true;
     return this.d;
   },
   save() {
@@ -669,8 +672,9 @@ function openProfileModal() {
           <summary>➕ 新建一个档案</summary>
           <div style="margin-top:10px">
             <input id="newName" type="text" placeholder="小伙伴的名字" maxlength="10" style="width:100%;padding:10px 14px;border:3px solid var(--lemon);border-radius:14px;font-family:inherit;font-size:.95rem">
-            <div class="avatar-grid" style="margin-top:10px">
-              ${AVATARS.map(a => `<button class="avatar-chip" data-a="${a}" onclick="pickAvatar(this)">${a}</button>`).join('')}
+            <small style="display:block;color:#5C6273;margin-top:8px">⭐ 当前有 <b>${Store.d.stars}</b> 颗星星 · 带 🔒 的头像用星星解锁，永久有效</small>
+            <div class="avatar-grid" style="margin-top:8px">
+              ${AVATARS.map(a => avatarChipHtml(a, false)).join('')}
             </div>
             <div class="theme-tabs" style="margin-top:10px">
               ${GRADES.map(g => `<button class="theme-tab" data-g="${g.id}" onclick="this.parentNode.querySelectorAll('.theme-tab').forEach(b=>b.classList.remove('on'));this.classList.add('on')"><span class="te">${g.emoji}</span>${g.name}</button>`).join('')}
@@ -696,6 +700,26 @@ function openProfileModal() {
     </div>`);
 }
 function closeProfileModal() { const m = document.getElementById('profileMask'); if (m) m.remove(); }
+/* ---------- 头像商店：锁定头像用星星解锁（星星的消费出口） ---------- */
+function avatarLocked(a) { const p = AVATAR_PRICES[a]; return !!p && !(Store.d.unlocked && Store.d.unlocked[a]); }
+function avatarChipHtml(a, selected) {
+  const locked = avatarLocked(a);
+  return `<button class="avatar-chip ${selected ? 'on' : ''} ${locked ? 'locked' : ''}" data-a="${a}" ${locked ? `data-price="${AVATAR_PRICES[a]}"` : ''} onclick="avatarTap(this)">${a}${locked ? '<i class="lock-mark">🔒</i>' : ''}</button>`;
+}
+function avatarTap(btn) {
+  if (!btn.dataset.price) { pickAvatar(btn); return; }
+  const a = btn.dataset.a, price = parseInt(btn.dataset.price, 10);
+  if (Store.d.stars < price) { sfx.wrong(); toast(`🎈 解锁 ${a} 需要 ${price} 颗星星，还差 ${price - Store.d.stars} 颗，继续加油！`); return; }
+  if (!confirm(`用 ${price} 颗星星解锁头像 ${a} 吗？解锁后永久有效。`)) return;
+  Store.d.stars -= price;
+  Store.d.unlocked = Store.d.unlocked || {};
+  Store.d.unlocked[a] = true;
+  Store.save(); updateNavStats(); checkBadges();
+  btn.classList.remove('locked'); btn.removeAttribute('data-price');
+  const lk = btn.querySelector('.lock-mark'); if (lk) lk.remove();
+  sfx.win(); confetti(); toast(`🎉 解锁成功！${a} 加入你的小伙伴啦`);
+  pickAvatar(btn);
+}
 function pickAvatar(btn) {
   document.querySelectorAll('.avatar-chip').forEach(b => b.classList.remove('on'));
   btn.classList.add('on'); __pickedAvatar = btn.dataset.a;
