@@ -481,25 +481,15 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 @media (max-width: 720px) {
   html { font-size: 16px; }
 
-  /* 收起装饰与顶部链接排：一屏只做一件事 */
+  /* 收起装饰与顶栏：手机端顶部完全让给内容，档案/星星/声音都在底部栏 */
   .cloud, .sun { display: none; }
-  .nav-links { display: none; }
-  .nav {
-    top: 8px; gap: 8px;
-    border-radius: 18px; padding: 7px 10px;
-    box-shadow: 0 3px 12px rgba(45,49,66,.12);
-  }
-  .brand-bird { font-size: 24px; }
-  .brand-txt { font-size: .9rem; }
-  .brand-txt small { display: none; }
-  .nav-stats .chip { font-size: .74rem; padding: 5px 9px; gap: 3px; }
-  .nav-stats { gap: 5px; }
+  .nav { display: none; }
 
   /* 底部标签栏 + 给内容让位 */
   body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
   .bottom-nav {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
-    display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px;
+    display: grid; grid-template-columns: repeat(5, 1fr) 1.15fr; gap: 2px;
     background: rgba(255,255,255,.97);
     border-top: 2px solid #E8EAF0;
     padding: 6px 6px calc(7px + env(safe-area-inset-bottom));
@@ -510,10 +500,13 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
     padding: 5px 0 4px; border-radius: 16px;
     font-size: .68rem; font-weight: 700; color: #8B93A7;
     border: 2px solid transparent; transition: .15s;
+    background: none; font-family: inherit; cursor: pointer;
   }
   .bnav .nav-emoji { font-size: 24px; }
   .bnav:active { transform: scale(.94); }
   .bnav.on { color: #E85D5D; background: #FFF1F1; border-color: #FFD9D9; }
+  .bnav-me { border-left: 2px solid #EEF0F4; border-radius: 16px; }
+  .bnav-me .bnav-stars { font-size: .64rem; font-weight: 700; color: var(--ink2); display: flex; align-items: center; gap: 2px; }
 
   main { padding: 12px 12px 28px; }
   .page-title { margin: 10px 0 2px; }

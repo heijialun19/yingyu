@@ -1,11 +1,11 @@
-﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小鸟英语乐园 · 一年级英语启蒙</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=26">
+<link rel="stylesheet" href="css/style.css?v=27">
 <style>
 .hello-line{text-align:center;color:#5C6273;font-size:.9rem;margin:4px 0 14px}
 .hello-line b{color:var(--ink)}
@@ -78,7 +78,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=30"></script>
+<script src="js/app.js?v=31"></script>
 <script src="js/sentence.js?v=27"></script>
 <script>
 renderNav('index'); renderDecor();
@@ -120,7 +120,7 @@ function showHome() {
   const nextLetter = skipLetters ? null : LETTERS.find(l => !Store.d.letters[l.L]);
   const gradeDone = cumMasteredCount(), gradeAll = cumWordCount();
   let step;
-  if (nextLetter) step = { e:'🏝️', t:`学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}`, s:`${nextLetter.shape} · 故事+拼读+写一写`, href:'letters.html', now:letterCount(), all:26 };
+  if (nextLetter) step = { e:'🏝️', t:`学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}`, s:`${nextLetter.shape} · 故事+拼读`, href:'letters.html', now:letterCount(), all:26 };
   else if (gradeDone < gradeAll) step = { e:'🏘️', t:'单词闯关', s:`${myGrade().name}词库：已掌握 ${gradeDone}/${gradeAll}`, href:'words.html?mode=plan', now:gradeDone, all:gradeAll };
   else if (Object.keys(Store.d.books||{}).length < BOOKS_TOTAL) step = { e:'📚', t:'读今天的绘本', s:`已读 ${Object.keys(Store.d.books||{}).length}/${BOOKS_TOTAL} 本`, href:'books.html', now:Object.keys(Store.d.books||{}).length, all:BOOKS_TOTAL };
   else if (grammarDoneCount() < GRAMMAR_LEVELS.length) step = { e:'🏭', t:'句子工厂闯关', s:`已通过 ${grammarDoneCount()}/${GRAMMAR_LEVELS.length} 关`, href:'grammar.html', now:grammarDoneCount(), all:GRAMMAR_LEVELS.length };

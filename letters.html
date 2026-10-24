@@ -1,11 +1,11 @@
-﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>字母岛 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=26">
+<link rel="stylesheet" href="css/style.css?v=27">
 </head>
 <body>
 <main>
@@ -36,7 +36,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=30"></script>
+<script src="js/app.js?v=31"></script>
 <script src="js/sentence.js?v=27"></script>
 <script>
 renderNav('letters'); renderDecor();
@@ -147,159 +147,14 @@ function renderStage(speakIt) {
         ${cur < LETTERS.length - 1 ? `<button class="btn orange big" onclick="nextAfterLearn()">下一个字母 ▶</button>` : `<button class="btn orange big" onclick="location.href='words.html'">去单词镇 →</button>`}
       </div>
 
-      <div class="card" style="margin-top:16px;border-color:var(--lemon)">
-        <h2>✏️ 写一写</h2>
-        <div style="display:flex;gap:8px;margin-bottom:10px;justify-content:center;flex-wrap:wrap">
-          <button class="btn ${traceCase === 'upper' ? 'mint' : 'ghost'}" style="padding:6px 16px;font-size:.85rem" id="btnUpper" onclick="traceCase='upper';initTrace()">${l.L} 大写</button>
-          <button class="btn ${traceCase === 'lower' ? 'mint' : 'ghost'}" style="padding:6px 16px;font-size:.85rem" id="btnLower" onclick="traceCase='lower';initTrace()">${l.L.toLowerCase()} 小写</button>
-        </div>
-        <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;justify-content:center">
-          <canvas id="tracePad" width="280" height="280" style="touch-action:none;background:#fff;border:3px solid var(--lemon);border-radius:24px;box-shadow:0 5px 0 rgba(45,49,66,.1);cursor:crosshair"></canvas>
-          <div style="text-align:center">
-            <div style="font-size:.9rem;margin-bottom:8px">描红进度</div>
-            <div style="width:140px;height:18px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:0 auto 10px">
-              <div style="font-size:.82rem;color:#5C6273;margin-bottom:4px">描满</div>
-            <div style="width:140px;height:14px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:0 auto 6px"><div id="traceBar" style="height:100%;width:0%;background:linear-gradient(90deg,#FFD93D,#FF9F45);border-radius:999px;transition:.2s"></div></div>
-            <div style="font-size:.82rem;color:#5C6273;margin-bottom:4px">描准</div>
-            <div style="width:140px;height:14px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:0 auto 10px"><div id="traceAcc" style="height:100%;width:100%;background:linear-gradient(90deg,#6BCB77,#4EC5F1);border-radius:999px;transition:.2s"></div></div>
-            <div id="traceStatus" style="font-size:.85rem;margin-bottom:8px;color:#5C6273">用手指沿着虚线描 ✏️</div>
-            <button class="btn ghost" onclick="initTrace()">🧽 擦掉重写</button>
-          </div>
-        </div>
-      </div>
       <p style="color:#5C6273;font-size:.78rem;margin-top:10px">💡 小提示：点单词卡片可以听发音；红色 a e i o u 是"歌手"，蓝色辅音是"画家"。</p>
     </div>`;
   if (speakIt) sayName(); // 只有用户点击切换时才朗读；首次打开页面保持安静
   // 预拉取双音频（字母名 + 代表词），用户一点就秒响
   prewarmWord(l.L);
   prewarmWord(l.words[0].w);
-  initTrace();
 }
 
-/* ---------------- 字母描红系统 v2 ----------------
-   改进：虚线引导、细笔刷、精确计格、90%阈值、通过后仍可继续写 */
-let traceCase = 'upper';
-let __traceTarget = null, __traceDone = false, __traceTouched = new Set(), __traceDrawing = false;
-
-function initTrace() {
-  const cv = document.getElementById('tracePad'); if (!cv) return;
-  const ctx = cv.getContext('2d');
-  const l = LETTERS[cur];
-  const ch = traceCase === 'upper' ? l.L : l.L.toLowerCase();
-  ctx.clearRect(0, 0, 280, 280);
-
-  // 画虚线目标字母（描红引导线）
-  ctx.save();
-  ctx.font = '900 180px "Comic Sans MS","Segoe UI",Arial';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.setLineDash([6, 4]);
-  ctx.strokeStyle = '#C5CDD8';
-  ctx.lineWidth = 2;
-  ctx.strokeText(ch, 140, 148);
-  ctx.restore();
-
-  // 画极淡的填充底色（帮助识别）
-  ctx.save();
-  ctx.font = '900 180px "Comic Sans MS","Segoe UI",Arial';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillStyle = 'rgba(200,210,220,.08)';
-  ctx.fillText(ch, 140, 148);
-  ctx.restore();
-
-  // 更新按钮高亮
-  const bu = document.getElementById('btnUpper'), bl = document.getElementById('btnLower');
-  if (bu) { bu.className = 'btn ' + (traceCase === 'upper' ? 'mint' : 'ghost'); bu.style.padding = '6px 16px'; bu.style.fontSize = '.85rem'; }
-  if (bl) { bl.className = 'btn ' + (traceCase === 'lower' ? 'mint' : 'ghost'); bl.style.padding = '6px 16px'; bl.style.fontSize = '.85rem'; }
-
-  // 采样目标格子（离屏画布）——字体直接写死，不依赖 ctx.font 的运行时状态
-  const off = document.createElement('canvas'); off.width = 280; off.height = 280;
-  const octx = off.getContext('2d');
-  octx.font = '900 180px "Comic Sans MS","Segoe UI",Arial';
-  octx.textAlign = 'center'; octx.textBaseline = 'middle';
-  octx.fillStyle = '#000';
-  octx.fillText(ch, 140, 148);
-  const data = octx.getImageData(0, 0, 280, 280).data;
-  const cell = 14, n = Math.floor(280 / cell);
-  __traceTarget = new Set();
-  // 完整逐像素扫描（步长1），确保每个覆盖格子都被采样到
-  for (let y = 0; y < 280; y++) {
-    const gy = Math.floor(y / cell);
-    for (let x = 0; x < 280; x++) {
-      if (data[(y * 280 + x) * 4 + 3] > 40) {
-        __traceTarget.add(gy * n + Math.floor(x / cell));
-      }
-    }
-  }
-  __traceDone = false;
-  __traceTouched = new Set();
-  __traceOut = new Set();
-  updateTraceUI();
-  const st = document.getElementById('traceStatus');
-  if (st) { st.textContent = '用手指沿着虚线慢慢描 ✏️'; st.style.color = '#5C6273'; }
-}
-
-/* 描红判定 v3：两条标准同时过关——①描满（覆盖85%）②描准（线内≥72%）
-   乱涂会拉低"描准"，无法蒙混过关 */
-let __traceOut = new Set();
-const TRACE_COV_NEED = 0.85, TRACE_ACC_NEED = 0.72;
-function updateTraceUI(silent) {
-  const bar = document.getElementById('traceBar'), bar2 = document.getElementById('traceAcc');
-  if (!bar || !__traceTarget) return { cov: 0, acc: 0, pass: false };
-  const need = Math.ceil(__traceTarget.size * TRACE_COV_NEED);
-  const cov = Math.min(100, Math.round(__traceTouched.size / Math.max(1, need) * 100));
-  const total = __traceTouched.size + __traceOut.size;
-  const acc = total ? Math.round(__traceTouched.size / total * 100) : 100;
-  bar.style.width = cov + '%';
-  if (bar2) bar2.style.width = acc + '%';
-  const pass = cov >= 100 && acc >= Math.round(TRACE_ACC_NEED * 100);
-  const st = document.getElementById('traceStatus');
-  if (st && !silent) {
-    if (pass) { st.innerHTML = '✅ 写得真标准！可以 🧽 重写，或换大小写'; st.style.color = '#4E9E59'; }
-    else if (acc < 65 && total > 6) { st.textContent = '😯 涂到虚线外面去啦，慢一点描'; st.style.color = '#E65100'; }
-    else if (cov < 100) { st.textContent = '继续描，把虚线都盖住 ✏️'; st.style.color = '#5C6273'; }
-  }
-  return { cov, acc, pass };
-}
-
-(function bindTrace() {
-  document.addEventListener('pointerdown', e => {
-    if (e.target.id !== 'tracePad') return;
-    __traceDrawing = true;
-    const cv = e.target, ctx = cv.getContext('2d');
-    const cell = 14, n = Math.floor(280 / cell);
-
-    const draw = ev => {
-      if (!__traceDrawing) return;
-      const r = cv.getBoundingClientRect();
-      const x = (ev.clientX - r.left) * (280 / r.width);
-      const y = (ev.clientY - r.top) * (280 / r.height);
-      ctx.fillStyle = 'rgba(255,107,107,.45)';
-      ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.fill();
-      // 判定：中心+四探针；命中目标格=描满，否则=涂出界
-      const probes = [[0,0],[5,0],[-5,0],[0,5],[0,-5]];
-      let hitInside = false;
-      for (const [dx,dy] of probes) {
-        const gx = Math.floor((x+dx)/cell), gy = Math.floor((y+dy)/cell);
-        const k = gy*n+gx;
-        if (__traceTarget && __traceTarget.has(k)) { __traceTouched.add(k); hitInside = true; }
-      }
-      const g0 = Math.floor(y/cell)*n + Math.floor(x/cell);
-      if (!hitInside && !(__traceTarget && __traceTarget.has(g0))) __traceOut.add(g0);
-
-      const r2 = updateTraceUI();
-      if (r2.pass && !__traceDone) {
-        __traceDone = true;
-        addStars(1); confetti(); sfx.win();
-        toast('✍️ 写得真棒！+1 ⭐');
-      }
-    };
-    draw(e);
-    const move = ev => { ev.preventDefault(); draw(ev); };
-    const up = () => { __traceDrawing = false; document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); };
-    document.addEventListener('pointermove', move, { passive: false });
-    document.addEventListener('pointerup', up);
-  });
-})();
 
 /* ============ 字母岛语音系统（三按钮，逻辑清晰） ============
    ① 字母名：只播字母名（如 A 读 "ay"）
