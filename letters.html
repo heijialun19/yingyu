@@ -134,21 +134,21 @@ function renderStage(speakIt) {
   if (speakIt) sayName(); // 只有用户点击切换时才朗读；首次打开页面保持安静
 }
 
-/* 自然拼读三连：字母名 / 字母音 / 拼读口诀（读音 + 象形故事结合） */
+/* 自然拼读三连：字母名（词典真人音）/ 字母音（系统语音，微信环境三读代表词兜底）/ 拼读口诀 */
 function sayName() {
   const l = LETTERS[cur];
   sfx.pop();
-  speak(`${l.L}. ${l.L.toLowerCase()}.`);
+  speak(l.L); // 单字母 → 有道词典返回标准字母名发音
 }
 function saySound() {
   const l = LETTERS[cur];
   sfx.pop();
-  speak(`${l.s}. ${l.s}. ${l.words[0].w}.`, 'en-US', 0.75);
+  speakSoundText(`${l.s}, ${l.s}, ${l.words[0].w}`, l.words[0].w);
 }
 function sayChant() {
   const l = LETTERS[cur];
   sfx.pop();
-  speak(`${l.L} says ${l.s}, ${l.s}, ${l.words[0].w}!`, 'en-US', 0.8);
+  speakSoundText(`${l.L} says ${l.s}, ${l.s}, ${l.words[0].w}!`, l.words[0].w);
 }
 function sayWord(el, w) { flyStar(el); speakWordDouble(w); } /* 第一遍发音，第二遍拼读 */
 
