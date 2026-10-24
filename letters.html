@@ -135,8 +135,11 @@ function renderStage(speakIt) {
       </div>
 
       <div class="card" style="margin-top:16px;border-color:var(--lemon)">
-        <h2>✏️ 写一写 ${l.L}${l.L.toLowerCase()}</h2>
-        <p style="font-size:.8rem;color:#5C6273;margin:2px 0 8px">用手指（或鼠标）沿着灰色的字母描一遍，描够 75% 就过关！</p>
+        <h2>✏️ 写一写</h2>
+        <div style="display:flex;gap:8px;margin-bottom:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn ${traceCase === 'upper' ? 'mint' : 'ghost'}" style="padding:6px 16px;font-size:.85rem" id="btnUpper" onclick="traceCase='upper';initTrace()">${l.L} 大写</button>
+          <button class="btn ${traceCase === 'lower' ? 'mint' : 'ghost'}" style="padding:6px 16px;font-size:.85rem" id="btnLower" onclick="traceCase='lower';initTrace()">${l.L.toLowerCase()} 小写</button>
+        </div>
         <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;justify-content:center">
           <canvas id="tracePad" width="280" height="280" style="touch-action:none;background:#fff;border:3px solid var(--lemon);border-radius:24px;box-shadow:0 5px 0 rgba(45,49,66,.1);cursor:crosshair"></canvas>
           <div style="text-align:center">
@@ -144,6 +147,7 @@ function renderStage(speakIt) {
             <div style="width:140px;height:18px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:0 auto 10px">
               <div id="traceBar" style="height:100%;width:0%;background:linear-gradient(90deg,#FFD93D,#FF9F45);border-radius:999px;transition:.2s"></div>
             </div>
+            <div id="traceStatus" style="font-size:.85rem;margin-bottom:8px;color:#5C6273">用手指沿着虚线描 ✏️</div>
             <button class="btn ghost" onclick="initTrace()">🧽 擦掉重写</button>
           </div>
         </div>
@@ -158,68 +162,108 @@ function renderStage(speakIt) {
   initTrace();
 }
 
-/* ---------------- 字母描红 ---------------- */
-let __traceTarget = null, __traceDone = false;
+/* ---------------- 字母描红系统 v2 ----------------
+   改进：虚线引导、细笔刷、精确计格、90%阈值、通过后仍可继续写 */
+let traceCase = 'upper';
+let __traceTarget = null, __traceDone = false, __traceTouched = new Set(), __traceDrawing = false;
+
 function initTrace() {
   const cv = document.getElementById('tracePad'); if (!cv) return;
   const ctx = cv.getContext('2d');
   const l = LETTERS[cur];
+  const ch = traceCase === 'upper' ? l.L : l.L.toLowerCase();
   ctx.clearRect(0, 0, 280, 280);
-  // 底层灰色目标字母
-  ctx.font = '900 200px "Comic Sans MS","Segoe UI",Arial';
+
+  // 画虚线目标字母（描红引导线）
+  ctx.save();
+  ctx.font = '900 180px "Comic Sans MS","Segoe UI",Arial';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#EDF1F7';
-  ctx.fillText(l.L + l.L.toLowerCase(), 140, 148);
-  // 用离屏画布采样字母覆盖的格子
+  ctx.setLineDash([6, 4]);
+  ctx.strokeStyle = '#C5CDD8';
+  ctx.lineWidth = 2;
+  ctx.strokeText(ch, 140, 148);
+  ctx.restore();
+
+  // 画极淡的填充底色（帮助识别）
+  ctx.save();
+  ctx.font = '900 180px "Comic Sans MS","Segoe UI",Arial';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = 'rgba(200,210,220,.08)';
+  ctx.fillText(ch, 140, 148);
+  ctx.restore();
+
+  // 更新按钮高亮
+  const bu = document.getElementById('btnUpper'), bl = document.getElementById('btnLower');
+  if (bu) { bu.className = 'btn ' + (traceCase === 'upper' ? 'mint' : 'ghost'); bu.style.padding = '6px 16px'; bu.style.fontSize = '.85rem'; }
+  if (bl) { bl.className = 'btn ' + (traceCase === 'lower' ? 'mint' : 'ghost'); bl.style.padding = '6px 16px'; bl.style.fontSize = '.85rem'; }
+
+  // 采样目标格子（离屏画布）——字体直接写死，不依赖 ctx.font 的运行时状态
   const off = document.createElement('canvas'); off.width = 280; off.height = 280;
   const octx = off.getContext('2d');
-  octx.font = ctx.font; octx.textAlign = 'center'; octx.textBaseline = 'middle';
+  octx.font = '900 180px "Comic Sans MS","Segoe UI",Arial';
+  octx.textAlign = 'center'; octx.textBaseline = 'middle';
   octx.fillStyle = '#000';
-  octx.fillText(l.L + l.L.toLowerCase(), 140, 148);
+  octx.fillText(ch, 140, 148);
   const data = octx.getImageData(0, 0, 280, 280).data;
-  const cell = 20, n = 280 / cell;
+  const cell = 14, n = Math.floor(280 / cell);
   __traceTarget = new Set();
-  for (let gy = 0; gy < n; gy++) for (let gx = 0; gx < n; gx++) {
-    let hit = false;
-    for (let y = gy * cell; y < (gy + 1) * cell && !hit; y++)
-      for (let x = gx * cell; x < (gx + 1) * cell && !hit; x++)
-        if (data[(y * 280 + x) * 4 + 3] > 40) hit = true;
-    if (hit) __traceTarget.add(gy * n + gx);
+  // 完整逐像素扫描（步长1），确保每个覆盖格子都被采样到
+  for (let y = 0; y < 280; y++) {
+    const gy = Math.floor(y / cell);
+    for (let x = 0; x < 280; x++) {
+      if (data[(y * 280 + x) * 4 + 3] > 40) {
+        __traceTarget.add(gy * n + Math.floor(x / cell));
+      }
+    }
   }
   __traceDone = false;
   __traceTouched = new Set();
   updateTraceBar();
+  const st = document.getElementById('traceStatus');
+  if (st) { st.textContent = '用手指沿着虚线描 ✏️'; st.style.color = '#5C6273'; }
 }
-let __traceTouched = new Set(), __traceDrawing = false;
+
 function updateTraceBar() {
-  const bar = document.getElementById('traceBar'); if (!bar || !__traceTarget) return;
-  const pct = Math.min(100, Math.round(__traceTouched.size / Math.max(1, __traceTarget.size * 0.75) * 100));
+  const bar = document.getElementById('traceBar'); if (!bar || !__traceTarget) return 0;
+  const need = Math.ceil(__traceTarget.size * 0.88); // 88% 才过关
+  const pct = Math.min(100, Math.round(__traceTouched.size / Math.max(1, need) * 100));
   bar.style.width = pct + '%';
   return pct;
 }
+
 (function bindTrace() {
   document.addEventListener('pointerdown', e => {
-    if (e.target.id !== 'tracePad' || __traceDone) return;
+    if (e.target.id !== 'tracePad') return;
     __traceDrawing = true;
     const cv = e.target, ctx = cv.getContext('2d');
+    const cell = 14, n = Math.floor(280 / cell);
+
     const draw = ev => {
       if (!__traceDrawing) return;
       const r = cv.getBoundingClientRect();
       const x = (ev.clientX - r.left) * (280 / r.width);
       const y = (ev.clientY - r.top) * (280 / r.height);
-      ctx.fillStyle = 'rgba(255,107,107,.55)';
-      ctx.beginPath(); ctx.arc(x, y, 16, 0, Math.PI * 2); ctx.fill();
-      const cell = 20, n = 280 / cell;
+      // 细笔刷：半径10，更精准
+      ctx.fillStyle = 'rgba(255,107,107,.45)';
+      ctx.beginPath(); ctx.arc(x, y, 10, 0, Math.PI * 2); ctx.fill();
+      // 只计笔刷中心直接经过的格子（不做 3x3 扩张）
       const gx = Math.floor(x / cell), gy = Math.floor(y / cell);
-      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
-        const k = (gy + dy) * n + (gx + dx);
-        if (__traceTarget && __traceTarget.has(k)) __traceTouched.add(k);
-      }
+      const k = gy * n + gx;
+      if (__traceTarget && __traceTarget.has(k)) __traceTouched.add(k);
+      // 笔刷边缘也稍微计入（半径一半处）
+      const gx2 = Math.floor((x + 5) / cell), gy2 = Math.floor((y + 5) / cell);
+      const gx3 = Math.floor((x - 5) / cell), gy3 = Math.floor((y - 5) / cell);
+      [gx2, gx3].forEach(cx => { const kk = gy * n + cx; if (__traceTarget && __traceTarget.has(kk)) __traceTouched.add(kk); });
+      [gy2, gy3].forEach(cy => { const kk = cy * n + gx; if (__traceTarget && __traceTarget.has(kk)) __traceTouched.add(kk); });
+
       const pct = updateTraceBar();
       if (pct >= 100 && !__traceDone) {
-        __traceDone = true; __traceDrawing = false;
+        __traceDone = true;
         addStars(1); confetti(); sfx.win();
         toast('✍️ 写得真棒！+1 ⭐');
+        const st = document.getElementById('traceStatus');
+        if (st) { st.innerHTML = '✅ 太棒了！可以 🧽 重写练，或切大写/小写'; st.style.color = '#4E9E59'; }
+        // 不 return，不阻止继续写
       }
     };
     draw(e);
