@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>字母岛 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=9">
+<link rel="stylesheet" href="css/style.css?v=10">
 </head>
 <body>
 <main>
@@ -28,9 +28,9 @@
   </section>
 <div style=text-align:center;margin-top:20px;font-size:.75rem><a href=disclaimer.html style=color:#78909C>📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=9"></script>
-<script src="js/data.js?v=9"></script>
-<script src="js/app.js?v=9"></script>
+<script src="js/words-data.js?v=10"></script>
+<script src="js/data.js?v=10"></script>
+<script src="js/app.js?v=10"></script>
 <script>
 renderNav('letters'); renderDecor();
 
@@ -289,26 +289,27 @@ function saySound() {
   const l = LETTERS[cur];
   const w = l.words[0].w;
   sfx.pop();
-  // phonics = stretched initial sound: very slow x2, then normal
-  speakChain([
-    { text: w, rate: 0.5 },
+  // phonics sound: the real phoneme via Baidu TTS (ah/buh/kuh...), then stretched word, then normal
+  speakSeq([
+    { text: l.s, src: 'baidu', rate: 0.9 },
+    { text: l.s, src: 'baidu', rate: 0.9 },
     { text: w, rate: 0.5 },
     { text: w, rate: 1 }
-  
   ]);
 }
 function sayChant() {
   const l = LETTERS[cur];
   const w = l.words[0].w;
   sfx.pop();
-  // chant: letter name -> very slow word -> normal word
-  speakChain([
+  // chant: letter name -> phoneme -> stretched word -> normal word
+  speakSeq([
     { text: l.L, rate: 1 },
+    { text: l.s, src: 'baidu', rate: 0.9 },
     { text: w, rate: 0.5 },
     { text: w, rate: 1 }
-  
   ]);
 }
+
 function sayWord(el, w) { flyStar(el); speakWordDouble(w); } /* 第一遍发音，第二遍拼读 */
 
 function q1(btn, w, right) {
