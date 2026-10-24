@@ -56,6 +56,28 @@
     </div>
   </section>
 
+  <!-- 语音诊断 -->
+  <section class="section">
+    <div class="card" style="border-color:var(--lake)">
+      <h2>🔊 语音诊断与手机无声排查</h2>
+      <div id="speechDiag" style="margin-top:10px;font-size:.88rem;line-height:1.9"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <button class="btn" onclick="speak('Hello! I am Jojo. Can you hear me?')">🎧 点我试听</button>
+        <button class="btn ghost" onclick="renderSpeechDiag()">🔄 重新检测</button>
+      </div>
+      <details style="margin-top:12px">
+        <summary style="cursor:pointer;font-weight:700;color:#5C6273">📱 手机打开没有声音？依次检查这 5 条</summary>
+        <div style="font-size:.85rem;line-height:2;color:#5C6273;margin-top:8px">
+          1️⃣ 先<b>点一下页面任意位置</b>再点单词——手机浏览器要求第一次发音必须由点击触发（本站已做自动解锁，一般无感）<br>
+          2️⃣ 微信/QQ 里打开可能完全没有语音：点右上角「···」→「在浏览器打开」<br>
+          3️⃣ iPhone 检查<b>侧边静音键</b>和音量；部分机型需关闭"旁白"功能<br>
+          4️⃣ 安卓：设置 → 辅助功能/语言 → 安装"文字转语音(TTS)"引擎（推荐 Google TTS 或讯飞）<br>
+          5️⃣ 检查页面右上角 🔊 是否被关成了 🔇（点它切回）
+        </div>
+      </details>
+    </div>
+  </section>
+
   <!-- 方法论说明 -->
   <section class="section">
     <div class="card" style="border-color:var(--coral)">
@@ -174,6 +196,19 @@ renderNav('parents'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
 document.getElementById('curProfileName').textContent = Profiles.active().avatar + ' ' + Profiles.active().name;
 renderGradePicker('#gradeGrid');
+
+/* 语音诊断 */
+function renderSpeechDiag() {
+  const e = speechEnv();
+  const ok = e.available;
+  $('#speechDiag').innerHTML = `
+    ${ok ? '✅ 浏览器支持语音朗读' : '❌ 当前浏览器不支持语音朗读（建议用 Chrome / Edge / Safari 打开）'}<br>
+    ${ok ? (e.voiceCount ? `✅ 检测到 ${e.voiceCount} 个语音包（英语：${e.enVoice || '用系统默认'}；中文：${e.zhVoice || '用系统默认'}）` : '⚠️ 语音包还没加载完，稍等几秒点「重新检测」') : ''}
+    ${e.wechat ? '<br>⚠️ 当前在微信内打开——语音很可能无声，请用系统浏览器打开本站' : ''}
+    ${ok && !e.unlocked ? '<br>⏳ 还没解锁：随便点一下页面任意位置即可' : (ok ? '<br>✅ 语音已解锁，点上方「点我试听」测试' : '')}
+  `;
+}
+renderSpeechDiag();
 
 /* 学习总览 */
 (function () {
