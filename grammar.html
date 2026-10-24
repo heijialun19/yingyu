@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>句子工厂 · 小鸟英语乐园</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main>
+  <div class="page-title">
+    <h1>🏭 句子工厂</h1>
+    <p>16 关万能公式 · 第二阶段起，造句题目直接用<b>单词镇的单词</b>生成——学过什么，就造什么句！</p>
+  </div>
+  <div id="app"></div>
+</main>
+
+<script src="js/words-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+renderNav('grammar'); renderDecor();
+
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const ROLES = ['谁 👦', '干什么 🏃', '什么 📦', '什么 📦'];
+
+let view = 'levels', curLevel = null, sess = null;
+
+/* ---------------- 单词镇词池工具 ---------------- */
+const themeWords = ids => {
+  const out = [];
+  ids.forEach(id => { const t = THEMES.find(x => x.id === id); if (t) t.words.forEach(w => { if (!w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w)) out.push(Object.assign({ _theme: t.id }, w)); }); });
+  return out;
+};
+const themeEmoji = ids => { const t = THEMES.find(x => ids.includes(x.id)); return t ? t.emoji + ' ' + t.name : '🏘️ 单词镇'; };
+const art = w => /^[aeiou]/i.test(w) ? 'an' : 'a';
+// 复数只需加 s 的安全词（排除 s/x/z/sh/ch 结尾）
+const pluralSafe = w => !/(s|x|z|sh|ch)$/.test(w.w);
+// 中文量词：动物用"只"，其它用"个"（按单词所属主题判断）
+const measureOf = w => /^animal/.test(w._theme || '') ? '只' : '个';
+
+/* ---------------- 生成器：从单词镇生成造句题 ---------------- */
+const GEN = {
+  likeChoice(ws) {
+    const w = pick(ws);
+    return { type:'choice', word: w.w, from: 'fruit/food 等',
+      prompt: `「我喜欢${w.zh}」哪个说法对？ ${w.e}`,
+      options: [`I like ${w.w}s.`, `${w.w} like I.`, `I likes ${w.w}s.`], answer: 0,
+      zh: `I like ${w.w}s. 我喜欢${w.zh}。`, explain: '喜欢很多东西时，单词尾巴加 s。' };
+  },
+  thisIs(ws) {
+    const w = pick(ws); const a = art(w.w);
+    return { type:'choice', word: w.w,
+      prompt: `「这是${w.zh}」哪个说法对？ ${w.e}`,
+      options: [`This is ${a} ${w.w}.`, `This are ${a} ${w.w}.`, `Is this ${a} ${w.w}.`], answer: 0,
+      zh: `This is ${a} ${w.w}. 这是${w.zh}。`, explain: `This 用 is；${w.w} 是${/^[aeiou]/i.test(w.w) ? '元音' : '辅音'}开头，用 ${a}。` };
+  },
+  canDo(ws) {
+    const w = pick(ws);
+    return { type:'choice', word: w.w,
+      prompt: `「我会${w.zh}」哪个说法对？ ${w.e}`,
+      options: [`I can ${w.w}.`, `I cans ${w.w}.`, `I can to ${w.w}.`], answer: 0,
+      zh: `I can ${w.w}. 我会${w.zh}。`, explain: 'can 后面的动词用原形，不加 s 不加 to。' };
+  },
+  whereIs(ws, lv) {
+    const w = pick(ws); const p = pick((lv.gen.places || ['bed']).map(x => ({ w: x, zh: themeWordZh(x) })));
+    return { type:'choice', word: w.w,
+      prompt: `「${w.zh}在${p.zh}上」哪个说法对？ ${w.e}`,
+      options: [`The ${w.w} is on the ${p.w}.`, `The ${w.w} on the ${p.w} is.`, `The ${w.w} is on ${p.w}.`], answer: 0,
+      zh: `The ${w.w} is on the ${p.w}.`, explain: '谁 + is + on + the + 地点，顺序固定。' };
+  },
+  isQuestion(ws) {
+    const w = pick(ws); const a = art(w.w);
+    return { type:'choice', word: w.w,
+      prompt: `「这是${w.zh}吗？」哪个说法对？ ${w.e}`,
+      options: [`Is this ${a} ${w.w}?`, `This is ${a} ${w.w}?`, `Is this ${a} ${w.w}.`], answer: 0,
+      zh: `Is this ${a} ${w.w}?`, explain: 'is 提到最前面，句号变问号 ?。' };
+  },
+  thereBe(ws) {
+    const w = pick(ws); const a = art(w.w); const m = measureOf(w);
+    return { type:'choice', word: w.w,
+      prompt: `「桌上有一${m}${w.zh}」哪个说法对？ ${w.e}`,
+      options: [`There is ${a} ${w.w} on the desk.`, `There are ${a} ${w.w} on the desk.`, `There is ${w.w} on desk.`], answer: 0,
+      zh: `There is ${a} ${w.w} on the desk.`, explain: '一个东西用 There is，别忘了 a/an 和 the。' };
+  },
+  doing() {
+    const v = pick(ING_VERBS);
+    return { type:'choice', word: v,
+      prompt: `「小猫正在${ING_ZH[v]}」哪个说法对？`,
+      options: [`The cat is ${v}ing.`, `The cat are ${v}ing.`, `The cat is ${v}.`], answer: 0,
+      zh: `The cat is ${v}ing. 小猫正在${ING_ZH[v]}。`, explain: '它（the cat）用 is；正在做，动词加 ing。' };
+  },
+  havePlural(ws) {
+    const w = pick(ws.filter(pluralSafe));
+    return { type:'choice', word: w.w,
+      prompt: `两个${w.zh} two __ ${w.e}`,
+      options: [w.w + 's', w.w, w.w + 'es'], answer: 0,
+      zh: `two ${w.w}s`, explain: '变多了，尾巴加 s。' };
+  },
+  /* ---- 造句（build）类 ---- */
+  seeBuild(ws) {
+    const w = pick(ws); const a = art(w.w); const m = measureOf(w);
+    const others = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 2);
+    return { type:'build', word: w.w,
+      prompt: `「我看见一${m}${w.zh}」 ${w.e}`,
+      slots: [['I','We'], ['see','like'], ['a','an'], [w.w, ...others.map(o => o.w)]],
+      answer: ['I','see',a,w.w], read: `I see ${a} ${w.w}.`, zh: `我看见一${m}${w.zh}。`,
+      hint: a === 'an' ? `${w.w} 是元音开头，要用 an 哦` : '冠词选 a' };
+  },
+  buildLike(ws) {
+    const w = pick(ws.filter(pluralSafe));
+    const others = shuffle(ws.filter(x => x.w !== w.w && pluralSafe(x))).slice(0, 2);
+    return { type:'build', word: w.w,
+      prompt: `「我们喜欢${w.zh}（复数）」 ${w.e}`,
+      slots: [['We','I','They'], ['like','likes','am'], [w.w + 's', w.w, w.w + 'es']],
+      answer: ['We','like',w.w + 's'], read: `We like ${w.w}s.`, zh: `我们喜欢${w.zh}。`,
+      hint: '喜欢很多东西，单词要加 s' };
+  },
+  buildFamily(ws) {
+    const fam = themeWords(['family']);
+    const w = pick(fam.length ? fam : ws);
+    const others = shuffle(fam.filter(x => x.w !== w.w)).slice(0, 2);
+    return { type:'build', word: w.w,
+      prompt: `「这是我的${w.zh}」 ${w.e}`,
+      slots: [['This','He','She'], ['is','am','are'], ['my','the','a'], [w.w, ...others.map(o => o.w)]],
+      answer: ['This','is','my',w.w], read: `This is my ${w.w}.`, zh: `这是我的${w.zh}。`,
+      hint: 'my = 我的' };
+  },
+  buildHave(ws) {
+    const w = pick(ws.filter(pluralSafe)); const m = measureOf(w);
+    return { type:'build', word: w.w,
+      prompt: `「我有两${m}${w.zh}」 ${w.e}`,
+      slots: [['I','We','He'], ['have','has','am'], ['two','three','a'], [w.w + 's', w.w, w.w + 'es']],
+      answer: ['I','have','two',w.w + 's'], read: `I have two ${w.w}s.`, zh: `我有两${m}${w.zh}。`,
+      hint: '两' + m + ' → 加 s；我用 have' };
+  },
+};
+
+function themeWordZh(w) { for (const t of THEMES) for (const x of t.words) if (x.w === w) return x.zh; return w; }
+
+/* 开课时组装题目：静态题 + 单词镇生成题 */
+function buildLevelItems(lv) {
+  let items = lv.items.slice();
+  if (lv.gen) {
+    const ws = themeWords(lv.gen.themes);
+    if (ws.length >= 4) {
+      const made = [];
+      let guard = 0;
+      while (made.length < lv.gen.n && guard++ < 30) {
+        const kind = pick(lv.gen.kinds);
+        const it = GEN[kind](ws, lv);
+        if (it && !made.some(m => m.prompt === it.prompt)) made.push(it);
+      }
+      // 生成题穿插在静态题之间
+      made.forEach((m, i) => items.splice(Math.min(items.length, 1 + i * 2), 0, Object.assign({ generated: true, fromTheme: themeEmoji(lv.gen.themes) }, m)));
+    }
+  }
+  return items;
+}
+
+/* ---------------- 关卡地图（按阶段分组） ---------------- */
+function renderLevels() {
+  view = 'levels';
+  const done = i => !!Store.d.grammar[GRAMMAR_LEVELS[i].id];
+  const unlocked = i => i === 0 || done(i - 1);
+  const STAGE_GRADE = { s1: '一年级', s2: '二年级', s3: '三年级+' };
+
+  $('#app').innerHTML = `
+    <div class="card" style="margin-bottom:20px;border-color:var(--grape)">
+      <h2>🚂 先认识一下「句子小火车」</h2>
+      <div class="train-demo">
+        <div class="t-part head">🚂<div>谁<small>车头</small></div></div>
+        <span class="t-plus">+</span>
+        <div class="t-part mid">🏃<div>干什么<small>车轮</small></div></div>
+        <span class="t-plus">+</span>
+        <div class="t-part tail">📦<div>什么<small>货物</small></div></div>
+        <span class="t-plus">=</span>
+        <div class="t-part" style="background:var(--lemon);color:var(--ink)">I like cats.<small>完整句子！</small></div>
+      </div>
+      <p style="margin:6px 0 0;color:#5C6273;font-size:.88rem;line-height:1.8">
+        英语句子有<b>万能公式</b>——记住「谁 + 干什么 + 什么」，记住「一句话只有一个动作王（动词）」，大部分句子都能自己造出来！
+        第二阶段开始，造句题会用<b>单词镇里学过的单词</b>自动生成 🏘️
+      </p>
+    </div>
+
+    ${GRAMMAR_STAGES.map(st => {
+      const lvs = GRAMMAR_LEVELS.map((lv, i) => ({ lv, i })).filter(x => x.lv.stage === st.id);
+      return `
+      <div class="section">
+        <h2 style="margin:0 0 12px;font-size:1.2rem">${st.emoji} ${st.name}
+          <small style="font-weight:400;color:#5C6273;font-size:.8rem">${st.tip}</small></h2>
+        <div class="level-grid">
+          ${lvs.map(({ lv, i }) => {
+            const st2 = Store.d.grammar[lv.id];
+            return `<div class="level-card ${st2 ? 'done' : ''} ${unlocked(i) ? '' : 'locked'}" onclick="${unlocked(i) ? `startLevel(${i})` : `lockTip(${i})`}">
+              <span class="stars3">${st2 ? '⭐'.repeat(Math.min(st2.stars, 7)) : unlocked(i) ? '' : '🔒'}</span>
+              <div class="le">${lv.emoji}</div>
+              <b>第 ${i + 1} 关 · ${lv.title}</b>
+              <span class="formula">${lv.formula}</span>
+              <div style="margin-top:6px;font-size:.68rem;color:#9B72FF;font-weight:700">🎓 ${STAGE_GRADE[lv.stage]}</div>
+              ${lv.gen ? '<div style="margin-top:4px;font-size:.68rem;color:#4E9E59">🏘️ 用单词镇的词造句</div>' : ''}
+              ${st2 ? '<div style="margin-top:6px;font-size:.72rem;color:#4E9E59">✅ 已通过 · 点击重玩</div>' : ''}
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+
+function lockTip() { toast('🔒 先通过上一关，才能开这一关哦！'); }
+
+/* ---------------- 进入关卡 ---------------- */
+function startLevel(i) {
+  curLevel = i;
+  sess = { idx: 0, score: 0, firstTry: true, sels: null, items: buildLevelItems(GRAMMAR_LEVELS[i]) };
+  view = 'level'; renderItem();
+}
+
+function renderItem() {
+  const lv = GRAMMAR_LEVELS[curLevel];
+  if (sess.idx >= sess.items.length) return renderLevelEnd();
+  const it = sess.items[sess.idx];
+  sess.firstTry = true;
+
+  const head = `
+    <div class="card" style="max-width:720px;margin:0 auto">
+      <div class="score-bar">
+        <b>${lv.emoji} 第 ${curLevel + 1} 关 · ${lv.title}</b>
+        <span>第 ${sess.idx + 1} / ${sess.items.length} 题 · ✅ ${sess.score}</span>
+      </div>
+      ${sess.idx === 0 ? `
+      <p style="font-size:.9rem;line-height:1.9;color:#5C6273;margin:6px 0">${lv.intro}</p>
+      <div class="chant">
+        <small>🎵 本关口诀（点右边喇叭跟着念）<button class="btn ghost" style="padding:4px 14px;font-size:.75rem;margin-left:8px" onclick="playChant()">🔊 念口诀</button></small>
+        ${lv.chant}
+      </div>` : ''}`;
+
+  let body = '';
+  if (it.type === 'choice') {
+    body = `
+      ${it.generated ? `<div style="font-size:.72rem;color:#4E9E59;font-weight:700;margin-bottom:4px">🏘️ 单词镇出题${it.fromTheme ? ' · ' + it.fromTheme : ''}</div>` : ''}
+      <div class="quiz-q" style="font-size:1.05rem;line-height:1.8">${it.prompt}</div>
+      <div class="opt-row">
+        ${shuffle(it.options.map((o, j) => ({ o, j }))).map(x => `<button class="opt" style="font-size:${String(x.o).length > 24 ? '.85rem' : '1rem'}" onclick="chooseAns(this,${x.j},${it.options.length})">${esc(x.o)}</button>`).join('')}
+      </div>
+      <div class="explain" id="iexp"></div>`;
+  } else { // build 造句
+    sess.sels = Array(it.slots.length).fill(null);
+    const bank = shuffle([...new Set(it.slots.flat())]);
+    body = `
+      ${it.generated ? `<div style="font-size:.72rem;color:#4E9E59;font-weight:700;margin-bottom:4px">🏘️ 单词镇出题${it.fromTheme ? ' · ' + it.fromTheme : ''}</div>` : ''}
+      <div class="quiz-q" style="font-size:1.05rem;line-height:1.8">${it.prompt}</div>
+      ${it.hint ? `<div class="explain" style="margin:0 0 10px">💡 ${it.hint}</div>` : ''}
+      <div class="build-slots" id="slots">
+        ${it.slots.map((s, i2) => `<button class="slot" data-i="${i2}" onclick="clearSlot(${i2})"><span class="role">${ROLES[i2]}</span><span id="slotv${i2}" style="min-height:24px;display:block">？</span></button>`).join('')}
+        <button class="btn mint" id="checkBtn" onclick="checkBuild()" disabled>✅ 检查</button>
+      </div>
+      <div class="slot-bank">
+        ${bank.map(w => `<button class="bank-chip" data-w="${esc(w)}" onclick="placeChip(this,'${String(w).replace(/'/g, "\\'")}')">${esc(w)}</button>`).join('')}
+      </div>
+      <div class="train-result" id="trainResult">🚂 - - -</div>
+      <div class="explain" id="iexp"></div>`;
+  }
+  $('#app').innerHTML = head + body + '</div>';
+}
+
+/* --- 造句交互 --- */
+function placeChip(btn, w) {
+  const it = sess.items[sess.idx];
+  const i = sess.sels.indexOf(null);
+  if (i < 0) return;
+  sess.sels[i] = w;
+  btn.classList.add('used');
+  sfx.pop();
+  $('#slotv' + i).textContent = w;
+  $('#slots').children[i].classList.add('filled');
+  if (!sess.sels.includes(null)) $('#checkBtn').disabled = false;
+  updateTrainPreview();
+}
+function clearSlot(i) {
+  const w = sess.sels[i]; if (!w) return;
+  sess.sels[i] = null;
+  $('#slotv' + i).textContent = '？';
+  $('#slots').children[i].classList.remove('filled');
+  const chip = $(`.bank-chip[data-w="${w}"]`); if (chip) chip.classList.remove('used');
+  $('#checkBtn').disabled = true;
+  updateTrainPreview();
+}
+function updateTrainPreview() {
+  $('#trainResult').innerHTML = '🚂 ' + sess.sels.map(s => s || '＿＿').join(' ');
+}
+function checkBuild() {
+  const lv = GRAMMAR_LEVELS[curLevel];
+  const it = sess.items[sess.idx];
+  const ok = sess.sels.join(' ') === it.answer.join(' ');
+  const slots = $('#slots');
+  if (ok) {
+    if (sess.firstTry) { sess.score++; addStars(1); }
+    sfx.correct(); confetti();
+    if (it.word) touchWord(it.word, true); // 造句用到的单词也进入复习计划
+    $('#trainResult').innerHTML = `🚂 ${it.read} <span class="ok-mark">✔</span>`;
+    $('#iexp').innerHTML = `✅ <b>${it.read}</b> ${it.zh}<br>🔎 ${it.answer.join(' + ')} —— 公式用对啦！`;
+    speak(it.read);
+    setTimeout(() => { sess.idx++; renderItem(); }, 1900);
+  } else {
+    sess.firstTry = false; sfx.wrong();
+    slots.classList.add('bad'); setTimeout(() => slots.classList.remove('bad'), 500);
+    $('#iexp').innerHTML = `🤔 火车车厢装反啦，点车厢可以把词放回去，再试试！`;
+  }
+}
+
+/* --- 选择题交互（选项已打乱，回传原始下标） --- */
+function chooseAns(btn, j, total) {
+  const lv = GRAMMAR_LEVELS[curLevel];
+  const it = sess.items[sess.idx];
+  const ok = j === it.answer;
+  feedback(btn, ok);
+  if (ok) {
+    if (sess.firstTry) { sess.score++; addStars(1); flyStar(btn); }
+    sfx.correct();
+    if (it.word) touchWord(it.word, true);
+    $('#iexp').innerHTML = `✅ ${it.zh}<br>🔎 ${it.explain || ''}`;
+    speak(it.zh.split('.')[0]);
+    setTimeout(() => { sess.idx++; renderItem(); }, 1700);
+  } else {
+    sess.firstTry = false; sfx.wrong();
+    $('#iexp').innerHTML = `🤔 再想想～套一套公式`;
+  }
+}
+
+/* ---------------- 关卡结束 ---------------- */
+function renderLevelEnd() {
+  const lv = GRAMMAR_LEVELS[curLevel];
+  const total = sess.items.length;
+  const perfect = sess.score === total;
+  if (perfect) { addStars(2); confetti(); }
+  const first = !Store.d.grammar[lv.id];
+  grammarLevelDone(lv.id, sess.score);
+  sfx.win();
+  const nextIdx = curLevel + 1;
+  const hasNext = nextIdx < GRAMMAR_LEVELS.length;
+
+  $('#app').innerHTML = `
+    <div class="card bounce-in" style="max-width:600px;margin:0 auto;text-align:center;padding:34px 24px">
+      <div style="font-size:70px">${perfect ? '🏆' : '🌟'}</div>
+      <h2 style="justify-content:center">${perfect ? '全对！句子小工程师！' : '关卡通过！'}</h2>
+      <p style="font-size:1.1rem">答对 <b style="color:var(--grape);font-size:1.6rem">${sess.score}</b> / ${total} 题${perfect ? ' · 奖励 +2 ⭐' : ''}</p>
+      <div style="font-size:.85rem;color:#5C6273;margin-top:6px">口诀带回家：<b>${lv.formula}</b></div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px">
+        ${hasNext ? `<button class="btn grape big" onclick="startLevel(${nextIdx})">下一关 ▶</button>` : `<button class="btn grape big" onclick="renderLevels()">🏆 全部通关！回关卡地图</button>`}
+        <button class="btn ghost big" onclick="renderLevels()">关卡地图</button>
+      </div>
+    </div>`;
+}
+
+/* ---------------- 口诀朗读 ---------------- */
+function playChant() {
+  const lv = GRAMMAR_LEVELS[curLevel];
+  const lines = lv.chant.split('\n').map(l => l.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').trim()).filter(Boolean);
+  speakCN(lines.join('，'), 0.9);
+  toast('🎵 跟着念两遍吧！');
+}
+
+renderLevels();
+</script>
+</body>
+</html>
