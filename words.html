@@ -62,8 +62,8 @@
 
 <script src="js/words-data.js?v=24"></script>
 <script src="js/data.js?v=24"></script>
-<script src="js/app.js?v=24"></script>
-<script src="js/sentence.js?v=24"></script>
+<script src="js/app.js?v=26"></script>
+<script src="js/sentence.js?v=26"></script>
 <script>
 renderNav('words'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -98,7 +98,7 @@ function showPool(kind) {
       ${list.length >= 4 ? `<div style="margin:12px 0;display:flex;gap:10px;flex-wrap:wrap"><button class="btn mint" onclick="startPractice()">✏️ 练这一批（得星星）</button><button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button></div>` : '<p style="margin:12px 0;color:#4E9E59;font-weight:700">太棒了，这里暂时是空的！去按主题浏览学新词吧～</p>'}
       <div class="word-grid">
         ${list.slice(0, 24).map(w => `
-          <div class="word-card" onclick="speakWordDouble('${jsq(w.w)}')" title="点我：先听发音，再听拼读">
+          <div class="word-card" onclick="speakWord('${jsq(w.w)}')" title="点一下，读一遍">
             ${(Store.d.words[w.w] || {}).box >= 2 ? '<span class="mastered-mark">✅</span>' : ''}
             <span class="we">${w.e || '🔤'}</span>
             <b>${w.w}</b>
@@ -134,7 +134,7 @@ function renderSearch() {
       ${hits.length === 0 ? `<p style="color:#5C6273;margin:10px 0">没有找到，换个词试试？比如 apple、猫、颜色……</p>` : `
       <div class="word-grid" style="margin-top:10px">
         ${hits.slice(0, 120).map(w => `
-          <div class="word-card" style="border-color:${w.themeColor}" onclick="speakWordDouble('${jsq(w.w)}')" title="${w.themeEmoji}${w.themeName} · 点我：先听发音，再听拼读">
+          <div class="word-card" style="border-color:${w.themeColor}" onclick="speakWord('${jsq(w.w)}')" title="${w.themeEmoji}${w.themeName} · 点一下，读一遍">
             <span class="we">${w.e || '🔤'}</span>
             <b>${w.w}</b>
             <div class="zh">${w.zh}</div>
@@ -202,7 +202,7 @@ function renderBrowse() {
       </div>
       <div class="word-grid">
         ${t.words.map(w => `
-          <div class="word-card" onclick="speakWordDouble('${jsq(w.w)}')" title="点我三读：标准 → 慢速拼读 → 标准">
+          <div class="word-card" onclick="speakWord('${jsq(w.w)}')" title="点一下，读一遍">
             ${(Store.d.words[w.w] || {}).box >= 2 ? '<span class="mastered-mark">✅</span>' : ''}
             <span class="we">${w.e || '🔤'}</span>
             <b>${w.w}</b>
@@ -326,7 +326,7 @@ function answer(btn, key) {
     touchWord(q.word.w, true);
     $('#qexp').innerHTML = `✅ <b>${q.word.w}</b> ${q.word.e || ''} ${q.word.zh}${q.word.dec ? '<br>🔎 ' + q.word.dec : ''}`;
     setTimeout(() => speak(q.word.w), 550); // 等答对音效播完再朗读，避免两个声音打架
-    setTimeout(() => { s.idx++; renderQuiz(); }, 1400);
+    setTimeout(() => { s.idx++; renderQuiz(); }, 1900);
   } else {
     s.firstTry = false; sfx.wrong();
     $('#qexp').innerHTML = `🤔 再想想哦，你可以再听一遍提示～`;
@@ -447,7 +447,7 @@ function spHead() {
 }
 function spFoot(extra) {
   return `<div class="sp-foot">
-    <button class="btn ghost" onclick="spSlow()">🐢 再听（三遍）</button>
+    <button class="btn ghost" onclick="spSlow()">🔊 再听一遍</button>
     ${spell.step > 0 ? '<button class="btn ghost" onclick="spBack()">← 上一步</button>' : ''}
     ${extra || ''}
     <button class="btn ghost" onclick="spSkipWord()">跳过这个词 →</button>
@@ -597,7 +597,7 @@ function spReveal() { spell.write.revealed = true; renderSpell(); }
 /* ---- 流程控制 ---- */
 function spGo() { if (spell.step < 5) { spell.step++; spInitStep(); renderSpell(); } }
 function spBack() { if (spell.step > 0) { spell.step--; spInitStep(); renderSpell(); } }
-function spSlow() { speakWordDouble(spWord().w); }
+function spSlow() { speak(spWord().w); }
 function spFinishWord(good) {
   const w = spWord();
   if (good) { spell.stars++; addStars(1); touchWord(w.w, true); sfx.win(); toast(`✅ ${w.w} 拼写完成 +1⭐`); }
