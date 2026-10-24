@@ -303,7 +303,7 @@ function checkBuild() {
     if (it.word) touchWord(it.word, true); // 造句用到的单词也进入复习计划
     $('#trainResult').innerHTML = `🚂 ${it.read} <span class="ok-mark">✔</span>`;
     $('#iexp').innerHTML = `✅ <b>${it.read}</b> ${it.zh}<br>🔎 ${it.answer.join(' + ')} —— 公式用对啦！`;
-    setTimeout(() => speak(it.read), 600); // 等答对音效播完再朗读句子
+    setTimeout(() => speakSentence(it.read), 600); // 等答对音效播完再朗读句子
     setTimeout(() => { sess.idx++; renderItem(); }, 1900);
   } else {
     sess.firstTry = false; sfx.wrong();
@@ -323,7 +323,7 @@ function chooseAns(btn, j, total) {
     sfx.correct();
     if (it.word) touchWord(it.word, true);
     $('#iexp').innerHTML = `✅ ${it.zh}<br>🔎 ${it.explain || ''}`;
-    setTimeout(() => speak(it.zh.split('.')[0]), 550); // 等音效播完再读句
+    setTimeout(() => speakSentence(it.zh.split('.')[0]), 550); // 等音效播完再读句
     setTimeout(() => { sess.idx++; renderItem(); }, 1700);
   } else {
     sess.firstTry = false; sfx.wrong();
