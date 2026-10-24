@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -36,7 +36,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=27"></script>
+<script src="js/app.js?v=29"></script>
 <script src="js/sentence.js?v=27"></script>
 <script>
 renderNav('letters'); renderDecor();
@@ -303,9 +303,9 @@ function updateTraceUI(silent) {
 
 /* ============ 字母岛语音系统（三按钮，逻辑清晰） ============
    ① 字母名：只播字母名（如 A 读 "ay"）
-   ② 字母音：只播代表词 0.5 倍慢速——孩子听清 A 在 "aaapple" 开头的 /æ/ 音
-   ③ 完整口诀：字母名 → 慢词 → 常词，三段全真人女声
-   故障隔离：单次失败只影响当次播放，不触发 45 秒全站冷却 */
+   ② 字母音：只播代表词一遍——孩子听清 A 在 "apple" 开头的 /æ/ 音
+   ③ 完整口诀：字母名 → 代表词，各一遍
+   每次点击只出一个声音；想多听几遍，多点几次就好 */
 function sayName() {
   const l = LETTERS[cur];
   sfx.pop();
@@ -313,24 +313,15 @@ function sayName() {
 }
 function saySound() {
   const l = LETTERS[cur];
-  const w = l.words[0].w;
   sfx.pop();
-  /* 拼读音：全部真人录音。超慢速两遍把词首拼读音拖长（A→"啊…"），
-     再常速一遍收尾——课堂领读的标准做法，无任何机器合成音。 */
-  speakChain([
-    { text: w, rate: 1 },
-    { text: w, rate: 1 },
-    { text: w, rate: 1 }
-  ]);
+  speak(l.words[0].w, 'en-US', 1); // 点一下，读一遍
 }
 function sayChant() {
   const l = LETTERS[cur];
   const w = l.words[0].w;
   sfx.pop();
-  /* 完整口诀：字母名 → 超慢词（听清拼读音）→ 常速词，全真人录音 */
   speakChain([
     { text: l.L, rate: 1 },
-    { text: w, rate: 1 },
     { text: w, rate: 1 }
   ]);
 }

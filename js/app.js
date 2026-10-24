@@ -319,12 +319,15 @@ function renderGradePicker(sel) {
    决策：浏览器内置合成语音（speechSynthesis）音色与词典音混杂、质量参差，
    已全部移除——全站只有一种声音：词典真人女声。
    网络不可用或接口失败时保持安静（绝不出现机器音），用户重试即可。 */
-/* ================= 词典真人发音 引擎 v3 =================
+/* ================= 词典真人发音 引擎 v4 =================
+   唯一声源保证：全局 epoch——每一次新的播放请求（点击/重试/链式下一词）
+   都会让之前所有待播/在播音频作废，任何情况下最多只有一个声音出喇叭。
    系统性修复：
-   1) 用户点击时掐掉所有在途预热/排队音频——防止点击排在下载队列尾部被超时误杀
-   2) 失败自动重试一次（换全新 Audio），重试仍失败才提示
-   3) 超时放宽：首次 10s、后续 7s（移动网络）
-   4) 成功的音频由 Service Worker 缓存，二次播放零延迟 */
+   1) 慢网络下"超时重试"与"迟到的加载"互相叠加导致的重复出声（乱糟糟的根源）：
+      重试前彻底解除旧 Audio 的全部回调，迟到的数据永远不会再发声
+   2) 用户点击时掐掉所有在途预热/排队音频——防止点击排在下载队列尾部被超时误杀
+   3) 失败自动重试一次（换全新 Audio），重试仍失败才提示；双重超时计时器不再泄漏
+   4) 超时：首次 10s、后续 7s（移动网络）；成功的音频由 Service Worker 缓存，二次播放零延迟 */
 const DICT_AUDIO_URL = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
 let __curAudio = null;
 let __inflight = new Set();   // 所有在途 Audio（含预热），统一管理
@@ -347,8 +350,10 @@ function prewarmWord(text) {
     a.onerror = () => { __inflight.delete(a); };
   } catch (e) {}
 }
-/* 核心播放：全新 Audio + 重试一次 */
+/* 核心播放：全新 Audio + 唯一声源保证（epoch）+ 重试一次 */
+let __audioEpoch = 0;
 function playDictAudio(text, rate, onEnd, onFail, isRetry) {
+  const epoch = ++__audioEpoch; // 新请求让之前所有待播/在播音频作废
   rate = 1; // mobile compat: always normal speed
   const a = new Audio(DICT_AUDIO_URL(text));
   a.preload = 'auto';
@@ -356,12 +361,11 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry) {
   __inflight.add(a);
   let done = false, guard = null;
   const clearG = () => { if (guard) { clearTimeout(guard); guard = null; } };
+  const disarm = () => { try { a.onended = a.onerror = a.oncanplay = a.onplaying = null; a.pause(); } catch (e) {} };
   const end = () => { if (!done) { done = true; clearG(); __inflight.delete(a); if (onEnd) onEnd(); } };
   const fail = () => {
     if (done) return;
-    done = true; clearG();
-    try { a.pause(); } catch (e) {}
-    __inflight.delete(a);
+    done = true; clearG(); disarm(); __inflight.delete(a); // 解除全部回调：迟到的加载绝不再出声
     if (!isRetry) { playDictAudio(text, rate, onEnd, onFail, true); return; } // 自动重试一次
     const now = Date.now();
     if (now - __dictFailNotified > 30000) { __dictFailNotified = now; toast('📶 发音加载失败，请检查网络后重试'); }
@@ -369,14 +373,16 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry) {
   };
   a.onended = end;
   a.onerror = fail;
-  a.onplaying = () => clearG(); // 真正出声后取消超时
+  a.onplaying = () => { if (epoch === __audioEpoch) clearG(); }; // 真正出声后取消超时
   // mobile compat: no playbackRate (slow rate breaks some phone browsers)
   const go = () => {
+    if (done || epoch !== __audioEpoch) { disarm(); return; } // 已被更新的一次点击取代：绝不出声
     try { a.currentTime = 0; } catch (e) {}
+    clearG(); // 清掉还在等待的加载超时，避免播放中被误杀重播
     guard = setTimeout(fail, __firstPlayDone ? 7000 : 10000);
     const p = a.play();
     __firstPlayDone = true;
-    if (p && p.catch) p.catch(fail);
+    if (p && p.catch) p.catch(() => { if (epoch === __audioEpoch) fail(); });
   };
   if (a.readyState >= 1) { stopAllSpeechExcept(a); go(); }
   else {
