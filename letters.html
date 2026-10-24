@@ -287,20 +287,26 @@ function sayName() {
 }
 function saySound() {
   const l = LETTERS[cur];
+  const w = l.words[0].w;
   sfx.pop();
-  __engineCooldownUntil = 0;
-  // 只播代表词慢速：孩子专注听字母在词开头的音（自然拼读教学法）
-  speak(l.words[0].w, 'en-US', 0.55);
+  // phonics = stretched initial sound: very slow x2, then normal
+  speakChain([
+    { text: w, rate: 0.5 },
+    { text: w, rate: 0.5 },
+    { text: w, rate: 1 }
+  
+  ]);
 }
 function sayChant() {
   const l = LETTERS[cur];
+  const w = l.words[0].w;
   sfx.pop();
-  __engineCooldownUntil = 0;
-  // 完整三段：名字 → 慢词（听音）→ 常词（收尾）
+  // chant: letter name -> very slow word -> normal word
   speakChain([
     { text: l.L, rate: 1 },
-    { text: l.words[0].w, rate: 0.55 },
-    { text: l.words[0].w, rate: 1 }
+    { text: w, rate: 0.5 },
+    { text: w, rate: 1 }
+  
   ]);
 }
 function sayWord(el, w) { flyStar(el); speakWordDouble(w); } /* 第一遍发音，第二遍拼读 */
