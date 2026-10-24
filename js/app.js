@@ -487,6 +487,13 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
         if (nw) nw.addEventListener('statechange', () => { if (nw.state === 'installed' && navigator.serviceWorker.controller) nw.postMessage('SKIP_WAITING'); });
       });
     }).catch(() => {});
+    // 新版本接管后自动刷新一次：用户无需手动强刷即可看到最新版
+    let __swRefreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (__swRefreshing) return;
+      __swRefreshing = true;
+      location.reload();
+    });
   });
 }
 
