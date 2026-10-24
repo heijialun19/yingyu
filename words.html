@@ -156,7 +156,7 @@ function renderBrowse() {
       </div>
       <div class="word-grid">
         ${t.words.map(w => `
-          <div class="word-card" onclick="speakWordDouble('${jsq(w.w)}')" title="点我：第一遍听发音，第二遍听拼读">
+          <div class="word-card" onclick="speakWordDouble('${jsq(w.w)}')" title="点我三读：标准 → 慢速拼读 → 标准">
             ${(Store.d.words[w.w] || {}).box >= 2 ? '<span class="mastered-mark">✅</span>' : ''}
             <span class="we">${w.e || '🔤'}</span>
             <b>${w.w}</b>
