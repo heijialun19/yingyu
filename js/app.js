@@ -299,49 +299,42 @@ function synthSpeak(text, lang = 'en-US', rate = 0.85, onEnd) {
 /* 有道词典发音（全站统一的真人女声） */
 const youdaoUrl = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
 let __curAudio = null;
-const __audioCache = new Map();
 let __engineCooldownUntil = 0; // 有道故障后的冷静期：期间全部走系统语音，避免音色来回切换
 let __firstPlayDone = false;   // 首次播放（冷启动）超时放宽
 function stopAllSpeech() {
   if (__curAudio) { try { __curAudio.onended = __curAudio.onerror = null; __curAudio.pause(); } catch (e) {} }
   try { speechSynthesis.cancel(); } catch (e) {}
 }
-/* 预热：提前把单词的音频拉到缓存（答题前预热，答对回显零延迟） */
+/* 预热：提前把单词的音频拉到 HTTP 缓存（答题前预热，答对回显零延迟） */
 function prewarmWord(text) {
-  if (__audioCache.has(text) || !text) return;
-  try { const a = new Audio(youdaoUrl(text)); a.preload = 'auto'; __audioCache.set(text, a); } catch (e) {}
+  if (!text) return;
+  try { const a = new Audio(youdaoUrl(text)); a.preload = 'auto'; } catch (e) {}
 }
+/* 每次播放都创建新 Audio 对象（不复用——避免 currentTime 残留导致重复播放时秒触发 onended）
+   浏览器 HTTP 缓存会自动处理数据复用，不会重复下载 */
 function playYoudao(text, rate, onEnd, onFail) {
-  let a = __audioCache.get(text);
-  if (!a) {
-    a = new Audio(youdaoUrl(text)); a.preload = 'auto';
-    if (__audioCache.size > 300) __audioCache.clear();
-    __audioCache.set(text, a);
-  }
+  const a = new Audio(youdaoUrl(text));
+  a.preload = 'auto';
   __curAudio = a;
-  let done = false, launched = false, guard = null;
+  let done = false;
+  let guard = null;
   const clearG = () => { if (guard) { clearTimeout(guard); guard = null; } };
   const end = () => { if (!done) { done = true; clearG(); if (onEnd) onEnd(); } };
   const fail = () => {
     if (done) return;
     done = true; clearG();
-    try { a.pause(); } catch (e) {} // 掐断迟到加载的音频，防止和兜底语音重叠出双声
-    __engineCooldownUntil = Date.now() + 45000; // 45秒冷静期统一用系统语音，保证音色一致
+    try { a.pause(); } catch (e) {}
     if (onFail) onFail();
   };
-  a.onended = end; a.onerror = fail;
-  // 空音频（接口返回异常内容）立即判定失败
-  a.onloadedmetadata = () => { if (isFinite(a.duration) && a.duration === 0) fail(); };
-  // 一旦真正开始播放就取消超时——超时只负责"加载不出来"，不掐正在播的慢速长音频
-  a.onplaying = () => clearG();
+  a.onended = end;
+  a.onerror = fail;
+  a.onplaying = () => clearG(); // 已开始播放，取消超时
   const pr = Math.max(0.5, Math.min(1.5, rate || 1));
-  const timeout = __firstPlayDone ? 3500 : 8000; // 手机冷启动首播（DNS+TLS+拉流）放宽到 8 秒
   const go = () => {
-    if (launched || done) return;
-    launched = true;
-    // 变速在加载完成后再设置（iOS 未加载时设非 1 倍速可能拒播），并保持音高不变
+    try { a.currentTime = 0; } catch (e) {} // 确保从头播
     try { a.preservesPitch = true; a.mozPreservesPitch = true; a.webkitPreservesPitch = true; } catch (e) {}
     try { a.playbackRate = pr; } catch (e) {}
+    const timeout = __firstPlayDone ? 4000 : 8000;
     guard = setTimeout(fail, timeout);
     const p = a.play();
     __firstPlayDone = true;
@@ -349,8 +342,8 @@ function playYoudao(text, rate, onEnd, onFail) {
   };
   if (a.readyState >= 1) go();
   else {
-    a.oncanplay = go; // 加载好 → 设倍速 → 播放
-    guard = setTimeout(fail, timeout); // 加载阶段同样受超时保护
+    a.oncanplay = () => { a.oncanplay = null; go(); };
+    guard = setTimeout(fail, __firstPlayDone ? 4000 : 8000);
   }
 }
 
