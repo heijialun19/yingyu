@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>字母岛 · 小鸟英语乐园</title>
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=7">
 </head>
 <body>
 <main>
@@ -27,9 +27,9 @@
   </section>
 </main>
 
-<script src="js/words-data.js"></script>
-<script src="js/data.js"></script>
-<script src="js/app.js"></script>
+<script src="js/words-data.js?v=7"></script>
+<script src="js/data.js?v=7"></script>
+<script src="js/app.js?v=7"></script>
 <script>
 renderNav('letters'); renderDecor();
 
@@ -132,6 +132,9 @@ function renderStage(speakIt) {
       <p style="color:#5C6273;font-size:.78rem;margin-top:10px">💡 小提示：点单词卡片可以听发音；红色 a e i o u 是"歌手"，蓝色辅音是"画家"。</p>
     </div>`;
   if (speakIt) sayName(); // 只有用户点击切换时才朗读；首次打开页面保持安静
+  // 预拉取当前字母的发音音频：用户一点就秒响，不给冷启动超时任何机会
+  prewarmWord(l.L);
+  prewarmWord(l.words[0].w);
 }
 
 /* 自然拼读三连（全部有道真人女声，全站音色统一）：
