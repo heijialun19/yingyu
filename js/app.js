@@ -109,8 +109,10 @@ const Store = {
     // 年级以档案为准
     this.d.grade = Profiles.active().grade || this.d.grade;
     if (this.d.daily.date !== todayStr()) this.d.daily = { date: todayStr(), tasks: { letter: false, words: false, game: false }, bonus: false, studySec: 0, break15: false, break30: false };
-    // 已跳过字母岛、或 26 个字母全学完的孩子：字母任务自动视为完成，保证「三任务全勤」奖励可达
-    if (this.d.lettersSkip || Object.keys(this.d.letters || {}).length >= 26) this.d.daily.tasks.letter = true;
+    // 字母任务只为「正在学字母」的孩子保留：没开始学（选学）、已学完、或点了跳过的，自动视为完成，
+    // 保证「三任务全勤」奖励对每个孩子都可达
+    const __letterN = Object.keys(this.d.letters || {}).length;
+    if (this.d.lettersSkip || __letterN === 0 || __letterN >= 26) this.d.daily.tasks.letter = true;
     return this.d;
   },
   save() {

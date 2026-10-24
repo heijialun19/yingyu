@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -78,7 +78,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=32"></script>
+<script src="js/app.js?v=33"></script>
 <script src="js/sentence.js?v=27"></script>
 <script>
 renderNav('index'); renderDecor();
@@ -123,15 +123,19 @@ function showHome() {
     `👋 <b>${esc(p.name)}</b> · <a id="gradeLink" title="点击切换年级">🎓${myGrade().name}</a> · 🔥${Store.d.streak.count}天 · ⭐${Store.d.stars}`;
   document.getElementById('gradeLink').onclick = openProfileModal;
 
-  /* 推荐逻辑：二年级起 / 已点“我会字母了” / 字母全学完 → 直接从单词开始 */
-  const skipLetters = Store.d.lettersSkip || letterCount() >= 26 || GRADES.findIndex(g => g.id === myGrade().id) >= 1;
-  const nextLetter = skipLetters ? null : LETTERS.find(l => !Store.d.letters[l.L]);
+  /* 推荐逻辑：单词闯关是绝对主线——字母小朋友基本都会，不再主动推。
+     主卡顺序：单词 → 绘本 → 句子工厂 → 学字母（仅「自己已经开始学」的孩子）→ 游戏。
+     「正在学字母」= 自己在字母岛学过 1-25 个，且没点过「我会字母了」。 */
+  const letterN = letterCount();
+  const lettersFinished = Store.d.lettersSkip || letterN >= 26;
+  const inLettersPhase = !lettersFinished && letterN > 0;
+  const nextLetter = inLettersPhase ? LETTERS.find(l => !Store.d.letters[l.L]) : null;
   const gradeDone = cumMasteredCount(), gradeAll = cumWordCount();
   let step;
-  if (nextLetter) step = { e:'🏝️', t:`学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}`, s:`${nextLetter.shape} · 故事+拼读`, href:'letters.html', now:letterCount(), all:26 };
-  else if (gradeDone < gradeAll) step = { e:'🏘️', t:'单词闯关', s:`${myGrade().name}词库：已掌握 ${gradeDone}/${gradeAll}`, href:'words.html?mode=plan', now:gradeDone, all:gradeAll };
+  if (gradeDone < gradeAll) step = { e:'🏘️', t:'单词闯关', s:`${myGrade().name}词库：已掌握 ${gradeDone}/${gradeAll}`, href:'words.html?mode=plan', now:gradeDone, all:gradeAll };
   else if (Object.keys(Store.d.books||{}).length < BOOKS_TOTAL) step = { e:'📚', t:'读今天的绘本', s:`已读 ${Object.keys(Store.d.books||{}).length}/${BOOKS_TOTAL} 本`, href:'books.html', now:Object.keys(Store.d.books||{}).length, all:BOOKS_TOTAL };
   else if (grammarDoneCount() < GRAMMAR_LEVELS.length) step = { e:'🏭', t:'句子工厂闯关', s:`已通过 ${grammarDoneCount()}/${GRAMMAR_LEVELS.length} 关`, href:'grammar.html', now:grammarDoneCount(), all:GRAMMAR_LEVELS.length };
+  else if (nextLetter) step = { e:'🏝️', t:`学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}`, s:`${nextLetter.shape} · 故事+拼读`, href:'letters.html', now:letterN, all:26 };
   else step = { e:'🎡', t:'去游戏乐园复习', s:'边玩边巩固', href:'games.html', now:0, all:0 };
   document.getElementById('mcEmoji').textContent = step.e;
   document.getElementById('mcTitle').textContent = step.t;
@@ -149,20 +153,20 @@ function showHome() {
   const tk = Store.d.daily.tasks;
   document.getElementById('taskStrip').innerHTML =
     `<span>📋 今日任务</span>` +
-    `<span class="${tk.letter ? 'tdone' : ''}">${tk.letter ? '✅' : '⬜'} 🏝️ 学字母</span>` +
+    `<span class="${tk.letter ? 'tdone' : ''}">${tk.letter ? '✅' : '⬜'} ${letterN === 0 ? '🏝️ 字母·选学' : '🏝️ 学字母'}</span>` +
     `<span class="${tk.words ? 'tdone' : ''}">${tk.words ? '✅' : '⬜'} 🏘️ 练单词</span>` +
     `<span class="${tk.game ? 'tdone' : ''}">${tk.game ? '✅' : '⬜'} 🎮 玩游戏</span>`;
 
-  const islands = skipLetters ? [
+  const islands = lettersFinished ? [
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
     { e:'📚', n:'绘本馆', d:Object.keys(Store.d.books||{}).length+'/'+BOOKS_TOTAL, href:'books.html' },
     { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
     { e:'🎡', n:'游戏乐园', d:'4个游戏', href:'games.html' },
-    { e:'🏝️', n:'字母岛', d:letterCount()+'/26', href:'letters.html' },
+    { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
     { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },
   ] : [
-    { e:'🏝️', n:'字母岛', d:letterCount()+'/26', href:'letters.html' },
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
+    { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
     { e:'📚', n:'绘本馆', d:Object.keys(Store.d.books||{}).length+'/'+BOOKS_TOTAL, href:'books.html' },
     { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
     { e:'🎡', n:'游戏乐园', d:'4个游戏', href:'games.html' },
