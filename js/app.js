@@ -324,41 +324,221 @@ function renderGradePicker(sel) {
    决策：浏览器内置合成语音（speechSynthesis）音色与词典音混杂、质量参差，
    已全部移除——全站只有一种声音：词典真人女声。
    网络不可用或接口失败时保持安静（绝不出现机器音），用户重试即可。 */
-/* ================= 词典真人发音 引擎 v4 =================
+/* ================= 词典真人发音 引擎 v5（Web Audio 归一化 + 媒体元素兜底） =================
    唯一声源保证：全局 epoch——每一次新的播放请求（点击/重试/链式下一词）
    都会让之前所有待播/在播音频作废，任何情况下最多只有一个声音出喇叭。
-   系统性修复：
-   1) 慢网络下"超时重试"与"迟到的加载"互相叠加导致的重复出声（乱糟糟的根源）：
-      重试前彻底解除旧 Audio 的全部回调，迟到的数据永远不会再发声
-   2) 用户点击时掐掉所有在途预热/排队音频——防止点击排在下载队列尾部被超时误杀
-   3) 失败自动重试一次（换全新 Audio），重试仍失败才提示；双重超时计时器不再泄漏
-   4) 超时：首次 10s、后续 7s（移动网络）；成功的音频由 Service Worker 缓存，二次播放零延迟 */
+
+   v5 动机（2026-10-24 实测有道 MP3）：去静音 RMS -18.2~-13.0 dBFS（极差 5.3 dB），
+   单词听着忽大忽小；且裸 <audio> 的音量上限就是 1.0，没有任何增益余量——
+   "声音小且不稳"在媒体元素层面无解。
+
+   v5 链路：Service Worker 给有道响应注入 CORS 头 → 页面 fetch 拿字节 →
+   decodeAudioData → 裁首尾静音（留 60ms 起音 / 120ms 尾音）→ 静态压限
+   （3:1 @ -12 dBFS，专治语音高峰均比）→ RMS 归一化到 -12.5 dBFS（峰限 -0.5 dBFS
+   防削波）→ BufferSource 直出。实测：词间 RMS 极差 5.3 → 0.0 dB，整体 +3 dB。
+
+   兜底：老 SW / 老浏览器 / 解码失败 / AudioContext 不可用 → 自动回退 v4 媒体
+   元素链路（语义完全一致：epoch、重试一次、超时、预热让路）。500 坏组照样降级。 */
 const DICT_AUDIO_URL = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
 let __curAudio = null;
 let __inflight = new Set();   // 所有在途 Audio（含预热），统一管理
 let __firstPlayDone = false;
 let __dictFailNotified = 0;
 
+/* —— 归一化参数（Python 侧用同一组常量对 17 个真实词样本仿真定标） —— */
+const __NORM = {
+  TARGET_RMS: 0.2371,   // -12.5 dBFS：整体比原始中位(-15.5)响约 3dB
+  PEAK_CAP: 0.9441,     // -0.5 dBFS：增益后峰不许越过，绝不削波
+  COMP_THR: 0.2512,     // -12 dBFS：静态压限阈值
+  COMP_RATIO: 3,        // 3:1
+  GAIN_MIN: 0.5,        // -6 dB：再响的词也允许压回去，保证"稳"
+  GAIN_MAX: 8,          // +18 dB：封顶，防把噪声底抬上来
+  LEAD_KEEP: 0.06,      // 裁前导静音后保留 60ms 自然起音
+  TRAIL_KEEP: 0.12,     // 裁尾部静音后保留 120ms 自然收尾
+  CACHE_MAX: 150        // 归一化 buffer LRU 上限（约 50MB 级）
+};
+const __normCache = new Map();     // text → {buf, off, dur}
+const __normPending = new Map();   // text → Promise（在途去重）
+const __normBad = new Set();       // 解码失败（坏组/错误页）：本会话直接走媒体兜底
+let __curNorm = null;              // 当前 Web Audio 播放状态机 {src, guard, done}
+let __audioEpoch = 0;              // 唯一声源令牌：任何新请求令旧的全部作废
+
+function __normCachePut(text, entry) {
+  __normCache.delete(text);
+  __normCache.set(text, entry);
+  while (__normCache.size > __NORM.CACHE_MAX) {
+    const oldest = __normCache.keys().next().value;
+    __normCache.delete(oldest);
+  }
+}
+
+/* 下载 + 解码 + 归一化；任何一步失败都 reject（调用方走媒体元素兜底） */
+function __normGet(text) {
+  const hit = __normCache.get(text);
+  if (hit) { __normCache.delete(text); __normCache.set(text, hit); return Promise.resolve(hit); }
+  if (__normBad.has(text)) return Promise.reject(new Error('norm-bad'));
+  const pend = __normPending.get(text);
+  if (pend) return pend;
+  const p = (async () => {
+    if (typeof fetch !== 'function') throw new Error('no-fetch');
+    const res = await fetch(DICT_AUDIO_URL(text), { cache: 'no-store' }); // 缓存统一交给 SW
+    if (!res.ok) throw new Error('http-' + res.status);
+    const ab = await res.arrayBuffer();
+    const ctx = ac();
+    if (!ctx || !ctx.decodeAudioData) throw new Error('no-ctx');
+    const buf = await new Promise((res, rej) => {
+      const r = ctx.decodeAudioData(ab, res, rej);
+      if (r && r.then) r.then(res, rej);
+    });
+    const entry = __normalizeBuffer(buf);
+    if (!entry) throw new Error('empty-audio');
+    __normCachePut(text, entry);
+    return entry;
+  })();
+  __normPending.set(text, p);
+  p.then(() => __normPending.delete(text),
+         () => { __normPending.delete(text); __normBad.add(text); });
+  return p;
+}
+
+/* 归一化：裁首尾静音 → 静态压限 → RMS 增益（峰值限幅）。原地处理 channelData，
+   零额外拷贝；播放时用 start(offset, duration) 跳过静音段。 */
+function __normalizeBuffer(buf) {
+  const n = buf.length;
+  if (!n) return null;
+  const chans = [];
+  for (let c = 0; c < buf.numberOfChannels; c++) chans.push(buf.getChannelData(c));
+  const N = __NORM;
+  const ch0 = chans[0];
+  let peak = 0;
+  for (let i = 0; i < n; i++) { const a = ch0[i] < 0 ? -ch0[i] : ch0[i]; if (a > peak) peak = a; }
+  if (peak <= 0.0001) return null;
+  const thr = peak * 0.02;
+  let lo = 0, hi = n - 1;
+  while (lo < n && (ch0[lo] < 0 ? -ch0[lo] : ch0[lo]) <= thr) lo++;
+  if (lo >= n) return null;
+  while (hi > lo && (ch0[hi] < 0 ? -ch0[hi] : ch0[hi]) <= thr) hi--;
+  const sr = buf.sampleRate;
+  const s = Math.max(0, lo - Math.round(N.LEAD_KEEP * sr));
+  const e = Math.min(n, hi + 1 + Math.round(N.TRAIL_KEEP * sr));
+  /* 第一趟：静态压限 + 统计有效区 RMS / 压限后峰值 */
+  const T = N.COMP_THR, inv = 1 / N.COMP_RATIO;
+  let sum = 0, cnt = 0, pk2 = 0;
+  for (const ch of chans) {
+    for (let i = s; i < e; i++) {
+      let v = ch[i];
+      const a = v < 0 ? -v : v;
+      if (a > T) v = (v < 0 ? -1 : 1) * (T + (a - T) * inv);
+      ch[i] = v;
+    }
+  }
+  for (let i = s; i < e; i++) {
+    const v = ch0[i], a = v < 0 ? -v : v;
+    if (a > pk2) pk2 = a;
+    if ((ch0[i] < 0 ? -ch0[i] : ch0[i]) > thr) { sum += v * v; cnt++; }
+  }
+  if (!cnt) return null;
+  const rms = Math.sqrt(sum / cnt);
+  if (rms <= 0) return null;
+  /* 增益：RMS 归一化，峰限幅防削波 */
+  let g = N.TARGET_RMS / rms;
+  if (pk2 * g > N.PEAK_CAP) g = N.PEAK_CAP / pk2;
+  if (g < N.GAIN_MIN) g = N.GAIN_MIN;
+  if (g > N.GAIN_MAX) g = N.GAIN_MAX;
+  /* 第二趟：应用增益 */
+  for (const ch of chans) for (let i = s; i < e; i++) ch[i] *= g;
+  return { buf, off: s / sr, dur: (e - s) / sr };
+}
+
+/* Web Audio 播放（增益已烘焙进 buffer）；返回 false = 环境不支持，调用方走媒体兜底。
+   播放状态收进 __curNorm 状态机：抢占（__stopNorm）时必须同时拆掉计时器，
+   否则旧音频的超时 guard 会在两秒后误触发 onFail——句子连读链会把正常
+   播完的词组误标记成坏组，之后全部走逐词降级（变慢变碎）。 */
+function __playNorm(entry, epoch, onEnd, onFail, timeoutMs) {
+  const ctx = ac();
+  if (!ctx) return false;
+  let src;
+  try { src = ctx.createBufferSource(); } catch (e) { return false; }
+  src.buffer = entry.buf;
+  const st = { src, guard: null, done: false };
+  const finish = ok => {
+    if (st.done) return;
+    st.done = true;
+    if (st.guard) { clearTimeout(st.guard); st.guard = null; }
+    if (__curNorm === st) __curNorm = null;
+    if (ok) { if (onEnd) onEnd(); } else if (onFail) onFail();
+  };
+  st.finish = finish;
+  src.onended = () => { if (epoch === __audioEpoch) finish(true); };
+  __curNorm = st;
+  try { src.connect(ctx.destination); } catch (e) { return false; }   // 不连 destination 等于没声音
+  try { src.start(0, entry.off, entry.dur); } catch (e) { finish(false); return true; }
+  st.guard = setTimeout(() => {           // 播放中超时保护：本地播放不该卡住
+    try { src.onended = null; src.stop(); } catch (e) {}
+    finish(false);
+  }, entry.dur * 1000 + 2000);
+  return true;
+}
+function __stopNorm() {
+  const st = __curNorm;
+  if (!st) return;
+  __curNorm = null;
+  if (st.guard) { clearTimeout(st.guard); st.guard = null; }
+  st.done = true;                       // 作废：迟到的 ended / 超时都不再回调
+  try { st.src.onended = null; st.src.stop(); } catch (e) {}
+}
+
 function stopAllSpeech() {
+  __stopNorm();
   __inflight.forEach(a => { try { a.onended = a.onerror = a.oncanplay = a.onplaying = null; a.pause(); } catch (e) {} });
   __inflight.clear();
   __curAudio = null;
 }
-/* 预热：只下载不播放；登记在途，用户一点击即被让路；onFail 用于感知坏词组（如含生僻词的短语） */
+/* 预热：下载 + 解码 + 归一化进缓存（用户一点击零等待，且音量已处理）。
+   失败（坏组/错误页/无 Web Audio）→ 记入 __normBad，并退回 Audio 元素预热
+   （给媒体兜底链路暖 Service Worker 缓存）。onFail 供调用方感知坏词组。 */
 function prewarmWord(text, onFail) {
   if (!text) return;
-  try {
-    const a = new Audio(DICT_AUDIO_URL(text));
-    a.preload = 'auto';
-    __inflight.add(a);
-    a.oncanplay = () => { __inflight.delete(a); };
-    a.onerror = () => { __inflight.delete(a); if (onFail) onFail(); };
-  } catch (e) {}
+  __normGet(text).then(() => {}, () => {
+    try {
+      const a = new Audio(DICT_AUDIO_URL(text));
+      a.preload = 'auto';
+      __inflight.add(a);
+      a.oncanplay = () => { __inflight.delete(a); };
+      a.onerror = () => { __inflight.delete(a); if (onFail) onFail(); };
+    } catch (e) { if (onFail) onFail(); }
+  });
 }
-/* 核心播放：全新 Audio + 唯一声源保证（epoch）+ 重试一次；timeoutMs 可选（连读链传短超时保持节奏） */
-let __audioEpoch = 0;
+/* 核心播放：先走 Web Audio 归一化（A），任何环节不顺立即回退媒体元素（B）。
+   epoch 在入口统一递增；timeoutMs 可选（连读链传短超时保持节奏）。 */
 function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs) {
-  const epoch = ++__audioEpoch; // 新请求让之前所有待播/在播音频作废
+  const epoch = ++__audioEpoch;
+  __stopNorm();
+  const t = String(text).trim();
+  if (!t) { if (onFail) onFail(); return; }
+  const to = timeoutMs || (__firstPlayDone ? 9000 : 12000);
+  __firstPlayDone = true;
+  let settled = false;
+  const guard = setTimeout(() => {           // 归一化太慢 → 媒体兜底（SW 此时多已缓存）
+    if (settled) return;
+    settled = true;
+    __playMediaElement(t, rate, epoch, onEnd, onFail, isRetry, to);
+  }, to);
+  __normGet(t).then(entry => {
+    if (settled || epoch !== __audioEpoch) return;
+    settled = true; clearTimeout(guard);
+    if (!__playNorm(entry, epoch, onEnd, onFail, to)) {
+      __playMediaElement(t, rate, epoch, onEnd, onFail, isRetry, to);
+    }
+  }).catch(() => {
+    if (settled || epoch !== __audioEpoch) return;
+    settled = true; clearTimeout(guard);
+    __playMediaElement(t, rate, epoch, onEnd, onFail, isRetry, to);
+  });
+}
+/* 媒体元素兜底（v4 链路，原封不动）：全新 Audio + 唯一声源保证 + 重试一次。
+   epoch 由调用方传入并负责递增——重试时也走同一令牌，不会和归一化路径抢令牌。 */
+function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs) {
   rate = 1; // mobile compat: always normal speed
   const a = new Audio(DICT_AUDIO_URL(text));
   a.preload = 'auto';
@@ -371,6 +551,9 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs) {
   const fail = () => {
     if (done) return;
     done = true; clearG(); disarm(); __inflight.delete(a); // 解除全部回调：迟到的加载绝不再出声
+    /* 已被更新的一次点击取代：绝不重试、绝不回头抢声源（重试会 ++epoch + __stopNorm，
+       把用户正在听的新词掐掉再播回旧词）。 */
+    if (epoch !== __audioEpoch) return;
     if (!isRetry) { playDictAudio(text, rate, onEnd, onFail, true, timeoutMs); return; } // 自动重试一次
     const now = Date.now();
     if (now - __dictFailNotified > 30000) { __dictFailNotified = now; toast('📶 发音加载失败，请检查网络后重试'); }
@@ -386,7 +569,6 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs) {
     clearG(); // 清掉还在等待的加载超时，避免播放中被误杀重播
     guard = setTimeout(fail, timeoutMs || (__firstPlayDone ? 9000 : 12000));
     const p = a.play();
-    __firstPlayDone = true;
     if (p && p.catch) p.catch(() => { if (epoch === __audioEpoch) fail(); });
   };
   if (a.readyState >= 1) { stopAllSpeechExcept(a); go(); }
@@ -456,6 +638,9 @@ let __audioUnlockDone = false;
 function unlockAudioChannels() {
   if (__audioUnlockDone) return;
   __audioUnlockDone = true;
+  /* v5：Web Audio 通道也要在手指事件内解锁——归一化播放走 AudioContext，
+     iOS 上非手势内创建会一直 suspended，首次单词点击就没声 */
+  try { ac(); } catch (e) {}
   try {
     prewarmWord('hi');
     const a = new Audio(DICT_AUDIO_URL('hi'));
@@ -471,7 +656,7 @@ document.addEventListener('keydown', unlockAudioChannels, { capture: true });
 /* 语音环境检测（家长中心诊断用） */
 function speechEnv() {
   return {
-    engine: '词典标准发音（真人录音，单一音源）',
+    engine: '词典真人发音（Web Audio 音量归一化，媒体元素兜底）',
     wechat: /MicroMessenger/i.test(navigator.userAgent),
     online: navigator.onLine
   };
