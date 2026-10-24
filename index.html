@@ -161,7 +161,7 @@ function saveIntro() {
   let cta;
   if (nextLetter) cta = { href: 'letters.html', txt: `▶ 继续学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}（${nextLetter.shape}）` };
   else if (wordMasteredCount() < gradeWordCount(myGrade().id)) cta = { href: 'words.html', txt: `▶ 去单词镇学${myGrade().name}的单词` };
-  else if (Object.keys(Store.d.books || {}).length < BOOKS.length) cta = { href: 'books.html', txt: '▶ 去绘本馆读今天的故事' };
+  else if (Object.keys(Store.d.books || {}).length < BOOKS_TOTAL) cta = { href: 'books.html', txt: '▶ 去绘本馆读今天的故事' };
   else if (grammarDoneCount() < GRAMMAR_LEVELS.length) cta = { href: 'grammar.html', txt: '▶ 挑战句子工厂下一关' };
   else cta = { href: 'games.html', txt: '▶ 去游戏乐园复习' };
   btn.textContent = cta.txt; btn.href = cta.href;
@@ -206,7 +206,7 @@ function saveIntro() {
     { href: 'words.html', emoji: '🏘️', name: '单词镇', tag: `${THEMES.length} 大主题 · ${TOTAL_WORDS} 词`, tagColor: 'var(--mint)',
       desc: `应会 ${cumMasteredCount()}/${cumWordCount()}（${myGrade().name}及以下累计）`, now: cumMasteredCount(), total: cumWordCount(), color: 'var(--mint)' },
     { href: 'books.html', emoji: '📚', name: '绘本馆', tag: '分级阅读 · 点句跟读', tagColor: 'var(--grape)',
-      desc: '6 本入门英语绘本，点句子听真人朗读', now: Object.keys(Store.d.books || {}).length, total: BOOKS.length, color: 'var(--grape)' },
+      desc: '6 本入门英语绘本，点句子听真人朗读', now: Object.keys(Store.d.books || {}).length, total: BOOKS_TOTAL, color: 'var(--grape)' },
     { href: 'grammar.html', emoji: '🏭', name: '句子工厂', tag: '万能公式 · 句子思维', tagColor: 'var(--grape)',
       desc: '16 关小火车造句，第二阶段直接用单词镇的词造句', now: grammarDoneCount(), total: GRAMMAR_LEVELS.length, color: 'var(--grape)' },
     { href: 'games.html', emoji: '🎡', name: '游戏乐园', tag: '边玩边复习', tagColor: 'var(--orange)',
