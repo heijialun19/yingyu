@@ -85,7 +85,7 @@ const Store = {
   d: null,
   def() {
     return {
-      name: '', stars: 0, soundOn: true, grade: '',
+      name: '', stars: 0, soundOn: true, grade: '', lettersSkip: false,
       badges: {},                    // {badgeId: date}
       letters: {},                   // {A: {t}}
       words: {},                     // {cat: {box, due}}  box:0-5 记忆盒子
@@ -242,6 +242,15 @@ function grammarLevelDone(id, stars) {
   markActivity('grammar'); Store.save();
 }
 function gameDone() { markActivity('games'); completeDailyTask('game'); }
+
+/* One-tap: mark all letters known so recommendations go straight to words */
+function markAllLettersKnown() {
+  LETTERS.forEach(l => { if (!Store.d.letters[l.L]) Store.d.letters[l.L] = { t: Date.now() }; });
+  Store.d.lettersSkip = true;
+  addStars(5); markActivity('letters'); Store.save(); checkBadges();
+  sfx.win(); confetti();
+  toast('OK! Now we start from words!');
+}
 
 /* ---------------- 年级体系（全站主线，与档案联动） ---------------- */
 function myGrade() {
