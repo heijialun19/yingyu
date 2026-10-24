@@ -477,10 +477,8 @@ function renderNav(activeId) {
       </a>
       <nav class="nav-links">${links}</nav>
       <div class="nav-stats">
-        <button class="chip" id="profileBtn" title="小伙伴档案（切换/新建/备份）">${Profiles.active().avatar} <b id="navProfile">${esc(Profiles.active().name)}</b></button>
-        <a class="chip" href="index.html#grade-setting" title="我的年级（点击修改）">🎓 <b id="navGrade">${myGrade().name}</b></a>
+        <button class="chip" id="profileBtn" title="小伙伴档案（切换/新建/备份/改年级）">${Profiles.active().avatar} <b id="navProfile">${esc(Profiles.active().name)}</b></button>
         <button class="chip" id="soundBtn" title="声音开关">${Store.d.soundOn ? '🔊' : '🔇'}</button>
-        <span class="chip" id="streakChip" title="连续学习天数">🔥 <b id="navStreak">${Store.d.streak.count}</b> 天</span>
         <span class="chip gold" title="我的星星">⭐ <b id="navStars">${Store.d.stars}</b></span>
       </div>
     </header>`);
@@ -492,10 +490,8 @@ function renderNav(activeId) {
   $('#profileBtn').addEventListener('click', openProfileModal);
 }
 function updateNavStats() {
-  const s = $('#navStars'), k = $('#streakChip b'), g = $('#navGrade'), pr = $('#navProfile'), pb = $('#profileBtn');
+  const s = $('#navStars'), pr = $('#navProfile'), pb = $('#profileBtn');
   if (s) s.textContent = Store.d.stars;
-  if (k) k.textContent = Store.d.streak.count;
-  if (g) g.textContent = myGrade().name;
   if (pr) pr.textContent = Profiles.active().name;
   if (pb) pb.innerHTML = Profiles.active().avatar + ' <b id="navProfile">' + esc(Profiles.active().name) + '</b>';
 }
@@ -576,6 +572,13 @@ function openProfileModal() {
         <p style="font-size:.8rem;color:#5C6273;margin:4px 0 10px">一台电脑可以有多个小朋友，每人一份独立进度，互不打扰！</p>
         <div class="profile-list">${rows}</div>
         <details class="profile-tool">
+          <summary>馃帗 淇敼褰撳墠妗ｆ鐨勫勾绾?/summary>
+          <div class="theme-tabs" style="margin-top:10px">
+            ${GRADES.map(g => `<button class="theme-tab ${g.id === p.grade ? 'on' : ''}" data-g="${g.id}" onclick="setGrade(this.dataset.g)"><span class="te">${g.emoji}</span>${g.name}</button>`).join('')}
+          </div>
+        </details>
+
+<details class="profile-tool">
           <summary>➕ 新建一个档案</summary>
           <div style="margin-top:10px">
             <input id="newName" type="text" placeholder="小伙伴的名字" maxlength="10" style="width:100%;padding:10px 14px;border:3px solid var(--lemon);border-radius:14px;font-family:inherit;font-size:.95rem">
