@@ -270,40 +270,16 @@ function renderGradePicker(sel) {
 }
 
 /* ---------------- 语音核心：词典标准发音（有道MP3）优先，系统语音兜底 ----------------
-   手机浏览器（尤其微信/国产内核）的 speechSynthesis 极不可靠；
-   有道词典发音接口返回高质量 MP3，国内实测 0.2 秒可达，单词/句子/中文都支持；
-   Audio 元件在点击手势内 play() 即可出声，兼容所有手机浏览器。
-   万一有道失败（断网/接口变化），自动回退浏览器系统语音，永远有声音。 */
-let VOICES = [];
-function loadVoices() { try { VOICES = speechSynthesis.getVoices(); } catch (e) {} }
-if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
-
-function pickVoice(lang) {
-  const p = lang.split('-')[0];
-  return VOICES.find(v => v.lang.replace('_', '-').toLowerCase() === lang.toLowerCase() && v.localService)
-      || VOICES.find(v => v.lang.toLowerCase().startsWith(p));
-}
-
-/* 系统语音（兜底用） */
-function synthSpeak(text, lang = 'en-US', rate = 0.85, onEnd) {
-  if (!('speechSynthesis' in window)) { if (onEnd) onEnd(); return; }
-  try {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang; u.rate = rate; u.pitch = 1.05;
-    const v = pickVoice(lang); if (v) u.voice = v;
-    if (onEnd) { u.onend = onEnd; u.onerror = onEnd; }
-    speechSynthesis.speak(u);
-  } catch (e) { if (onEnd) onEnd(); }
-}
-
-/* 词典标准发音（公开接口，浏览器直接请求，与本站服务器无关） */
+/* ---------------- 语音核心：只用词典标准发音（真人录音 MP3） ----------------
+   决策：浏览器内置合成语音（speechSynthesis）音色与词典音混杂、质量参差，
+   已全部移除——全站只有一种声音：词典真人女声。
+   网络不可用或接口失败时保持安静（绝不出现机器音），用户重试即可。 */
 const DICT_AUDIO_URL = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
 let __curAudio = null;
-let __engineCooldownUntil = 0; // 发音服务故障后的冷静期：期间全部走系统语音，避免音色来回切换
 let __firstPlayDone = false;   // 首次播放（冷启动）超时放宽
+let __dictFailNotified = 0;    // 失败提示节流（最多每 30 秒提示一次）
 function stopAllSpeech() {
   if (__curAudio) { try { __curAudio.onended = __curAudio.onerror = null; __curAudio.pause(); } catch (e) {} }
-  try { speechSynthesis.cancel(); } catch (e) {}
 }
 /* 预热：提前把单词的音频拉到 HTTP 缓存（答题前预热，答对回显零延迟） */
 function prewarmWord(text) {
@@ -347,35 +323,40 @@ function playDictAudio(text, rate, onEnd, onFail) {
   }
 }
 
-/* 统一朗读入口（按内容自动路由引擎，音色保持一致）：
-   - 真实英文单词/句子/字母名/字母音组合 → 有道词典真人女声（全站统一音色）
-   - 中文文本 → 系统语音（有道不支持中文句）
-   - 发音服务故障 → 45 秒冷静期内全部走系统语音（宁可整体换音色，不来回切换） */
+/* 统一朗读入口：只走词典真人发音。失败保持安静（绝不切换机器音）。 */
 function speak(text, lang = 'en-US', rate = 0.85) {
   if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
   const t = String(text).trim(); if (!t) return;
+  if (lang.startsWith('zh')) return; // 词典不支持中文句：中文不朗读（口诀以屏幕展示为主）
   stopAllSpeech();
-  if (lang.startsWith('zh')) { synthSpeak(t, lang, rate); return; }
-  if (Date.now() < __engineCooldownUntil) { synthSpeak(t, lang, rate); return; }
-  playDictAudio(t, rate, null, () => synthSpeak(t, lang, rate));
+  playDictAudio(t, rate, null, () => {
+    const now = Date.now();
+    if (now - __dictFailNotified > 30000) {
+      __dictFailNotified = now;
+      toast('📶 发音加载失败，请检查网络后重试');
+    }
+  });
 }
-function speakCN(text, rate = 0.95) { speak(text, 'zh-CN', rate); }
 
-/* 链式朗读：读完一句自动读下一句；冷却期或有道失败则整链走系统语音（音色一致） */
+/* 链式朗读：读完一句自动读下一句；某段失败则整链停止（不切机器音） */
 function speakChain(items) {
   if (!Store.d.soundOn) return;
   stopAllSpeech();
-  const synthAll = () => { try { speechSynthesis.cancel(); } catch (e) {} items.forEach(x => synthSpeak(x.text, x.lang || 'en-US', x.rate || 0.85)); };
-  if (Date.now() < __engineCooldownUntil) { synthAll(); return; }
   let failed = false;
   const next = i => {
     if (failed || i >= items.length) return;
     const it = items[i];
-    playDictAudio(it.text, it.rate, () => next(i + 1), () => { failed = true; synthAll(); });
+    playDictAudio(it.text, it.rate, () => next(i + 1), () => {
+      failed = true;
+      const now = Date.now();
+      if (now - __dictFailNotified > 30000) {
+        __dictFailNotified = now;
+        toast('📶 发音加载失败，请检查网络后重试');
+      }
+    });
   };
   next(0);
 }
-
 /* 拼读文本（仅用于屏幕显示提示，不再朗读——拟音串 TTS 读出来孩子听不懂） */
 function phonicsText(word) {
   const letters = String(word).toLowerCase().split('').filter(c => /[a-z]/.test(c));
@@ -395,48 +376,31 @@ function speakWordDouble(word) {
   ]);
 }
 
-/* ---------------- 移动端声音解锁与诊断 ----------------
+/* ---------------- 移动端声音解锁与预热 ----------------
    iOS/部分安卓：第一次出声必须在手指点击事件内触发。
-   首次触碰时静音播放一小段，同时解锁 <audio> 通道和 speechSynthesis 引擎。 */
-let __speechUnlocked = false, __audioUnlockDone = false;
+   首次触碰时静音播放一小段词典音频，解锁 <audio> 通道并预热网络连接。 */
+let __audioUnlockDone = false;
 function unlockAudioChannels() {
-  if (!__audioUnlockDone) {
-    __audioUnlockDone = true;
-    try {
-      // 预热连接（DNS/TLS/keep-alive）+ 尝试解锁 <audio> 通道
-      prewarmWord('hi');
-      const a = new Audio(DICT_AUDIO_URL('hi'));
-      a.volume = 0;
-      const p = a.play();
-      if (p && p.catch) p.catch(() => {});
-      setTimeout(() => { try { a.pause(); } catch (e) {} }, 1500);
-    } catch (e) {}
-  }
-  if (!__speechUnlocked && 'speechSynthesis' in window) {
-    __speechUnlocked = true;
-    try {
-      const u = new SpeechSynthesisUtterance(' ');
-      u.volume = 0;
-      speechSynthesis.speak(u);
-    } catch (e) {}
-  }
+  if (__audioUnlockDone) return;
+  __audioUnlockDone = true;
+  try {
+    prewarmWord('hi');
+    const a = new Audio(DICT_AUDIO_URL('hi'));
+    a.volume = 0;
+    const p = a.play();
+    if (p && p.catch) p.catch(() => {});
+    setTimeout(() => { try { a.pause(); } catch (e) {} }, 1500);
+  } catch (e) {}
 }
 document.addEventListener('pointerdown', unlockAudioChannels, { capture: true });
 document.addEventListener('keydown', unlockAudioChannels, { capture: true });
 
-/* 语音环境检测（家长中心诊断用 / 微信提示） */
+/* 语音环境检测（家长中心诊断用） */
 function speechEnv() {
-  const has = 'speechSynthesis' in window;
-  let voices = [];
-  try { voices = speechSynthesis.getVoices() || []; } catch (e) {}
   return {
-    available: true, // 有道发音 + 系统语音双引擎，总有方案
-    engine: '词典标准发音（有道）+ 系统语音兜底',
-    synthAvailable: has,
-    unlocked: __speechUnlocked,
-    voiceCount: voices.length,
-    enVoice: (voices.find(v => /^en/i.test(v.lang)) || {}).name || null,
-    wechat: /MicroMessenger/i.test(navigator.userAgent)
+    engine: '词典标准发音（真人录音，单一音源）',
+    wechat: /MicroMessenger/i.test(navigator.userAgent),
+    online: navigator.onLine
   };
 }
 /* 微信内打开：词典发音通常可用，若仍无声提示改用系统浏览器 */
@@ -444,7 +408,7 @@ function speechEnv() {
   if (!/MicroMessenger/i.test(navigator.userAgent)) return;
   document.body.insertAdjacentHTML('afterbegin', `
     <div class="wechat-tip" onclick="this.remove()">
-      📱 本站已用<b>词典标准发音</b>，微信里一般能正常出声；若仍无声，请点右上角「···」→「在浏览器打开」
+      📱 本站使用<b>词典真人发音</b>，微信里一般能正常出声；若仍无声，请点右上角「···」→「在浏览器打开」
       <span style="float:right;cursor:pointer">✕</span>
     </div>`);
 })();
