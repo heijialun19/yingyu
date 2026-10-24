@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>字母岛 · 小鸟英语乐园</title>
+<link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="css/style.css?v=7">
 </head>
 <body>
@@ -129,13 +130,101 @@ function renderStage(speakIt) {
         <button class="btn mint big" id="learnBtn" onclick="learnNow(this)">${learned ? '✅ 已经学会啦（再练练）' : '🌟 我学会这个字母啦！'}</button>
         ${cur < LETTERS.length - 1 ? `<button class="btn orange big" onclick="nextAfterLearn()">下一个字母 ▶</button>` : `<button class="btn orange big" onclick="location.href='words.html'">去单词镇 →</button>`}
       </div>
+
+      <div class="card" style="margin-top:16px;border-color:var(--lemon)">
+        <h2>✏️ 写一写 ${l.L}${l.L.toLowerCase()}</h2>
+        <p style="font-size:.8rem;color:#5C6273;margin:2px 0 8px">用手指（或鼠标）沿着灰色的字母描一遍，描够 75% 就过关！</p>
+        <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;justify-content:center">
+          <canvas id="tracePad" width="280" height="280" style="touch-action:none;background:#fff;border:3px solid var(--lemon);border-radius:24px;box-shadow:0 5px 0 rgba(45,49,66,.1);cursor:crosshair"></canvas>
+          <div style="text-align:center">
+            <div style="font-size:.9rem;margin-bottom:8px">描红进度</div>
+            <div style="width:140px;height:18px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:0 auto 10px">
+              <div id="traceBar" style="height:100%;width:0%;background:linear-gradient(90deg,#FFD93D,#FF9F45);border-radius:999px;transition:.2s"></div>
+            </div>
+            <button class="btn ghost" onclick="initTrace()">🧽 擦掉重写</button>
+          </div>
+        </div>
+      </div>
       <p style="color:#5C6273;font-size:.78rem;margin-top:10px">💡 小提示：点单词卡片可以听发音；红色 a e i o u 是"歌手"，蓝色辅音是"画家"。</p>
     </div>`;
   if (speakIt) sayName(); // 只有用户点击切换时才朗读；首次打开页面保持安静
   // 预拉取当前字母的发音音频：用户一点就秒响，不给冷启动超时任何机会
   prewarmWord(l.L);
   prewarmWord(l.words[0].w);
+  initTrace();
 }
+
+/* ---------------- 字母描红 ---------------- */
+let __traceTarget = null, __traceDone = false;
+function initTrace() {
+  const cv = document.getElementById('tracePad'); if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const l = LETTERS[cur];
+  ctx.clearRect(0, 0, 280, 280);
+  // 底层灰色目标字母
+  ctx.font = '900 200px "Comic Sans MS","Segoe UI",Arial';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#EDF1F7';
+  ctx.fillText(l.L + l.L.toLowerCase(), 140, 148);
+  // 用离屏画布采样字母覆盖的格子
+  const off = document.createElement('canvas'); off.width = 280; off.height = 280;
+  const octx = off.getContext('2d');
+  octx.font = ctx.font; octx.textAlign = 'center'; octx.textBaseline = 'middle';
+  octx.fillStyle = '#000';
+  octx.fillText(l.L + l.L.toLowerCase(), 140, 148);
+  const data = octx.getImageData(0, 0, 280, 280).data;
+  const cell = 20, n = 280 / cell;
+  __traceTarget = new Set();
+  for (let gy = 0; gy < n; gy++) for (let gx = 0; gx < n; gx++) {
+    let hit = false;
+    for (let y = gy * cell; y < (gy + 1) * cell && !hit; y++)
+      for (let x = gx * cell; x < (gx + 1) * cell && !hit; x++)
+        if (data[(y * 280 + x) * 4 + 3] > 40) hit = true;
+    if (hit) __traceTarget.add(gy * n + gx);
+  }
+  __traceDone = false;
+  __traceTouched = new Set();
+  updateTraceBar();
+}
+let __traceTouched = new Set(), __traceDrawing = false;
+function updateTraceBar() {
+  const bar = document.getElementById('traceBar'); if (!bar || !__traceTarget) return;
+  const pct = Math.min(100, Math.round(__traceTouched.size / Math.max(1, __traceTarget.size * 0.75) * 100));
+  bar.style.width = pct + '%';
+  return pct;
+}
+(function bindTrace() {
+  document.addEventListener('pointerdown', e => {
+    if (e.target.id !== 'tracePad' || __traceDone) return;
+    __traceDrawing = true;
+    const cv = e.target, ctx = cv.getContext('2d');
+    const draw = ev => {
+      if (!__traceDrawing) return;
+      const r = cv.getBoundingClientRect();
+      const x = (ev.clientX - r.left) * (280 / r.width);
+      const y = (ev.clientY - r.top) * (280 / r.height);
+      ctx.fillStyle = 'rgba(255,107,107,.55)';
+      ctx.beginPath(); ctx.arc(x, y, 16, 0, Math.PI * 2); ctx.fill();
+      const cell = 20, n = 280 / cell;
+      const gx = Math.floor(x / cell), gy = Math.floor(y / cell);
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const k = (gy + dy) * n + (gx + dx);
+        if (__traceTarget && __traceTarget.has(k)) __traceTouched.add(k);
+      }
+      const pct = updateTraceBar();
+      if (pct >= 100 && !__traceDone) {
+        __traceDone = true; __traceDrawing = false;
+        addStars(1); confetti(); sfx.win();
+        toast('✍️ 写得真棒！+1 ⭐');
+      }
+    };
+    draw(e);
+    const move = ev => { ev.preventDefault(); draw(ev); };
+    const up = () => { __traceDrawing = false; document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); };
+    document.addEventListener('pointermove', move, { passive: false });
+    document.addEventListener('pointerup', up);
+  });
+})();
 
 /* 自然拼读三连（全部有道真人女声，全站音色统一）：
    字母名 = 词典字母音；字母音 = 字母名 + 慢速代表词（听清开头的音）；口诀 = 名 + 慢词 + 常速词 */
