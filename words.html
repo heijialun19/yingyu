@@ -212,7 +212,7 @@ function makeQuestion(word, pool) {
       prompt: `哪个图片是 <b style="font-size:1.5rem;color:#FF6B6B">${word.w}</b> <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(word.w)}')" title="点我听发音">🔊</button> ？`,
       options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: `<span class="oe">${w.e || '🔤'}</span>` })) };
   }
-  if (type === 1) { // 听音选词：声音就是题目，自动读一遍（Duolingo 同款）+ 🔁 重听
+  if (type === 1) { // 听音选词：声音就是题目，自动读一遍 + 🔁 重听
     return { type, word,
       prompt: `🔊 听一听，是哪个单词？（点 🔁 再听）`,
       speakText: word.w, autoSpeak: true, replay: true,
