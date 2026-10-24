@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>家长中心 · 小鸟英语乐园</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main>
+  <div class="page-title">
+    <h1>👨‍👩‍👧 家长中心</h1>
+    <p>孩子的学习报告、本站的学习方法、使用建议，都在这里</p>
+  </div>
+
+  <!-- 年级设置 -->
+  <section class="section">
+    <div class="card" style="border-color:var(--lemon)">
+      <h2>🎓 孩子的年级设置</h2>
+      <div class="grade-grid" id="gradeGrid"></div>
+      <p style="margin:12px 0 0;color:#5C6273;font-size:.82rem">
+        选好年级后：单词镇自动打开对应年级、游戏乐园优先抽该年级的词、句子工厂按年级分阶段。切换年级不会丢失学习进度。
+      </p>
+    </div>
+  </section>
+
+  <!-- 学习总览 -->
+  <section class="section">
+    <div class="card">
+      <h2>📊 学习总览 <small style="font-weight:400;color:#5C6273">当前档案：<b id="curProfileName"></b> · 词库共 <b id="totalWords"></b> 词（1-6 年级新课标范围）</small></h2>
+      <div class="stat-grid" style="margin-top:12px" id="statGrid"></div>
+    </div>
+  </section>
+
+  <!-- 各年级进度 -->
+  <section class="section">
+    <div class="card">
+      <h2>🎓 各年级词汇进度 <small style="font-weight:400;color:#5C6273">掌握 = 累计答对 2 次以上；高年级的孩子也可回补低年级（单词镇 · 我的词单）</small></h2>
+      <div id="gradeProgress" style="margin-top:10px"></div>
+    </div>
+  </section>
+
+  <!-- 近 7 天活跃 -->
+  <section class="section">
+    <div class="card">
+      <h2>📅 最近 7 天学习活动 <small style="font-weight:400;color:#5C6273">（每天的学习动作数）</small></h2>
+      <div class="bar-chart" id="barChart"></div>
+    </div>
+  </section>
+
+  <!-- 徽章墙 -->
+  <section class="section">
+    <div class="card">
+      <h2>🏅 孩子的徽章墙</h2>
+      <div class="badge-grid" style="margin-top:12px" id="badgeGrid"></div>
+    </div>
+  </section>
+
+  <!-- 方法论说明 -->
+  <section class="section">
+    <div class="card" style="border-color:var(--coral)">
+      <div class="method-card">
+        <h3>🔤 单词为什么这样教？—— 字母象形·词源记忆法</h3>
+        <p>
+          传统背单词靠反复拼读抄写，孩子记得快忘得也快。英语词源研究告诉我们：
+          <b>英文字母和汉字一样起源于"画画"</b>——辅音字母自带含义：W 像水波，water（水）、wash（洗）、wave（波浪）都以它开头；
+          M 像大山，mountain（山）；P 像手掌、代表薄平的东西，paper（纸）、pen（笔）……
+          而 a、e、i、o、u 五个元音是"负责唱歌的字母"。
+        </p>
+        <p>
+          本站把这套方法改编成一年级孩子能懂的故事：每个字母都是一个角色（a 是小鸟、e 是小眼睛、S 是小蛇……），
+          <b>1000 个单词每个都配了「拆拆看」记忆法</b>——象形拆解、单词组合（blackboard = black 黑 + board 板）、
+          谐音联想（panda 胖达）、拼写规律（13-19 都加 teen；形容词 + ly 变副词；名词 + ful 表示"充满…"）。
+          <b>理解了再记，记忆才长久</b>。记住这句话："未有理解莫记忆，心领神会百年存。"
+        </p>
+        <p>
+          <b>记忆法的三条铁律</b>（全部 1000 条已按此校准）：
+          ① <b>词首锚点</b>：含义联想只放在单词<b>开头</b>的字母上（w 水波 → water）；
+          ② <b>词中元音只唱歌</b>：单词中间的 a/e/i/o/u 不做含义联想（bus 里的 u 只负责发音）；
+          ③ <b>整词像形是联想不是规律</b>：bed 整个词长得像床、cup 结尾藏着小杯子 u——这只是帮记单个词的"看图记词"，不能推广成规则。
+        </p>
+        <p>
+          点读采用<b>双读设计</b>：第一遍读单词完整发音，第二遍按自然拼读逐音拆读（cat → kuh, ah, tuh, cat），
+          让"音"和"形"同时印进耳朵。每个单词还标注了<b>词性小标签</b>（名词 = 东西的名字 📦、动词 = 动作王 🏃……），
+          用孩子能懂的语言提前建立语法概念，为句子工厂的"句子思维"打底。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card" style="border-color:var(--grape)">
+      <div class="method-card">
+        <h3>🚂 语法为什么这样教？—— 句子公式思维法</h3>
+        <p>
+          零基础也能懂句子：英语句子有<b>万能公式</b>（主谓宾成分思维），
+          把句子拆成「谁 + 干什么 + 什么」，并强调<b>一句话只有一个动词</b>、用口诀代替死规则。
+        </p>
+        <p>
+          本站把它翻译成孩子的话：<b>句子就是小火车</b>——车头是"谁"，车轮是"干什么"，货物是"什么"；
+          动词是"动作王"，一句话只能有一位；be 动词口诀"我用 am、你用 are、is 跟着他她它"。
+          孩子拖拽车厢造句的过程，就是在脑子里搭"句子结构感"，比刷语法题更适合一年级。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card" style="border-color:var(--lake)">
+      <div class="method-card">
+        <h3>🌉 为什么有"拼音小桥梁"？</h3>
+        <p>
+          一年级上学期孩子刚学完汉语拼音，英文字母和拼音字母<b>长得一样、读音不同</b>，最容易混淆（尤其是 b/d/p/q）。
+          与其回避，不如正面利用：拼音是孩子已有的"字母知识"，本站在易混字母处设置「拼音小桥梁」提示——
+          先告诉孩子"这个字母在拼音里怎么读、在英语里怎么读"，<b>把干扰变成桥梁</b>。这也是国际上"正迁移"教学的通行做法。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="card" style="border-color:var(--mint)">
+      <div class="method-card">
+        <h3>🔔 为什么要"每日复习"？—— 艾宾浩斯遗忘曲线</h3>
+        <p>
+          德国心理学家艾宾浩斯发现：新学的东西 1 天后忘掉一半以上，按 <b>1 天 → 2 天 → 4 天 → 7 天 → 15 天</b>的节奏复习，记忆会越来越牢。
+          孩子每答对一个单词，本站就自动排好这 5 次复习；到时间后，首页和单词镇会出现"复习提醒"。答错则重新开始计时——完全自动，家长不用操心。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 使用建议 -->
+  <section class="section">
+    <div class="card">
+      <div class="method-card">
+        <h3>💡 给家长的使用建议</h3>
+        <p>1️⃣ <b>每天 15 分钟</b>足够：完成首页"今日三任务"即可，宁少勿多，保护兴趣最重要。</p>
+        <p>2️⃣ <b>陪前两周</b>：刚上手时陪孩子点一点、读一读，之后逐步放手让孩子自己操作。</p>
+        <p>3️⃣ <b>跟着念出声</b>：网站会朗读，请鼓励孩子大声跟读——嘴巴的肌肉记忆比眼睛更牢。</p>
+        <p>4️⃣ <b>问孩子"为什么"</b>：比如"为什么 water 是 W 开头呀？"让孩子复述象形故事，讲得出才是真学会。</p>
+        <p>5️⃣ <b>在生活中指认</b>：吃 apple 时问一句英语，把单词带回真实生活。</p>
+        <p>6️⃣ <b>按年级推进</b>：一年级先把字母岛和一年级主题学扎实，再逐级解锁；六年级主题可等高年级再学。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 数据管理 -->
+  <section class="section">
+    <div class="card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="font-size:40px">🧰</div>
+      <div style="flex:1;min-width:220px">
+        <b>档案与数据管理</b>
+        <p style="margin:4px 0 0;color:#5C6273;font-size:.82rem">
+          每个小伙伴一份独立进度，保存在<b>这台电脑的浏览器</b>里，不上传、不收集任何信息。
+          换电脑或防止丢失：点「档案管理」里的 <b>💾 备份与恢复</b>，导出的备份文件可在任何电脑恢复。
+        </p>
+      </div>
+      <button class="btn grape" onclick="openProfileModal()">👤 档案管理（切换/新建/备份）</button>
+      <button class="btn coral" id="resetBtn">🗑️ 重置当前档案</button>
+    </div>
+  </section>
+
+  <footer style="text-align:center;color:#5C6273;font-size:.72rem;line-height:1.9;margin-top:30px">
+    小鸟英语乐园 Birdie ABC · 本站为学习方法演示原型，内容供家庭学习参考
+  </footer>
+</main>
+
+<script src="js/words-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+renderNav('parents'); renderDecor();
+document.getElementById('totalWords').textContent = TOTAL_WORDS;
+document.getElementById('curProfileName').textContent = Profiles.active().avatar + ' ' + Profiles.active().name;
+renderGradePicker('#gradeGrid');
+
+/* 学习总览 */
+(function () {
+  const seen = wordSeenCount(), mastered = wordMasteredCount();
+  const due = dueWords().length;
+  const stats = [
+    { b: letterCount() + ' / 26', s: '🉑 学过的字母' },
+    { b: cumMasteredCount() + ' / ' + cumWordCount(), s: '📦 应会词掌握（' + myGrade().name + '及以下累计）' },
+    { b: wordMasteredCount(), s: '🎯 全部词库已掌握' },
+    { b: due, s: '🔔 待复习单词' },
+    { b: grammarDoneCount() + ' / ' + GRAMMAR_LEVELS.length, s: '🏭 通过的语法关卡' },
+    { b: Store.d.streak.count + ' 天', s: '🔥 连续学习' },
+    { b: Store.d.stars, s: '⭐ 累计星星' },
+    { b: Object.keys(Store.d.badges).length + ' / ' + BADGES.length, s: '🏅 获得徽章' },
+  ];
+  $('#statGrid').innerHTML = stats.map(x => `<div class="stat"><b>${x.b}</b><span>${x.s}</span></div>`).join('');
+})();
+
+/* 各年级进度条 */
+(function () {
+  $('#gradeProgress').innerHTML = GRADES.map(g => {
+    const total = g.themes.reduce((s, t) => s + t.words.length, 0);
+    const got = g.themes.reduce((s, t) => s + t.words.filter(w => (Store.d.words[w.w] || {}).box >= 2).length, 0);
+    const pct = Math.round(got / total * 100);
+    return `<div style="display:flex;align-items:center;gap:12px;margin:10px 0;flex-wrap:wrap">
+      <b style="min-width:90px">${g.emoji} ${g.name}</b>
+      <div class="prog" style="flex:1;min-width:180px;height:16px;background:#EEF3F8;border-radius:999px;overflow:hidden">
+        <i style="display:block;height:100%;width:${pct}%;background:linear-gradient(90deg,#6BCB77,#4EC5F1);border-radius:999px"></i>
+      </div>
+      <span style="color:#5C6273;font-size:.85rem;min-width:110px">${got} / ${total} 词（${pct}%）</span>
+    </div>`;
+  }).join('');
+})();
+
+/* 近 7 天柱状图 */
+(function () {
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const t = todayStr(i);
+    const a = Store.d.activity[t] || {};
+    const n = (a.letters || 0) + (a.words || 0) + (a.games || 0) + (a.grammar || 0);
+    days.push({ t, n });
+  }
+  const max = Math.max(4, ...days.map(d => d.n));
+  $('#barChart').innerHTML = days.map(d => {
+    const d2 = new Date(d.t.replace(/-/g, '/'));
+    const wd = '日一二三四五六'[d2.getDay()];
+    return `<div class="bar-col" title="${d.t}：${d.n} 个学习动作">
+      <b style="font-size:.7rem;color:#5C6273">${d.n || ''}</b>
+      <i style="height:${Math.max(4, d.n / max * 100)}%"></i>
+      <span>${wd}<br>${d2.getMonth() + 1}/${d2.getDate()}</span>
+    </div>`;
+  }).join('');
+})();
+
+/* 徽章墙 */
+(function () {
+  $('#badgeGrid').innerHTML = BADGES.map(b => {
+    const got = !!Store.d.badges[b.id];
+    return `<div class="badge-cell ${got ? 'got' : ''}">
+      <span class="be">${b.emoji}</span><b>${b.name}</b><span>${b.desc}${got ? '<br>✅ ' + Store.d.badges[b.id] : ''}</span>
+    </div>`;
+  }).join('');
+})();
+
+/* 重置当前档案 */
+$('#resetBtn').addEventListener('click', function () {
+  if (confirm(`确定要清空当前档案（${Profiles.active().name}）的全部学习进度吗？此操作无法恢复。`)) {
+    Store.resetActive();
+    location.reload();
+  }
+});
+</script>
+</body>
+</html>
