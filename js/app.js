@@ -274,89 +274,99 @@ function renderGradePicker(sel) {
    决策：浏览器内置合成语音（speechSynthesis）音色与词典音混杂、质量参差，
    已全部移除——全站只有一种声音：词典真人女声。
    网络不可用或接口失败时保持安静（绝不出现机器音），用户重试即可。 */
+/* ================= 词典真人发音 引擎 v3 =================
+   系统性修复：
+   1) 用户点击时掐掉所有在途预热/排队音频——防止点击排在下载队列尾部被超时误杀
+   2) 失败自动重试一次（换全新 Audio），重试仍失败才提示
+   3) 超时放宽：首次 10s、后续 7s（移动网络）
+   4) 成功的音频由 Service Worker 缓存，二次播放零延迟 */
 const DICT_AUDIO_URL = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
 let __curAudio = null;
-let __firstPlayDone = false;   // 首次播放（冷启动）超时放宽
-let __dictFailNotified = 0;    // 失败提示节流（最多每 30 秒提示一次）
+let __inflight = new Set();   // 所有在途 Audio（含预热），统一管理
+let __firstPlayDone = false;
+let __dictFailNotified = 0;
+
 function stopAllSpeech() {
-  if (__curAudio) { try { __curAudio.onended = __curAudio.onerror = null; __curAudio.pause(); } catch (e) {} }
+  __inflight.forEach(a => { try { a.onended = a.onerror = a.oncanplay = a.onplaying = null; a.pause(); } catch (e) {} });
+  __inflight.clear();
+  __curAudio = null;
 }
-/* 预热：提前把单词的音频拉到 HTTP 缓存（答题前预热，答对回显零延迟） */
+/* 预热：只下载不播放；登记在途，用户一点击即被让路 */
 function prewarmWord(text) {
   if (!text) return;
-  try { const a = new Audio(DICT_AUDIO_URL(text)); a.preload = 'auto'; } catch (e) {}
+  try {
+    const a = new Audio(DICT_AUDIO_URL(text));
+    a.preload = 'auto';
+    __inflight.add(a);
+    a.oncanplay = () => { __inflight.delete(a); };
+    a.onerror = () => { __inflight.delete(a); };
+  } catch (e) {}
 }
-/* 每次播放都创建新 Audio 对象（不复用——避免 currentTime 残留导致重复播放时秒触发 onended）
-   浏览器 HTTP 缓存会自动处理数据复用，不会重复下载 */
-function playDictAudio(text, rate, onEnd, onFail) {
+/* 核心播放：全新 Audio + 重试一次 */
+function playDictAudio(text, rate, onEnd, onFail, isRetry) {
   const a = new Audio(DICT_AUDIO_URL(text));
   a.preload = 'auto';
   __curAudio = a;
-  let done = false;
-  let guard = null;
+  __inflight.add(a);
+  let done = false, guard = null;
   const clearG = () => { if (guard) { clearTimeout(guard); guard = null; } };
-  const end = () => { if (!done) { done = true; clearG(); if (onEnd) onEnd(); } };
+  const end = () => { if (!done) { done = true; clearG(); __inflight.delete(a); if (onEnd) onEnd(); } };
   const fail = () => {
     if (done) return;
     done = true; clearG();
     try { a.pause(); } catch (e) {}
+    __inflight.delete(a);
+    if (!isRetry) { playDictAudio(text, rate, onEnd, onFail, true); return; } // 自动重试一次
+    const now = Date.now();
+    if (now - __dictFailNotified > 30000) { __dictFailNotified = now; toast('📶 发音加载失败，请检查网络后重试'); }
     if (onFail) onFail();
   };
   a.onended = end;
   a.onerror = fail;
-  a.onplaying = () => clearG(); // 已开始播放，取消超时
+  a.onplaying = () => clearG(); // 真正出声后取消超时
   const pr = Math.max(0.5, Math.min(1.5, rate || 1));
   const go = () => {
-    try { a.currentTime = 0; } catch (e) {} // 确保从头播
+    try { a.currentTime = 0; } catch (e) {}
     try { a.preservesPitch = true; a.mozPreservesPitch = true; a.webkitPreservesPitch = true; } catch (e) {}
     try { a.playbackRate = pr; } catch (e) {}
-    const timeout = __firstPlayDone ? 4000 : 8000;
-    guard = setTimeout(fail, timeout);
+    guard = setTimeout(fail, __firstPlayDone ? 7000 : 10000);
     const p = a.play();
     __firstPlayDone = true;
     if (p && p.catch) p.catch(fail);
   };
-  if (a.readyState >= 1) go();
+  if (a.readyState >= 1) { stopAllSpeechExcept(a); go(); }
   else {
-    a.oncanplay = () => { a.oncanplay = null; go(); };
-    guard = setTimeout(fail, __firstPlayDone ? 4000 : 8000);
+    a.oncanplay = () => { a.oncanplay = null; stopAllSpeechExcept(a); go(); };
+    guard = setTimeout(fail, __firstPlayDone ? 7000 : 10000);
   }
 }
+/* 让路：暂停除 a 以外的所有在途音频（预热队列立刻腾出连接） */
+function stopAllSpeechExcept(keep) {
+  __inflight.forEach(x => { if (x !== keep) { try { x.onended = x.onerror = x.oncanplay = x.onplaying = null; x.pause(); } catch (e) {} __inflight.delete(x); } });
+}
 
-/* 统一朗读入口：只走词典真人发音。失败保持安静（绝不切换机器音）。 */
+/* 统一朗读入口：只走词典真人发音。失败保持安静（绝不出现机器音）。 */
 function speak(text, lang = 'en-US', rate = 0.85) {
-  if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
+  if (!Store.d.soundOn) return;
   const t = String(text).trim(); if (!t) return;
-  if (lang.startsWith('zh')) return; // 词典不支持中文句：中文不朗读（口诀以屏幕展示为主）
+  if (lang.startsWith('zh')) return; // 词典不支持中文句：中文不朗读
   stopAllSpeech();
-  playDictAudio(t, rate, null, () => {
-    const now = Date.now();
-    if (now - __dictFailNotified > 30000) {
-      __dictFailNotified = now;
-      toast('📶 发音加载失败，请检查网络后重试');
-    }
-  });
+  playDictAudio(t, rate, null, null);
 }
 
 /* 链式朗读：读完一句自动读下一句；某段失败则整链停止（不切机器音） */
 function speakChain(items) {
   if (!Store.d.soundOn) return;
   stopAllSpeech();
-  let failed = false;
+  let stopped = false;
   const next = i => {
-    if (failed || i >= items.length) return;
+    if (stopped || i >= items.length) return;
     const it = items[i];
-    playDictAudio(it.text, it.rate, () => next(i + 1), () => {
-      failed = true;
-      const now = Date.now();
-      if (now - __dictFailNotified > 30000) {
-        __dictFailNotified = now;
-        toast('📶 发音加载失败，请检查网络后重试');
-      }
-    });
+    playDictAudio(it.text, it.rate, () => next(i + 1), () => { stopped = true; });
   };
   next(0);
 }
+
 /* 拼读文本（仅用于屏幕显示提示，不再朗读——拟音串 TTS 读出来孩子听不懂） */
 function phonicsText(word) {
   const letters = String(word).toLowerCase().split('').filter(c => /[a-z]/.test(c));
