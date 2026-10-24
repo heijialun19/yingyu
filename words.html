@@ -206,21 +206,19 @@ function listenAll() {
 function makeQuestion(word, pool) {
   const distract = shuffle(pool.filter(w => w.w !== word.w)).slice(0, 3);
   const type = Math.floor(Math.random() * 3);
-  if (type === 0) { // 看词选图
+  if (type === 0) { // 看词选图：不自动读音，词旁给 🔊 让孩子点着听（tap-to-hear）
     return { type, word,
-      prompt: `哪个图片是 <b style="font-size:1.5rem;color:#FF6B6B">${word.w}</b>？`,
-      speakText: word.w, autoSpeak: true,
+      prompt: `哪个图片是 <b style="font-size:1.5rem;color:#FF6B6B">${word.w}</b> <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(word.w)}')" title="点我听发音">🔊</button> ？`,
       options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: `<span class="oe">${w.e || '🔤'}</span>` })) };
   }
-  if (type === 1) { // 听音选词
+  if (type === 1) { // 听音选词：声音就是题目，自动读一遍（Duolingo 同款）+ 🔁 重听
     return { type, word,
       prompt: `🔊 听一听，是哪个单词？（点 🔁 再听）`,
       speakText: word.w, autoSpeak: true, replay: true,
       options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: w.w })) };
   }
-  return { type, word, // 中文选英文
+  return { type, word, // 中文选英文：中文已显示，不需要朗读
     prompt: `「<b style="font-size:1.3rem;color:#9B72FF">${word.zh}</b>」的英语是？`,
-    speakText: word.zh, lang: 'zh',
     options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: w.w })) };
 }
 
@@ -268,7 +266,7 @@ function renderQuiz() {
       </div>
       <div class="explain" id="qexp"></div>
     </div>`;
-  if (q.speakText) setTimeout(() => speak(q.speakText, q.lang || 'en-US'), 350);
+  if (q.autoSpeak && q.speakText) setTimeout(() => speak(q.speakText, q.lang || 'en-US'), 350);
 }
 
 function answer(btn, key) {
@@ -280,7 +278,7 @@ function answer(btn, key) {
     sfx.correct();
     touchWord(q.word.w, true);
     $('#qexp').innerHTML = `✅ <b>${q.word.w}</b> ${q.word.e || ''} ${q.word.zh}${q.word.dec ? '<br>🔎 ' + q.word.dec : ''}`;
-    speak(q.word.w);
+    setTimeout(() => speak(q.word.w), 550); // 等答对音效播完再朗读，避免两个声音打架
     setTimeout(() => { s.idx++; renderQuiz(); }, 1400);
   } else {
     s.firstTry = false; sfx.wrong();
