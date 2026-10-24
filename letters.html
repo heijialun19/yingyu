@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>字母岛 · 小鸟英语乐园</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main>
+  <div class="page-title">
+    <h1>🏝️ 字母岛 · 26 位字母朋友</h1>
+    <p>字母像画画一样，每个都有小故事——<b style="color:#FF6B6B">红色</b>是会唱歌的元音宝宝，<b style="color:#4EC5F1">蓝色</b>是有含义的辅音朋友</p>
+  </div>
+
+  <!-- 字母选格 -->
+  <section class="section">
+    <div class="card">
+      <h2>👀 点一个字母，认识它</h2>
+      <div class="letter-grid" id="letterGrid" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <!-- 字母详情 -->
+  <section class="section">
+    <div class="letter-stage" id="letterStage"></div>
+  </section>
+</main>
+
+<script src="js/words-data.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+renderNav('letters'); renderDecor();
+
+let cur = 0;
+let q1ok = false, q2ok = false;
+
+/* ---------------- 字母选格 ---------------- */
+function renderGrid() {
+  $('#letterGrid').innerHTML = LETTERS.map((l, i) => {
+    const learned = !!Store.d.letters[l.L];
+    return `<button class="letter-card ${l.v ? 'vowel' : ''} ${i === cur ? 'active' : ''}" onclick="pick(${i})">
+      ${learned ? '<span class="mark">⭐</span>' : ''}
+      <span class="big">${l.L}</span><span class="sm">${l.L.toLowerCase()} · ${l.short || l.shape}</span>
+    </button>`;
+  }).join('');
+}
+
+function pick(i) { cur = i; q1ok = q2ok = false; renderGrid(); renderStage(); window.scrollTo({ top: $('#letterStage').offsetTop - 90, behavior: 'smooth' }); }
+
+/* ---------------- 详情舞台 ---------------- */
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function renderStage() {
+  const l = LETTERS[cur];
+  const learned = !!Store.d.letters[l.L];
+  const type = l.v ? '会唱歌的元音宝宝' : '有含义的辅音朋友';
+
+  /* 小练习题目：正确项一定以该字母开头；干扰项一律不以该字母开头 */
+  const lower = l.L.toLowerCase();
+  const rightWord = l.words[0];
+  const pool = [];
+  LETTERS.forEach(x => { if (x.L !== l.L) x.words.forEach(wd => pool.push(wd)); });
+  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+  const seen = new Set([rightWord.w.toLowerCase()]);
+  const otherWords = [];
+  for (const cand of pool) {
+    if (otherWords.length >= 3) break;
+    const key = cand.w.toLowerCase();
+    if (!seen.has(key) && !key.startsWith(lower)) { seen.add(key); otherWords.push(Object.assign({}, cand, { right: false })); }
+  }
+  const q1opts = shuffle([Object.assign({}, rightWord, { right: true }), ...otherWords]);
+  const q2opts = shuffle([
+    { s: l.shape, right: true },
+    ...shuffle(LETTERS.filter(x => x.L !== l.L && x.shape !== l.shape)).slice(0, 3).map(x => ({ s: x.shape, right: false }))
+  ]);
+
+  $('#letterStage').innerHTML = `
+    <div class="letter-hero bounce-in" style="background:${l.color}">
+      <button class="speak-btn" onclick="sayChant()" title="听拼读口诀">🎵</button>
+      <div class="glyph">${l.L}<small> ${l.L.toLowerCase()}</small></div>
+      <div class="shape">${l.emoji} ${l.shape}</div>
+      <div style="margin-top:6px;font-size:.8rem;opacity:.95">${type}</div>
+      <div style="margin-top:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
+        <button class="btn ghost" style="padding:6px 12px;font-size:.78rem" onclick="sayName()">🔤 名字 ${l.L}</button>
+        <button class="btn ghost" style="padding:6px 12px;font-size:.78rem" onclick="saySound()">📢 读音 ${l.szh}</button>
+      </div>
+      <div style="margin-top:10px">
+        <button class="btn ghost" style="padding:8px 18px;font-size:.85rem" onclick="prevL()">◀ 上一个</button>
+        <button class="btn ghost" style="padding:8px 18px;font-size:.85rem" onclick="nextL()">下一个 ▶</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="story-box">
+        <h3>📖 ${l.L} 的故事：${l.shape}</h3>
+        <p style="margin:0;line-height:1.9;font-size:.95rem">${l.story}</p>
+        <div style="margin-top:10px;background:#fff;border-radius:14px;padding:8px 12px;font-size:.85rem;line-height:1.8">
+          🎵 拼读小口诀：<b>${l.L} says ${l.s}, ${l.s}, ${l.words[0].w}!</b>
+          <span style="color:#5C6273">（${l.szh} · ${l.L.toLowerCase()} ${l.L.toLowerCase()} ${l.words[0].w} ${l.words[0].e}）</span>
+        </div>
+      </div>
+      ${l.py ? `<div class="py-note">🌉 <b>拼音小桥梁：</b>${l.py}</div>` : ''}
+
+      <div class="word-mini-row">
+        ${l.words.map(w => `
+          <div class="word-mini" onclick="sayWord(this,'${w.w}')" title="点我听发音">
+            <div class="we">${w.e}</div>
+            <b>${w.w}</b><span>${w.zh}</span>
+            ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : ''}
+          </div>`).join('')}
+      </div>
+
+      <div class="card quiz-area" style="margin-top:16px">
+        <h2>🎯 小练习（答对得星星）</h2>
+        <div class="quiz-q">1️⃣ 听一听、看一看：哪个单词是 ${l.L} 开头的？</div>
+        <div class="opt-row" id="q1row">
+          ${q1opts.map(o => `<button class="opt" onclick="q1(this,'${String(o.w).replace(/'/g, "\\'")}',${o.right})"><span class="oe">${o.e}</span>${o.w}</button>`).join('')}
+        </div>
+        <div class="quiz-q" style="margin-top:16px">2️⃣ ${l.L}${l.L.toLowerCase()} 的象形朋友是谁？</div>
+        <div class="opt-row" id="q2row">
+          ${q2opts.map(o => `<button class="opt" onclick="q2(this,${o.right})">${o.s}</button>`).join('')}
+        </div>
+        <div class="explain" id="quizExplain"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;align-items:center">
+        <button class="btn mint big" id="learnBtn" onclick="learnNow(this)">${learned ? '✅ 已经学会啦（再练练）' : '🌟 我学会这个字母啦！'}</button>
+        ${cur < LETTERS.length - 1 ? `<button class="btn orange big" onclick="nextAfterLearn()">下一个字母 ▶</button>` : `<button class="btn orange big" onclick="location.href='words.html'">去单词镇 →</button>`}
+      </div>
+      <p style="color:#5C6273;font-size:.78rem;margin-top:10px">💡 小提示：点单词卡片可以听发音；红色 a e i o u 是"歌手"，蓝色辅音是"画家"。</p>
+    </div>`;
+  sayName();
+}
+
+/* 自然拼读三连：字母名 / 字母音 / 拼读口诀（读音 + 象形故事结合） */
+function sayName() {
+  const l = LETTERS[cur];
+  sfx.pop();
+  speak(`${l.L}. ${l.L.toLowerCase()}.`);
+}
+function saySound() {
+  const l = LETTERS[cur];
+  sfx.pop();
+  speak(`${l.s}. ${l.s}. ${l.words[0].w}.`, 'en-US', 0.75);
+}
+function sayChant() {
+  const l = LETTERS[cur];
+  sfx.pop();
+  speak(`${l.L} says ${l.s}, ${l.s}, ${l.words[0].w}!`, 'en-US', 0.8);
+}
+function sayWord(el, w) { flyStar(el); speakWordDouble(w); } /* 第一遍发音，第二遍拼读 */
+
+function q1(btn, w, right) {
+  if (right) {
+    if (!q1ok) { q1ok = true; addStars(1); flyStar(btn); confetti(); touchWord(w, true); }
+    feedback(btn, true); sfx.correct();
+    $('#quizExplain').innerHTML = `✅ <b>${w}</b> 就是 ${LETTERS[cur].L} 开头的单词！`;
+  } else { feedback(btn, false); sfx.wrong(); $('#quizExplain').innerHTML = `🤔 再想想：找 ${LETTERS[cur].L} 开头的单词哦～`; }
+}
+function q2(btn, right) {
+  const l = LETTERS[cur];
+  if (right) {
+    if (!q2ok) { q2ok = true; addStars(1); flyStar(btn); }
+    feedback(btn, true); sfx.correct();
+    $('#quizExplain').innerHTML = `✅ 对啦！${l.L} 就是「${l.shape}」${l.emoji}`;
+  } else { feedback(btn, false); sfx.wrong(); $('#quizExplain').innerHTML = `🤔 再看看上面的故事吧～`; }
+}
+
+function learnNow(btn) {
+  const l = LETTERS[cur];
+  const first = !Store.d.letters[l.L];
+  learnLetter(l.L);
+  if (first) { addStars(2); confetti(); toast(`🎉 学会了字母 ${l.L}（${l.shape}）！+2 ⭐`); }
+  else { toast('💪 温故知新，真棒！'); }
+  btn.textContent = '✅ 已经学会啦（再练练）';
+  renderGrid();
+}
+function nextAfterLearn() { pick(Math.min(cur + 1, LETTERS.length - 1)); }
+function prevL() { pick(Math.max(cur - 1, 0)); }
+function nextL() { pick(Math.min(cur + 1, LETTERS.length - 1)); }
+
+/* 初始：定位到第一个没学的字母 */
+(function init() {
+  let idx = LETTERS.findIndex(l => !Store.d.letters[l.L]);
+  if (idx < 0) idx = 0;
+  cur = idx;
+  renderGrid(); renderStage();
+})();
+</script>
+</body>
+</html>
