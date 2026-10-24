@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小鸟英语乐园 · 一年级英语启蒙</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=20">
+<link rel="stylesheet" href="css/style.css?v=24">
 <style>
 .hello-line{text-align:center;color:#5C6273;font-size:.9rem;margin:4px 0 14px}
 .hello-line b{color:var(--ink)}
@@ -76,10 +76,10 @@
   </div>
 </main>
 
-<script src="js/words-data.js?v=20"></script>
-<script src="js/data.js?v=20"></script>
-<script src="js/app.js?v=20"></script>
-<script src="js/sentence.js?v=20"></script>
+<script src="js/words-data.js?v=24"></script>
+<script src="js/data.js?v=24"></script>
+<script src="js/app.js?v=24"></script>
+<script src="js/sentence.js?v=24"></script>
 <script>
 renderNav('index'); renderDecor();
 
@@ -115,7 +115,9 @@ function showHome() {
     `👋 <b>${esc(p.name)}</b> · <a id="gradeLink" title="点击切换年级">🎓${myGrade().name}</a> · 🔥${Store.d.streak.count}天 · ⭐${Store.d.stars}`;
   document.getElementById('gradeLink').onclick = openProfileModal;
 
-  const nextLetter = LETTERS.find(l => !Store.d.letters[l.L]);
+  /* 推荐逻辑：二年级起 / 已点“我会字母了” / 字母全学完 → 直接从单词开始 */
+  const skipLetters = Store.d.lettersSkip || letterCount() >= 26 || GRADES.findIndex(g => g.id === myGrade().id) >= 1;
+  const nextLetter = skipLetters ? null : LETTERS.find(l => !Store.d.letters[l.L]);
   const gradeDone = cumMasteredCount(), gradeAll = cumWordCount();
   let step;
   if (nextLetter) step = { e:'🏝️', t:`学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}`, s:`${nextLetter.shape} · 故事+拼读+写一写`, href:'letters.html', now:letterCount(), all:26 };
@@ -129,20 +131,19 @@ function showHome() {
   document.getElementById('mcBar').style.width = (step.all ? Math.round(step.now/step.all*100) : 100) + '%';
   document.getElementById('mainCard').onclick = () => location.href = step.href;
 
-  const t = Store.d.daily.tasks;
-  document.getElementById('taskStrip').innerHTML = '今日任务：' +
-    (t.letter ? '<span class="tdone">✅ 字母</span>' : '<span>⬜ 字母</span>') +
-    (t.words ? '<span class="tdone">✅ 单词</span>' : '<span>⬜ 单词</span>') +
-    (t.game ? '<span class="tdone">✅ 游戏</span>' : '<span>⬜ 游戏</span>') +
-    (Store.d.daily.bonus ? ' · 🎁 已领奖励' : ' · 全完成得5⭐');
-
   const due = dueWords();
   if (due.length) {
     document.getElementById('reviewBanner').style.display = '';
     document.getElementById('revText').textContent = due.slice(0,4).join('、') + (due.length>4?' 等 '+due.length+' 个':'');
   }
 
-  const islands = [
+  const islands = skipLetters ? [
+    { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
+    { e:'📚', n:'绘本馆', d:Object.keys(Store.d.books||{}).length+'/'+BOOKS_TOTAL, href:'books.html' },
+    { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
+    { e:'🎡', n:'游戏乐园', d:'4个游戏', href:'games.html' },
+    { e:'🏝️', n:'字母岛', d:letterCount()+'/26', href:'letters.html' },
+  ] : [
     { e:'🏝️', n:'字母岛', d:letterCount()+'/26', href:'letters.html' },
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
     { e:'📚', n:'绘本馆', d:Object.keys(Store.d.books||{}).length+'/'+BOOKS_TOTAL, href:'books.html' },
