@@ -309,7 +309,7 @@ function gSentence(pool) {
       if (S.first) { S.score++; addStars(1); flyStar(btn); }
       sfx.correct();
       $('#sexp2').innerHTML = `✅ <b>${q.zh}</b>`;
-      speak(q.zh.split('.')[0]);
+      speakSentence(q.zh.split('.')[0]);
       setTimeout(() => { S.idx++; window._sentShow(); }, 1500);
     } else { S.first = false; sfx.wrong(); $('#sexp2').innerHTML = '🤔 想想公式：谁 + 干什么 + 什么'; }
   };
