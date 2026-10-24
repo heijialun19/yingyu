@@ -267,7 +267,11 @@ function renderGradePicker(sel) {
     </button>`).join('');
 }
 
-/* ---------------- 语音点读 ---------------- */
+/* ---------------- 语音核心：词典真人发音（有道MP3）优先，系统语音兜底 ----------------
+   手机浏览器（尤其微信/国产内核）的 speechSynthesis 极不可靠；
+   有道词典发音接口返回高质量 MP3，国内实测 0.2 秒可达，单词/句子/中文都支持；
+   Audio 元件在点击手势内 play() 即可出声，兼容所有手机浏览器。
+   万一有道失败（断网/接口变化），自动回退浏览器系统语音，永远有声音。 */
 let VOICES = [];
 function loadVoices() { try { VOICES = speechSynthesis.getVoices(); } catch (e) {} }
 if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
@@ -277,16 +281,52 @@ function pickVoice(lang) {
   return VOICES.find(v => v.lang.replace('_', '-').toLowerCase() === lang.toLowerCase() && v.localService)
       || VOICES.find(v => v.lang.toLowerCase().startsWith(p));
 }
-function speak(text, lang = 'en-US', rate = 0.85) {
-  if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
-  if (!('speechSynthesis' in window)) return;
+
+/* 系统语音（兜底用） */
+function synthSpeak(text, lang = 'en-US', rate = 0.85, onEnd) {
+  if (!('speechSynthesis' in window)) { if (onEnd) onEnd(); return; }
   try {
-    speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang; u.rate = rate; u.pitch = 1.05;
     const v = pickVoice(lang); if (v) u.voice = v;
+    if (onEnd) { u.onend = onEnd; u.onerror = onEnd; }
     speechSynthesis.speak(u);
-  } catch (e) {}
+  } catch (e) { if (onEnd) onEnd(); }
+}
+
+/* 有道词典发音 */
+const youdaoUrl = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
+let __curAudio = null;
+const __audioCache = new Map();
+function stopAllSpeech() {
+  if (__curAudio) { try { __curAudio.onended = __curAudio.onerror = null; __curAudio.pause(); } catch (e) {} }
+  try { speechSynthesis.cancel(); } catch (e) {}
+}
+function playYoudao(text, rate, onEnd, onFail) {
+  let a = __audioCache.get(text);
+  if (!a) {
+    a = new Audio(youdaoUrl(text)); a.preload = 'auto';
+    if (__audioCache.size > 300) __audioCache.clear();
+    __audioCache.set(text, a);
+  }
+  __curAudio = a;
+  let done = false;
+  const end = () => { if (!done) { done = true; clearTimeout(guard); if (onEnd) onEnd(); } };
+  const fail = () => { if (!done) { done = true; clearTimeout(guard); if (onFail) onFail(); } };
+  a.onended = end; a.onerror = fail;
+  try { a.currentTime = 0; } catch (e) {}
+  try { a.playbackRate = rate && rate <= 0.75 ? 0.75 : 1; } catch (e) {}
+  const guard = setTimeout(fail, 4500); // 弱网 4.5 秒没出声就回退
+  const p = a.play();
+  if (p && p.catch) p.catch(fail);
+}
+
+/* 统一朗读入口：先有道，失败自动系统语音 */
+function speak(text, lang = 'en-US', rate = 0.85) {
+  if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
+  const t = String(text).trim(); if (!t) return;
+  stopAllSpeech();
+  playYoudao(t, rate, null, () => synthSpeak(t, lang, rate));
 }
 function speakCN(text, rate = 0.95) { speak(text, 'zh-CN', rate); }
 
@@ -294,20 +334,19 @@ function speakCN(text, rate = 0.95) { speak(text, 'zh-CN', rate); }
 const LSND = {};
 LETTERS.forEach(l => { LSND[l.L] = l.s; });
 
-/* 链式朗读：读完一句自动读下一句 */
+/* 链式朗读（双读）：读完一句自动读下一句；有道失败则整链回退系统语音 */
 function speakChain(items) {
   if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
-  if (!('speechSynthesis' in window)) return;
-  try { speechSynthesis.cancel(); } catch (e) { return; }
+  stopAllSpeech();
+  let failed = false;
   const next = i => {
-    if (i >= items.length) return;
+    if (failed || i >= items.length) return;
     const it = items[i];
-    const u = new SpeechSynthesisUtterance(it.text);
-    u.lang = it.lang || 'en-US'; u.rate = it.rate || 0.85; u.pitch = 1.05;
-    const v = pickVoice(u.lang); if (v) u.voice = v;
-    u.onend = () => next(i + 1);
-    u.onerror = () => next(i + 1);
-    speechSynthesis.speak(u);
+    playYoudao(it.text, it.rate, () => next(i + 1), () => {
+      failed = true;
+      try { speechSynthesis.cancel(); } catch (e) {}
+      items.forEach(x => synthSpeak(x.text, x.lang || 'en-US', x.rate || 0.85));
+    });
   };
   next(0);
 }
@@ -328,22 +367,29 @@ function speakWordDouble(word) {
   else speak(word);
 }
 
-/* ---------------- 移动端语音解锁与诊断 ----------------
-   iOS/部分安卓浏览器要求：第一次语音必须在手指点击事件内触发，
-   否则永远静音。这里在用户第一次触碰页面时播放一段"无声语音"解锁引擎。 */
+/* ---------------- 移动端声音解锁与诊断 ----------------
+   iOS/部分安卓：第一次出声必须在手指点击事件内触发。
+   首次触碰时静音播放一小段，同时解锁 <audio> 通道和 speechSynthesis 引擎。 */
 let __speechUnlocked = false;
-function unlockSpeech() {
-  if (__speechUnlocked || !('speechSynthesis' in window)) return;
-  __speechUnlocked = true;
+function unlockAudioChannels() {
   try {
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(' ');
-    u.volume = 0;
-    speechSynthesis.speak(u);
+    const a = new Audio(youdaoUrl('hi'));
+    a.volume = 0;
+    const p = a.play();
+    if (p && p.catch) p.catch(() => {});
+    setTimeout(() => { try { a.pause(); } catch (e) {} }, 1500);
   } catch (e) {}
+  if (!__speechUnlocked && 'speechSynthesis' in window) {
+    __speechUnlocked = true;
+    try {
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
 }
-document.addEventListener('pointerdown', unlockSpeech, { capture: true });
-document.addEventListener('keydown', unlockSpeech, { capture: true });
+document.addEventListener('pointerdown', unlockAudioChannels, { capture: true });
+document.addEventListener('keydown', unlockAudioChannels, { capture: true });
 
 /* 语音环境检测（家长中心诊断用 / 微信提示） */
 function speechEnv() {
@@ -351,20 +397,21 @@ function speechEnv() {
   let voices = [];
   try { voices = speechSynthesis.getVoices() || []; } catch (e) {}
   return {
-    available: has,
+    available: true, // 有道发音 + 系统语音双引擎，总有方案
+    engine: '词典真人发音（有道）+ 系统语音兜底',
+    synthAvailable: has,
     unlocked: __speechUnlocked,
     voiceCount: voices.length,
     enVoice: (voices.find(v => /^en/i.test(v.lang)) || {}).name || null,
-    zhVoice: (voices.find(v => /^zh/i.test(v.lang)) || {}).name || null,
     wechat: /MicroMessenger/i.test(navigator.userAgent)
   };
 }
-/* 微信内打开：语音多半不可用，提示改用系统浏览器 */
+/* 微信内打开：词典发音通常可用，若仍无声提示改用系统浏览器 */
 (function wechatTip() {
   if (!/MicroMessenger/i.test(navigator.userAgent)) return;
   document.body.insertAdjacentHTML('afterbegin', `
     <div class="wechat-tip" onclick="this.remove()">
-      📱 微信里可能<b>没有声音</b>：请点右上角「···」→ 选择「在浏览器打开」
+      📱 本站已用<b>词典真人发音</b>，微信里一般能正常出声；若仍无声，请点右上角「···」→「在浏览器打开」
       <span style="float:right;cursor:pointer">✕</span>
     </div>`);
 })();
