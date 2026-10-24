@@ -222,7 +222,7 @@ renderSpeechDiag();
     { b: wordMasteredCount(), s: '🎯 全部词库已掌握' },
     { b: due, s: '🔔 待复习单词' },
     { b: grammarDoneCount() + ' / ' + GRAMMAR_LEVELS.length, s: '🏭 通过的语法关卡' },
-    { b: Object.keys(Store.d.books || {}).length + ' / ' + BOOKS.length, s: '📚 读完的绘本' },
+    { b: Object.keys(Store.d.books || {}).length + ' / ' + BOOKS_TOTAL, s: '📚 读完的绘本' },
     { b: Store.d.streak.count + ' 天', s: '🔥 连续学习' },
     { b: Store.d.stars, s: '⭐ 累计星星' },
     { b: Object.keys(Store.d.badges).length + ' / ' + BADGES.length, s: '🏅 获得徽章' },
