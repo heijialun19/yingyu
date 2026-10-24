@@ -200,12 +200,12 @@ renderGradePicker('#gradeGrid');
 /* 语音诊断 */
 function renderSpeechDiag() {
   const e = speechEnv();
-  const ok = e.available;
   $('#speechDiag').innerHTML = `
-    ${ok ? '✅ 浏览器支持语音朗读' : '❌ 当前浏览器不支持语音朗读（建议用 Chrome / Edge / Safari 打开）'}<br>
-    ${ok ? (e.voiceCount ? `✅ 检测到 ${e.voiceCount} 个语音包（英语：${e.enVoice || '用系统默认'}；中文：${e.zhVoice || '用系统默认'}）` : '⚠️ 语音包还没加载完，稍等几秒点「重新检测」') : ''}
-    ${e.wechat ? '<br>⚠️ 当前在微信内打开——语音很可能无声，请用系统浏览器打开本站' : ''}
-    ${ok && !e.unlocked ? '<br>⏳ 还没解锁：随便点一下页面任意位置即可' : (ok ? '<br>✅ 语音已解锁，点上方「点我试听」测试' : '')}
+    ✅ 发声引擎：${e.engine}——点单词先听<b>词典真人发音</b>，网络异常时自动切换系统语音<br>
+    ${e.synthAvailable ? '✅ 系统语音可用（兜底）' : '⚠️ 系统语音不可用（不影响，词典发音是主力）'}<br>
+    ${e.synthAvailable ? (e.voiceCount ? `ℹ️ 系统语音包 ${e.voiceCount} 个（英语：${e.enVoice || '系统默认'}）` : 'ℹ️ 系统语音包加载中（不影响词典发音）') : ''}
+    ${e.wechat ? '<br>⚠️ 当前在微信内打开——词典发音一般正常；若无声请用系统浏览器打开' : ''}
+    <br>👉 点下方「🎧 点我试听」验证声音
   `;
 }
 renderSpeechDiag();
