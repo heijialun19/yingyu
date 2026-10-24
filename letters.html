@@ -84,8 +84,9 @@ function renderStage(speakIt) {
       <div class="shape">${l.emoji} ${l.shape}</div>
       <div style="margin-top:6px;font-size:.8rem;opacity:.95">${type}</div>
       <div style="margin-top:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
-        <button class="btn ghost" style="padding:6px 12px;font-size:.78rem" onclick="sayName()">🔤 名字 ${l.L}</button>
-        <button class="btn ghost" style="padding:6px 12px;font-size:.78rem" onclick="saySound()">📢 读音 ${l.szh}</button>
+        <button class="btn ghost" style="padding:6px 12px;font-size:.78rem" onclick="sayName()" title="播放字母的名字，如 A 读 'ay'">🔤 字母名 ${l.L}</button>
+        <button class="btn ghost" style="padding:6px 12px;font-size:.78rem" onclick="saySound()" title="慢速播放代表词，听清 ${l.L} 在开头的读音">📢 字母音（听${l.words[0].w}）</button>
+        <button class="btn ghost" style="padding:6px 12px;font-size:.78rem" onclick="sayChant()" title="完整三遍：名字 + 慢词 + 常速词">🎵 完整口诀</button>
       </div>
       <div style="margin-top:10px">
         <button class="btn ghost" style="padding:8px 18px;font-size:.85rem" onclick="prevL()">◀ 上一个</button>
@@ -98,8 +99,10 @@ function renderStage(speakIt) {
         <h3>📖 ${l.L} 的故事：${l.shape}</h3>
         <p style="margin:0;line-height:1.9;font-size:.95rem">${l.story}</p>
         <div style="margin-top:10px;background:#fff;border-radius:14px;padding:8px 12px;font-size:.85rem;line-height:1.8">
-          🎵 拼读小口诀：<b>${l.L} says ${l.s}, ${l.s}, ${l.words[0].w}!</b>
-          <span style="color:#5C6273">（${l.szh} · ${l.L.toLowerCase()} ${l.L.toLowerCase()} ${l.words[0].w} ${l.words[0].e}）</span>
+          🎵 拼读小口诀：<b>${l.L} 的名字读 "${l.L}"</b>，
+          它在单词里发 <b>${l.szh}</b> 的音——
+          听听 <b>${l.words[0].w}</b> ${l.words[0].e} 开头的那个音！
+          <span style="color:#5C6273;display:block;margin-top:4px">（点上方「📢 字母音」慢速听，点「🎵 完整口诀」听三遍）</span>
         </div>
       </div>
       ${l.py ? `<div class="py-note">🌉 <b>拼音小桥梁：</b>${l.py}</div>` : ''}
@@ -148,9 +151,10 @@ function renderStage(speakIt) {
       <p style="color:#5C6273;font-size:.78rem;margin-top:10px">💡 小提示：点单词卡片可以听发音；红色 a e i o u 是"歌手"，蓝色辅音是"画家"。</p>
     </div>`;
   if (speakIt) sayName(); // 只有用户点击切换时才朗读；首次打开页面保持安静
-  // 预拉取当前字母的发音音频：用户一点就秒响，不给冷启动超时任何机会
+  // 预拉取双音频（字母名 + 代表词），用户一点就秒响
   prewarmWord(l.L);
   prewarmWord(l.words[0].w);
+  l.words.slice(1).forEach(w => prewarmWord(w.w)); // 其余示例词也预热
   initTrace();
 }
 
@@ -226,22 +230,34 @@ function updateTraceBar() {
   });
 })();
 
-/* 自然拼读三连（全部有道真人女声，全站音色统一）：
-   字母名 = 词典字母音；字母音 = 字母名 + 慢速代表词（听清开头的音）；口诀 = 名 + 慢词 + 常速词 */
+/* ============ 字母岛语音系统（三按钮，逻辑清晰） ============
+   ① 字母名：只播字母名（如 A 读 "ay"）
+   ② 字母音：只播代表词 0.5 倍慢速——孩子听清 A 在 "aaapple" 开头的 /æ/ 音
+   ③ 完整口诀：字母名 → 慢词 → 常词，三段全真人女声
+   故障隔离：单次失败只影响当次播放，不触发 45 秒全站冷却 */
 function sayName() {
   const l = LETTERS[cur];
   sfx.pop();
-  speak(l.L);
+  __engineCooldownUntil = 0; // 字母岛不冷却——单次失败下次重试即可
+  speak(l.L, 'en-US', 1);
 }
 function saySound() {
   const l = LETTERS[cur];
   sfx.pop();
-  speakChain([{ text: l.L, rate: 1 }, { text: l.words[0].w, rate: 0.55 }]);
+  __engineCooldownUntil = 0;
+  // 只播代表词慢速：孩子专注听字母在词开头的音（自然拼读教学法）
+  speak(l.words[0].w, 'en-US', 0.55);
 }
 function sayChant() {
   const l = LETTERS[cur];
   sfx.pop();
-  speakChain([{ text: l.L, rate: 1 }, { text: l.words[0].w, rate: 0.55 }, { text: l.words[0].w, rate: 1 }]);
+  __engineCooldownUntil = 0;
+  // 完整三段：名字 → 慢词（听音）→ 常词（收尾）
+  speakChain([
+    { text: l.L, rate: 1 },
+    { text: l.words[0].w, rate: 0.55 },
+    { text: l.words[0].w, rate: 1 }
+  ]);
 }
 function sayWord(el, w) { flyStar(el); speakWordDouble(w); } /* 第一遍发音，第二遍拼读 */
 
