@@ -1,0 +1,19 @@
+{
+  "name": "小鸟英语乐园 Birdie ABC",
+  "short_name": "小鸟英语",
+  "description": "一年级起步的小学英语学习网站：1000词、自然拼读、绘本、语法游戏",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#C9EEFF",
+  "theme_color": "#4EC5F1",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
