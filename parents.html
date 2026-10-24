@@ -67,7 +67,7 @@
         <button class="btn ghost" onclick="renderSpeechDiag()">🔄 重新检测</button>
       </div>
       <details style="margin-top:12px">
-        <summary style="cursor:pointer;font-weight:700;color:#5C6273">📱 手机打开没有声音？依次检查这 5 条</summary>
+        <summary style="cursor:pointer;font-weight:700;color:#5C6273">📋 语音来源说明</summary><div style=font-size:.82rem;line-height:2;color:#5C6273;margin-top:8px>本站发音以<b>浏览器内置语音合成</b>为主引擎，同时调用<b>公开词典发音服务</b>获得更自然的音色。词典发音请求由用户浏览器直接发起（与本站服务器无关），仅用于个人学习。如需完全离线运行，浏览器断网后自动切换内置语音。</div></details><details style=margin-top:8px><summary style=cursor:pointer;font-weight:700;color:#5C6273>📱 手机打开没有声音？依次检查这 5 条</summary>
         <div style="font-size:.85rem;line-height:2;color:#5C6273;margin-top:8px">
           1️⃣ 先<b>点一下页面任意位置</b>再点单词——手机浏览器要求第一次发音必须由点击触发（本站已做自动解锁，一般无感）<br>
           2️⃣ 微信/QQ 里打开可能完全没有语音：点右上角「···」→「在浏览器打开」<br>
@@ -103,7 +103,7 @@
           ③ <b>整词像形是联想不是规律</b>：bed 整个词长得像床、cup 结尾藏着小杯子 u——这只是帮记单个词的"看图记词"，不能推广成规则。
         </p>
         <p>
-          点读采用<b>三读法</b>（真实词典录音，非合成拟音）：第一遍标准语速，第二遍 <b>0.55 倍慢速拖长</b>（同一真人录音变速，
+          点读采用<b>三读法</b>：第一遍标准语速，第二遍 <b>0.55 倍慢速拖长</b>（同一发音变速，
           让孩子听清单词里的每一个音），第三遍标准语速收尾。屏幕上同步显示「c-a-t」拆字母提示。
           每个单词还标注了<b>词性小标签</b>（名词 = 东西的名字 📦、动词 = 动作王 🏃……），
           用孩子能懂的语言提前建立语法概念，为句子工厂的"句子思维"打底。
@@ -203,7 +203,7 @@ renderGradePicker('#gradeGrid');
 function renderSpeechDiag() {
   const e = speechEnv();
   $('#speechDiag').innerHTML = `
-    ✅ 发声引擎：${e.engine}——点单词先听<b>词典真人发音</b>，网络异常时自动切换系统语音<br>
+    ✅ 发声引擎：${e.engine}——点单词先听<b>词典发音</b>，网络异常时自动切换系统语音<br>
     ${e.synthAvailable ? '✅ 系统语音可用（兜底）' : '⚠️ 系统语音不可用（不影响，词典发音是主力）'}<br>
     ${e.synthAvailable ? (e.voiceCount ? `ℹ️ 系统语音包 ${e.voiceCount} 个（英语：${e.enVoice || '系统默认'}）` : 'ℹ️ 系统语音包加载中（不影响词典发音）') : ''}
     ${e.wechat ? '<br>⚠️ 当前在微信内打开——词典发音一般正常；若无声请用系统浏览器打开' : ''}
