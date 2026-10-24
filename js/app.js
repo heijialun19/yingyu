@@ -315,8 +315,11 @@ function playYoudao(text, rate, onEnd, onFail) {
   const fail = () => { if (!done) { done = true; clearTimeout(guard); if (onFail) onFail(); } };
   a.onended = end; a.onerror = fail;
   try { a.currentTime = 0; } catch (e) {}
-  try { a.playbackRate = rate && rate <= 0.75 ? 0.75 : 1; } catch (e) {}
-  const guard = setTimeout(fail, 4500); // 弱网 4.5 秒没出声就回退
+  // 变速朗读（慢速拼读用同一真人录音，保持音高不变卡通化）
+  const pr = Math.max(0.5, Math.min(1.5, rate || 1));
+  try { a.preservesPitch = true; a.mozPreservesPitch = true; a.webkitPreservesPitch = true; } catch (e) {}
+  try { a.playbackRate = pr; } catch (e) {}
+  const guard = setTimeout(fail, 6000); // 弱网 6 秒没出声就回退
   const p = a.play();
   if (p && p.catch) p.catch(fail);
 }
@@ -330,11 +333,7 @@ function speak(text, lang = 'en-US', rate = 0.85) {
 }
 function speakCN(text, rate = 0.95) { speak(text, 'zh-CN', rate); }
 
-/* ---------------- 单词双读：第一遍整词发音，第二遍自然拼读拆音 ---------------- */
-const LSND = {};
-LETTERS.forEach(l => { LSND[l.L] = l.s; });
-
-/* 链式朗读（双读）：读完一句自动读下一句；有道失败则整链回退系统语音 */
+/* 链式朗读：读完一句自动读下一句；有道失败则整链回退系统语音 */
 function speakChain(items) {
   if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
   stopAllSpeech();
@@ -351,20 +350,23 @@ function speakChain(items) {
   next(0);
 }
 
-/* 拼读文本：cat → "kuh, ah, tuh. cat!" */
+/* 拼读文本（仅用于屏幕显示提示，不再朗读——拟音串 TTS 读出来孩子听不懂） */
 function phonicsText(word) {
   const letters = String(word).toLowerCase().split('').filter(c => /[a-z]/.test(c));
   if (!letters.length || letters.length > 12) return null;
-  const sounds = letters.map(c => LSND[c.toUpperCase()] || c).join(', ');
-  return sounds + '. ' + word + '!';
+  return letters.join('-');
 }
 
-/* 点单词：先听完整发音，再听拼读拆音 */
+/* 点单词：三读法（同一真人录音变速，孩子听懂每个音）
+   ① 标准语速 ② 0.55 倍慢速拖长（听清拼读）③ 再标准一遍收尾 */
 function speakWordDouble(word) {
   sfx.pop();
-  const phon = phonicsText(word);
-  if (phon) speakChain([{ text: word, rate: 0.85 }, { text: phon, rate: 0.72 }]);
-  else speak(word);
+  const w = String(word).trim();
+  speakChain([
+    { text: w, rate: 1 },
+    { text: w, rate: 0.55 },
+    { text: w, rate: 1 }
+  ]);
 }
 
 /* ---------------- 移动端声音解锁与诊断 ----------------
