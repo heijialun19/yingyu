@@ -278,6 +278,7 @@ function pickVoice(lang) {
       || VOICES.find(v => v.lang.toLowerCase().startsWith(p));
 }
 function speak(text, lang = 'en-US', rate = 0.85) {
+  if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
   if (!('speechSynthesis' in window)) return;
   try {
     speechSynthesis.cancel();
@@ -295,6 +296,7 @@ LETTERS.forEach(l => { LSND[l.L] = l.s; });
 
 /* 链式朗读：读完一句自动读下一句 */
 function speakChain(items) {
+  if (!Store.d.soundOn) return; // 全局 🔇 静音对语音同样生效
   if (!('speechSynthesis' in window)) return;
   try { speechSynthesis.cancel(); } catch (e) { return; }
   const next = i => {
@@ -325,6 +327,47 @@ function speakWordDouble(word) {
   if (phon) speakChain([{ text: word, rate: 0.85 }, { text: phon, rate: 0.72 }]);
   else speak(word);
 }
+
+/* ---------------- 移动端语音解锁与诊断 ----------------
+   iOS/部分安卓浏览器要求：第一次语音必须在手指点击事件内触发，
+   否则永远静音。这里在用户第一次触碰页面时播放一段"无声语音"解锁引擎。 */
+let __speechUnlocked = false;
+function unlockSpeech() {
+  if (__speechUnlocked || !('speechSynthesis' in window)) return;
+  __speechUnlocked = true;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0;
+    speechSynthesis.speak(u);
+  } catch (e) {}
+}
+document.addEventListener('pointerdown', unlockSpeech, { capture: true });
+document.addEventListener('keydown', unlockSpeech, { capture: true });
+
+/* 语音环境检测（家长中心诊断用 / 微信提示） */
+function speechEnv() {
+  const has = 'speechSynthesis' in window;
+  let voices = [];
+  try { voices = speechSynthesis.getVoices() || []; } catch (e) {}
+  return {
+    available: has,
+    unlocked: __speechUnlocked,
+    voiceCount: voices.length,
+    enVoice: (voices.find(v => /^en/i.test(v.lang)) || {}).name || null,
+    zhVoice: (voices.find(v => /^zh/i.test(v.lang)) || {}).name || null,
+    wechat: /MicroMessenger/i.test(navigator.userAgent)
+  };
+}
+/* 微信内打开：语音多半不可用，提示改用系统浏览器 */
+(function wechatTip() {
+  if (!/MicroMessenger/i.test(navigator.userAgent)) return;
+  document.body.insertAdjacentHTML('afterbegin', `
+    <div class="wechat-tip" onclick="this.remove()">
+      📱 微信里可能<b>没有声音</b>：请点右上角「···」→ 选择「在浏览器打开」
+      <span style="float:right;cursor:pointer">✕</span>
+    </div>`);
+})();
 
 /* ---------------- 音效（WebAudio 合成，零音频文件） ---------------- */
 let AC = null;
