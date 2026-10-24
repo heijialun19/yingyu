@@ -353,6 +353,52 @@ const GRAMMAR_LEVELS = [
       {type:'choice', prompt:'「他们是我的朋友」', options:['They is my friends.','They am my friends.','They are my friends.'], answer:2, zh:'They are my friends.', explain:'他们（they）用 are！'} ]},
 ];
 
+/* ---------- 绘本馆：入门分级阅读（只用已学的一年级词汇造句） ---------- */
+const BOOKS = [
+  { id: 'b1', title: 'I See a Cat', emoji: '🐱', color: '#FF6B6B', pages: [
+    { img: '🐱', en: 'I see a cat.', zh: '我看见一只小猫。' },
+    { img: '🐘', en: 'The cat is big. The cat is black.', zh: '这只猫很大，是黑色的。' },
+    { img: '🥛', en: 'The cat drinks milk.', zh: '小猫在喝牛奶。' },
+    { img: '🐭', en: 'Here comes a mouse!', zh: '来了一只老鼠！' },
+    { img: '🏃', en: 'The cat runs. The mouse runs too!', zh: '猫在跑，老鼠也在跑！' },
+    { img: '😴', en: 'Now the cat sleeps. Good night, cat!', zh: '现在小猫睡了。晚安，小猫！' } ]},
+  { id: 'b2', title: 'My Family', emoji: '👨‍👩‍👧', color: '#FF9F45', pages: [
+    { img: '👨‍👩‍👧', en: 'This is my family.', zh: '这是我的家。' },
+    { img: '👨', en: 'This is my dad. My dad is tall.', zh: '这是我爸爸，爸爸很高。' },
+    { img: '👩', en: 'This is my mom. My mom is kind.', zh: '这是我妈妈，妈妈很温柔。' },
+    { img: '👦', en: 'This is my brother. He likes balls.', zh: '这是我哥哥，他喜欢球。' },
+    { img: '👧', en: 'This is my sister. She likes dolls.', zh: '这是我姐姐，她喜欢娃娃。' },
+    { img: '❤️', en: 'I love my family!', zh: '我爱我的家！' } ]},
+  { id: 'b3', title: 'Colors Around Me', emoji: '🌈', color: '#9B72FF', pages: [
+    { img: '🍎', en: 'I see red. A red apple!', zh: '我看见红色，一个红苹果！' },
+    { img: '🍌', en: 'I see yellow. A yellow banana!', zh: '我看见黄色，一根黄香蕉！' },
+    { img: '🌊', en: 'I see blue. The sea is blue!', zh: '我看见蓝色，大海是蓝色的！' },
+    { img: '🌳', en: 'I see green. The tree is green!', zh: '我看见绿色，树是绿色的！' },
+    { img: '🌸', en: 'I see pink. A pink flower!', zh: '我看见粉色，一朵粉色的花！' },
+    { img: '🌈', en: 'I see a rainbow. So many colors!', zh: '我看见一道彩虹，好多颜色呀！' } ]},
+  { id: 'b4', title: 'One, Two, Three', emoji: '🔢', color: '#4EC5F1', pages: [
+    { img: '1️⃣', en: 'One little cat.', zh: '一只小猫。' },
+    { img: '2️⃣', en: 'Two big dogs.', zh: '两只大狗。' },
+    { img: '3️⃣', en: 'Three red apples.', zh: '三个红苹果。' },
+    { img: '4️⃣', en: 'Four yellow ducks.', zh: '四只黄鸭子。' },
+    { img: '5️⃣', en: 'Five small birds.', zh: '五只小鸟。' },
+    { img: '🧮', en: 'I can count! One, two, three, four, five!', zh: '我会数数啦！一二三四五！' } ]},
+  { id: 'b5', title: 'I Like Apples', emoji: '🍎', color: '#6BCB77', pages: [
+    { img: '🧒', en: 'Hello! I am a girl.', zh: '你好！我是一个女孩。' },
+    { img: '🍎', en: 'I like apples. Apples are sweet.', zh: '我喜欢苹果，苹果甜甜的。' },
+    { img: '🍌', en: 'I like bananas too.', zh: '我也喜欢香蕉。' },
+    { img: '🥛', en: 'I drink milk every day.', zh: '我每天喝牛奶。' },
+    { img: '🍰', en: 'Cake! Yummy! But…', zh: '蛋糕！好吃！可是……' },
+    { img: '🪥', en: 'I brush my teeth. Bye-bye, cake!', zh: '我刷刷牙。再见啦，蛋糕！' } ]},
+  { id: 'b6', title: 'Jump, Little Frog', emoji: '🐸', color: '#FFD93D', pages: [
+    { img: '🐸', en: 'I am a little frog. I can jump!', zh: '我是一只小青蛙，我会跳！' },
+    { img: '🏊', en: 'I can swim. Look at me!', zh: '我会游泳，看我！' },
+    { img: '🐦', en: 'The bird can fly. I can not fly.', zh: '鸟会飞，我不会飞。' },
+    { img: '🏃', en: 'But I can run! Run, run, run!', zh: '但是我会跑！跑跑跑！' },
+    { img: '😴', en: 'Now I am tired. I sleep on a big leaf.', zh: '现在我累了，睡在大叶子上。' },
+    { img: '⭐', en: 'What a good day! Good night!', zh: '多么美好的一天！晚安！' } ]},
+];
+
 /* ---------- 徽章 ---------- */
 const BADGES = [
   {id:'letter10',  emoji:'🌟', name:'字母新星',   desc:'学会 10 个字母'},
@@ -363,6 +409,7 @@ const BADGES = [
   {id:'word1000',  emoji:'🧠', name:'千词小博士', desc:'掌握全部 1000 个单词'},
   {id:'grammar1',  emoji:'🔧', name:'句子小工程师', desc:'通过句子工厂全部 16 关'},
   {id:'grammar8',  emoji:'🚃', name:'公式小达人', desc:'通过第一阶段全部关卡'},
+  {id:'reader6',   emoji:'📖', name:'小书虫',   desc:'读完绘本馆全部 6 本绘本'},
   {id:'streak3',   emoji:'🔥', name:'坚持之星',   desc:'连续学习 3 天'},
   {id:'streak7',   emoji:'🌈', name:'七日学霸',   desc:'连续学习 7 天'},
   {id:'star100',   emoji:'✨', name:'百星少年',   desc:'收集 100 颗星星'},
