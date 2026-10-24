@@ -251,6 +251,7 @@ function renderItem() {
         <b>${lv.emoji} 第 ${curLevel + 1} 关 · ${lv.title}</b>
         <span>第 ${sess.idx + 1} / ${sess.items.length} 题 · ✅ ${sess.score}</span>
       </div>
+      <div style="text-align:right;margin:-2px 0 8px"><button class="btn ghost" style="padding:4px 14px;font-size:.75rem" onclick="renderLevels()">← 退出关卡</button></div>
       ${sess.idx === 0 ? `
       <p style="font-size:.9rem;line-height:1.9;color:#5C6273;margin:6px 0">${lv.intro}</p>
       <div class="chant">

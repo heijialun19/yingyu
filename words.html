@@ -446,7 +446,7 @@ function spMakeBoard(word, nDecoys) {
   const alpha = 'abcdefghijklmnopqrstuvwxyz'; let guard = 0;
   while (bank.length < letters.length + nDecoys && guard++ < 60) {
     const ch = alpha[Math.floor(Math.random() * 26)];
-    if (!letters.includes(ch)) bank.push({ id: 'd' + guard, ch, decoy: true, used: false });
+    if (!letters.includes(ch) && !bank.some(t => t.ch === ch)) bank.push({ id: 'd' + guard, ch, decoy: true, used: false });
   }
   for (let i = bank.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [bank[i], bank[j]] = [bank[j], bank[i]]; }
   spell.board = { word: word.toLowerCase(), bank, slots: letters.map(() => null), solved: false };
@@ -495,7 +495,8 @@ function renderSpell() {
     body = `
       <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${w.e || ''} <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(w.w)}')">🔊</button></p>
       <p class="sp-tip" style="margin-top:0">这个单词用到了哪些字母？<b>多余的不要选</b>。</p>
-      ${spBoard()}`;
+      ${spBoard()}
+      ${spNextBtn('spGoPick', '下一步 ▶', !spell.board.solved)}`;
   } else if (spell.step === 3) {
     body = `
       <p class="sp-tip"><b>切一刀，把单词分成几个音块</b>——按"一口气读得出来"来分。</p>
@@ -507,7 +508,8 @@ function renderSpell() {
     body = `
       <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${w.e || ''}</p>
       <p class="sp-tip" style="margin-top:0">还记得字母顺序吗？把字母块摆回台子上！点台上的字母可以拿回来。</p>
-      ${spBoard()}`;
+      ${spBoard()}
+      ${spNextBtn('spGoBuild', '下一步 ▶', !spell.board.solved)}`;
   } else if (spell.step === 5) {
     const wr = spell.write;
     body = `
@@ -546,7 +548,7 @@ function spBoard() {
     }).join('')}</div>
     <div class="sp-bank">${b.bank.map(t =>
       `<button class="sp-tile ${t.used ? 'used' : ''}" id="tile-${t.id}" onclick="spTapTile('${t.id}')">${t.ch}</button>`).join('')}</div>
-    ${b.solved ? '<p class="sp-tip" style="color:#2E7D32;font-weight:800">✅ 摆对啦！</p>' : ''}`;
+    ${b.solved ? '<p class="sp-tip" style="color:#2E7D32;font-weight:800">✅ 摆对啦！点下面的「下一步」继续～</p>' : ''}`;
 }
 function spTapTile(id) {
   const b = spell.board; if (b.solved) return;
