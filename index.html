@@ -5,222 +5,152 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小鸟英语乐园 · 一年级英语启蒙</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=13">
+<style>
+.hello-line{text-align:center;color:#5C6273;font-size:.9rem;margin:4px 0 14px}
+.hello-line b{color:var(--ink)}
+.hello-line a{color:#78909C;text-decoration:underline dotted;cursor:pointer}
+.main-card{text-align:center;padding:34px 20px 28px;cursor:pointer;transition:.18s;border-width:4px}
+.main-card:hover{transform:translateY(-4px)}
+.main-emoji{font-size:76px;line-height:1.15;filter:drop-shadow(0 6px 8px rgba(0,0,0,.12))}
+.main-title{font-size:1.5rem;font-weight:800;margin:6px 0 2px}
+.main-sub{color:#5C6273;font-size:.92rem;margin-bottom:14px}
+.main-progress{height:14px;background:#EEF3F8;border-radius:999px;overflow:hidden;max-width:320px;margin:0 auto 16px}
+.main-progress i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--mint),var(--lake));transition:.4s}
+.task-strip{display:flex;justify-content:center;gap:14px;margin:10px 0 4px;font-size:.82rem;color:#5C6273;flex-wrap:wrap}
+.task-strip .tdone{color:#4E9E59;font-weight:700}
+.section-label{text-align:center;color:#78909C;font-size:.8rem;margin:22px 0 10px;letter-spacing:2px}
+.big-islands{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;max-width:760px;margin:0 auto}
+.big-island{background:#fff;border-radius:24px;border:3px solid var(--sky2);box-shadow:0 5px 0 rgba(45,49,66,.08);display:flex;flex-direction:column;align-items:center;gap:2px;padding:18px 8px 14px;cursor:pointer;transition:.15s}
+.big-island:hover{transform:translateY(-5px);border-color:var(--lemon)}
+.big-island .bi-emoji{font-size:52px;line-height:1.1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.1))}
+.big-island b{font-size:1.05rem}
+.big-island small{color:#78909C;font-size:.68rem}
+.foot-links{text-align:center;margin-top:26px;font-size:.78rem;color:#78909C}
+.foot-links a{color:#78909C;margin:0 8px}
+.welcome-only{max-width:420px;margin:30px auto;text-align:center;padding:30px 24px}
+.avatar-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
+.avatar-chip{width:46px;height:46px;font-size:26px;border-radius:14px;cursor:pointer;background:#fff;border:3px solid #E8EAF0;transition:.13s}
+.avatar-chip.on{border-color:var(--grape);background:#F4EFFF}
+.mini-input{width:100%;max-width:260px;padding:12px 16px;border:3px solid var(--lemon);border-radius:999px;font-family:inherit;font-size:1rem;text-align:center}
+.mini-grade{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0 16px}
+.mini-grade button{padding:7px 13px;border-radius:999px;border:3px solid #E8EAF0;background:#fff;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer}
+.mini-grade button.on{border-color:var(--lemon);background:#FFF7DA}
+.review-banner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(135deg,#FFE9F3,#FFF0D6);border:3px solid var(--pink);border-radius:22px;padding:14px 18px;margin:14px auto 0;max-width:680px;box-shadow:var(--shadow)}
+</style>
 </head>
 <body>
-<main>
-  <!-- 迎宾区 -->
-  <section class="hero bounce-in">
-    <div class="hero-bird" title="我是啾啾">🐤</div>
-    <div>
-      <h2 id="greet">欢迎来到小鸟英语乐园！</h2>
-      <p>和啾啾一起：听故事认字母 🏝️ · 拆单词 🏘️ · 造句子 🏭 · 玩游戏 🎡</p>
-      <p style="margin-top:6px">
-        <a class="btn coral" id="continueBtn" href="letters.html">▶ 继续学习</a>
-      </p>
-    </div>
-    <div class="hero-bubbles">
-      <div class="bubble" id="bGrade">🎓 一年级</div>
-      <div class="bubble" id="bStreak">🔥 连续学习 0 天</div>
-      <div class="bubble" id="bStars">⭐ 星星 0 颗</div>
-      <div class="bubble" id="bBadges">🏅 徽章 0 枚</div>
+<main style="max-width:720px">
+  <section id="welcome" style="display:none">
+    <div class="card welcome-only">
+      <div style="font-size:64px">🐤</div>
+      <h2 style="justify-content:center;margin:4px 0 12px">你好呀！我是啾啾</h2>
+      <input id="myName" class="mini-input" type="text" placeholder="写上你的名字" maxlength="10">
+      <div class="avatar-grid" id="introAvatars"></div>
+      <div class="mini-grade" id="introGrade"></div>
+      <button class="btn grape big" style="width:100%" onclick="saveIntro()">🚀 开始学习！</button>
+      <small style="display:block;color:#78909C;margin-top:10px">进度保存在这台电脑上，随时可备份</small>
     </div>
   </section>
 
-  <!-- 首次见面：给啾啾介绍你自己（档案初始化） -->
-  <section class="section" id="introSection" style="display:none">
-    <div class="card" style="border-color:var(--grape)">
-      <h2>👋 给啾啾介绍你自己</h2>
-      <p style="margin:6px 0 10px;color:#5C6273;font-size:.85rem">写下名字、选个头像和年级，你的专属学习档案就建好啦（以后还能添加哥哥姐姐弟弟妹妹的档案哦）</p>
-      <input id="myName" type="text" placeholder="我的名字" maxlength="10" style="width:100%;max-width:280px;padding:12px 16px;border:3px solid var(--lemon);border-radius:999px;font-family:inherit;font-size:1rem">
-      <div class="avatar-grid" id="introAvatars" style="margin-top:12px"></div>
-      <h3 style="margin:14px 0 4px;font-size:1rem">🎓 我的年级</h3>
-      <div class="grade-grid" id="introGradeGrid"></div>
-      <button class="btn grape big" style="margin-top:16px" onclick="saveIntro()">🚀 开始学习！</button>
+  <div id="home" style="display:none">
+    <div class="hello-line" id="helloLine"></div>
+    <div class="card main-card" id="mainCard">
+      <div class="main-emoji" id="mcEmoji">🏝️</div>
+      <div class="main-title" id="mcTitle">继续学习</div>
+      <div class="main-sub" id="mcSub"></div>
+      <div class="main-progress"><i id="mcBar" style="width:0%"></i></div>
+      <button class="btn coral big" id="mcBtn">▶ 点这里开始</button>
     </div>
-  </section>
-
-  <!-- 我的年级（全站主线设置） -->
-  <section class="section" id="grade-setting">
-    <div class="card" style="border-color:var(--lemon)">
-      <h2>🎓 我的年级 <small style="font-weight:400;color:#5C6273">选好年级，全站内容自动匹配</small></h2>
-      <div class="grade-grid" id="gradeGrid"></div>
-      <p style="margin:12px 0 0;color:#5C6273;font-size:.8rem;line-height:1.8">
-        选好后：🏠 单词镇自动打开你的年级 ｜ 🎡 游戏乐园优先抽你年级的词 ｜ 🏭 句子工厂按年级分阶段闯关。随时可以改；
-        点导航栏的 <b>头像</b> 可以切换/新建小伙伴档案，还能备份进度到别的电脑。
-      </p>
+    <div class="task-strip" id="taskStrip"></div>
+    <div class="review-banner" id="reviewBanner" style="display:none">
+      <div style="font-size:34px">🔔</div>
+      <div style="flex:1;min-width:180px"><b>有单词到复习时间啦</b><div style="font-size:.8rem;color:#5C6273" id="revText"></div></div>
+      <button class="btn coral" onclick="location.href='words.html?mode=review'">去复习</button>
     </div>
-  </section>
-
-  <!-- 今日任务 -->
-  <section class="section">
-    <div class="card">
-      <h2>🌞 今日任务 <small style="font-weight:400;color:#5C6273">每天 15 分钟，三个小任务</small></h2>
-      <div class="task-row" id="taskRow" style="margin-top:12px">
-        <div class="task" id="taskLetter" onclick="location.href='letters.html'" role="button">
-          <div class="t-emoji">🏝️</div>
-          <div><b>学 1 个字母故事</b><span>字母岛 · 认识新朋友</span></div>
-          <span class="go" style="margin-left:auto;font-size:22px">👉</span>
-        </div>
-        <div class="task" id="taskWords" onclick="location.href='words.html?mode=plan'" role="button">
-          <div class="t-emoji">🏘️</div>
-          <div><b>练 1 组单词</b><span>我的词单 · 补漏洞</span></div>
-          <span class="go" style="margin-left:auto;font-size:22px">👉</span>
-        </div>
-        <div class="task" id="taskGame" onclick="location.href='games.html'" role="button">
-          <div class="t-emoji">🎡</div>
-          <div><b>玩 1 个小游戏</b><span>游戏乐园 · 边玩边复习</span></div>
-          <span class="go" style="margin-left:auto;font-size:22px">👉</span>
-        </div>
-      </div>
+    <div class="section-label">—— 或者去逛逛 ——</div>
+    <div class="big-islands" id="bigIslands"></div>
+    <div class="foot-links">
+      <a href="parents.html">👨‍👩‍👧 家长中心</a>·<a href="disclaimer.html">📋 声明</a>
     </div>
-  </section>
+  </div>
+</main>
 
-  <!-- 每日复习（艾宾浩斯） -->
-  <section class="section" id="reviewSection" style="display:none">
-    <div class="review-banner">
-      <div class="rb-emoji">🔔</div>
-      <div style="flex:1">
-        <b>每日复习时间到！</b>
-        <p id="reviewText">有单词宝宝想你了，快来看看它们吧～（大脑爱复习，越复习记得越牢）</p>
-      </div>
-      <button class="btn coral" onclick="location.href='words.html?mode=review'">开始复习</button>
-    </div>
-  </section>
-
-  <!-- 学习地图 -->
-  <section class="section">
-    <div class="island-grid" id="islandGrid"></div>
-  </section>
-
-  <!-- 给爸爸妈妈 -->
-  <section class="section">
-    <div class="card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-      <div style="font-size:44px">👨‍👩‍👧</div>
-      <div style="flex:1;min-width:220px">
-        <b>爸爸妈妈看这里</b>
-        <p style="margin:4px 0 0;color:#5C6273;font-size:.85rem">
-          了解本站的学习方法（字母象形记单词 + 句子万能公式）、查看学习报告。
-        </p>
-      </div>
-      <a class="btn grape" href="parents.html">家长中心</a>
-    </div>
-  </section>
-
-  <footer style="text-align:center;color:#5C6273;font-size:.72rem;line-height:1.9;margin-top:34px">
-    小鸟英语乐园 Birdie ABC · 纯本地运行 · 无广告 · 无需联网<br>
-    「未有理解莫记忆，心领神会百年存」
-  </footer>
-<div style=text-align:center;margin-top:20px;font-size:.75rem><a href=disclaimer.html style=color:#78909C>📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
-
-<script src="js/words-data.js?v=12"></script>
-<script src="js/data.js?v=12"></script>
-<script src="js/app.js?v=12"></script>
+<script src="js/words-data.js?v=13"></script>
+<script src="js/data.js?v=13"></script>
+<script src="js/app.js?v=13"></script>
 <script>
 renderNav('index'); renderDecor();
 
-/* 首次见面：未命名档案 → 自我介绍引导 */
-let __introAvatar = null, __introGrade = null;
 (function () {
   const p = Profiles.active();
-  const personalized = p.name !== '小朋友' || p.grade;
-  if (personalized) { renderGradePicker('#gradeGrid'); return; }
-  document.getElementById('introSection').style.display = '';
-  document.getElementById('grade-setting').style.display = 'none';
-  document.getElementById('introAvatars').innerHTML =
-    AVATARS.map(a => `<button class="avatar-chip ${a === p.avatar ? 'on' : ''}" data-a="${a}">${a}</button>`).join('');
-  __introAvatar = p.avatar;
+  const ready = p.name !== '小朋友' || p.grade;
+  if (ready) { showHome(); return; }
+  document.getElementById('welcome').style.display = '';
+  document.getElementById('home').style.display = 'none';
+  let pick = '🐤', grade = 'g1';
+  document.getElementById('introAvatars').innerHTML = AVATARS.map(a =>
+    `<button class="avatar-chip ${a===pick?'on':''}" data-a="${a}">${a}</button>`).join('');
   document.querySelectorAll('#introAvatars .avatar-chip').forEach(b =>
-    b.addEventListener('click', () => {
-      document.querySelectorAll('#introAvatars .avatar-chip').forEach(x => x.classList.remove('on'));
-      b.classList.add('on'); __introAvatar = b.dataset.a; sfx.pop();
-    }));
-  document.getElementById('introGradeGrid').innerHTML = GRADES.map(g => `
-    <button class="grade-btn" data-g="${g.id}" onclick="document.querySelectorAll('#introGradeGrid .grade-btn').forEach(b=>b.classList.remove('on'));this.classList.add('on');window.__introGrade=this.dataset.g">
-      <span class="ge">${g.emoji}</span><b>${g.name}</b><small>${gradeWordCount(g.id)} 词</small>
-    </button>`).join('');
-  setTimeout(() => {
-    document.getElementById('introSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    toast('🐤 我是啾啾！介绍一下你自己，我们开始吧～');
-  }, 700);
-})();
-function saveIntro() {
-  const name = (document.getElementById('myName').value || '').trim() || '小朋友';
-  Profiles.updateActive({ name, avatar: __introAvatar || '🐤' });
-  const g = window.__introGrade || Store.d.grade || 'g1';
-  setGrade(g, true);
-  sfx.win(); confetti();
-  toast(`🎉 欢迎你，${name}！`);
-  setTimeout(() => location.reload(), 900);
-}
-
-/* 智能继续学习：字母 → 本年级单词 → 语法 → 游戏 */
-(function () {
-  const btn = document.getElementById('continueBtn');
-  const nextLetter = LETTERS.find(l => !Store.d.letters[l.L]);
-  let cta;
-  if (nextLetter) cta = { href: 'letters.html', txt: `▶ 继续学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}（${nextLetter.shape}）` };
-  else if (wordMasteredCount() < gradeWordCount(myGrade().id)) cta = { href: 'words.html', txt: `▶ 去单词镇学${myGrade().name}的单词` };
-  else if (Object.keys(Store.d.books || {}).length < BOOKS_TOTAL) cta = { href: 'books.html', txt: '▶ 去绘本馆读今天的故事' };
-  else if (grammarDoneCount() < GRAMMAR_LEVELS.length) cta = { href: 'grammar.html', txt: '▶ 挑战句子工厂下一关' };
-  else cta = { href: 'games.html', txt: '▶ 去游戏乐园复习' };
-  btn.textContent = cta.txt; btn.href = cta.href;
-})();
-
-/* 迎宾语 */
-(function () {
-  const h = new Date().getHours();
-  const g = h < 11 ? '早上好呀' : h < 14 ? '中午好呀' : h < 19 ? '下午好呀' : '晚上好呀';
-  $('#greet').textContent = `${g}！欢迎来到小鸟英语乐园`;
-  $('#bGrade').textContent = `🎓 ${myGrade().name}`;
-  $('#bStreak').textContent = `🔥 连续学习 ${Store.d.streak.count} 天`;
-  $('#bStars').textContent = `⭐ 星星 ${Store.d.stars} 颗`;
-  $('#bBadges').textContent = `🏅 徽章 ${Object.keys(Store.d.badges).length} 枚`;
-})();
-
-/* 今日任务状态 */
-(function () {
-  const t = Store.d.daily.tasks;
-  const set = (id, ok) => {
-    const el = $(id); el.classList.toggle('ok', ok);
-    if (ok) el.querySelector('.go').textContent = '✅';
+    b.onclick = () => { document.querySelectorAll('#introAvatars .avatar-chip').forEach(x=>x.classList.remove('on')); b.classList.add('on'); pick=b.dataset.a; sfx.pop(); });
+  document.getElementById('introGrade').innerHTML = GRADES.map(g =>
+    `<button data-g="${g.id}" class="${g.id===grade?'on':''}">${g.emoji}${g.name}</button>`).join('');
+  document.querySelectorAll('#introGrade button').forEach(b =>
+    b.onclick = () => { document.querySelectorAll('#introGrade button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); grade=b.dataset.g; sfx.pop(); });
+  window.saveIntro = function () {
+    const name = (document.getElementById('myName').value || '').trim() || '小朋友';
+    Profiles.updateActive({ name, avatar: pick });
+    setGrade(grade, true);
+    sfx.win(); confetti();
+    setTimeout(() => location.reload(), 700);
   };
-  set('#taskLetter', t.letter); set('#taskWords', t.words); set('#taskGame', t.game);
 })();
 
-/* 每日复习 */
-(function () {
+function showHome() {
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('home').style.display = '';
+  const p = Profiles.active();
+  document.getElementById('helloLine').innerHTML =
+    `👋 <b>${esc(p.name)}</b> · <a id="gradeLink" title="点击切换年级">🎓${myGrade().name}</a> · 🔥${Store.d.streak.count}天 · ⭐${Store.d.stars}`;
+  document.getElementById('gradeLink').onclick = openProfileModal;
+
+  const nextLetter = LETTERS.find(l => !Store.d.letters[l.L]);
+  const gradeDone = cumMasteredCount(), gradeAll = cumWordCount();
+  let step;
+  if (nextLetter) step = { e:'🏝️', t:`学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}`, s:`${nextLetter.shape} · 故事+拼读+写一写`, href:'letters.html', now:letterCount(), all:26 };
+  else if (gradeDone < gradeAll) step = { e:'🏘️', t:'单词闯关', s:`${myGrade().name}词库：已掌握 ${gradeDone}/${gradeAll}`, href:'words.html?mode=plan', now:gradeDone, all:gradeAll };
+  else if (Object.keys(Store.d.books||{}).length < BOOKS_TOTAL) step = { e:'📚', t:'读今天的绘本', s:`已读 ${Object.keys(Store.d.books||{}).length}/${BOOKS_TOTAL} 本`, href:'books.html', now:Object.keys(Store.d.books||{}).length, all:BOOKS_TOTAL };
+  else if (grammarDoneCount() < GRAMMAR_LEVELS.length) step = { e:'🏭', t:'句子工厂闯关', s:`已通过 ${grammarDoneCount()}/${GRAMMAR_LEVELS.length} 关`, href:'grammar.html', now:grammarDoneCount(), all:GRAMMAR_LEVELS.length };
+  else step = { e:'🎡', t:'去游戏乐园复习', s:'边玩边巩固', href:'games.html', now:0, all:0 };
+  document.getElementById('mcEmoji').textContent = step.e;
+  document.getElementById('mcTitle').textContent = step.t;
+  document.getElementById('mcSub').textContent = step.s;
+  document.getElementById('mcBar').style.width = (step.all ? Math.round(step.now/step.all*100) : 100) + '%';
+  document.getElementById('mainCard').onclick = () => location.href = step.href;
+
+  const t = Store.d.daily.tasks;
+  document.getElementById('taskStrip').innerHTML = '今日任务：' +
+    (t.letter ? '<span class="tdone">✅ 字母</span>' : '<span>⬜ 字母</span>') +
+    (t.words ? '<span class="tdone">✅ 单词</span>' : '<span>⬜ 单词</span>') +
+    (t.game ? '<span class="tdone">✅ 游戏</span>' : '<span>⬜ 游戏</span>') +
+    (Store.d.daily.bonus ? ' · 🎁 已领奖励' : ' · 全完成得5⭐');
+
   const due = dueWords();
   if (due.length) {
-    $('#reviewSection').style.display = '';
-    $('#reviewText').textContent = `有 ${due.length} 个单词宝宝到了复习时间：${due.slice(0, 5).join('、')}${due.length > 5 ? '…' : ''}`;
+    document.getElementById('reviewBanner').style.display = '';
+    document.getElementById('revText').textContent = due.slice(0,4).join('、') + (due.length>4?' 等 '+due.length+' 个':'');
   }
-})();
 
-/* 学习地图 */
-(function () {
-  const pct = (a, b) => Math.round(a / b * 100);
   const islands = [
-    { href: 'letters.html', emoji: '🏝️', name: '字母岛', tag: '象形故事 · 理解记忆', tagColor: 'var(--coral)',
-      desc: '26 个字母都是小角色：a 是小鸟，W 是水波波', now: letterCount(), total: 26, color: 'var(--coral)' },
-    { href: 'words.html', emoji: '🏘️', name: '单词镇', tag: `${THEMES.length} 大主题 · ${TOTAL_WORDS} 词`, tagColor: 'var(--mint)',
-      desc: `应会 ${cumMasteredCount()}/${cumWordCount()}（${myGrade().name}及以下累计）`, now: cumMasteredCount(), total: cumWordCount(), color: 'var(--mint)' },
-    { href: 'books.html', emoji: '📚', name: '绘本馆', tag: '分级阅读 · 点句跟读', tagColor: 'var(--grape)',
-      desc: '6 本入门英语绘本，点句子听真人朗读', now: Object.keys(Store.d.books || {}).length, total: BOOKS_TOTAL, color: 'var(--grape)' },
-    { href: 'grammar.html', emoji: '🏭', name: '句子工厂', tag: '万能公式 · 句子思维', tagColor: 'var(--grape)',
-      desc: '16 关小火车造句，第二阶段直接用单词镇的词造句', now: grammarDoneCount(), total: GRAMMAR_LEVELS.length, color: 'var(--grape)' },
-    { href: 'games.html', emoji: '🎡', name: '游戏乐园', tag: '边玩边复习', tagColor: 'var(--orange)',
-      desc: '听音选字母 · 翻翻乐 · 拼词火车 · 句子火车员', now: 0, total: 0, color: 'var(--orange)' },
+    { e:'🏝️', n:'字母岛', d:letterCount()+'/26', href:'letters.html' },
+    { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
+    { e:'📚', n:'绘本馆', d:Object.keys(Store.d.books||{}).length+'/'+BOOKS_TOTAL, href:'books.html' },
+    { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
+    { e:'🎡', n:'游戏乐园', d:'4个游戏', href:'games.html' },
   ];
-  $('#islandGrid').innerHTML = islands.map(i => {
-    const p = i.total ? `<div class="prog"><i style="width:${pct(i.now, i.total)}%;background:${i.color}"></i></div>
-      <small style="color:#5C6273;font-size:.72rem">${i.now} / ${i.total}</small>` : '';
-    return `<a class="island" href="${i.href}" style="border-color:${i.color}">
-      <span class="tag" style="border-color:${i.tagColor};color:${i.tagColor}">${i.tag}</span>
-      <div class="isl-emoji">${i.emoji}</div>
-      <h3>${i.name}</h3><p>${i.desc}</p>${p}</div>`;
-  }).join('');
-})();
+  document.getElementById('bigIslands').innerHTML = islands.map(i =>
+    `<div class="big-island" onclick="location.href='${i.href}'"><div class="bi-emoji">${i.e}</div><b>${i.n}</b><small>${i.d}</small></div>`).join('');
+}
 </script>
 </body>
 </html>
