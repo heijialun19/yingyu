@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>家长中心 · 小鸟英语乐园</title>
+<link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="css/style.css?v=7">
 </head>
 <body>
@@ -221,6 +222,7 @@ renderSpeechDiag();
     { b: wordMasteredCount(), s: '🎯 全部词库已掌握' },
     { b: due, s: '🔔 待复习单词' },
     { b: grammarDoneCount() + ' / ' + GRAMMAR_LEVELS.length, s: '🏭 通过的语法关卡' },
+    { b: Object.keys(Store.d.books || {}).length + ' / ' + BOOKS.length, s: '📚 读完的绘本' },
     { b: Store.d.streak.count + ' 天', s: '🔥 连续学习' },
     { b: Store.d.stars, s: '⭐ 累计星星' },
     { b: Object.keys(Store.d.badges).length + ' / ' + BADGES.length, s: '🏅 获得徽章' },
@@ -250,7 +252,7 @@ renderSpeechDiag();
   for (let i = 6; i >= 0; i--) {
     const t = todayStr(i);
     const a = Store.d.activity[t] || {};
-    const n = (a.letters || 0) + (a.words || 0) + (a.games || 0) + (a.grammar || 0);
+    const n = (a.letters || 0) + (a.words || 0) + (a.games || 0) + (a.grammar || 0) + (a.books || 0);
     days.push({ t, n });
   }
   const max = Math.max(4, ...days.map(d => d.n));
