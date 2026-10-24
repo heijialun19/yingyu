@@ -1,11 +1,22 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4EC5F1">
+<meta name="description" content="零基础也能懂的英语句子思维：谁 + 干什么 + 什么，16 关三阶段，造句题用单词镇的单词实时生成。">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
+<meta property="og:title" content="句子工厂 · 万能公式 16 关 · 小鸟英语乐园">
+<meta property="og:description" content="零基础也能懂的英语句子思维：谁 + 干什么 + 什么，16 关三阶段，造句题用单词镇的单词实时生成。">
+<meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
+<meta property="og:url" content="https://heijialun19.github.io/yingyu/grammar.html">
+<meta name="twitter:card" content="summary_large_image">
 <title>句子工厂 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=27">
+<link rel="stylesheet" href="css/style.css?v=28">
 </head>
 <body>
 <main>
@@ -16,10 +27,10 @@
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=25"></script>
-<script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=36"></script>
-<script src="js/sentence.js?v=38"></script>
+<script src="js/words-data.js?v=26"></script>
+<script src="js/data.js?v=26"></script>
+<script src="js/app.js?v=37"></script>
+<script src="js/sentence.js?v=39"></script>
 <script>
 renderNav('grammar'); renderDecor();
 
@@ -94,7 +105,9 @@ const GEN = {
       zh: `The cat is ${v}ing. 小猫正在${ING_ZH[v]}。`, explain: '它（the cat）用 is；正在做，动词加 ing。' };
   },
   havePlural(ws) {
-    const w = pick(ws.filter(pluralSafe));
+    const safe = ws.filter(pluralSafe);
+    if (!safe.length) return null;
+    const w = pick(safe);
     return { type:'choice', word: w.w,
       prompt: `两个${w.zh} two __ ${w.e}`,
       options: [w.w + 's', w.w, w.w + 'es'], answer: 0,
@@ -102,6 +115,7 @@ const GEN = {
   },
   /* ---- 造句（build）类 ---- */
   seeBuild(ws) {
+    if (!ws.length) return null;
     const w = pick(ws); const a = art(w.w); const m = measureOf(w);
     const others = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 2);
     return { type:'build', word: w.w,
@@ -111,8 +125,10 @@ const GEN = {
       hint: a === 'an' ? `${w.w} 是元音开头，要用 an 哦` : '冠词选 a' };
   },
   buildLike(ws) {
-    const w = pick(ws.filter(pluralSafe));
-    const others = shuffle(ws.filter(x => x.w !== w.w && pluralSafe(x))).slice(0, 2);
+    const safe = ws.filter(pluralSafe);
+    if (!safe.length) return null;
+    const w = pick(safe);
+    const others = shuffle(safe.filter(x => x.w !== w.w)).slice(0, 2);
     return { type:'build', word: w.w,
       prompt: `「我们喜欢${w.zh}（复数）」 ${w.e}`,
       slots: [['We','I','They'], ['like','likes','am'], [w.w + 's', w.w, w.w + 'es']],
@@ -130,7 +146,9 @@ const GEN = {
       hint: 'my = 我的' };
   },
   buildHave(ws) {
-    const w = pick(ws.filter(pluralSafe)); const m = measureOf(w);
+    const safe = ws.filter(pluralSafe);
+    if (!safe.length) return null;
+    const w = pick(safe); const m = measureOf(w);
     return { type:'build', word: w.w,
       prompt: `「我有两${m}${w.zh}」 ${w.e}`,
       slots: [['I','We','He'], ['have','has','am'], ['two','three','a'], [w.w + 's', w.w, w.w + 'es']],
@@ -149,10 +167,12 @@ function buildLevelItems(lv) {
     if (ws.length >= 4) {
       const made = [];
       let guard = 0;
-      while (made.length < lv.gen.n && guard++ < 30) {
+      // 单题生成做容错：某个生成器遇到空池/异常时只跳过该题，绝不让整关白屏
+      while (made.length < lv.gen.n && guard++ < 40) {
         const kind = pick(lv.gen.kinds);
-        const it = GEN[kind](ws, lv);
-        if (it && !made.some(m => m.prompt === it.prompt)) made.push(it);
+        let it = null;
+        try { it = GEN[kind](ws, lv); } catch (e) { it = null; }
+        if (it && it.prompt && !made.some(m => m.prompt === it.prompt)) made.push(it);
       }
       // 生成题穿插在静态题之间
       made.forEach((m, i) => items.splice(Math.min(items.length, 1 + i * 2), 0, Object.assign({ generated: true, fromTheme: themeEmoji(lv.gen.themes) }, m)));

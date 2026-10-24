@@ -1,11 +1,22 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4EC5F1">
+<meta name="description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子小火车万能公式，12 本点读绘本，4 个复习游戏。安全纯净，进度保存在本机。">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
+<meta property="og:title" content="小鸟英语乐园 · 一年级英语启蒙">
+<meta property="og:description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子小火车万能公式，12 本点读绘本，4 个复习游戏。安全纯净，进度保存在本机。">
+<meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
+<meta property="og:url" content="https://heijialun19.github.io/yingyu/index.html">
+<meta name="twitter:card" content="summary_large_image">
 <title>小鸟英语乐园 · 一年级英语启蒙</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=27">
+<link rel="stylesheet" href="css/style.css?v=28">
 <style>
 .hello-line{text-align:center;color:#5C6273;font-size:.9rem;margin:4px 0 14px}
 .hello-line b{color:var(--ink)}
@@ -76,10 +87,10 @@
   </div>
 </main>
 
-<script src="js/words-data.js?v=25"></script>
-<script src="js/data.js?v=25"></script>
-<script src="js/app.js?v=36"></script>
-<script src="js/sentence.js?v=38"></script>
+<script src="js/words-data.js?v=26"></script>
+<script src="js/data.js?v=26"></script>
+<script src="js/app.js?v=37"></script>
+<script src="js/sentence.js?v=39"></script>
 <script>
 renderNav('index'); renderDecor();
 
@@ -174,6 +185,7 @@ function showHome() {
   ];
   document.getElementById('bigIslands').innerHTML = islands.map(i =>
     `<div class="big-island" onclick="location.href='${i.href}'"><div class="bi-emoji">${i.e}</div><b>${i.n}</b><small>${i.d}</small></div>`).join('');
+  maybeShowInstallHint(); // 手机浏览器：引导「添加到主屏幕」（可永久关闭）
 }
 </script>
 </body>

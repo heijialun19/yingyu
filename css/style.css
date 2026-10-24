@@ -222,6 +222,26 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   position: relative; z-index: 60; background: #FFF3D6; border-bottom: 3px solid var(--lemon);
   padding: 10px 16px; font-size: .85rem; font-weight: 700; text-align: center;
 }
+/* ---------- 「添加到主屏幕」安装引导 ---------- */
+.install-hint {
+  position: fixed; left: 12px; right: 12px; bottom: calc(78px + env(safe-area-inset-bottom)); z-index: 70;
+  display: flex; align-items: center; gap: 12px;
+  background: #fff; border: 3px solid var(--lemon); border-radius: 22px;
+  padding: 12px 14px; box-shadow: 0 8px 24px rgba(45,49,66,.22);
+  animation: ihIn .35s ease-out;
+}
+.install-hint.ih-out { animation: ihOut .25s ease-in forwards; }
+.ih-emoji { flex: none; font-size: 30px; line-height: 1; }
+.ih-txt { flex: 1; min-width: 0; font-size: .82rem; font-weight: 700; color: var(--ink); line-height: 1.45; }
+.ih-txt b { color: var(--lake); }
+.ih-close {
+  flex: none; width: 30px; height: 30px; border: none; border-radius: 50%;
+  background: #F1F3F8; color: var(--ink2); font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.ih-close:active { transform: scale(.9); }
+@keyframes ihIn  { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes ihOut { to   { opacity: 0; transform: translateY(16px); } }
+@media (min-width: 721px) { .install-hint { display: none; } }
 .opt.good { border-color: var(--mint); background: #E5F9E9; animation: pop .4s; }
 .opt.bad  { border-color: var(--coral); background: #FFE9E9; animation: shake .4s; }
 @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }

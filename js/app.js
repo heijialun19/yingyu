@@ -523,6 +523,40 @@ const sfx = {
   win()      { [523, 587, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.11, 0.18, 'triangle', 0.16)); }
 };
 
+/* ---------------- 手机端「添加到主屏幕」引导 ----------------
+   孩子几乎每天都要用：装到主屏幕后全屏打开、无地址栏，和 App 一样。
+   只在手机浏览器里出现；第 2 次访问起展示；关掉后不再打扰。 */
+function maybeShowInstallHint() {
+  try {
+    const ua = navigator.userAgent;
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(ua) || (/Mobile/i.test(ua) && window.innerWidth < 820);
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (!isMobile || standalone) return;
+    if (localStorage.getItem('birdie_install_hint') === 'off') return;
+    const n = (+localStorage.getItem('birdie_visits') || 0) + 1;
+    localStorage.setItem('birdie_visits', String(n));
+    if (n < 2 || document.getElementById('installHint')) return;
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const steps = isIOS
+      ? '点 Safari 底部中间的「<b>分享</b>」按钮，往上滑，选「<b>添加到主屏幕</b>」'
+      : '点浏览器右上角「<b>⋮ / ···</b>」菜单，选「<b>添加到主屏幕</b>」或「<b>安装应用</b>」';
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="install-hint" id="installHint">
+        <div class="ih-emoji">🐣</div>
+        <div class="ih-txt">
+          <b>把小鸟英语乐园放到手机桌面</b>
+          <span>像 App 一样全屏打开，孩子一点就开学：${steps}</span>
+        </div>
+        <button class="ih-close" onclick="dismissInstallHint()" title="知道了，不再提示">✕</button>
+      </div>`);
+  } catch (e) {}
+}
+function dismissInstallHint() {
+  try { localStorage.setItem('birdie_install_hint', 'off'); } catch (e) {}
+  const el = document.getElementById('installHint');
+  if (el) { el.classList.add('ih-out'); setTimeout(() => el.remove(), 320); }
+}
+
 /* ---------------- 界面组件 ---------------- */
 const NAV_ITEMS = [
   { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
