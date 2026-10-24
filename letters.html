@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>字母岛 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=14">
+<link rel="stylesheet" href="css/style.css?v=15">
 </head>
 <body>
 <main>
@@ -28,9 +28,9 @@
   </section>
 <div style=text-align:center;margin-top:20px;font-size:.75rem><a href=disclaimer.html style=color:#78909C>📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=14"></script>
-<script src="js/data.js?v=14"></script>
-<script src="js/app.js?v=14"></script>
+<script src="js/words-data.js?v=15"></script>
+<script src="js/data.js?v=15"></script>
+<script src="js/app.js?v=15"></script>
 <script>
 renderNav('letters'); renderDecor();
 
@@ -145,8 +145,10 @@ function renderStage(speakIt) {
           <div style="text-align:center">
             <div style="font-size:.9rem;margin-bottom:8px">描红进度</div>
             <div style="width:140px;height:18px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:0 auto 10px">
-              <div id="traceBar" style="height:100%;width:0%;background:linear-gradient(90deg,#FFD93D,#FF9F45);border-radius:999px;transition:.2s"></div>
-            </div>
+              <div style="font-size:.82rem;color:#5C6273;margin-bottom:4px">描满</div>
+            <div style="width:140px;height:14px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:0 auto 6px"><div id="traceBar" style="height:100%;width:0%;background:linear-gradient(90deg,#FFD93D,#FF9F45);border-radius:999px;transition:.2s"></div></div>
+            <div style="font-size:.82rem;color:#5C6273;margin-bottom:4px">描准</div>
+            <div style="width:140px;height:14px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:0 auto 10px"><div id="traceAcc" style="height:100%;width:100%;background:linear-gradient(90deg,#6BCB77,#4EC5F1);border-radius:999px;transition:.2s"></div></div>
             <div id="traceStatus" style="font-size:.85rem;margin-bottom:8px;color:#5C6273">用手指沿着虚线描 ✏️</div>
             <button class="btn ghost" onclick="initTrace()">🧽 擦掉重写</button>
           </div>
@@ -217,17 +219,33 @@ function initTrace() {
   }
   __traceDone = false;
   __traceTouched = new Set();
-  updateTraceBar();
+  __traceOut = new Set();
+  updateTraceUI();
   const st = document.getElementById('traceStatus');
-  if (st) { st.textContent = '用手指沿着虚线描 ✏️'; st.style.color = '#5C6273'; }
+  if (st) { st.textContent = '用手指沿着虚线慢慢描 ✏️'; st.style.color = '#5C6273'; }
 }
 
-function updateTraceBar() {
-  const bar = document.getElementById('traceBar'); if (!bar || !__traceTarget) return 0;
-  const need = Math.ceil(__traceTarget.size * 0.88); // 88% 才过关
-  const pct = Math.min(100, Math.round(__traceTouched.size / Math.max(1, need) * 100));
-  bar.style.width = pct + '%';
-  return pct;
+/* 描红判定 v3：两条标准同时过关——①描满（覆盖85%）②描准（线内≥72%）
+   乱涂会拉低"描准"，无法蒙混过关 */
+let __traceOut = new Set();
+const TRACE_COV_NEED = 0.85, TRACE_ACC_NEED = 0.72;
+function updateTraceUI(silent) {
+  const bar = document.getElementById('traceBar'), bar2 = document.getElementById('traceAcc');
+  if (!bar || !__traceTarget) return { cov: 0, acc: 0, pass: false };
+  const need = Math.ceil(__traceTarget.size * TRACE_COV_NEED);
+  const cov = Math.min(100, Math.round(__traceTouched.size / Math.max(1, need) * 100));
+  const total = __traceTouched.size + __traceOut.size;
+  const acc = total ? Math.round(__traceTouched.size / total * 100) : 100;
+  bar.style.width = cov + '%';
+  if (bar2) bar2.style.width = acc + '%';
+  const pass = cov >= 100 && acc >= Math.round(TRACE_ACC_NEED * 100);
+  const st = document.getElementById('traceStatus');
+  if (st && !silent) {
+    if (pass) { st.innerHTML = '✅ 写得真标准！可以 🧽 重写，或换大小写'; st.style.color = '#4E9E59'; }
+    else if (acc < 65 && total > 6) { st.textContent = '😯 涂到虚线外面去啦，慢一点描'; st.style.color = '#E65100'; }
+    else if (cov < 100) { st.textContent = '继续描，把虚线都盖住 ✏️'; st.style.color = '#5C6273'; }
+  }
+  return { cov, acc, pass };
 }
 
 (function bindTrace() {
@@ -242,27 +260,24 @@ function updateTraceBar() {
       const r = cv.getBoundingClientRect();
       const x = (ev.clientX - r.left) * (280 / r.width);
       const y = (ev.clientY - r.top) * (280 / r.height);
-      // 细笔刷：半径10，更精准
       ctx.fillStyle = 'rgba(255,107,107,.45)';
-      ctx.beginPath(); ctx.arc(x, y, 10, 0, Math.PI * 2); ctx.fill();
-      // 只计笔刷中心直接经过的格子（不做 3x3 扩张）
-      const gx = Math.floor(x / cell), gy = Math.floor(y / cell);
-      const k = gy * n + gx;
-      if (__traceTarget && __traceTarget.has(k)) __traceTouched.add(k);
-      // 笔刷边缘也稍微计入（半径一半处）
-      const gx2 = Math.floor((x + 5) / cell), gy2 = Math.floor((y + 5) / cell);
-      const gx3 = Math.floor((x - 5) / cell), gy3 = Math.floor((y - 5) / cell);
-      [gx2, gx3].forEach(cx => { const kk = gy * n + cx; if (__traceTarget && __traceTarget.has(kk)) __traceTouched.add(kk); });
-      [gy2, gy3].forEach(cy => { const kk = cy * n + gx; if (__traceTarget && __traceTarget.has(kk)) __traceTouched.add(kk); });
+      ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.fill();
+      // 判定：中心+四探针；命中目标格=描满，否则=涂出界
+      const probes = [[0,0],[5,0],[-5,0],[0,5],[0,-5]];
+      let hitInside = false;
+      for (const [dx,dy] of probes) {
+        const gx = Math.floor((x+dx)/cell), gy = Math.floor((y+dy)/cell);
+        const k = gy*n+gx;
+        if (__traceTarget && __traceTarget.has(k)) { __traceTouched.add(k); hitInside = true; }
+      }
+      const g0 = Math.floor(y/cell)*n + Math.floor(x/cell);
+      if (!hitInside && !(__traceTarget && __traceTarget.has(g0))) __traceOut.add(g0);
 
-      const pct = updateTraceBar();
-      if (pct >= 100 && !__traceDone) {
+      const r2 = updateTraceUI();
+      if (r2.pass && !__traceDone) {
         __traceDone = true;
         addStars(1); confetti(); sfx.win();
         toast('✍️ 写得真棒！+1 ⭐');
-        const st = document.getElementById('traceStatus');
-        if (st) { st.innerHTML = '✅ 太棒了！可以 🧽 重写练，或切大写/小写'; st.style.color = '#4E9E59'; }
-        // 不 return，不阻止继续写
       }
     };
     draw(e);
