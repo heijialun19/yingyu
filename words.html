@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -6,6 +6,49 @@
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="css/style.css?v=24">
+<style>
+/* ---------- 拼写工坊 · 六步法 ---------- */
+.sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
+.sp-steps li{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 0;border-radius:12px;background:#F1F3F7;color:#8B93A7;font-size:.7rem;line-height:1.25}
+.sp-steps li i{font-style:normal;font-weight:800;font-size:.78rem}
+.sp-steps li b{font-weight:800}
+.sp-steps li.on{background:#FFE9A8;color:#8A6A00;outline:3px solid #FFD93D}
+.sp-steps li.done{background:#DFF3E1;color:#2E7D32}
+.sp-bigimg{font-size:86px;line-height:1.15;text-align:center;display:block}
+.sp-cn{font-size:1.25rem;font-weight:800;color:#5C6273;text-align:center;margin-top:4px}
+.sp-reveal{font-size:2.1rem;font-weight:800;letter-spacing:.3em;text-align:center;color:#2D3142;margin:8px 0 2px;word-break:break-all}
+.sp-tip{color:#5C6273;font-size:.88rem;text-align:center;line-height:1.7;margin:8px 0}
+.sp-count{text-align:center;color:#8B93A7;font-size:.85rem;font-weight:700;margin-top:6px}
+.sp-listen{display:block;margin:10px auto 0;padding:14px 26px;border-radius:999px;border:3px solid #4EC5F1;background:#EAF7FD;color:#1C7FA6;font-size:1.05rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 0 rgba(45,49,66,.10)}
+.sp-listen:active{transform:translateY(2px);box-shadow:none}
+.sp-slots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0 4px}
+.sp-slot{width:44px;height:52px;border-radius:12px;border:3px dashed #C9CFDB;background:#fff;display:grid;place-items:center;font-size:1.4rem;font-weight:800;color:#2D3142;cursor:pointer}
+.sp-slot.fill{border-style:solid;border-color:#4EC5F1;background:#EAF7FD}
+.sp-slot.good{border-color:#4E9E59;background:#DFF3E1}
+.sp-slot.bad{border-color:#E05656;background:#FFE9E9;animation:spshake .3s}
+.sp-bank{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0 4px}
+.sp-tile{min-width:44px;height:50px;padding:0 10px;border-radius:12px;border:3px solid #FFD93D;background:#FFF7DA;color:#2D3142;font-size:1.35rem;font-weight:800;cursor:pointer;box-shadow:0 3px 0 rgba(45,49,66,.12);font-family:inherit}
+.sp-tile:active{transform:translateY(2px)}
+.sp-tile.used{opacity:.22;pointer-events:none}
+.sp-tile.warn{animation:spshake .3s;border-color:#E05656}
+@keyframes spshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.sp-cutline{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;row-gap:6px;margin:12px 0 4px}
+.sp-cutline b{font-size:2rem;font-weight:800;color:#2D3142;padding:2px 1px}
+.sp-cutline b.cut-b{border-bottom:5px solid #FF6B6B;border-radius:2px}
+.sp-cutdot{width:24px;height:40px;border:none;background:none;color:#C9CFDB;font-size:1.05rem;font-weight:900;cursor:pointer;padding:0;line-height:1}
+.sp-cutdot.on{color:#FF6B6B}
+.sp-ref{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.sp-chunk{padding:6px 12px;border-radius:10px;font-weight:800;font-size:1.25rem}
+.sp-chunk.v{background:#FFE9E9;color:#C0392B}
+.sp-chunk.c{background:#EAF3FF;color:#2C6FBB}
+.sp-ref-label{text-align:center;color:#8B93A7;font-size:.8rem;margin-top:6px}
+.sp-input{display:block;margin:14px auto 4px;font-size:1.5rem;font-weight:800;text-align:center;letter-spacing:.15em;padding:12px 14px;border:3px solid #FFD93D;border-radius:14px;width:min(320px,86%);font-family:inherit;background:#fff;color:#2D3142}
+.sp-input:focus{outline:3px solid #FFD93D}
+.sp-foot{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.sp-foot .btn{min-height:44px}
+.sp-next{text-align:center;margin-top:12px}
+.sp-next .btn:disabled{opacity:.45;pointer-events:none}
+</style>
 </head>
 <body>
 <main>
@@ -52,7 +95,7 @@ function showPool(kind) {
     <div class="card" style="border-color:${plan ? 'var(--mint)' : 'var(--coral)'}">
       <h2>${title}</h2>
       <p style="margin:6px 0 0;color:#5C6273;font-size:.86rem;line-height:1.8">${desc}</p>
-      ${list.length >= 4 ? `<div style="margin:12px 0"><button class="btn mint" onclick="startPractice()">✏️ 练这一批（得星星）</button></div>` : '<p style="margin:12px 0;color:#4E9E59;font-weight:700">太棒了，这里暂时是空的！去按主题浏览学新词吧～</p>'}
+      ${list.length >= 4 ? `<div style="margin:12px 0;display:flex;gap:10px;flex-wrap:wrap"><button class="btn mint" onclick="startPractice()">✏️ 练这一批（得星星）</button><button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button></div>` : '<p style="margin:12px 0;color:#4E9E59;font-weight:700">太棒了，这里暂时是空的！去按主题浏览学新词吧～</p>'}
       <div class="word-grid">
         ${list.slice(0, 24).map(w => `
           <div class="word-card" onclick="speakWordDouble('${jsq(w.w)}')" title="点我：先听发音，再听拼读">
@@ -154,6 +197,7 @@ function renderBrowse() {
       ${t.tip ? `<div class="tip">${t.tip}</div>` : ''}
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px">
         <button class="btn mint" onclick="startPractice()">✏️ 练一练（得星星）</button>
+        <button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button>
         <button class="btn" onclick="listenAll()">🔊 全部听一遍</button>
       </div>
       <div class="word-grid">
@@ -305,10 +349,286 @@ function renderQuizEnd() {
       <p style="color:#5C6273;font-size:.85rem">答对的单词已经安排了复习计划：1 天后、2 天后、4 天后、7 天后、15 天后自动提醒复习。</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
         <button class="btn mint big" onclick="startPractice()">再练一批</button>
+        <button class="btn grape big" onclick="startSpell()">🔤 拼写工坊</button>
         <button class="btn ghost big" onclick="poolMode ? showPool(poolMode) : renderBrowse()">返回</button>
       </div>
     </div>`;
   session = null; mode = 'browse';
+}
+
+/* ---------------- 拼写工坊 · 六步法（读→看→选→拆→拼→写） ----------------
+   借鉴自家 blockcraft 实验站已验证的六步拼写流程：
+   先听音（不认字母）→ 认形 → 从打乱字母里挑 → 切音块 → 整体拼装 → 听音默写。
+   把"最难的一步"（默写）放在最后，前面每一步都在为它搭梯子。 */
+
+/* 音块切分：只做"参考切法"，不判对错。 元音块橙、辅音块蓝。 */
+const SP_VG = ['igh','air','ear','eer','ea','ee','oo','ou','ow','oi','oy','ai','ay','au','aw','ie','ue','ui','oa','ar','or','er','ir','ur'];
+const SP_CG = ['tch','dge','sh','ch','th','ph','wh','ck','ng','qu'];
+const spIsV = ch => 'aeiou'.includes(ch);
+function chunkWord(w0) {
+  let s = String(w0).toLowerCase().replace(/[^a-z]/g, '');
+  if (!s) return [String(w0)];
+  if (s.length <= 3) return [s];
+  let suf = '';
+  if (s.length > 5 && /ing$/.test(s)) { suf = 'ing'; s = s.slice(0, -3); }
+  else if (/[bcdfghjklmnpqrstvwxz]le$/.test(s) && s.length > 4) { suf = 'le'; s = s.slice(0, -2); }
+  else if (s.length > 4 && /(es|ed|er)$/.test(s)) { suf = s.slice(-2); s = s.slice(0, -2); }
+  let magic = false; // magic-e：结尾 e，前面是 元音+辅音 → e 并进前面辅音块
+  if (!suf && /e$/.test(s) && s.length > 3 && !spIsV(s[s.length - 2]) && spIsV(s[s.length - 3])) { magic = true; s = s.slice(0, -1); }
+  const parts = []; let i = 0;
+  while (i < s.length) {
+    let cons = '';
+    while (i < s.length && !spIsV(s[i])) {
+      const rest = s.slice(i);
+      const cg = SP_CG.find(g => rest.startsWith(g) && (i + g.length >= s.length || spIsV(s[i + g.length])));
+      if (cg && cons) { break; } // 成组字母留给下一个块的开头
+      if (cg) { cons = cg; i += cg.length; break; }
+      cons += s[i]; i++;
+    }
+    if (cons) parts.push(cons);
+    let v = '';
+    if (i < s.length && spIsV(s[i])) {
+      const rest = s.slice(i);
+      const vg = SP_VG.find(g => rest.startsWith(g));
+      if (vg) { v = vg; i += vg.length; } else { v = s[i]; i++; }
+    }
+    if (v) parts.push(v);
+    if (!cons && !v) { parts.push(s[i]); i++; }
+  }
+  if (magic) { if (parts.length) parts[parts.length - 1] += 'e'; else parts.push('e'); }
+  if (suf) {
+    if (suf === 'le' && parts.length && !spIsV(parts[parts.length - 1][0])) parts[parts.length - 1] += suf;
+    else parts.push(suf);
+  }
+  return parts;
+}
+
+const SP_STEPS = [['read','读'],['look','看'],['pick','选'],['split','拆'],['build','拼'],['write','写']];
+let spell = null;
+
+function startSpell() {
+  let pool;
+  if (poolMode === 'plan') pool = planWords();
+  else if (poolMode === 'wrong') pool = wrongWords();
+  else pool = themeById(curTheme).words;
+  const ok = pool.filter(w => /^[a-zA-Z]{3,9}$/.test(w.w)); // 词组和超长词不进拼写工坊
+  if (!ok.length) { toast('这一批都是词组，去主题里挑几个单词来拼吧～'); return; }
+  spell = { words: shuffle(ok).slice(0, 5).map(w => Object.assign({}, w)), wi: 0, step: 0, stars: 0, done: 0 };
+  spInitStep(); mode = 'spell'; renderSpell();
+}
+function spWord() { return spell.words[spell.wi]; }
+function spInitStep() {
+  const w = spWord();
+  if (spell.step === 2) spMakeBoard(w.w, 2);
+  if (spell.step === 3) spell.split = { cuts: [], ref: false };
+  if (spell.step === 4) spMakeBoard(w.w, 0);
+  if (spell.step === 5) spell.write = { fails: 0, revealed: false };
+}
+function spMakeBoard(word, nDecoys) {
+  const letters = word.toLowerCase().split('');
+  const bank = letters.map((ch, i) => ({ id: 'w' + i, ch, decoy: false, used: false }));
+  const alpha = 'abcdefghijklmnopqrstuvwxyz'; let guard = 0;
+  while (bank.length < letters.length + nDecoys && guard++ < 60) {
+    const ch = alpha[Math.floor(Math.random() * 26)];
+    if (!letters.includes(ch)) bank.push({ id: 'd' + guard, ch, decoy: true, used: false });
+  }
+  for (let i = bank.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [bank[i], bank[j]] = [bank[j], bank[i]]; }
+  spell.board = { word: word.toLowerCase(), bank, slots: letters.map(() => null), solved: false };
+}
+function spStepsBar() {
+  return `<ol class="sp-steps">${SP_STEPS.map(([, n], i) =>
+    `<li class="${i < spell.step ? 'done' : i === spell.step ? 'on' : ''}"><i>${i + 1}</i><b>${n}</b></li>`).join('')}</ol>`;
+}
+function spHead() {
+  const w = spWord();
+  return `<div class="score-bar"><b>🔤 拼写工坊</b><span>第 ${spell.wi + 1} / ${spell.words.length} 词 · ⭐${spell.stars}</span></div>
+    ${spStepsBar()}
+    <p class="sp-tip" style="margin:0 0 10px"><b style="color:#9B72FF">${esc(w.w)}</b> · ${esc(w.zh)} ${w.e || ''}</p>`;
+}
+function spFoot(extra) {
+  return `<div class="sp-foot">
+    <button class="btn ghost" onclick="spSlow()">🐢 再听（三遍）</button>
+    ${spell.step > 0 ? '<button class="btn ghost" onclick="spBack()">← 上一步</button>' : ''}
+    ${extra || ''}
+    <button class="btn ghost" onclick="spSkipWord()">跳过这个词 →</button>
+  </div>`;
+}
+function spNextBtn(id, label, disabled) {
+  return `<div class="sp-next"><button class="btn grape big" id="${id}" ${disabled ? 'disabled' : ''} onclick="spGo()">${label}</button></div>`;
+}
+function renderSpell() {
+  const w = spWord();
+  prewarmWord(w.w);
+  let body = '';
+  if (spell.step === 0) {
+    body = `
+      <span class="sp-bigimg">${w.e || '🔤'}</span>
+      <button class="sp-listen" onclick="spListen()">🔊 点我听发音</button>
+      <div class="sp-count" id="spCount">已听 ${spell.listened || 0} / 2 遍</div>
+      <p class="sp-tip">先别急着看字母，<b>只听声音</b>，猜猜是哪个东西。听够两遍再往下走～</p>
+      ${spNextBtn('spGoRead', '下一步 ▶', !spell.listened || spell.listened < 2)}`;
+  } else if (spell.step === 1) {
+    body = `
+      <span class="sp-bigimg">${w.e || '🔤'}</span>
+      <div class="sp-cn">${esc(w.zh)}</div>
+      <div class="sp-reveal">${esc(w.w)}</div>
+      <p class="sp-tip">看清楚：<b>几个字母？哪两个字母是好搭档？</b>记一下，马上字母块会被打乱！</p>
+      ${spNextBtn('spGoLook', '下一步 ▶')}`;
+    setTimeout(() => speak(w.w), 350);
+  } else if (spell.step === 2) {
+    body = `
+      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${w.e || ''} <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(w.w)}')">🔊</button></p>
+      <p class="sp-tip" style="margin-top:0">这个单词用到了哪些字母？<b>多余的不要选</b>。</p>
+      ${spBoard()}`;
+  } else if (spell.step === 3) {
+    body = `
+      <p class="sp-tip"><b>切一刀，把单词分成几个音块</b>——按"一口气读得出来"来分。</p>
+      <div class="sp-cutline">${spCutline()}</div>
+      <p class="sp-tip" style="margin-top:6px">两个字母打一个音的（<b>sh、ee、ai</b>）不要拆开哦。${spell.split.ref ? '' : '<button class="btn ghost" style="margin-left:6px;padding:4px 12px;font-size:.8rem" onclick="spShowRef()">看参考切法</button>'}</p>
+      ${spell.split.ref ? `<div class="sp-ref">${chunkWord(w.w).map(c => `<span class="sp-chunk ${/[aeiou]/.test(c) ? 'v' : 'c'}">${c}</span>`).join('')}</div><div class="sp-ref-label">↑ 参考切法（橙色是含元音的音块）</div>` : ''}
+      ${spNextBtn('spGoSplit', '下一步 ▶')}`;
+  } else if (spell.step === 4) {
+    body = `
+      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${w.e || ''}</p>
+      <p class="sp-tip" style="margin-top:0">还记得字母顺序吗？把字母块摆回台子上！点台上的字母可以拿回来。</p>
+      ${spBoard()}`;
+  } else if (spell.step === 5) {
+    const wr = spell.write;
+    body = `
+      <span class="sp-bigimg" style="font-size:64px">${w.e || '🔤'}</span>
+      <div class="sp-cn">${esc(w.zh)}</div>
+      <button class="sp-listen" onclick="speak('${jsq(w.w)}')">🔊 再听一遍</button>
+      ${wr.revealed ? `<div class="sp-reveal" style="font-size:1.6rem;color:#E05656">${esc(w.w)}</div><p class="sp-tip">照着上面的答案，在下面打一遍就过关～</p>` : `<p class="sp-tip">听着音，把单词<b>打出来</b>！</p>`}
+      <input class="sp-input" id="spWriteInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="在这里输入…" onkeydown="if(event.key==='Enter')spCheckWrite()">
+      <div class="sp-next"><button class="btn grape big" onclick="spCheckWrite()">✅ 检查</button></div>
+      ${wr.fails >= 2 && !wr.revealed ? '<div class="sp-next"><button class="btn ghost" onclick="spReveal()">👀 想不起来了，看答案</button></div>' : ''}`;
+    setTimeout(() => { const el = document.getElementById('spWriteInput'); if (el) el.focus(); }, 200);
+  }
+  $('#app').innerHTML = `<div class="card" style="max-width:640px;margin:0 auto">${spHead()}${body}${spFoot()}</div>`;
+}
+
+/* ---- 读：计两遍 ---- */
+function spListen() {
+  const w = spWord();
+  speak(w.w);
+  spell.listened = (spell.listened || 0) + 1;
+  const c = document.getElementById('spCount');
+  if (c) c.textContent = `已听 ${spell.listened} / 2 遍`;
+  const b = document.getElementById('spGoRead');
+  if (b && spell.listened >= 2) b.disabled = false;
+  if (b && spell.listened < 2) b.disabled = true;
+}
+
+/* ---- 选 / 拼：字母台 ---- */
+function spBoard() {
+  const b = spell.board;
+  return `
+    <div class="sp-slots">${b.slots.map((id, i) => {
+      const t = id ? b.bank.find(x => x.id === id) : null;
+      const cls = b.solved ? 'fill good' : t ? 'fill' : '';
+      return `<div class="sp-slot ${cls}" onclick="spTapSlot(${i})">${t ? t.ch : ''}</div>`;
+    }).join('')}</div>
+    <div class="sp-bank">${b.bank.map(t =>
+      `<button class="sp-tile ${t.used ? 'used' : ''}" id="tile-${t.id}" onclick="spTapTile('${t.id}')">${t.ch}</button>`).join('')}</div>
+    ${b.solved ? '<p class="sp-tip" style="color:#2E7D32;font-weight:800">✅ 摆对啦！</p>' : ''}`;
+}
+function spTapTile(id) {
+  const b = spell.board; if (b.solved) return;
+  const t = b.bank.find(x => x.id === id); if (!t || t.used) return;
+  if (t.decoy) {
+    const el = document.getElementById('tile-' + id);
+    if (el) { el.classList.add('warn'); setTimeout(() => el.classList.remove('warn'), 350); }
+    toast('这个字母这个词用不上哦～'); sfx.wrong(); return;
+  }
+  const empty = b.slots.indexOf(null);
+  if (empty < 0) return;
+  b.slots[empty] = id; t.used = true; sfx.pop();
+  if (b.slots.indexOf(null) < 0) {
+    const word = b.slots.map(sid => b.bank.find(x => x.id === sid).ch).join('');
+    if (word === b.word) { b.solved = true; sfx.correct(); }
+    else setTimeout(() => { toast('顺序不太对，点一格退回去换换看～'); $$('.sp-slot.fill').forEach(el => { el.classList.add('bad'); setTimeout(() => el.classList.remove('bad'), 500); }); }, 150);
+  }
+  renderSpell();
+}
+function spTapSlot(i) {
+  const b = spell.board; if (b.solved) return;
+  const id = b.slots[i]; if (!id) return;
+  const t = b.bank.find(x => x.id === id); t.used = false; b.slots[i] = null;
+  renderSpell();
+}
+
+/* ---- 拆：切一刀 ---- */
+function spCutline() {
+  const w = spWord().w.toLowerCase();
+  const cuts = spell.split.cuts;
+  let html = '';
+  for (let i = 0; i < w.length; i++) {
+    const chunkStart = cuts.includes(i);
+    html += `<b class="${chunkStart && i > 0 ? 'cut-b' : ''}">${w[i]}</b>`;
+    if (i < w.length - 1) html += `<button class="sp-cutdot ${cuts.includes(i + 1) ? 'on' : ''}" onclick="spToggleCut(${i + 1})" title="在这里切一刀">${cuts.includes(i + 1) ? '❙' : '·'}</button>`;
+  }
+  return html;
+}
+function spToggleCut(i) {
+  const arr = spell.split.cuts;
+  const at = arr.indexOf(i);
+  if (at >= 0) arr.splice(at, 1); else { arr.push(i); arr.sort((a, b) => a - b); }
+  sfx.pop(); renderSpell();
+}
+function spShowRef() { spell.split.ref = true; sfx.pop(); renderSpell(); }
+
+/* ---- 写：听音默写 ---- */
+function spCheckWrite() {
+  const w = spWord();
+  const el = document.getElementById('spWriteInput');
+  const v = (el.value || '').trim().toLowerCase();
+  if (!v) return;
+  if (v === w.w.toLowerCase()) {
+    spFinishWord(spell.write.fails === 0);
+  } else {
+    spell.write.fails++; sfx.wrong();
+    el.classList.add('bad'); setTimeout(() => el.classList.remove('bad'), 500);
+    if (spell.write.fails >= 2) { toast('没关系！点"看答案"，跟着打一遍就过关～'); renderSpell(); }
+    else toast('再听一遍，试试看～');
+  }
+}
+function spReveal() { spell.write.revealed = true; renderSpell(); }
+
+/* ---- 流程控制 ---- */
+function spGo() { if (spell.step < 5) { spell.step++; spInitStep(); renderSpell(); } }
+function spBack() { if (spell.step > 0) { spell.step--; spInitStep(); renderSpell(); } }
+function spSlow() { speakWordDouble(spWord().w); }
+function spFinishWord(good) {
+  const w = spWord();
+  if (good) { spell.stars++; addStars(1); touchWord(w.w, true); sfx.win(); toast(`✅ ${w.w} 拼写完成 +1⭐`); }
+  else { touchWord(w.w, false); toast(`已把 ${w.w} 放进错题本，明天再见面！`); }
+  spell.done++;
+  spell.wi++; spell.step = 0; spell.listened = 0;
+  if (spell.wi >= spell.words.length) return spEnd();
+  spInitStep(); renderSpell();
+}
+function spSkipWord() {
+  spell.wi++; spell.step = 0; spell.listened = 0;
+  if (spell.wi >= spell.words.length) return spEnd();
+  toast('跳过了这个词，随时可以再来～');
+  spInitStep(); renderSpell();
+}
+function spEnd() {
+  completeDailyTask('words');
+  if (spell.stars >= spell.words.length) confetti();
+  sfx.win();
+  $('#app').innerHTML = `
+    <div class="card bounce-in" style="max-width:560px;margin:0 auto;text-align:center;padding:34px 24px">
+      <div style="font-size:70px">${spell.stars >= spell.words.length ? '🏆' : spell.stars > 0 ? '🌟' : '💪'}</div>
+      <h2 style="justify-content:center">拼写工坊收工！</h2>
+      <p style="font-size:1.05rem">独立拼对 <b style="color:#FF6B6B;font-size:1.5rem">${spell.stars}</b> / ${spell.words.length} 个 · 拿到 ⭐${spell.stars}</p>
+      <p style="color:#5C6273;font-size:.85rem">六步法：读 → 看 → 选 → 拆 → 拼 → 写。多走几遍，单词就长在手上啦！</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+        <button class="btn grape big" onclick="startSpell()">再拼一批</button>
+        <button class="btn ghost big" onclick="poolMode ? showPool(poolMode) : renderBrowse()">返回</button>
+      </div>
+    </div>`;
+  spell = null; mode = 'browse';
 }
 
 /* ---------------- 启动 ---------------- */
