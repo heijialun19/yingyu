@@ -361,6 +361,7 @@ function speakChain(items) {
   const next = i => {
     if (stopped || i >= items.length) return;
     const it = items[i];
+    if (it.onStart) try { it.onStart(); } catch (e) {}
     playDictAudio(it.text, it.rate, () => next(i + 1), () => { stopped = true; });
   };
   next(0);
