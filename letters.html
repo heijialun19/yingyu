@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>字母岛 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=13">
+<link rel="stylesheet" href="css/style.css?v=14">
 </head>
 <body>
 <main>
@@ -28,9 +28,9 @@
   </section>
 <div style=text-align:center;margin-top:20px;font-size:.75rem><a href=disclaimer.html style=color:#78909C>📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=13"></script>
-<script src="js/data.js?v=13"></script>
-<script src="js/app.js?v=13"></script>
+<script src="js/words-data.js?v=14"></script>
+<script src="js/data.js?v=14"></script>
+<script src="js/app.js?v=14"></script>
 <script>
 renderNav('letters'); renderDecor();
 
@@ -158,7 +158,6 @@ function renderStage(speakIt) {
   // 预拉取双音频（字母名 + 代表词），用户一点就秒响
   prewarmWord(l.L);
   prewarmWord(l.words[0].w);
-  l.words.slice(1).forEach(w => prewarmWord(w.w)); // 其余示例词也预热
   initTrace();
 }
 
@@ -282,8 +281,7 @@ function updateTraceBar() {
 function sayName() {
   const l = LETTERS[cur];
   sfx.pop();
-  __engineCooldownUntil = 0; // 字母岛不冷却——单次失败下次重试即可
-  speak(l.L, 'en-US', 1);
+ speak(l.L, 'en-US', 1);
 }
 function saySound() {
   const l = LETTERS[cur];
