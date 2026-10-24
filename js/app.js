@@ -383,16 +383,10 @@ function phonicsText(word) {
   return letters.join('-');
 }
 
-/* 点单词：三读法（同一真人录音变速，孩子听懂每个音）
-   ① 标准语速 ② 0.55 倍慢速拖长（听清拼读）③ 再标准一遍收尾 */
-function speakWordDouble(word) {
+/* 点单词：点一下读一遍，点几次读几次（不自动连读） */
+function speakWord(word) {
   sfx.pop();
-  const w = String(word).trim();
-  speakChain([
-    { text: w, rate: 1 },
-    { text: w, rate: 1 },
-    { text: w, rate: 1 }
-  ]);
+  speak(String(word).trim(), 'en-US', 1);
 }
 
 /* ---------------- 移动端声音解锁与预热 ----------------
