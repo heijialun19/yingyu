@@ -278,7 +278,6 @@ function renderGradePicker(sel) {
     </button>`).join('');
 }
 
-/* ---------------- 语音核心：词典标准发音（有道MP3）优先，系统语音兜底 ----------------
 /* ---------------- 语音核心：只用词典标准发音（真人录音 MP3） ----------------
    决策：浏览器内置合成语音（speechSynthesis）音色与词典音混杂、质量参差，
    已全部移除——全站只有一种声音：词典真人女声。
@@ -585,7 +584,7 @@ function openProfileModal() {
         <p style="font-size:.8rem;color:#5C6273;margin:4px 0 10px">一台电脑可以有多个小朋友，每人一份独立进度，互不打扰！</p>
         <div class="profile-list">${rows}</div>
         <details class="profile-tool">
-          <summary>馃帗 淇敼褰撳墠妗ｆ鐨勫勾绾?/summary>
+          <summary>🔧 修改当前档案的年级</summary>
           <div class="theme-tabs" style="margin-top:10px">
             ${GRADES.map(g => `<button class="theme-tab ${g.id === p.grade ? 'on' : ''}" data-g="${g.id}" onclick="setGrade(this.dataset.g)"><span class="te">${g.emoji}</span>${g.name}</button>`).join('')}
           </div>

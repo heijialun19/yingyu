@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>家长中心 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=24">
+<link rel="stylesheet" href="css/style.css?v=25">
 </head>
 <body>
 <main>
@@ -67,12 +67,12 @@
         <button class="btn ghost" onclick="renderSpeechDiag()">🔄 重新检测</button>
       </div>
       <details style="margin-top:12px">
-        <summary style="cursor:pointer;font-weight:700;color:#5C6273">📋 语音来源说明</summary><div style=font-size:.82rem;line-height:2;color:#5C6273;margin-top:8px>本站发音<b>只使用公开词典发音服务</b>（真人录音，单一音源）。发音请求由用户浏览器直接发起（与本站服务器无关），仅用于个人学习。需要联网加载发音；断网时无声音（本站绝不使用机器合成音）。</div></details><details style=margin-top:8px><summary style=cursor:pointer;font-weight:700;color:#5C6273>📱 手机打开没有声音？依次检查这 5 条</summary>
+        <summary style="cursor:pointer;font-weight:700;color:#5C6273">📋 语音来源说明</summary><div style="font-size:.82rem;line-height:2;color:#5C6273;margin-top:8px">本站发音<b>只使用公开词典发音服务</b>（真人录音，单一音源）。发音请求由用户浏览器直接发起（与本站服务器无关），仅用于个人学习。需要联网加载发音；断网时无声音（本站绝不使用机器合成音）。</div></details><details style="margin-top:8px"><summary style="cursor:pointer;font-weight:700;color:#5C6273">📱 手机打开没有声音？依次检查这 5 条</summary>
         <div style="font-size:.85rem;line-height:2;color:#5C6273;margin-top:8px">
           1️⃣ 先<b>点一下页面任意位置</b>再点单词——手机浏览器要求第一次发音必须由点击触发（本站已做自动解锁，一般无感）<br>
           2️⃣ 微信/QQ 里打开可能完全没有语音：点右上角「···」→「在浏览器打开」<br>
           3️⃣ iPhone 检查<b>侧边静音键</b>和音量；部分机型需关闭"旁白"功能<br>
-          4️⃣ 安卓：设置 → 辅助功能/语言 → 安装"文字转语音(TTS)"引擎（推荐 Google TTS 或讯飞）<br>
+          4️⃣ 发音来自<b>词典真人录音</b>，需要联网——断网或网络受限时先检查网络再试<br>
           5️⃣ 检查页面右上角 🔊 是否被关成了 🔇（点它切回）
         </div>
       </details>
@@ -188,12 +188,12 @@
   <footer style="text-align:center;color:#5C6273;font-size:.72rem;line-height:1.9;margin-top:30px">
     小鸟英语乐园 Birdie ABC · 本站为学习方法演示原型，内容供家庭学习参考
   </footer>
-<div style=text-align:center;margin-top:20px;font-size:.75rem><a href=disclaimer.html style=color:#78909C>📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
+<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=24"></script>
-<script src="js/data.js?v=24"></script>
-<script src="js/app.js?v=26"></script>
-<script src="js/sentence.js?v=26"></script>
+<script src="js/words-data.js?v=25"></script>
+<script src="js/data.js?v=25"></script>
+<script src="js/app.js?v=27"></script>
+<script src="js/sentence.js?v=27"></script>
 <script>
 renderNav('parents'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -204,10 +204,10 @@ renderGradePicker('#gradeGrid');
 function renderSpeechDiag() {
   const e = speechEnv();
   document.getElementById('speechDiag').innerHTML =
-    '鉁?鍙戝０寮曟搸锛? + e.engine + '<br>' +
-    (e.online ? '鉁?缃戠粶鍦ㄧ嚎锛屽彂闊冲彲姝ｅ父鍔犺浇' : '鈿狅笍 褰撳墠绂荤嚎鈥斺€旂偣鍑诲崟璇嶅皢娌℃湁澹伴煶锛堟湰绔欑粷涓嶄娇鐢ㄦ満鍣ㄥ悎鎴愰煶锛?) +
-    (e.wechat ? '<br>鈿狅笍 褰撳墠鍦ㄥ井淇″唴鎵撳紑鈥斺€旇瘝鍏稿彂闊充竴鑸甯革紱鑻ユ棤澹拌鐢ㄧ郴缁熸祻瑙堝櫒鎵撳紑' : '') +
-    '<br>馃憠 鐐逛笅鏂广€岎煄?鐐规垜璇曞惉銆嶉獙璇佸０闊?;
+    '✅ 发声引擎：' + e.engine + '<br>' +
+    (e.online ? '✅ 网络在线，发音可正常加载' : '⚠️ 当前离线——点击单词将没有声音（本站绝不使用机器合成音）') +
+    (e.wechat ? '<br>⚠️ 当前在微信内打开——词典发音一般可用；若无声音请用系统浏览器打开' : '') +
+    '<br>👆 点下方「🎧 点我试听」验证声音';
 }
 renderSpeechDiag();
 
