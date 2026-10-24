@@ -304,6 +304,7 @@ function prewarmWord(text) {
 }
 /* 核心播放：全新 Audio + 重试一次 */
 function playDictAudio(text, rate, onEnd, onFail, isRetry) {
+  rate = 1; // mobile compat: always normal speed
   const a = new Audio(DICT_AUDIO_URL(text));
   a.preload = 'auto';
   __curAudio = a;
@@ -324,11 +325,9 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry) {
   a.onended = end;
   a.onerror = fail;
   a.onplaying = () => clearG(); // 真正出声后取消超时
-  const pr = Math.max(0.5, Math.min(1.5, rate || 1));
+  // mobile compat: no playbackRate (slow rate breaks some phone browsers)
   const go = () => {
     try { a.currentTime = 0; } catch (e) {}
-    try { a.preservesPitch = true; a.mozPreservesPitch = true; a.webkitPreservesPitch = true; } catch (e) {}
-    try { a.playbackRate = pr; } catch (e) {}
     guard = setTimeout(fail, __firstPlayDone ? 7000 : 10000);
     const p = a.play();
     __firstPlayDone = true;
@@ -381,7 +380,7 @@ function speakWordDouble(word) {
   const w = String(word).trim();
   speakChain([
     { text: w, rate: 1 },
-    { text: w, rate: 0.55 },
+    { text: w, rate: 1 },
     { text: w, rate: 1 }
   ]);
 }
