@@ -266,6 +266,7 @@ function renderQuiz() {
       </div>
       <div class="explain" id="qexp"></div>
     </div>`;
+  prewarmWord(q.word.w); // 提前拉取本题单词音频，答对回显零延迟
   if (q.autoSpeak && q.speakText) setTimeout(() => speak(q.speakText, q.lang || 'en-US'), 350);
 }
 
