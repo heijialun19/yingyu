@@ -2,8 +2,8 @@
 const CACHE = 'birdie-abc-v8';
 const CORE = [
   './', './index.html', './letters.html', './words.html', './books.html',
-  './grammar.html', './games.html', './parents.html',
-  './css/style.css?v=7', './js/words-data.js?v=7', './js/data.js?v=7', './js/app.js?v=7',
+  './grammar.html', './games.html', './parents.html', './disclaimer.html',
+  './css/style.css?v=8', './js/words-data.js?v=7', './js/data.js?v=7', './js/app.js?v=7',
   './manifest.json', './icon.svg'
 ];
 self.addEventListener('install', e => {
