@@ -264,6 +264,20 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .slot-bank.locked { pointer-events: none; opacity: .55; }
 @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }
 @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+/* 造词实验室：公式要一眼看懂"两个东西加在一起" */
+.wl-hint { color: #5C6273; font-size: .95rem; margin: 6px 0 12px; }
+.wl-formula { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 18px; }
+.wl-formula b { font-size: 1.5rem; color: #8FA3C8; }
+.wl-part {
+  background: #fff; border: 3px solid var(--lake); border-radius: 18px; padding: 10px 18px;
+  font-size: 1.45rem; font-weight: 800; color: var(--ink); letter-spacing: .5px;
+}
+.wl-part.wl-suf { border-color: var(--grape); border-style: dashed; color: var(--grape); }
+.wl-q {
+  width: 66px; height: 62px; border-radius: 18px; border: 3px dashed #C9D6E8; background: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; color: #8FA3C8; font-weight: 800;
+}
 .explain {
   margin-top: 12px; background: #F1FBFF; border-left: 6px solid var(--lake);
   border-radius: 14px; padding: 10px 14px; font-size: .9rem; line-height: 1.6;
@@ -299,6 +313,12 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .word-card .we { font-size: 56px; display: block; filter: drop-shadow(0 4px 5px rgba(0,0,0,.12)); }
 .word-card b { display: block; font-size: 1.3rem; margin-top: 6px; letter-spacing: .5px; }
 .word-card .zh { color: var(--ink2); font-size: .92rem; margin-top: 2px; }
+/* 词族：告诉孩子这个词是怎么"长"出来的，不是让他多背一个 */
+.word-card .fam { margin-top: 6px; font-size: .76rem; color: #3B5BDB; background: #EEF3FF; border: 2px solid #D6E2FF; border-radius: 999px; padding: 3px 10px; display: inline-block; }
+.word-card .fam .op { color: #8FA3C8; margin: 0 2px; }
+.sp-fam { background: #EEF3FF; border-radius: 14px; padding: 8px 12px; color: #3B5BDB; }
+/* 音标：小、灰、不抢戏 —— 它是给家长和老师看的参考，不是让孩子背的 */
+.word-card .ph { color: #6B7280; font-size: .8rem; letter-spacing: .3px; margin-top: 1px; min-height: 1em; }
 .word-card .sp { font-size: .78rem; color: #6B7280; letter-spacing: 2px; margin-top: 3px; }
 .word-card .dec {
   margin-top: 8px; font-size: .8rem; line-height: 1.6; color: var(--ink2);

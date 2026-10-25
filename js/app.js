@@ -416,6 +416,11 @@ function stopAllSpeechExcept(keep) {
   __inflight.forEach(x => { if (x !== keep) { try { x.onended = x.onerror = x.oncanplay = x.onplaying = null; x.pause(); } catch (e) {} __inflight.delete(x); } });
 }
 
+/* 音标：ipa.js 只在单词页加载，别的页面没有这个全局变量 */
+function ipaOf(w) {
+  return (typeof IPA !== 'undefined' && IPA[w]) || '';
+}
+
 /* 词图：有合适图形的用 emoji，没有的用首字母色块。
    代词/介词/连词这类词根本没有形象，硬塞一个 emoji 是错的——
    it=🐱 会让孩子以为 it 就是"猫"。宁可给字母牌，也不给假图。 */

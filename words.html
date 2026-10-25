@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=32">
+<link rel="stylesheet" href="css/style.css?v=33">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -75,9 +75,10 @@
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=27"></script>
-<script src="js/data.js?v=30"></script>
-<script src="js/app.js?v=42"></script>
+<script src="js/data.js?v=31"></script>
+<script src="js/app.js?v=43"></script>
 <script src="js/sentence.js?v=42"></script>
+<script src="js/ipa.js?v=1"></script>
 <script>
 renderNav('words'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -120,8 +121,10 @@ function showPool(kind) {
             <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
+            <div class="ph" lang="en">${ipaOf(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
+            ${famLine(w.w)}
             ${w.wrongCount ? `<div class="dec" style="background:#FFE9E9">🔁 错过 ${w.wrongCount} 次</div>` : `<div class="dec" style="background:transparent">${w.fromGrade || w.themeEmoji + w.themeName}</div>`}
           </div>`).join('')}
       </div>
@@ -156,8 +159,10 @@ function renderSearch() {
             <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
+            <div class="ph" lang="en">${ipaOf(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
+            ${famLine(w.w)}
             ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : '<div class="dec" style="background:transparent"></div>'}
           </div>`).join('')}
       </div>
@@ -233,8 +238,10 @@ function renderBrowse() {
             <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
+            <div class="ph" lang="en">${ipaOf(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
+            ${famLine(w.w)}
             ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : '<div class="dec" style="background:transparent"></div>'}
           </div>`).join('')}
       </div>
@@ -276,6 +283,15 @@ function listenAll() {
 }
 
 /* ---------------- 出题 ---------------- */
+/* 词族提示：只对 23 组白名单里的词显示。
+   写法一律是"基础词 + 后缀 = 派生词"，让孩子看见构词，而不是多背一个词。
+   注意：这里出现的字母不算泄漏答案——能看到这行时，单词本身早就摊开了。 */
+function famLine(word) {
+  const f = familyOf(word);
+  if (!f) return '';
+  return `<div class="fam" title="${f.zh}">👪 ${f.base} <span class="op">+</span> ${f.suf} <span class="op">=</span> ${f.d}</div>`;
+}
+
 function makeQuestion(word, pool) {
   /* 代词/介词这类词没有图，不能出「看词选图」——四个选项全是字母牌，孩子没得选 */
   const picPool = pool.filter(w => w.e && w.w !== word.w);
@@ -576,6 +592,7 @@ function renderSpell() {
       <p class="sp-tip"><b>切一刀，把单词分成几个音块</b>——按"一口气读得出来"来分。</p>
       <div class="sp-cutline">${spCutline()}</div>
       <p class="sp-tip" style="margin-top:6px">两个字母打一个音的（<b>sh、ee、ai</b>）不要拆开哦。${spell.split.ref ? '' : '<button class="btn ghost" style="margin-left:6px;padding:4px 12px;font-size:.8rem" onclick="spShowRef()">看参考切法</button>'}</p>
+      ${familyOf(w.w) ? `<p class="sp-tip sp-fam">👪 这一家的其他人：<b>${familyOf(w.w).base}</b> + <b>${familyOf(w.w).suf}</b> = <b>${familyOf(w.w).d}</b>（${familyOf(w.w).zh}${familyOf(w.w).note ? '，' + familyOf(w.w).note : ''}）</p>` : ''}
       ${spell.split.ref ? `<div class="sp-ref">${chunkWord(w.w).map(c => `<span class="sp-chunk ${/[aeiou]/.test(c) ? 'v' : 'c'}">${c}</span>`).join('')}</div><div class="sp-ref-label">↑ 参考切法（橙色是含元音的音块）</div>` : ''}
       ${spNextBtn('spGoSplit', '下一步 ▶')}`;
   } else if (spell.step === 4) {

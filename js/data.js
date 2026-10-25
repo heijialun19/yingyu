@@ -55,6 +55,98 @@ const POS_OVERRIDE = {
 THEMES.forEach(t => t.words.forEach(w => {
   w.pos = POS_OVERRIDE[w.w] || (w.w.includes(' ') ? 'phrase' : (t.pos || 'n'));
 }));
+/* ---------------- 词族（同根派生）：23 组，人工核对过 ----------------
+   只收"意思透明的真派生"：teach→teacher 是"教书的人"，sun→sunny 是"有太阳的"。
+   规则自动扫能扫出 34 组，但 bus→busy、man→many、sweat→sweater、store→story
+   这类是假朋友，硬凑会教错，所以这里用白名单，不用规则。 */
+const WORD_FAMILY = {
+  art:     { d: 'artist',    suf: 'ist', zh: '艺术 → 艺术家' },
+  build:   { d: 'building',  suf: 'ing', zh: '建造 → 建筑物' },
+  care:    { d: 'careful',   suf: 'ful', zh: '用心 → 仔细的', note: 'care 去 e 加 -ful' },
+  cloud:   { d: 'cloudy',    suf: 'y',   zh: '云 → 多云的' },
+  dance:   { d: 'dancer',    suf: 'r',   zh: '跳舞 → 舞者', note: 'dance 去 e 加 -r' },
+  farm:    { d: 'farmer',    suf: 'er',  zh: '种田 → 农民' },
+  foreign: { d: 'foreigner', suf: 'er',  zh: '外国的 → 外国人' },
+  friend:  { d: 'friendly',  suf: 'ly',  zh: '朋友 → 友好的' },
+  health:  { d: 'healthy',   suf: 'y',   zh: '健康 → 健康的' },
+  help:    { d: 'helpful',   suf: 'ful', zh: '帮助 → 有帮助的' },
+  rain:    { d: 'rainy',     suf: 'y',   zh: '雨 → 下雨的' },
+  sail:    { d: 'sailor',    suf: 'or',  zh: '航行 → 水手' },
+  sing:    { d: 'singer',    suf: 'er',  zh: '唱歌 → 歌手' },
+  slow:    { d: 'slowly',    suf: 'ly',  zh: '慢的 → 慢慢地' },
+  snow:    { d: 'snowy',     suf: 'y',   zh: '雪 → 下雪的' },
+  sun:     { d: 'sunny',     suf: 'y',   zh: '太阳 → 晴朗的', note: 'n 要双写' },
+  teach:   { d: 'teacher',   suf: 'er',  zh: '教 → 老师' },
+  use:     { d: 'useful',    suf: 'ful', zh: '用 → 有用的', note: 'use 去 e 加 -ful' },
+  wait:    { d: 'waiter',    suf: 'er',  zh: '等 → 服务员' },
+  win:     { d: 'winner',    suf: 'er',  zh: '赢 → 获胜者', note: 'n 要双写' },
+  wind:    { d: 'windy',     suf: 'y',   zh: '风 → 刮风的' },
+  work:    { d: 'worker',    suf: 'er',  zh: '工作 → 工人' },
+  write:   { d: 'writer',    suf: 'r',   zh: '写 → 作家', note: 'write 去 e 加 -r' },
+};
+/* ---------------- 合成词：36 个，两个现成的词拼起来 ----------------
+   「拆词」是语言学事实，不受版权保护；这 36 个都核对过 a + b 能还原成整词。 */
+const COMPOUNDS = [
+  { w: "blackboard", a: "black", b: "board" },
+  { w: "classroom", a: "class", b: "room" },
+  { w: "schoolbag", a: "school", b: "bag" },
+  { w: "watermelon", a: "water", b: "melon" },
+  { w: "strawberry", a: "straw", b: "berry" },
+  { w: "pineapple", a: "pine", b: "apple" },
+  { w: "blueberry", a: "blue", b: "berry" },
+  { w: "mooncake", a: "moon", b: "cake" },
+  { w: "bedroom", a: "bed", b: "room" },
+  { w: "raincoat", a: "rain", b: "coat" },
+  { w: "eggplant", a: "egg", b: "plant" },
+  { w: "notebook", a: "note", b: "book" },
+  { w: "football", a: "foot", b: "ball" },
+  { w: "airport", a: "air", b: "port" },
+  { w: "weekend", a: "week", b: "end" },
+  { w: "weekday", a: "week", b: "day" },
+  { w: "birthday", a: "birth", b: "day" },
+  { w: "policeman", a: "police", b: "man" },
+  { w: "playground", a: "play", b: "ground" },
+  { w: "homework", a: "home", b: "work" },
+  { w: "classmate", a: "class", b: "mate" },
+  { w: "toothbrush", a: "tooth", b: "brush" },
+  { w: "passport", a: "pass", b: "port" },
+  { w: "gentleman", a: "gentle", b: "man" },
+  { w: "goodbye", a: "good", b: "bye" },
+  { w: "basketball", a: "basket", b: "ball" },
+  { w: "supermarket", a: "super", b: "market" },
+  { w: "grandpa", a: "grand", b: "pa" },
+  { w: "grandma", a: "grand", b: "ma" },
+  { w: "breakfast", a: "break", b: "fast" },
+  { w: "sometimes", a: "some", b: "times" },
+  { w: "everyone", a: "every", b: "one" },
+  { w: "something", a: "some", b: "thing" },
+  { w: "nothing", a: "no", b: "thing" },
+  { w: "bathroom", a: "bath", b: "room" },
+  { w: "living room", a: "living", b: "room" }
+];
+
+/* 构词成分的中文：有些成分（board / berry / straw…）本身不是词库里的词条，
+   但做"诱饵选项"时必须说得出意思，否则题目只能拿不相关的词凑数。 */
+const PART_ZH = {
+  board: '板', room: '房间', straw: '稻草', berry: '浆果', pine: '松树', note: '笔记',
+  port: '港口', birth: '出生', ground: '场地', mate: '伙伴', pass: '通行',
+  basket: '篮子', super: '超级', grand: '（外）祖', pa: '爸', ma: '妈',
+  break: '打破', times: '次', bath: '洗澡', living: '生活',
+};
+
+const FAMILY_OF = (() => {
+  const m = {};
+  for (const b in WORD_FAMILY) { m[b] = b; m[WORD_FAMILY[b].d] = b; }
+  return m;
+})();
+/* 给一个词，返回它所在的那一家（基础词 / 派生词 / 后缀 / 中文关系），没有就返回 null */
+function familyOf(w) {
+  const base = FAMILY_OF[w];
+  if (!base) return null;
+  const f = WORD_FAMILY[base];
+  return { base, d: f.d, suf: f.suf, zh: f.zh, note: f.note || '' };
+}
+
 const posInfo = p => POS_INFO[p] || POS_INFO.n;
 
 /* ---------- 26 个字母的象形故事 ----------

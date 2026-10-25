@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>游戏乐园 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=32">
+<link rel="stylesheet" href="css/style.css?v=33">
 </head>
 <body>
 <main>
@@ -28,8 +28,8 @@
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=27"></script>
-<script src="js/data.js?v=30"></script>
-<script src="js/app.js?v=42"></script>
+<script src="js/data.js?v=31"></script>
+<script src="js/app.js?v=43"></script>
 <script src="js/sentence.js?v=42"></script>
 <script src="js/grammar-engine.js?v=2"></script>
 <script>
@@ -51,6 +51,7 @@ function renderHome() {
     { id: 'memory',   emoji: '🃏', name: '图词翻翻乐', desc: '翻开卡片，图片和单词配对', color: 'var(--grape)' },
     { id: 'scramble', emoji: '🚂', name: '拼词小火车', desc: '把打乱的字母装回正确的顺序', color: 'var(--orange)' },
     { id: 'sentence', emoji: '🧑‍🔧', name: '句子火车员', desc: '句子缺了个词，你来补上！', color: 'var(--mint)' },
+    { id: 'wordlab',  emoji: '🧪', name: '造词实验室', desc: 'black + board 会变成什么？', color: 'var(--coral)' },
   ];
   $('#app').innerHTML = `<div class="game-grid">
     ${games.map(g => `<div class="island" style="border-color:${g.color}" onclick="startGame('${g.id}')">
@@ -59,7 +60,7 @@ function renderHome() {
     </div>`).join('')}
   </div>`;
 }
-function startGame(id) { sfx.pop(); ({ listen: gListen, memory: gMemoryPick, scramble: gScramblePick, sentence: gSentencePick })[id](); }
+function startGame(id) { sfx.pop(); ({ listen: gListen, memory: gMemoryPick, scramble: gScramblePick, sentence: gSentencePick, wordlab: gWordLab })[id](); }
 function gameHomeBtn() { return `<button class="btn ghost" onclick="renderHome()">← 换个游戏</button>`; }
 
 /* 词库选择卡：我的年级优先，可复习学过的词、换年级或全部随机 */
@@ -306,6 +307,87 @@ function gScramble(pool) {
     }
   };
   window._scrShow();
+}
+/* ---------------- 游戏5：造词实验室 ----------------
+   两条构词路：两个词拼起来（black + board）、加个尾巴（sun + y）。
+   选项里专门放"直译"当诱饵——黑板 / 黑色 / 木板。
+   题面只给构件，不给答案；答完才拼出整词，这就是"看见词是怎么长出来的"。 */
+function gWordLab() {
+  const fams = Object.keys(WORD_FAMILY).map(b => ({ kind: 'der', w: WORD_FAMILY[b].d, a: b, suf: WORD_FAMILY[b].suf }));
+  const comps = COMPOUNDS.map(c => ({ kind: 'com', w: c.w, a: c.a, b: c.b }));
+  const zhOf = w => (ALLW[w] || {}).zh || PART_ZH[w] || '';
+  const zhPool = [...new Set(Object.values(ALLW).map(x => x.zh))].filter(Boolean);
+
+  const qs = shuffle([...fams, ...comps]).slice(0, 8).map(it => {
+    const ans = zhOf(it.w);
+    if (!ans) return null;
+    const wrong = [];
+    const add = z => { if (z && z !== ans && wrong.length < 2 && !wrong.includes(z)) wrong.push(z); };
+    if (it.kind === 'com') { add(zhOf(it.a)); add(zhOf(it.b)); }
+    else {
+      add(zhOf(it.a));
+      const others = fams.filter(f => f.w !== it.w);
+      if (others.length) add(zhOf(pick(others).w));
+    }
+    while (wrong.length < 2) add(pick(zhPool));
+    if (wrong.length < 2) return null;
+    return { ...it, ans, options: shuffle([ans, ...wrong]) };
+  }).filter(Boolean);
+  if (qs.length < 3) { toast('造词材料不够，换一批试试～'); return; }
+
+  const S = { idx: 0, score: 0, answered: false };
+  const total = qs.length;
+
+  window._wlShow = function () {
+    Flow.reset();
+    if (S.idx >= total) {
+      addStars(S.score + 1); sfx.win(); if (S.score === total) confetti();
+      $('#app').innerHTML = endCard('🧪', `猜对 ${S.score} / ${total} 个新词`, S.score + 1);
+      return;
+    }
+    const q = qs[S.idx];
+    S.answered = false;
+    const left = q.kind === 'com' ? q.a : q.a;
+    const right = q.kind === 'com' ? q.b : '-' + q.suf;
+    $('#app').innerHTML = `
+      <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
+        <div class="score-bar"><b>🧪 造词实验室</b><span>第 ${S.idx + 1} / ${total} 题 · ✅ ${S.score}</span></div>
+        <p class="wl-hint">${q.kind === 'com' ? '两个词拼在一起，会变成一个什么词？' : '给它加个小尾巴，会变成什么词？'}</p>
+        <div class="wl-formula">
+          <span class="wl-part">${esc(left)}</span><b>+</b>
+          <span class="wl-part ${q.kind === 'der' ? 'wl-suf' : ''}">${esc(right)}</span><b>=</b>
+          <span class="wl-q">?</span>
+        </div>
+        <div class="opt-row">
+          ${q.options.map((o, i) => `<button class="opt" onclick="wlAns(this,${i})" style="font-size:1rem">${esc(o)}</button>`).join('')}
+        </div>
+        <div class="explain" id="wlexp"></div>
+        <div style="margin-top:12px">${gameHomeBtn()}</div>
+      </div>`;
+    window._curWL = q;
+  };
+
+  window.wlAns = function (btn, i) {
+    const q = window._curWL;
+    if (!q || S.answered) return;
+    const ok = q.options[i] === q.ans;
+    feedback(btn, ok);
+    if (ok) {
+      S.score++; S.answered = true;
+      sfx.correct(); flyStar(btn); lockChoices(btn);
+      const made = q.kind === 'com' ? `${q.a} + ${q.b} = ${q.w}` : `${q.a} + ${q.suf} = ${q.w}`;
+      $('#wlexp').innerHTML = `✅ <b>${esc(made)}</b><br>就是「${esc(q.ans)}」${q.kind === 'der' ? '——换了词性，意思也跟着变' : '——两个意思合起来'}`;
+      speak(q.w);
+      const go = Flow.make(() => { S.idx++; window._wlShow(); }, 2600);
+      $('#wlexp').insertAdjacentHTML('beforeend',
+        `<div style="margin-top:8px"><button class="btn ghost" style="padding:6px 18px" onclick="window._wlGo()">下一个 ▶</button></div>`);
+      window._wlGo = go;
+    } else {
+      sfx.wrong();
+      $('#wlexp').innerHTML = `🤔 再想想～它从 <b>${esc(q.w[0].toUpperCase())}</b> 开头，一共 ${q.w.replace(/ /g, '').length} 个字母`;
+    }
+  };
+  window._wlShow();
 }
 function allZh(word) { return ALLW[word] ? ALLW[word].zh : ''; }
 
