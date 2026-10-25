@@ -3,11 +3,11 @@
    - 页面导航：网络优先（在线永远拿到最新版页面，发版即生效；断网回退缓存）
    - 带版本号的静态资源：缓存优先（版本号变更即新 URL，天然绕开旧缓存）
    - 有道发音：真正缓存 + 注入 CORS 头（Web Audio 归一化要能 fetch 到音频字节） */
-const CACHE = 'birdie-abc-v48';
+const CACHE = 'birdie-abc-v49';
 const CORE = [
   './', './index.html', './letters.html', './words.html', 
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=28', './js/words-data.js?v=26', './js/data.js?v=29', './js/app.js?v=40', './js/sentence.js?v=41', './js/grammar-engine.js?v=1',
+  './css/style.css?v=29', './js/words-data.js?v=26', './js/data.js?v=29', './js/app.js?v=40', './js/sentence.js?v=41', './js/grammar-engine.js?v=2',
   './manifest.json', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 self.addEventListener('install', e => {

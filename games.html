@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>游戏乐园 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=28">
+<link rel="stylesheet" href="css/style.css?v=29">
 </head>
 <body>
 <main>
@@ -31,6 +31,7 @@
 <script src="js/data.js?v=29"></script>
 <script src="js/app.js?v=40"></script>
 <script src="js/sentence.js?v=41"></script>
+<script src="js/grammar-engine.js?v=2"></script>
 <script>
 renderNav('games'); renderDecor();
 
@@ -101,8 +102,9 @@ function getPlayPool(mode, filter) {
     GRADES.slice(0, gi + 1).forEach(g => g.themes.forEach(t => t.words.forEach(w => { if (filter(w)) ws.push(w); })));
     if (ws.length >= 4) return shuffle(ws);
   }
-  // 随机：挑一个满足条件的主题
+  // 随机：挑一个满足条件的主题（没有合格主题就返回空，由调用方提示，绝不崩）
   const ok = THEMES.filter(t => t.words.filter(filter).length >= 4);
+  if (!ok.length) return [];
   return pick(ok).words.filter(filter);
 }
 
@@ -161,17 +163,38 @@ function gMemoryPick() {
   poolPicker('🃏 图词翻翻乐', '🃏', m => gMemory(getPlayPool(m, w => w.e && !w.w.includes(' '))));
 }
 function gMemory(pool) {
+  if (!pool || !pool.length) { toast('这一批没有带图片的词，换一批试试～'); return; }
   window.memStart = function () {
-    const picks = shuffle(pool).slice(0, 4);
-    const cards = shuffle(picks.flatMap(w => [{ key: w.w, html: `<span style="font-size:2.6rem">${w.e}</span>` }, { key: w.w, html: w.w }]));
+    /* 抽词规则：图片必须互不重复。
+       全库有 212 组 emoji 被多个词共用（👦 = he / his / him / boy / brother），
+       同一张脸出现两次，孩子根本没法判断它配哪个词。 */
+    const seen = new Set(), picks = [];
+    for (const w of shuffle(pool)) {
+      if (seen.has(w.e)) continue;
+      seen.add(w.e);
+      picks.push(w);
+      if (picks.length >= 4) break;
+    }
+    if (!picks.length) { toast('这一批词没有配图，换一批试试～'); return; }
+
+    const N = picks.length;
+    /* 单词卡按长度缩字号：最长 11 个字母（watermelon / pencil-box），
+       原来一律 2rem，在 4 列网格里会被裁掉。 */
+    const sizeCls = n => n >= 10 ? ' w-xxl' : n >= 8 ? ' w-xl' : n >= 6 ? ' w-l' : '';
+    const cards = shuffle(picks.flatMap(w => ([
+      { key: w.w, html: `<span class="mem-pic">${w.e}</span>` },
+      { key: w.w, html: `<span class="mem-word${sizeCls(w.w.length)}">${esc(w.w)}</span>` }
+    ])));
+
     const st = { open: [], done: 0, misses: 0, lock: false };
     $('#app').innerHTML = `
       <div class="card" style="max-width:620px;margin:0 auto;text-align:center">
         <div class="score-bar">
-          <b>🃏 图词配对</b><span id="memStat">配对 0/4 · 翻错 0</span>
+          <b>🃏 图词配对</b><span id="memStat">配对 0/${N} · 翻错 0</span>
         </div>
+        <p style="color:#5C6273;font-size:.82rem;margin:0 0 10px">翻开两张，把<b>图片</b>和它的<b>单词</b>配成一对</p>
         <div class="mem-grid">
-          ${cards.map((c, i) => `<div class="mem-card" data-i="${i}" data-key="${c.key}" onclick="memFlip(this)">
+          ${cards.map((c, i) => `<div class="mem-card" data-i="${i}" data-key="${esc(c.key)}" onclick="memFlip(this)">
             <div class="face back">❓</div><div class="face front">${c.html}</div>
           </div>`).join('')}
         </div>
@@ -180,30 +203,28 @@ function gMemory(pool) {
           ${gameHomeBtn()}
         </div>
       </div>`;
+    const stat = () => { $('#memStat').textContent = `配对 ${st.done}/${N} · 翻错 ${st.misses}`; };
     window.memFlip = function (el) {
       if (st.lock || el.classList.contains('open') || el.classList.contains('matched')) return;
       el.classList.add('open'); sfx.pop();
       st.open.push(el);
-      if (st.open.length === 2) {
-        st.lock = true;
-        const [a, b] = st.open;
-        if (a.dataset.key === b.dataset.key) {
-          setTimeout(() => {
-            a.classList.add('matched'); b.classList.add('matched');
-            speak(a.dataset.key); sfx.correct(); flyStar(a);
-            st.done++; st.open = []; st.lock = false;
-            $('#memStat').textContent = `配对 ${st.done}/4 · 翻错 ${st.misses}`;
-            if (st.done === 4) {
-              const stars = st.misses <= 2 ? 5 : st.misses <= 5 ? 3 : 2;
-              addStars(stars); confetti(); sfx.win();
-              $('#app').innerHTML = endCard('🃏', `全部配对成功！翻错 ${st.misses} 次`, stars);
-            }
-          }, 500);
-        } else {
-          st.misses++;
-          $('#memStat').textContent = `配对 ${st.done}/4 · 翻错 ${st.misses}`;
-          setTimeout(() => { a.classList.remove('open'); b.classList.remove('open'); st.open = []; st.lock = false; }, 950);
-        }
+      if (st.open.length !== 2) return;
+      st.lock = true;
+      const [a, b] = st.open;
+      if (a.dataset.key === b.dataset.key) {
+        setTimeout(() => {
+          a.classList.add('matched'); b.classList.add('matched');
+          speak(a.dataset.key); sfx.correct(); flyStar(a);
+          st.done++; st.open = []; st.lock = false; stat();
+          if (st.done === N) {
+            const stars = st.misses <= 2 ? 5 : st.misses <= 5 ? 3 : 2;
+            addStars(stars); confetti(); sfx.win();
+            $('#app').innerHTML = endCard('🃏', `全部配对成功！翻错 ${st.misses} 次`, stars);
+          }
+        }, 500);
+      } else {
+        st.misses++; stat();
+        setTimeout(() => { a.classList.remove('open'); b.classList.remove('open'); st.open = []; st.lock = false; }, 950);
       }
     };
   };
@@ -215,6 +236,7 @@ function gScramblePick() {
   poolPicker('🚂 拼词小火车', '🚂', m => gScramble(getPlayPool(m, w => !w.w.includes(' ') && w.w.length <= 9 && /^[a-zA-Z]+$/.test(w.w))));
 }
 function gScramble(pool) {
+  if (!pool || !pool.length) { toast('这一批没有能拼的词，换一批试试～'); return; }
   const picks = shuffle(pool).slice(0, 6);
   const S = { idx: 0, score: 0 };
   window._scrShow = function () {
@@ -277,23 +299,33 @@ function gSentence(pool) {
   const foods = pool.filter(w => ['egg','rice','bread','cake','chicken','beef','pork','soup','noodle','dumpling','mooncake','biscuit','sweet','moon'].includes(w.w));
   const drinks = pool.filter(w => ['water','juice','milk','tea'].includes(w.w));
   const actions = pool.filter(w => ['run','jump','swim','sing','dance','read','write','draw','fly','walk','sleep','play'].includes(w.w));
-  const nouns = pool.filter(w => !/(s|x|z|sh|ch)$/.test(w.w) && w.w.length <= 8);
+  /* 名词池：只留"加 s 一定对"的词（不可数 / 不规则 / -y 结尾一律不进），
+     否则会生成 I like breads. / I like strawberrys. 这种错英文。 */
+  const nouns = pool.filter(w => plurSafe(w) && w.w.length <= 8);
+  const countableNouns = nouns.filter(w => isCountable(w));
   const anyFoods = foods.length ? foods : themeWordsById(['food']);
   const anyDrinks = drinks.length ? drinks : themeWordsById(['food']).filter(w => ['water','juice','milk','tea'].includes(w.w));
   const anyActions = actions.length ? actions : themeWordsById(['action1']);
-  const anyNouns = nouns.length ? nouns : themeWordsById(['animal1']).filter(w => !/(s|x|z|sh|ch)$/.test(w.w));
+  const anyNouns = nouns.length ? nouns : themeWordsById(['animal1']).filter(plurSafe);
+  const anyCountable = countableNouns.length ? countableNouns : themeWordsById(['animal1']).filter(isCountable);
 
   const makers = [
     () => { const w = pick(anyFoods); return { q: `我吃${w.zh}`, sent: `I __ ${w.w}.`, opts: ['eat','drink','look'], ans: 'eat', zh: `I eat ${w.w}. 我吃${w.zh}。`, e: w.e }; },
     () => { const w = pick(anyDrinks); return { q: `我喝${w.zh}`, sent: `I __ ${w.w}.`, opts: ['drink','eat','read'], ans: 'drink', zh: `I drink ${w.w}. 我喝${w.zh}。`, e: w.e }; },
     () => { const w = pick(anyActions); return { q: `我会${w.zh}`, sent: `I can __.`, opts: [w.w, w.w + 's', 'am'], ans: w.w, zh: `I can ${w.w}. 我会${w.zh}。`, e: w.e }; },
-    () => { const w = pick(anyNouns); return { q: `我喜欢${w.zh}（复数）`, sent: `I like __.`, opts: [w.w + 's', w.w, w.w + 'es'], ans: w.w + 's', zh: `I like ${w.w}s. 我喜欢${w.zh}。`, e: w.e }; },
+    () => { const w = pick(anyNouns); const pl = plurOf(w); return { q: `我喜欢${w.zh}（复数）`, sent: `I like __.`, opts: [pl, w.w, w.w + 'es'], ans: pl, zh: `I like ${pl}. 我喜欢${w.zh}。`, e: w.e }; },
     () => ({ q: '我是一个男孩', sent: `I __ a boy.`, opts: ['am','is','are'], ans: 'am', zh: 'I am a boy.', e: '👦' }),
     () => ({ q: '她是一个女孩', sent: `She __ a girl.`, opts: ['is','am','are'], ans: 'is', zh: 'She is a girl.', e: '👧' }),
     () => ({ q: '这是我的妈妈', sent: `This __ my mom.`, opts: ['is','are','am'], ans: 'is', zh: 'This is my mom.', e: '👩' }),
-    () => { const w = pick(anyNouns); return { q: `这是${w.zh}`, sent: `This is __ ${w.w}.`, opts: [artOf(w.w), 'an', 'the'], ans: artOf(w.w), zh: `This is ${artOf(w.w)} ${w.w}. 这是${w.zh}。`, e: w.e }; },
+    () => {
+      const w = pick(anyCountable);
+      const right = artOf(w.w), other = right === 'a' ? 'an' : 'a';
+      return { q: `这是${w.zh}`, sent: `This is __ ${w.w}.`, opts: [right, other, 'the'], ans: right,
+        zh: `This is ${right} ${w.w}. 这是${w.zh}。`, e: w.e };
+    },
   ];
   const qs = shuffle(makers).slice(0, 6).map(mk => mk());
+  window._sentQs = qs;            // 自检用：题库快照（也方便排查某道题为什么怪）
   const S = { idx: 0, score: 0, first: true };
   window._sentShow = function () {
     if (S.idx >= qs.length) {
@@ -331,6 +363,10 @@ function gSentence(pool) {
   window._sentShow();
 }
 function artOf(w) { return /^[aeiou]/i.test(w) ? 'an' : 'a'; }
+/* 共享规则在 js/grammar-engine.js（与句子工厂同一套），这里只做薄封装 */
+function plurSafe(w) { return typeof pluralSafe === 'function' ? pluralSafe(w) : !/(s|x|z|sh|ch)$/.test(w.w); }
+function plurOf(w) { return typeof pluralOf === 'function' ? pluralOf(w) : w.w + 's'; }
+function isCountable(w) { return typeof countable === 'function' ? countable(w) : true; }
 function themeWordsById(ids) {
   const out = [];
   ids.forEach(id => { const t = THEMES.find(x => x.id === id); if (t) t.words.forEach(w => { if (!w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w)) out.push(w); }); });

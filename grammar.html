@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>句子工厂 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=28">
+<link rel="stylesheet" href="css/style.css?v=29">
 <style>
 /* 句子语法解析面板（只在句子工厂用） */
 .parse{margin-top:12px;background:#F7F9FC;border:2px solid #E3E9F2;border-radius:14px;padding:12px 12px 10px}
@@ -52,7 +52,7 @@
 <script src="js/data.js?v=29"></script>
 <script src="js/app.js?v=40"></script>
 <script src="js/sentence.js?v=41"></script>
-<script src="js/grammar-engine.js?v=1"></script>
+<script src="js/grammar-engine.js?v=2"></script>
 <script>
 renderNav('grammar'); renderDecor();
 
@@ -103,37 +103,8 @@ const art = w => /^[aeiou]/i.test(w) ? 'an' : 'a';
    宁可少出一道题，也不能教孩子 I like breads. / two mouses. / The cat is danceing.
    三个来源都要挡住：不可数名词、不规则复数、以及本关还没教的变形规则
    （-y→ies、-o→oes 属于后面的内容，第 6/12 关只教"加 s"）。 */
-/* 不可数名词：既不能加 a/an，也不能加 s。
-   注意 fish / chicken 不算在内——「a fish」「a chicken」都对，
-   fish 只是复数同形（走 IRREG_PLURAL），chicken 正常加 s。 */
-const UNCOUNTABLE = new Set(['bread','milk','water','juice','rice','meat','soup','tea',
-  'coffee','butter','cheese','food','ice','grass','snow','rain','paper','money',
-  'music','homework','sugar','salt','fruit']);
-const IRREG_PLURAL = { fish:'fish', goose:'geese', mouse:'mice', sheep:'sheep', deer:'deer',
-  ox:'oxen', person:'people', man:'men', woman:'women', child:'children', foot:'feet',
-  tooth:'teeth', knife:'knives', leaf:'leaves', tomato:'tomatoes', potato:'potatoes',
-  photo:'photos', piano:'pianos' };
-const wordOf = w => String(w && w.w !== undefined ? w.w : w);
-const countable = w => !UNCOUNTABLE.has(wordOf(w).toLowerCase());
-/* 只有"加 s 一定对"的词才进复数题——白名单比黑名单可靠：
-   除了 s/x/z/sh/ch/o/f/fe/man/ouse/oose 结尾和辅音+y、不规则复数，
-   其余才放行（giraffe 这种 -ffe 结尾是安全的，单独放行）。 */
-const pluralSafe = w => {
-  const x = wordOf(w).toLowerCase();
-  if (!countable(w) || IRREG_PLURAL[x]) return false;
-  if (!/^[a-z]+$/.test(x)) return false;
-  if (/ffe$/.test(x)) return true;
-  if (/(s|x|z|sh|ch|o|f|fe|man|ouse|oose)$/.test(x)) return false;
-  if (/[^aeiou]y$/.test(x)) return false;
-  return true;
-};
-function pluralOf(w) {
-  const x = wordOf(w), k = x.toLowerCase();
-  if (IRREG_PLURAL[k]) return IRREG_PLURAL[k];
-  if (/[^aeiou]y$/i.test(x)) return x.slice(0, -1) + 'ies';
-  if (/(s|x|z|sh|ch|o)$/i.test(x)) return x + 'es';
-  return x + 's';
-}
+/* 名词规则（UNCOUNTABLE / IRREG_PLURAL / countable / pluralSafe / pluralOf）
+   已移到 js/grammar-engine.js，句子工厂与游戏共用同一套，避免各写一份又写错。 */
 /* 中文量词：动物"只"、书"本"、其余"个"（按单词所属主题判断） */
 const MEASURE = { animal1: '只', animal2: '只', school: '个', fruit: '个', food: '份', toy: '个' };
 const measureOf = w => MEASURE[w._theme] || '个';

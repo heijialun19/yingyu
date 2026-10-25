@@ -422,3 +422,36 @@ function gxThirdItem(verb, zh, subj) {
     explain: `主语是第三人称单数（${S.en}），动词要加 s / es：${verb} → ${third}。`
   };
 }
+
+/* ---------------- 名词规则（句子工厂与游戏共用） ----------------
+   不可数名词：既不能加 a/an，也不能加 s。
+   注意 fish / chicken 不算在内——「a fish」「a chicken」都对，
+   fish 只是复数同形（走 IRREG_PLURAL），chicken 正常加 s。 */
+const UNCOUNTABLE = new Set(['bread','milk','water','juice','rice','meat','soup','tea',
+  'coffee','butter','cheese','food','ice','grass','snow','rain','paper','money',
+  'music','homework','sugar','salt','fruit']);
+const IRREG_PLURAL = { fish:'fish', goose:'geese', mouse:'mice', sheep:'sheep', deer:'deer',
+  ox:'oxen', person:'people', man:'men', woman:'women', child:'children', foot:'feet',
+  tooth:'teeth', knife:'knives', leaf:'leaves', tomato:'tomatoes', potato:'potatoes',
+  photo:'photos', piano:'pianos' };
+const wordOf = w => String(w && w.w !== undefined ? w.w : w);
+const countable = w => !UNCOUNTABLE.has(wordOf(w).toLowerCase());
+/* 只有"加 s 一定对"的词才进复数题——白名单比黑名单可靠：
+   除了 s/x/z/sh/ch/o/f/fe/man/ouse/oose 结尾和辅音+y、不规则复数，
+   其余才放行（giraffe 这种 -ffe 结尾是安全的，单独放行）。 */
+const pluralSafe = w => {
+  const x = wordOf(w).toLowerCase();
+  if (!countable(w) || IRREG_PLURAL[x]) return false;
+  if (!/^[a-z]+$/.test(x)) return false;
+  if (/ffe$/.test(x)) return true;
+  if (/(s|x|z|sh|ch|o|f|fe|man|ouse|oose)$/.test(x)) return false;
+  if (/[^aeiou]y$/.test(x)) return false;
+  return true;
+};
+function pluralOf(w) {
+  const x = wordOf(w), k = x.toLowerCase();
+  if (IRREG_PLURAL[k]) return IRREG_PLURAL[k];
+  if (/[^aeiou]y$/i.test(x)) return x.slice(0, -1) + 'ies';
+  if (/(s|x|z|sh|ch|o)$/i.test(x)) return x + 'es';
+  return x + 's';
+}

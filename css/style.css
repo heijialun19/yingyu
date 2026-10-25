@@ -412,10 +412,22 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   cursor: pointer; transition: transform .2s; box-shadow: 0 4px 0 rgba(45,49,66,.1); position: relative;
 }
 .mem-card .inner { transition: opacity .2s; }
-.mem-card.open .back, .mem-card .front { display: none; }
-.mem-card.open .front, .mem-card .back { display: flex; }
-.mem-card .face { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; border-radius: 17px; }
-.mem-card .back { background: linear-gradient(135deg, var(--grape), #B79CFF); font-size: 34px; }
+/* ★ 正反面显示规则（2026-10-25 修）
+   原来 .mem-card .face{display:flex} 与 .mem-card .front{display:none} 权重相同、却写在后面，
+   于是"正面"永远显示：卡片一开局全部朝上，问号从图案背后透出来，翻牌机制完全失效。
+   现在：默认只显示背面，翻开的卡只显示正面。 */
+.mem-card .face { position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+  border-radius: 17px; padding: 6px; overflow: hidden; }
+.mem-card .back { display: flex; background: linear-gradient(135deg, var(--grape), #B79CFF); font-size: 30px; }
+.mem-card.open .back { display: none; }
+.mem-card.open .front { display: flex; }
+.mem-pic { font-size: 2.4rem; line-height: 1; }
+/* 单词卡按长度缩字号：最长 11 个字母（watermelon / pencil-box），
+   原来一律 2rem，在 4 列网格里会被裁掉一半。 */
+.mem-word { display: block; max-width: 100%; word-break: break-word; line-height: 1.15; font-size: 1.6rem; }
+.mem-word.w-l { font-size: 1.3rem; }
+.mem-word.w-xl { font-size: 1.05rem; }
+.mem-word.w-xxl { font-size: .9rem; }
 .mem-card.matched { border-color: var(--mint); background: #EDFAF0; pointer-events: none; }
 .mem-card.matched::after { content: '✅'; position: absolute; top: 4px; right: 6px; font-size: 16px; }
 .scramble-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 14px 0; }
@@ -426,7 +438,7 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 }
 .scramble-tile:hover { transform: translateY(-3px); }
 .scramble-tile.used { opacity: .2; pointer-events: none; }
-.build-word-slots { display: flex; gap: 8px; justify-content: center; min-height: 62px; margin: 10px 0; }
+.build-word-slots { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; min-height: 62px; margin: 10px 0; }
 .build-word-slots .slot { min-width: 62px; min-height: 62px; font-size: 1.5rem; }
 .score-bar { display: flex; justify-content: space-between; align-items: center; font-weight: 700; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
 
@@ -615,4 +627,15 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   /* 弹窗与提示避开底部标签栏 */
   .toast { bottom: calc(88px + env(safe-area-inset-bottom)); max-width: 92vw; font-size: .85rem; }
   .modal { max-height: 86vh; }
+}
+
+/* 窄屏：翻翻乐 4 列会把卡片压到 ~70px，收一下间距与圆角 */
+@media (max-width: 420px) {
+  .mem-grid { gap: 8px; }
+  .mem-card { border-width: 2px; border-radius: 16px; }
+  .mem-pic { font-size: 1.9rem; }
+  .mem-word { font-size: 1.35rem; }
+  .mem-word.w-l { font-size: 1.15rem; }
+  .mem-word.w-xl { font-size: .95rem; }
+  .mem-word.w-xxl { font-size: .82rem; }
 }
