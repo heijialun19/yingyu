@@ -707,3 +707,7 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   .mem-word.w-xl { font-size: .95rem; }
   .mem-word.w-xxl { font-size: .82rem; }
 }
+
+/* SVG 单词插画 */
+.wsvg { display:inline-flex; width:2.2em; height:2.2em; vertical-align:middle; }
+.wsvg svg { width:100%; height:100%; }

@@ -472,6 +472,10 @@ const WORD_COLOR = {
    宁可给字母牌，也不给假图。 */
 function wordIcon(w) {
   const name = String((w && w.w) || '').toLowerCase();
+  /* SVG 卡通插画优先（svg/word-svg.js） */
+  if (typeof WORD_SVG !== 'undefined' && WORD_SVG[name]) {
+    return `<span class="wsvg" role="img" aria-label="${esc(w.zh || name)}">${WORD_SVG[name]}</span>`;
+  }
   if (WORD_COLOR[name]) {
     return `<span class="cchip" style="background:${WORD_COLOR[name]}" role="img" aria-label="${esc(w.zh || name)}"></span>`;
   }
