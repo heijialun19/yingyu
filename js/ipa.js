@@ -24,7 +24,7 @@ const IPA = {
   "seven":"/ˈsevən/", "eight":"/eɪt/", "nine":"/naɪn/", "ten":"/ten/", "count":"/kaʊnt/",
   "number":"/ˈnʌmbər/", "red":"/red/", "yellow":"/ˈjeloʊ/", "blue":"/blu/", "green":"/ɡrin/",
   "white":"/waɪt/", "black":"/blæk/", "orange":"/ˈɔrəndʒ/", "pink":"/pɪŋk/", "purple":"/ˈpɜrpəl/",
-  "brown":"/braʊn/", "grey":"/ɡreɪ/", "colour":"/ˈkʌlər/", "school":"/skul/", "schoolbag":"/ˈskulbæɡ/", "mooncake":"/ˈmunkek/", "book":"/bʊk/",
+  "brown":"/braʊn/", "grey":"/ɡreɪ/", "colour":"/ˈkʌlər/", "school":"/skul/", "schoolbag":"/ˈskulbæɡ/", "mooncake":"/ˈmunkek/", "house":"/haʊs/", "book":"/bʊk/",
   "pen":"/pen/", "pencil":"/ˈpensəl/", "ruler":"/ˈrulər/", "bag":"/bæɡ/", "eraser":"/ɪˈreɪsər/",
   "desk":"/desk/", "chair":"/tʃer/", "blackboard":"/ˈblækbɔrd/", "crayon":"/ˈkreɪɑn/", "card":"/kɑrd/",
   "picture":"/ˈpɪktʃər/", "teacher":"/ˈtitʃər/", "student":"/ˈstudənt/", "class":"/klæs/", "classroom":"/ˈklæsrum/",
