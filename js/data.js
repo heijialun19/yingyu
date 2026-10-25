@@ -215,6 +215,10 @@ const LETTERS = [
 
 /* 进行时安全动词（-ing 拼写规则简单） */
 const ING_VERBS = ['eat','sing','jump','read','sleep','play','fly','draw','cry','laugh','drink','dance'];
+/* 现在分词要一个个写死，不能用 v+'ing' 拼——dance→danceing 就是这么错的。
+   （出题引擎只认这张表，表里没有的动词不会出现在题目里） */
+const ING_FORM = { eat:'eating', sing:'singing', jump:'jumping', read:'reading', sleep:'sleeping',
+  play:'playing', fly:'flying', draw:'drawing', cry:'crying', laugh:'laughing', drink:'drinking', dance:'dancing' };
 const ING_ZH = { eat:'吃东西', sing:'唱歌', jump:'跳', read:'读书', sleep:'睡觉', play:'玩耍', fly:'飞', draw:'画画', cry:'哭', laugh:'笑', drink:'喝水', dance:'跳舞' };
 
 /* ---------- 句子工厂：万能公式 16 关 ----------
@@ -295,7 +299,7 @@ const GRAMMAR_LEVELS = [
   { id:'L8', stage:'s2', title:'我喜欢：I like __', emoji:'❤️', formula:'I like + 单词', stars:3,
     intro:'说出你的喜欢！公式：谁 + like + 什么。题目全部来自单词镇——水果、食物、小动物都会来和你造句！',
     chant:'我喜欢，I like 🖐️\n喜欢什么跟在后\nI like apples 甜又甜\n你也来说一说！',
-    gen:{ n:4, kinds:['likeChoice','buildLike'], themes:['fruit','food','animal1','color'] },
+    gen:{ n:4, kinds:['likeChoice','buildLike'], themes:['fruit','food','animal1'] },
     items:[
       {type:'choice', prompt:'「我喜欢香蕉」哪个说法对？', options:['I like bananas.','I like banana two.','Like I bananas.'], answer:0, zh:'I like bananas. 我喜欢香蕉。', explain:'喜欢很多东西时，单词加 s（bananas）。'} ]},
   { id:'L9', stage:'s2', title:'这是我的家人：This is my __', emoji:'👨‍👩‍👧', formula:'This is my + 家人', stars:3,

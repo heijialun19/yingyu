@@ -28,7 +28,7 @@
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=26"></script>
-<script src="js/data.js?v=26"></script>
+<script src="js/data.js?v=27"></script>
 <script src="js/app.js?v=39"></script>
 <script src="js/sentence.js?v=40"></script>
 <script>
@@ -48,22 +48,61 @@ const themeWords = ids => {
 };
 const themeEmoji = ids => { const t = THEMES.find(x => ids.includes(x.id)); return t ? t.emoji + ' ' + t.name : '🏘️ 单词镇'; };
 const art = w => /^[aeiou]/i.test(w) ? 'an' : 'a';
-// 复数只需加 s 的安全词（排除 s/x/z/sh/ch 结尾）
-const pluralSafe = w => !/(s|x|z|sh|ch)$/.test(w.w);
-// 中文量词：动物用"只"，其它用"个"（按单词所属主题判断）
-const measureOf = w => /^animal/.test(w._theme || '') ? '只' : '个';
+
+/* ---- 名词/动词形态规则：出题引擎的底线是"生成出来的英文必须是对的" ----
+   宁可少出一道题，也不能教孩子 I like breads. / two mouses. / The cat is danceing.
+   三个来源都要挡住：不可数名词、不规则复数、以及本关还没教的变形规则
+   （-y→ies、-o→oes 属于后面的内容，第 6/12 关只教"加 s"）。 */
+/* 不可数名词：既不能加 a/an，也不能加 s。
+   注意 fish / chicken 不算在内——「a fish」「a chicken」都对，
+   fish 只是复数同形（走 IRREG_PLURAL），chicken 正常加 s。 */
+const UNCOUNTABLE = new Set(['bread','milk','water','juice','rice','meat','soup','tea',
+  'coffee','butter','cheese','food','ice','grass','snow','rain','paper','money',
+  'music','homework','sugar','salt','fruit']);
+const IRREG_PLURAL = { fish:'fish', goose:'geese', mouse:'mice', sheep:'sheep', deer:'deer',
+  ox:'oxen', person:'people', man:'men', woman:'women', child:'children', foot:'feet',
+  tooth:'teeth', knife:'knives', leaf:'leaves', tomato:'tomatoes', potato:'potatoes',
+  photo:'photos', piano:'pianos' };
+const wordOf = w => String(w && w.w !== undefined ? w.w : w);
+const countable = w => !UNCOUNTABLE.has(wordOf(w).toLowerCase());
+/* 只有"加 s 一定对"的词才进复数题——白名单比黑名单可靠：
+   除了 s/x/z/sh/ch/o/f/fe/man/ouse/oose 结尾和辅音+y、不规则复数，
+   其余才放行（giraffe 这种 -ffe 结尾是安全的，单独放行）。 */
+const pluralSafe = w => {
+  const x = wordOf(w).toLowerCase();
+  if (!countable(w) || IRREG_PLURAL[x]) return false;
+  if (!/^[a-z]+$/.test(x)) return false;
+  if (/ffe$/.test(x)) return true;
+  if (/(s|x|z|sh|ch|o|f|fe|man|ouse|oose)$/.test(x)) return false;
+  if (/[^aeiou]y$/.test(x)) return false;
+  return true;
+};
+function pluralOf(w) {
+  const x = wordOf(w), k = x.toLowerCase();
+  if (IRREG_PLURAL[k]) return IRREG_PLURAL[k];
+  if (/[^aeiou]y$/i.test(x)) return x.slice(0, -1) + 'ies';
+  if (/(s|x|z|sh|ch|o)$/i.test(x)) return x + 'es';
+  return x + 's';
+}
+/* 中文量词：动物"只"、书"本"、其余"个"（按单词所属主题判断） */
+const MEASURE = { animal1: '只', animal2: '只', school: '个', fruit: '个', food: '份', toy: '个' };
+const measureOf = w => MEASURE[w._theme] || '个';
 
 /* ---------------- 生成器：从单词镇生成造句题 ---------------- */
 const GEN = {
   likeChoice(ws) {
-    const w = pick(ws);
+    const safe = ws.filter(pluralSafe);
+    if (!safe.length) return null;
+    const w = pick(safe); const pl = pluralOf(w);
     return { type:'choice', word: w.w, from: 'fruit/food 等',
       prompt: `「我喜欢${w.zh}」哪个说法对？ ${w.e}`,
-      options: [`I like ${w.w}s.`, `${w.w} like I.`, `I likes ${w.w}s.`], answer: 0,
-      zh: `I like ${w.w}s. 我喜欢${w.zh}。`, explain: '喜欢很多东西时，单词尾巴加 s。' };
+      options: [`I like ${pl}.`, `${w.w} like I.`, `I likes ${pl}.`], answer: 0,
+      zh: `I like ${pl}. 我喜欢${w.zh}。`, explain: '喜欢很多东西时，单词尾巴加 s。' };
   },
   thisIs(ws) {
-    const w = pick(ws); const a = art(w.w);
+    const safe = ws.filter(countable);
+    if (!safe.length) return null;
+    const w = pick(safe); const a = art(w.w);
     return { type:'choice', word: w.w,
       prompt: `「这是${w.zh}」哪个说法对？ ${w.e}`,
       options: [`This is ${a} ${w.w}.`, `This are ${a} ${w.w}.`, `Is this ${a} ${w.w}.`], answer: 0,
@@ -84,39 +123,44 @@ const GEN = {
       zh: `The ${w.w} is on the ${p.w}.`, explain: '谁 + is + on + the + 地点，顺序固定。' };
   },
   isQuestion(ws) {
-    const w = pick(ws); const a = art(w.w);
+    const safe = ws.filter(countable);
+    if (!safe.length) return null;
+    const w = pick(safe); const a = art(w.w);
     return { type:'choice', word: w.w,
       prompt: `「这是${w.zh}吗？」哪个说法对？ ${w.e}`,
       options: [`Is this ${a} ${w.w}?`, `This is ${a} ${w.w}?`, `Is this ${a} ${w.w}.`], answer: 0,
       zh: `Is this ${a} ${w.w}?`, explain: 'is 提到最前面，句号变问号 ?。' };
   },
   thereBe(ws) {
-    const w = pick(ws); const a = art(w.w); const m = measureOf(w);
+    const safe = ws.filter(countable);
+    if (!safe.length) return null;
+    const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     return { type:'choice', word: w.w,
       prompt: `「桌上有一${m}${w.zh}」哪个说法对？ ${w.e}`,
       options: [`There is ${a} ${w.w} on the desk.`, `There are ${a} ${w.w} on the desk.`, `There is ${w.w} on desk.`], answer: 0,
       zh: `There is ${a} ${w.w} on the desk.`, explain: '一个东西用 There is，别忘了 a/an 和 the。' };
   },
   doing() {
-    const v = pick(ING_VERBS);
+    const v = pick(ING_VERBS); const ing = ING_FORM[v] || (v + 'ing');
     return { type:'choice', word: v,
       prompt: `「小猫正在${ING_ZH[v]}」哪个说法对？`,
-      options: [`The cat is ${v}ing.`, `The cat are ${v}ing.`, `The cat is ${v}.`], answer: 0,
-      zh: `The cat is ${v}ing. 小猫正在${ING_ZH[v]}。`, explain: '它（the cat）用 is；正在做，动词加 ing。' };
+      options: [`The cat is ${ing}.`, `The cat are ${ing}.`, `The cat is ${v}.`], answer: 0,
+      zh: `The cat is ${ing}. 小猫正在${ING_ZH[v]}。`, explain: '它（the cat）用 is；正在做，动词加 ing。' };
   },
   havePlural(ws) {
     const safe = ws.filter(pluralSafe);
     if (!safe.length) return null;
-    const w = pick(safe);
+    const w = pick(safe); const pl = pluralOf(w);
     return { type:'choice', word: w.w,
       prompt: `两个${w.zh} two __ ${w.e}`,
-      options: [w.w + 's', w.w, w.w + 'es'], answer: 0,
-      zh: `two ${w.w}s`, explain: '变多了，尾巴加 s。' };
+      options: [pl, w.w, w.w + 'es'], answer: 0,
+      zh: `two ${pl}`, explain: '变多了，尾巴加 s。' };
   },
   /* ---- 造句（build）类 ---- */
   seeBuild(ws) {
-    if (!ws.length) return null;
-    const w = pick(ws); const a = art(w.w); const m = measureOf(w);
+    const safe = ws.filter(countable);
+    if (!safe.length) return null;
+    const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     const others = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 2);
     return { type:'build', word: w.w,
       prompt: `「我看见一${m}${w.zh}」 ${w.e}`,
@@ -131,8 +175,8 @@ const GEN = {
     const others = shuffle(safe.filter(x => x.w !== w.w)).slice(0, 2);
     return { type:'build', word: w.w,
       prompt: `「我们喜欢${w.zh}（复数）」 ${w.e}`,
-      slots: [['We','I','They'], ['like','likes','am'], [w.w + 's', w.w, w.w + 'es']],
-      answer: ['We','like',w.w + 's'], read: `We like ${w.w}s.`, zh: `我们喜欢${w.zh}。`,
+      slots: [['We','I','They'], ['like','likes','am'], [pluralOf(w), w.w, w.w + 'es']],
+      answer: ['We','like',pluralOf(w)], read: `We like ${pluralOf(w)}.`, zh: `我们喜欢${w.zh}。`,
       hint: '喜欢很多东西，单词要加 s' };
   },
   buildFamily(ws) {
@@ -148,11 +192,11 @@ const GEN = {
   buildHave(ws) {
     const safe = ws.filter(pluralSafe);
     if (!safe.length) return null;
-    const w = pick(safe); const m = measureOf(w);
+    const w = pick(safe); const m = measureOf(w); const pl = pluralOf(w);
     return { type:'build', word: w.w,
       prompt: `「我有两${m}${w.zh}」 ${w.e}`,
-      slots: [['I','We','He'], ['have','has','am'], ['two','three','a'], [w.w + 's', w.w, w.w + 'es']],
-      answer: ['I','have','two',w.w + 's'], read: `I have two ${w.w}s.`, zh: `我有两${m}${w.zh}。`,
+      slots: [['I','We','He'], ['have','has','am'], ['two','three','a'], [pl, w.w, w.w + 'es']],
+      answer: ['I','have','two',pl], read: `I have two ${pl}.`, zh: `我有两${m}${w.zh}。`,
       hint: '两' + m + ' → 加 s；我用 have' };
   },
 };
