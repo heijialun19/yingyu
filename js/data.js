@@ -299,7 +299,7 @@ const LETTERS = [
     words:[ {w:'X-ray',zh:'X光',e:'🩻',dec:'x 开头：拍一张 X 光。'},
             {w:'fox',zh:'狐狸',e:'🦊',dec:'结尾咔嚓一个 x。'},
             {w:'box',zh:'盒子',e:'📦',dec:'box 盒子，结尾 x。'} ]},
-  { L:'Y', nameEn:'wy', v:false, shape:'举手欢呼', short:'举手', emoji:'🙌', color:'#FF6B6B', s:'yuh', szh:'/j/ 耶',
+  { L:'Y', nameEn:'Y', v:false, shape:'举手欢呼', short:'举手', emoji:'🙌', color:'#FF6B6B', s:'yuh', szh:'/j/ 耶',
     story:'y 像高高举起双手喊"耶——"的样子。yes（是的）就是举手说"好"！',
     py:'拼音 y 读"衣"（当声母），英语 y 开头读 /j/，像"耶"。',
     words:[ {w:'yes',zh:'是的',e:'✅',dec:'举手喊 yes！'},
