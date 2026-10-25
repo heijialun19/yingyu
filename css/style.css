@@ -286,6 +286,13 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   position: relative;
 }
 .mastered-mark { position: absolute; top: 8px; left: 10px; font-size: 18px; }
+/* 没有合适图形的词（代词/介词/连词/抽象词）：首字母色块，绝不硬配 emoji */
+.wtile {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: .5em; width: 2em; height: 2em; line-height: 1; font-weight: 800;
+  border-radius: .28em; background: #EEF6FF; color: #4EC5F1;
+  border: 2px solid #CFE6FB; letter-spacing: 0; vertical-align: middle;
+}
 /* 触屏上 title 提示永远不显示，孩子不知道卡片能点。给一个可见的小喇叭 */
 .word-card .spk { position: absolute; top: 10px; right: 12px; font-size: 15px; opacity: .55; }
 .word-card:hover { transform: translateY(-4px); }

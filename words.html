@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=31">
+<link rel="stylesheet" href="css/style.css?v=32">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -74,9 +74,9 @@
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=26"></script>
+<script src="js/words-data.js?v=27"></script>
 <script src="js/data.js?v=30"></script>
-<script src="js/app.js?v=41"></script>
+<script src="js/app.js?v=42"></script>
 <script src="js/sentence.js?v=42"></script>
 <script>
 renderNav('words'); renderDecor();
@@ -118,7 +118,7 @@ function showPool(kind) {
           <div class="word-card" onclick="speakWord('${jsq(w.w)}')" title="点一下，读一遍">
             ${(Store.d.words[w.w] || {}).box >= 2 ? '<span class="mastered-mark">✅</span>' : ''}
             <span class="spk" aria-hidden="true">🔊</span>
-            <span class="we">${w.e || '🔤'}</span>
+            <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
@@ -154,7 +154,7 @@ function renderSearch() {
         ${hits.slice(0, 120).map(w => `
           <div class="word-card" style="border-color:${w.themeColor}" onclick="speakWord('${jsq(w.w)}')" title="${w.themeEmoji}${w.themeName} · 点一下，读一遍">
             <span class="spk" aria-hidden="true">🔊</span>
-            <span class="we">${w.e || '🔤'}</span>
+            <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
@@ -231,7 +231,7 @@ function renderBrowse() {
           <div class="word-card" onclick="speakWord('${jsq(w.w)}')" title="点一下，读一遍">
             ${(Store.d.words[w.w] || {}).box >= 2 ? '<span class="mastered-mark">✅</span>' : ''}
             <span class="spk" aria-hidden="true">🔊</span>
-            <span class="we">${w.e || '🔤'}</span>
+            <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
@@ -277,12 +277,16 @@ function listenAll() {
 
 /* ---------------- 出题 ---------------- */
 function makeQuestion(word, pool) {
+  /* 代词/介词这类词没有图，不能出「看词选图」——四个选项全是字母牌，孩子没得选 */
+  const picPool = pool.filter(w => w.e && w.w !== word.w);
+  const canPic = !!word.e && picPool.length >= 2;
+  const type = canPic ? Math.floor(Math.random() * 3) : 1 + Math.floor(Math.random() * 2);
   const distract = shuffle(pool.filter(w => w.w !== word.w)).slice(0, 3);
-  const type = Math.floor(Math.random() * 3);
   if (type === 0) { // 看词选图：不自动读音，词旁给 🔊 让孩子点着听（tap-to-hear）
+    const pics = shuffle(picPool).slice(0, 3);
     return { type, word, hint: `它的中文是「${word.zh}」`,
       prompt: `哪个图片是 <b style="font-size:1.5rem;color:#FF6B6B">${word.w}</b> <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(word.w)}')" title="点我听发音">🔊</button> ？`,
-      options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: `<span class="oe">${w.e || '🔤'}</span>` })) };
+      options: shuffle([word, ...pics]).map(w => ({ key: w.w, html: `<span class="oe">${w.e}</span>` })) };
   }
   if (type === 1) { // 听音选词：声音就是题目，自动读一遍 + 🔁 重听
     return { type, word, hint: `从 ${word.w[0]} 开头，一共 ${word.w.length} 个字母`,

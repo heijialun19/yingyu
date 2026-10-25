@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>句子工厂 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=31">
+<link rel="stylesheet" href="css/style.css?v=32">
 <style>
 /* 句子语法解析面板（只在句子工厂用） */
 .parse{margin-top:12px;background:#F7F9FC;border:2px solid #E3E9F2;border-radius:14px;padding:12px 12px 10px}
@@ -48,9 +48,9 @@
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=26"></script>
+<script src="js/words-data.js?v=27"></script>
 <script src="js/data.js?v=30"></script>
-<script src="js/app.js?v=41"></script>
+<script src="js/app.js?v=42"></script>
 <script src="js/sentence.js?v=42"></script>
 <script src="js/grammar-engine.js?v=2"></script>
 <script>
@@ -151,7 +151,7 @@ const GEN = {
     if (!safe.length) return null;
     const w = pick(safe); const pl = pluralOf(w);
     return { type:'choice', word: w.w, from: 'fruit/food 等',
-      prompt: `「我喜欢${w.zh}」哪个说法对？ ${w.e}`,
+      prompt: `「我喜欢${w.zh}」哪个说法对？ ${w.e || ''}`,
       options: [`I like ${pl}.`, `${w.w} like I.`, `I likes ${pl}.`], answer: 0,
       zh: `I like ${pl}. 我喜欢${w.zh}。`, explain: '喜欢很多东西时，单词尾巴加 s。' };
   },
@@ -160,21 +160,21 @@ const GEN = {
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w);
     return { type:'choice', word: w.w,
-      prompt: `「这是${w.zh}」哪个说法对？ ${w.e}`,
+      prompt: `「这是${w.zh}」哪个说法对？ ${w.e || ''}`,
       options: [`This is ${a} ${w.w}.`, `This are ${a} ${w.w}.`, `Is this ${a} ${w.w}.`], answer: 0,
       zh: `This is ${a} ${w.w}. 这是${w.zh}。`, explain: `This 用 is；${w.w} 是${/^[aeiou]/i.test(w.w) ? '元音' : '辅音'}开头，用 ${a}。` };
   },
   canDo(ws) {
     const w = pick(ws);
     return { type:'choice', word: w.w,
-      prompt: `「我会${w.zh}」哪个说法对？ ${w.e}`,
+      prompt: `「我会${w.zh}」哪个说法对？ ${w.e || ''}`,
       options: [`I can ${w.w}.`, `I cans ${w.w}.`, `I can to ${w.w}.`], answer: 0,
       zh: `I can ${w.w}. 我会${w.zh}。`, explain: 'can 后面的动词用原形，不加 s 不加 to。' };
   },
   whereIs(ws, lv) {
     const w = pick(ws); const p = pick((lv.gen.places || ['bed']).map(x => ({ w: x, zh: themeWordZh(x) })));
     return { type:'choice', word: w.w,
-      prompt: `「${w.zh}在${p.zh}上」哪个说法对？ ${w.e}`,
+      prompt: `「${w.zh}在${p.zh}上」哪个说法对？ ${w.e || ''}`,
       options: [`The ${w.w} is on the ${p.w}.`, `The ${w.w} on the ${p.w} is.`, `The ${w.w} is on ${p.w}.`], answer: 0,
       zh: `The ${w.w} is on the ${p.w}.`, explain: '谁 + is + on + the + 地点，顺序固定。' };
   },
@@ -183,7 +183,7 @@ const GEN = {
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w);
     return { type:'choice', word: w.w,
-      prompt: `「这是${w.zh}吗？」哪个说法对？ ${w.e}`,
+      prompt: `「这是${w.zh}吗？」哪个说法对？ ${w.e || ''}`,
       options: [`Is this ${a} ${w.w}?`, `This is ${a} ${w.w}?`, `Is this ${a} ${w.w}.`], answer: 0,
       zh: `Is this ${a} ${w.w}?`, explain: 'is 提到最前面，句号变问号 ?。' };
   },
@@ -192,7 +192,7 @@ const GEN = {
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     return { type:'choice', word: w.w,
-      prompt: `「桌上有一${m}${w.zh}」哪个说法对？ ${w.e}`,
+      prompt: `「桌上有一${m}${w.zh}」哪个说法对？ ${w.e || ''}`,
       options: [`There is ${a} ${w.w} on the desk.`, `There are ${a} ${w.w} on the desk.`, `There is ${w.w} on desk.`], answer: 0,
       zh: `There is ${a} ${w.w} on the desk.`, explain: '一个东西用 There is，别忘了 a/an 和 the。' };
   },
@@ -208,7 +208,7 @@ const GEN = {
     if (!safe.length) return null;
     const w = pick(safe); const pl = pluralOf(w);
     return { type:'choice', word: w.w,
-      prompt: `两个${w.zh} two __ ${w.e}`,
+      prompt: `两个${w.zh} two __ ${w.e || ''}`,
       options: [pl, w.w, w.w + 'es'], answer: 0,
       zh: `two ${pl}`, explain: '变多了，尾巴加 s。' };
   },
@@ -219,7 +219,7 @@ const GEN = {
     const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     const others = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 2);
     return { type:'build', word: w.w,
-      prompt: `「我看见一${m}${w.zh}」 ${w.e}`,
+      prompt: `「我看见一${m}${w.zh}」 ${w.e || ''}`,
       slots: [['I','We'], ['see','like'], ['a','an'], [w.w, ...others.map(o => o.w)]],
       answer: ['I','see',a,w.w], read: `I see ${a} ${w.w}.`, zh: `我看见一${m}${w.zh}。`,
       hint: a === 'an' ? `${w.w} 是元音开头，要用 an 哦` : '冠词选 a' };
@@ -230,7 +230,7 @@ const GEN = {
     const w = pick(safe);
     const others = shuffle(safe.filter(x => x.w !== w.w)).slice(0, 2);
     return { type:'build', word: w.w,
-      prompt: `「我们喜欢${w.zh}（复数）」 ${w.e}`,
+      prompt: `「我们喜欢${w.zh}（复数）」 ${w.e || ''}`,
       slots: [['We','I','They'], ['like','likes','am'], [pluralOf(w), w.w, w.w + 'es']],
       answer: ['We','like',pluralOf(w)], read: `We like ${pluralOf(w)}.`, zh: `我们喜欢${w.zh}。`,
       hint: '喜欢很多东西，单词要加 s' };
@@ -240,7 +240,7 @@ const GEN = {
     const w = pick(fam.length ? fam : ws);
     const others = shuffle(fam.filter(x => x.w !== w.w)).slice(0, 2);
     return { type:'build', word: w.w,
-      prompt: `「这是我的${w.zh}」 ${w.e}`,
+      prompt: `「这是我的${w.zh}」 ${w.e || ''}`,
       slots: [['This','He','She'], ['is','am','are'], ['my','the','a'], [w.w, ...others.map(o => o.w)]],
       answer: ['This','is','my',w.w], read: `This is my ${w.w}.`, zh: `这是我的${w.zh}。`,
       hint: 'my = 我的' };
@@ -250,7 +250,7 @@ const GEN = {
     if (!safe.length) return null;
     const w = pick(safe); const m = measureOf(w); const pl = pluralOf(w);
     return { type:'build', word: w.w,
-      prompt: `「我有两${m}${w.zh}」 ${w.e}`,
+      prompt: `「我有两${m}${w.zh}」 ${w.e || ''}`,
       slots: [['I','We','He'], ['have','has','am'], ['two','three','a'], [pl, w.w, w.w + 'es']],
       answer: ['I','have','two',pl], read: `I have two ${pl}.`, zh: `我有两${m}${w.zh}。`,
       hint: '两' + m + ' → 加 s；我用 have' };

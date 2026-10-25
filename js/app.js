@@ -416,6 +416,16 @@ function stopAllSpeechExcept(keep) {
   __inflight.forEach(x => { if (x !== keep) { try { x.onended = x.onerror = x.oncanplay = x.onplaying = null; x.pause(); } catch (e) {} __inflight.delete(x); } });
 }
 
+/* 词图：有合适图形的用 emoji，没有的用首字母色块。
+   代词/介词/连词这类词根本没有形象，硬塞一个 emoji 是错的——
+   it=🐱 会让孩子以为 it 就是"猫"。宁可给字母牌，也不给假图。 */
+function wordIcon(w) {
+  const e = w && w.e;
+  if (e) return e;
+  const ch = String((w && w.w) || '?').trim().charAt(0).toUpperCase();
+  return `<span class="wtile" aria-hidden="true">${esc(ch)}</span>`;
+}
+
 /* 立刻闭嘴：所有在途音频解除回调并暂停（翻页/切题/点新词时用） */
 function stopAllSpeech() {
   __audioEpoch++;                          // 作废所有迟到的加载/失败回调

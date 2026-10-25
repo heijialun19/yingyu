@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>游戏乐园 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=31">
+<link rel="stylesheet" href="css/style.css?v=32">
 </head>
 <body>
 <main>
@@ -27,9 +27,9 @@
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=26"></script>
+<script src="js/words-data.js?v=27"></script>
 <script src="js/data.js?v=30"></script>
-<script src="js/app.js?v=41"></script>
+<script src="js/app.js?v=42"></script>
 <script src="js/sentence.js?v=42"></script>
 <script src="js/grammar-engine.js?v=2"></script>
 <script>
@@ -267,7 +267,7 @@ function gScramble(pool) {
     $('#app').innerHTML = `
       <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🚂 拼词小火车</b><span>第 ${S.idx + 1} / ${picks.length} 词</span></div>
-        <div style="font-size:64px">${w.e || '🔤'}</div>
+        <div style="font-size:64px">${wordIcon(w)}</div>
         <div style="font-size:1.1rem;font-weight:700">${w.zh} <button class="btn ghost" style="padding:4px 12px;font-size:.8rem" onclick="speak('${w.w.replace(/'/g, "\\'")}')">🔊 听</button></div>
         ${w.dec && !decLeaks ? `<div class="explain" style="text-align:left;margin:10px 0">💡 ${w.dec}</div>` : ''}
         <div class="build-word-slots" id="scrSlots">${w.w.split('').map(() => `<span class="slot"></span>`).join('')}</div>
