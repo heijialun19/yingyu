@@ -13,7 +13,7 @@ const BUILD_COM = [
   { a:"snow", az:"雪", b:"man", bz:"男人", w:"snowman", zh:"雪人", p:"n", ipa:"/ˈsnoʊmæn/" },
   { a:"book", az:"书", b:"shop", bz:"商店", w:"bookshop", zh:"书店", p:"n", ipa:"/ˈbʊkʃɑp/" },
   { a:"hair", az:"头发", b:"brush", bz:"刷子", w:"hairbrush", zh:"发刷", p:"n", ipa:"/ˈhɛrbrʌʃ/" },
-  { a:"base", az:"基础", b:"ball", bz:"球", w:"baseball", zh:"棒球", p:"n", ipa:"/ˈbeɪsˈbɔl/" },
+  { a:"base", az:"垒", b:"ball", bz:"球", w:"baseball", zh:"棒球", p:"n", ipa:"/ˈbeɪsˈbɔl/" },
   { a:"water", az:"水", b:"fall", bz:"落下", w:"waterfall", zh:"瀑布", p:"n", ipa:"/ˈwɔtərfɔl/" },
   { a:"cup", az:"杯子", b:"cake", bz:"蛋糕", w:"cupcake", zh:"纸杯蛋糕", p:"n", ipa:"/ˈkʌpkeɪk/" },
   { a:"pan", az:"平底锅", b:"cake", bz:"蛋糕", w:"pancake", zh:"薄饼", p:"n", ipa:"/ˈpænkeɪk/" },
