@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>游戏乐园 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=33">
+<link rel="stylesheet" href="css/style.css?v=34">
 </head>
 <body>
 <main>
@@ -29,7 +29,8 @@
 
 <script src="js/words-data.js?v=27"></script>
 <script src="js/data.js?v=31"></script>
-<script src="js/app.js?v=44"></script>
+<script src="js/build-data.js?v=1"></script>
+<script src="js/app.js?v=45"></script>
 <script src="js/sentence.js?v=42"></script>
 <script src="js/grammar-engine.js?v=2"></script>
 <script>
@@ -51,7 +52,7 @@ function renderHome() {
     { id: 'memory',   emoji: '🃏', name: '图词翻翻乐', desc: '翻开卡片，图片和单词配对', color: 'var(--grape)' },
     { id: 'scramble', emoji: '🚂', name: '拼词小火车', desc: '把打乱的字母装回正确的顺序', color: 'var(--orange)' },
     { id: 'sentence', emoji: '🧑‍🔧', name: '句子火车员', desc: '句子缺了个词，你来补上！', color: 'var(--mint)' },
-    { id: 'wordlab',  emoji: '🧪', name: '造词实验室', desc: 'black + board 会变成什么？', color: 'var(--coral)' },
+    { id: 'wordlab',  emoji: '🧪', name: '造词实验室', desc: '每轮 10 个新词，black + board 会变成什么？', color: 'var(--coral)' },
   ];
   $('#app').innerHTML = `<div class="game-grid">
     ${games.map(g => `<div class="island" style="border-color:${g.color}" onclick="startGame('${g.id}')">
@@ -309,55 +310,124 @@ function gScramble(pool) {
   window._scrShow();
 }
 /* ---------------- 游戏5：造词实验室 ----------------
-   两条构词路：两个词拼起来（black + board）、加个尾巴（sun + y）。
-   选项里专门放"直译"当诱饵——黑板 / 黑色 / 木板。
-   题面只给构件，不给答案；答完才拼出整词，这就是"看见词是怎么长出来的"。 */
-function gWordLab() {
-  const fams = Object.keys(WORD_FAMILY).map(b => ({ kind: 'der', w: WORD_FAMILY[b].d, a: b, suf: WORD_FAMILY[b].suf }));
-  const comps = COMPOUNDS.map(c => ({ kind: 'com', w: c.w, a: c.a, b: c.b }));
-  const zhOf = w => (ALLW[w] || {}).zh || PART_ZH[w] || '';
-  const zhPool = [...new Set(Object.values(ALLW).map(x => x.zh))].filter(Boolean);
+   目的不是"玩游戏"，是**扩词汇量**：题库里的词绝大多数孩子没在单词镇学过，
+   但都能从两个已知构件推出来（black + board、paint + -er）。
+   题库 = 词库内旧表 59 条（热身）+ js/build-data.js 的 193 个新词（扩展）。
+   每题只给构件（带中文）和后缀含义，答完才拼出整词，并给出
+   **音标 / 词性 / 中文释义 / 拼写变化**，同时朗读（本地离线音频）。
+   每轮 10 题；答完给「这一轮认识的新词」清单，可以一个个点着听。 */
+const WL_ROUND = 10;
+const WL_POS = { n: '名词', v: '动词', adj: '形容词', adv: '副词', pron: '代词' };
+/* 旧表（词库内 23 组）没写后缀含义，这里补齐 */
+const WL_SUF_ZH = { er: '做…的人/物', r: '做…的人/物', or: '做…的人', ist: '…家 / …者',
+  ful: '充满…的', less: '没有…的', y: '有…的 / 多…的', ly: '…地', ing: '…（名词）' };
 
-  const qs = shuffle([...fams, ...comps]).slice(0, 8).map(it => {
-    const ans = zhOf(it.w);
-    if (!ans) return null;
-    const wrong = [];
-    const add = z => { if (z && z !== ans && wrong.length < 2 && !wrong.includes(z)) wrong.push(z); };
-    if (it.kind === 'com') { add(zhOf(it.a)); add(zhOf(it.b)); }
-    else {
-      add(zhOf(it.a));
-      const others = fams.filter(f => f.w !== it.w);
-      if (others.length) add(zhOf(pick(others).w));
-    }
-    while (wrong.length < 2) add(pick(zhPool));
-    if (wrong.length < 2) return null;
-    return { ...it, ans, options: shuffle([ans, ...wrong]) };
-  }).filter(Boolean);
-  if (qs.length < 3) { toast('造词材料不够，换一批试试～'); return; }
+function wlPool() {
+  if (window.__wlPool) return window.__wlPool;
+  const zhOf = w => (ALLW[w] || {}).zh || PART_ZH[w] || '';
+  const ipaOfW = w => (typeof IPA !== 'undefined' && IPA[w]) || '';
+  const posOfW = w => ((ALLW[w] || {}).pos) || '';
+  const pool = [];
+
+  /* 旧表：词库内的 59 个词（孩子学过，当热身） */
+  Object.keys(WORD_FAMILY).forEach(b => {
+    const f = WORD_FAMILY[b];
+    pool.push({ kind: 'der', w: f.d, base: b, baseZh: zhOf(b), suf: f.suf, sz: WL_SUF_ZH[f.suf] || '', pre: 0,
+      zh: zhOf(f.d), p: posOfW(f.d), ipa: ipaOfW(f.d), note: f.note || '' });
+  });
+  COMPOUNDS.forEach(c => {
+    pool.push({ kind: 'com', w: c.w, a: c.a, az: zhOf(c.a), b: c.b, bz: zhOf(c.b),
+      zh: zhOf(c.w), p: posOfW(c.w), ipa: ipaOfW(c.w) });
+  });
+
+  /* 扩展表：193 个新词，元数据（中文/词性/音标）直接写在数据里 */
+  if (typeof BUILD_COM !== 'undefined') BUILD_COM.forEach(x => pool.push(Object.assign({ kind: 'com' }, x)));
+  if (typeof BUILD_DER !== 'undefined') BUILD_DER.forEach(x => pool.push(Object.assign({ kind: 'der', base: x.b, baseZh: x.bz }, x)));
+
+  /* 没有中文的题没法出（答案无处可选），直接剔掉；同一词只留一次 */
+  const seen = new Set(), out = [];
+  pool.forEach(q => {
+    if (!q.zh || !q.w || seen.has(q.w)) return;
+    if (q.kind === 'com' && (!q.az || !q.bz)) return;
+    if (q.kind === 'der' && !q.baseZh) return;
+    seen.add(q.w); out.push(q);
+  });
+  window.__wlPool = out;
+  return out;
+}
+
+/* 三个选项：答案 + 两个"有教学价值"的诱饵
+   合成词用两个构件的直译（黑板 vs 黑色 / 木板），
+   派生词用基础词的意思（画家 vs 画画）+ 另一个新词的意思。 */
+function wlOptions(q, pool) {
+  const wrong = [];
+  const add = z => { if (z && z !== q.zh && wrong.length < 2 && !wrong.includes(z)) wrong.push(z); };
+  if (q.kind === 'com') { add(q.az); add(q.bz); }
+  else { add(q.baseZh); if (q.pre) add('再一次'); }
+  let guard = 0;
+  while (wrong.length < 2 && guard++ < 40) add(pick(pool).zh);
+  return shuffle([q.zh, ...wrong.slice(0, 2)]);
+}
+
+function gWordLab() {
+  const pool = wlPool();
+  if (pool.length < WL_ROUND) { toast('造词材料不够，换一批试试～'); return; }
+  const qs = shuffle(pool).slice(0, WL_ROUND).map(q => Object.assign({}, q, { options: wlOptions(q, pool) }));
 
   const S = { idx: 0, score: 0, answered: false };
   const total = qs.length;
 
+  const formulaOf = q => {
+    if (q.kind === 'com') {
+      return `<span class="wl-part">${esc(q.a)}<small>${esc(q.az)}</small></span><b>+</b>
+              <span class="wl-part">${esc(q.b)}<small>${esc(q.bz)}</small></span><b>=</b>
+              <span class="wl-q">?</span>`;
+    }
+    const left = q.pre
+      ? `<span class="wl-part wl-suf">${esc(q.s)}-<small>${esc(q.sz)}</small></span><b>+</b>
+         <span class="wl-part">${esc(q.base)}<small>${esc(q.baseZh)}</small></span>`
+      : `<span class="wl-part">${esc(q.base)}<small>${esc(q.baseZh)}</small></span><b>+</b>
+         <span class="wl-part wl-suf">-${esc(q.s)}<small>${esc(q.sz)}</small></span>`;
+    return `${left}<b>=</b><span class="wl-q">?</span>`;
+  };
+
+  const reviewOf = list => list.map((q, i) => `
+    <div class="wl-card">
+      <div class="wlCardHead"><b lang="en">${esc(q.w)}</b>
+        <button class="mini-speaker" onclick="event.stopPropagation();wlSayAt(${i})" title="点我听发音">🔊</button></div>
+      <div class="ph" lang="en">${esc(q.ipa || '')}</div>
+      <div class="wlCardMeta">${WL_POS[q.p] || ''} · ${esc(q.zh)}</div>
+    </div>`).join('');
+
+  /* 朗读入口：词从闭包取，绝不拼进 onclick（英文撇号会打断属性） */
+  window.wlSayAt = i => { const q = qs[i]; if (q) speak(q.w); };
+  window.wlSay = () => { const q = window._curWL; if (q) speak(q.w); };
+
   window._wlShow = function () {
     Flow.reset();
     if (S.idx >= total) {
-      addStars(S.score + 1); sfx.win(); if (S.score === total) confetti();
-      $('#app').innerHTML = endCard('🧪', `猜对 ${S.score} / ${total} 个新词`, S.score + 1);
+      addStars(S.score + 1); sfx.win(); if (S.score >= total - 2) confetti();
+      $('#app').innerHTML = `
+        <div class="card" style="max-width:680px;margin:0 auto;text-align:center">
+          <div class="score-bar"><b>🧪 造词实验室</b><span>本轮结束</span></div>
+          <div style="font-size:54px;line-height:1.1">🧪</div>
+          <h2 style="margin:6px 0">猜对 ${S.score} / ${total} 个新词</h2>
+          <p class="wl-hint">这一轮认识的新词，点 🔊 可以再听一遍：</p>
+          <div class="wl-review">${reviewOf(qs)}</div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+            <button class="btn grape big" onclick="gWordLab()">再来一轮 ▶</button>
+            ${gameHomeBtn()}
+          </div>
+        </div>`;
       return;
     }
     const q = qs[S.idx];
     S.answered = false;
-    const left = q.kind === 'com' ? q.a : q.a;
-    const right = q.kind === 'com' ? q.b : '-' + q.suf;
     $('#app').innerHTML = `
       <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🧪 造词实验室</b><span>第 ${S.idx + 1} / ${total} 题 · ✅ ${S.score}</span></div>
-        <p class="wl-hint">${q.kind === 'com' ? '两个词拼在一起，会变成一个什么词？' : '给它加个小尾巴，会变成什么词？'}</p>
-        <div class="wl-formula">
-          <span class="wl-part">${esc(left)}</span><b>+</b>
-          <span class="wl-part ${q.kind === 'der' ? 'wl-suf' : ''}">${esc(right)}</span><b>=</b>
-          <span class="wl-q">?</span>
-        </div>
+        <p class="wl-hint">${q.kind === 'com' ? '两个词拼在一起，会变成一个什么词？' : q.pre ? '加上这个小零件，意思会变成什么？' : '给它加个小尾巴，会变成什么词？'}</p>
+        <div class="wl-formula">${formulaOf(q)}</div>
         <div class="opt-row">
           ${q.options.map((o, i) => `<button class="opt" onclick="wlAns(this,${i})" style="font-size:1rem">${esc(o)}</button>`).join('')}
         </div>
@@ -370,22 +440,38 @@ function gWordLab() {
   window.wlAns = function (btn, i) {
     const q = window._curWL;
     if (!q || S.answered) return;
-    const ok = q.options[i] === q.ans;
-    feedback(btn, ok);
-    if (ok) {
-      S.score++; S.answered = true;
-      sfx.correct(); flyStar(btn); lockChoices(btn);
-      const made = q.kind === 'com' ? `${q.a} + ${q.b} = ${q.w}` : `${q.a} + ${q.suf} = ${q.w}`;
-      $('#wlexp').innerHTML = `✅ <b>${esc(made)}</b><br>就是「${esc(q.ans)}」${q.kind === 'der' ? '——换了词性，意思也跟着变' : '——两个意思合起来'}`;
-      speak(q.w);
-      const go = Flow.make(() => { S.idx++; window._wlShow(); }, 2600);
-      $('#wlexp').insertAdjacentHTML('beforeend',
-        `<div style="margin-top:8px"><button class="btn ghost" style="padding:6px 18px" onclick="window._wlGo()">下一个 ▶</button></div>`);
-      window._wlGo = go;
-    } else {
+    if (q.options[i] !== q.zh) {
       sfx.wrong();
-      $('#wlexp').innerHTML = `🤔 再想想～它从 <b>${esc(q.w[0].toUpperCase())}</b> 开头，一共 ${q.w.replace(/ /g, '').length} 个字母`;
+      const hint = q.kind === 'com'
+        ? `${esc(q.az)} + ${esc(q.bz)}，合起来是什么？`
+        : `「${esc(q.baseZh)}」加上 ${q.pre ? esc(q.s) + '-' : '-' + esc(q.s)}，意思会变成什么？`;
+      $('#wlexp').innerHTML = `🤔 再想想～<br>💡 ${hint}`;
+      return;
     }
+    S.score++; S.answered = true;
+    sfx.correct(); flyStar(btn); lockChoices(btn);
+    const made = q.kind === 'com'
+      ? `${esc(q.a)} + ${esc(q.b)} = ${esc(q.w)}`
+      : q.pre ? `${esc(q.s)}- + ${esc(q.base)} = ${esc(q.w)}` : `${esc(q.base)} + -${esc(q.s)} = ${esc(q.w)}`;
+    const why = q.kind === 'com'
+      ? '两个意思合起来就是新词'
+      : q.pre ? '前缀改变了方向或态度' : '后缀换了词性，意思也跟着变';
+    $('#wlexp').innerHTML = `
+      <div class="wlAnsHead">
+        <b lang="en">${esc(q.w)}</b>
+        <span class="ph" lang="en">${esc(q.ipa || '')}</span>
+        <em>${WL_POS[q.p] || ''}</em>
+        <button class="mini-speaker" onclick="event.stopPropagation();wlSay()" title="点我听发音">🔊</button>
+      </div>
+      <div style="margin-top:4px">✅ <b>${esc(q.zh)}</b> —— ${made}</div>
+      <div style="margin-top:2px;color:#6B7280">${why}${q.note ? '；' + esc(q.note) : ''}</div>`;
+    speak(q.w);
+    /* 这里有新词 + 音标 + 释义要读，按全站铁律 autoMs = 0：只留按钮，不自动跳 */
+    const last = S.idx >= total - 1;
+    const go = Flow.make(() => { S.idx++; window._wlShow(); }, 0);
+    window._wlGo = go;
+    $('#wlexp').insertAdjacentHTML('beforeend',
+      `<div style="margin-top:10px"><button class="btn grape big" id="wlNext" onclick="window._wlGo()">${last ? '看本轮收获 🏁' : '下一个 ▶'}</button></div>`);
   };
   window._wlShow();
 }

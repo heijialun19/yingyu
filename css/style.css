@@ -273,6 +273,20 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   font-size: 1.45rem; font-weight: 800; color: var(--ink); letter-spacing: .5px;
 }
 .wl-part.wl-suf { border-color: var(--grape); border-style: dashed; color: var(--grape); }
+/* 构件下面那行中文：孩子靠它 + 后缀含义来推答案 */
+.wl-part small { display: block; font-size: .62rem; font-weight: 600; color: #6B7280; margin-top: 3px; letter-spacing: 0; }
+/* 答完后的单词条：词 + 音标 + 词性 + 朗读 */
+.wlAnsHead { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.wlAnsHead b { font-size: 1.35rem; }
+.wlAnsHead .ph { color: #6B7280; font-size: .85rem; }
+.wlAnsHead em { font-style: normal; font-size: .72rem; font-weight: 700; color: #7C5CFF; background: #F1ECFF; border-radius: 999px; padding: 2px 8px; }
+/* 一轮结束的收获清单 */
+.wl-review { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 10px; text-align: left; }
+.wl-card { background: #fff; border: 2px solid #E6EEF9; border-radius: 16px; padding: 8px 10px; }
+.wlCardHead { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.wlCardHead b { font-size: 1rem; word-break: break-word; }
+.wl-card .ph { font-size: .72rem; color: #6B7280; }
+.wlCardMeta { font-size: .72rem; color: #6B7280; margin-top: 2px; }
 .wl-q {
   width: 66px; height: 62px; border-radius: 18px; border: 3px dashed #C9D6E8; background: #fff;
   display: inline-flex; align-items: center; justify-content: center;

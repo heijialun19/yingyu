@@ -356,6 +356,8 @@ const __LOCAL_AUDIO = (() => {
   const set = new Set();
   try {
     THEMES.forEach(t => t.words.forEach(w => { const k = audioSlug(w.w); if (k) set.add(k); }));
+    /* 造词实验室的扩展词（js/build-data.js 只在游戏页加载，没加载时跳过） */
+    if (typeof BUILD_LEX !== 'undefined') BUILD_LEX.forEach(w => { const k = audioSlug(w); if (k) set.add(k); });
   } catch (e) {}
   return set;
 })();
