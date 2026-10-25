@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=34">
+<link rel="stylesheet" href="css/style.css?v=35">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -74,9 +74,9 @@
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=27"></script>
+<script src="js/words-data.js?v=28"></script>
 <script src="js/data.js?v=31"></script>
-<script src="js/app.js?v=45"></script>
+<script src="js/app.js?v=46"></script>
 <script src="js/sentence.js?v=42"></script>
 <script src="js/ipa.js?v=1"></script>
 <script>
@@ -293,13 +293,25 @@ function famLine(word) {
 }
 
 function makeQuestion(word, pool) {
-  /* 代词/介词这类词没有图，不能出「看词选图」——四个选项全是字母牌，孩子没得选 */
+  /* 代词/介词这类词没有图，不能出「看词选图」——四个选项全是字母牌，孩子没得选。
+     ★ 而且选项里的图**必须互不相同**：emoji 里有大量词组共用同一张图
+     （👦 同时是 he/his/him/boy/brother），不去重就会出现两个一样的图，
+     孩子根本没法选。这里按图去重，凑不出 3 张不同的就不出这种题。 */
   const picPool = pool.filter(w => w.e && w.w !== word.w);
-  const canPic = !!word.e && picPool.length >= 2;
+  const pics = (() => {
+    if (!word.e) return [];
+    const seen = new Set([word.e]), out = [];
+    for (const w of shuffle(picPool)) {
+      if (seen.has(w.e)) continue;
+      seen.add(w.e); out.push(w);
+      if (out.length >= 3) break;
+    }
+    return out;
+  })();
+  const canPic = pics.length >= 3;
   const type = canPic ? Math.floor(Math.random() * 3) : 1 + Math.floor(Math.random() * 2);
   const distract = shuffle(pool.filter(w => w.w !== word.w)).slice(0, 3);
   if (type === 0) { // 看词选图：不自动读音，词旁给 🔊 让孩子点着听（tap-to-hear）
-    const pics = shuffle(picPool).slice(0, 3);
     return { type, word, hint: `它的中文是「${word.zh}」`,
       prompt: `哪个图片是 <b style="font-size:1.5rem;color:#FF6B6B">${word.w}</b> <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(word.w)}')" title="点我听发音">🔊</button> ？`,
       options: shuffle([word, ...pics]).map(w => ({ key: w.w, html: `<span class="oe">${w.e}</span>` })) };

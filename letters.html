@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>字母岛 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=34">
+<link rel="stylesheet" href="css/style.css?v=35">
 </head>
 <body>
 <main>
@@ -45,9 +45,9 @@
   </section>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=27"></script>
+<script src="js/words-data.js?v=28"></script>
 <script src="js/data.js?v=31"></script>
-<script src="js/app.js?v=45"></script>
+<script src="js/app.js?v=46"></script>
 <script src="js/sentence.js?v=42"></script>
 <script>
 renderNav('letters'); renderDecor();
@@ -134,7 +134,7 @@ function renderStage(speakIt) {
       <div class="word-mini-row">
         ${l.words.map(w => `
           <div class="word-mini" onclick="sayWord(this,'${w.w}')" title="点一下，读一遍">
-            <div class="we">${w.e}</div>
+            <div class="we">${wordIcon(w)}</div>
             <b>${w.w}</b><span>${w.zh}</span>
             ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : ''}
           </div>`).join('')}

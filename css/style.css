@@ -315,6 +315,13 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 }
 .mastered-mark { position: absolute; top: 8px; left: 10px; font-size: 18px; }
 /* 没有合适图形的词（代词/介词/连词/抽象词）：首字母色块，绝不硬配 emoji */
+/* 颜色色块：白/黑要有描边，否则白块在白卡片上会"消失" */
+.cchip {
+  display: inline-block; font-size: .5em; width: 2em; height: 2em;
+  border-radius: .45em; vertical-align: middle;
+  border: 2px solid rgba(15, 23, 42, .18);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.45);
+}
 .wtile {
   display: inline-flex; align-items: center; justify-content: center;
   font-size: .5em; width: 2em; height: 2em; line-height: 1; font-weight: 800;

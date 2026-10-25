@@ -458,10 +458,23 @@ function ipaOf(w) {
   return (typeof IPA !== 'undefined' && IPA[w]) || '';
 }
 
-/* 词图：有合适图形的用 emoji，没有的用首字母色块。
-   代词/介词/连词这类词根本没有形象，硬塞一个 emoji 是错的——
-   it=🐱 会让孩子以为 it 就是"猫"。宁可给字母牌，也不给假图。 */
+/* 颜色词的图：emoji 里根本没有"灰色圆点"这类符号，硬凑就会出现 grey=🐈 这种错。
+   颜色一律用**色块**——这正是课本教颜色的方式，也不会和别的词撞图。 */
+const WORD_COLOR = {
+  red: '#EF4444', yellow: '#FACC15', blue: '#3B82F6', green: '#22C55E',
+  white: '#FFFFFF', black: '#1F2937', orange: '#F97316', pink: '#F472B6',
+  purple: '#A855F7', brown: '#92400E', grey: '#9CA3AF',
+};
+
+/* 词图三级：色块（颜色词）→ emoji（有合适图形的）→ 首字母牌（配不上的）
+   代词/介词/连词/抽象动词这类词根本没有形象，硬塞一个 emoji 是错的——
+   it=🐱 会让孩子以为 it 就是"猫"，believe=🙏 会以为"相信"就是祈祷。
+   宁可给字母牌，也不给假图。 */
 function wordIcon(w) {
+  const name = String((w && w.w) || '').toLowerCase();
+  if (WORD_COLOR[name]) {
+    return `<span class="cchip" style="background:${WORD_COLOR[name]}" role="img" aria-label="${esc(w.zh || name)}"></span>`;
+  }
   const e = w && w.e;
   if (e) return e;
   const ch = String((w && w.w) || '?').trim().charAt(0).toUpperCase();

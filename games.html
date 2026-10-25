@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>游戏乐园 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=34">
+<link rel="stylesheet" href="css/style.css?v=35">
 </head>
 <body>
 <main>
@@ -27,10 +27,10 @@
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=27"></script>
+<script src="js/words-data.js?v=28"></script>
 <script src="js/data.js?v=31"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=45"></script>
+<script src="js/app.js?v=46"></script>
 <script src="js/sentence.js?v=42"></script>
 <script src="js/grammar-engine.js?v=2"></script>
 <script>
@@ -173,7 +173,18 @@ function gListen() {
 
 /* ---------------- 游戏2：图词翻翻乐 ---------------- */
 function gMemoryPick() {
-  poolPicker('🃏 图词翻翻乐', '🃏', m => gMemory(getPlayPool(m, w => w.e && !w.w.includes(' '))));
+  poolPicker('🃏 图词翻翻乐', '🃏', m => {
+    let p = getPlayPool(m, w => w.e && !w.w.includes(' '));
+    /* 抽象主题（虚词、学习与未来…）带图的词可能只剩一两个，
+       开局就凑不齐牌。这时退回全库带图的词，别让孩子点进来就卡住。 */
+    if (p.filter(w => w.e).length < 4) {
+      const all = [];
+      THEMES.forEach(t => t.words.forEach(w => { if (w.e && !w.w.includes(' ')) all.push(w); }));
+      p = all;
+      toast('这个主题的图太少，换成了全局图库～');
+    }
+    gMemory(p);
+  });
 }
 function gMemory(pool) {
   if (!pool || !pool.length) { toast('这一批没有带图片的词，换一批试试～'); return; }
