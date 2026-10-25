@@ -32,7 +32,7 @@
 <script src="js/data.js?v=32"></script>
 <script src="js/build-data.js?v=1"></script>
 <script src="js/app.js?v=49"></script>
-<script src="js/sentence.js?v=42"></script>
+<script src="js/sentence.js?v=43"></script>
 <script src="js/grammar-engine.js?v=3"></script>
 <script src="js/ipa.js?v=2"></script>
 <script>
@@ -621,41 +621,153 @@ function allZh(word) { return ALLW[word] ? ALLW[word].zh : ''; }
 
 /* ---------------- 游戏4：句子火车员（句子补词） ---------------- */
 function gSentencePick() {
-  poolPicker('🧑‍🔧 句子火车员', '🧑‍🔧', m => gSentence(getPlayPool(m, w => !w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w))));
+  /* 先选难度，再选词库。原来只有词库三档，题型固定 8 个（3 个还是"I am a boy"
+     这种写死的），选"随机挑战"也是重复的老几样——用户反馈"选最难的也过于简单"。 */
+  $('#app').innerHTML = `
+    <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
+      <div style="font-size:60px">🧑‍🔧</div>
+      <h2 style="justify-content:center">🧑‍🔧 句子火车员</h2>
+      <p style="color:#5C6273;font-size:.88rem">先选难度，再选词库：</p>
+      <div style="display:grid;gap:12px;margin-top:14px">
+        <button class="btn mint big" onclick="_sentLevel(0)">🌱 基础：be 动词 / 冠词 / 复数</button>
+        <button class="btn orange big" onclick="_sentLevel(1)">🔥 进阶：三单 + 否定 + 疑问词</button>
+        <button class="btn coral big" onclick="_sentLevel(2)">🚀 挑战：There be + 现在进行时 + 综合</button>
+      </div>
+      <div style="margin-top:14px">${gameHomeBtn()}</div>
+    </div>`;
 }
-function gSentence(pool) {
-  const foods = pool.filter(w => ['egg','rice','bread','cake','chicken','beef','pork','soup','noodle','dumpling','mooncake','biscuit','sweet','moon'].includes(w.w));
-  const drinks = pool.filter(w => ['water','juice','milk','tea'].includes(w.w));
-  const actions = pool.filter(w => ['run','jump','swim','sing','dance','read','write','draw','fly','walk','sleep','play'].includes(w.w));
-  /* 名词池：先过词性（gxNouns），再过"加 s 一定对"的白名单。
-     ★ 词性这一步不能省。只筛 plurSafe 的话，long / from / and 这些
-     形容词、介词、连词都会被当成名词，造出 "This is a from." 这种错句
-     （实测 500 轮里出现 115 种）。孩子会照着背下来——拼写对、语法错，
-     比不出题更糟。 */
+function gSentence(pool, level) {
+  const wlvl = (level === 1 || level === 2) ? level : 0;
+  /* 动词池：只认词库 pos==='v' 的原形（gxVerbs）。原来拿固定 12 个词表去 pool 里
+     intersects，词池一换（复习/随机）就剩空数组，pick([]) 返回 undefined 直接崩。 */
+  const actions = gxVerbs(pool).filter(w => w.w.length <= 6);
   const nouns = gxNouns(pool).filter(w => plurSafe(w) && w.w.length <= 8);
   const countableNouns = nouns.filter(w => isCountable(w));
-  const anyFoods = foods.length ? foods : themeWordsById(['food']);
-  const anyDrinks = drinks.length ? drinks : themeWordsById(['food']).filter(w => ['water','juice','milk','tea'].includes(w.w));
-  const anyActions = actions.length ? actions : themeWordsById(['action1']);
+  const anyFoods = themeWordsById(['food']).filter(w => gxPosCode(w) === 'n');
+  const anyDrinks = themeWordsById(['food']).filter(w => ['water','juice','milk','tea'].includes(w.w));
+  const anyActions = actions.length ? actions : gxVerbs(themeWordsById(['action1']));
   const anyNouns = nouns.length ? nouns : gxNouns(themeWordsById(['animal1'])).filter(plurSafe);
   const anyCountable = countableNouns.length ? countableNouns : gxNouns(themeWordsById(['animal1'])).filter(w => isCountable(w));
+  /* 进行时只走白名单 ING_FORM（eat→eating），绝不 v+'ing'（dance→danceing 就是这么错的） */
+  const ingOf = w => (typeof ING_FORM === 'object' && ING_FORM[w]) ? ING_FORM[w] : null;
+  /* 三单 -s 也走白名单：只留"直接加 s 一定对"的词（box→boxs 是错的，吃/去/洗/飞也不规则） */
+  const s3Safe = w => {
+    const x = String(w).toLowerCase();
+    return /^[a-z]+$/.test(x) && !/(s|x|z|sh|ch|o|f|fe|man|ouse|oose)$/.test(x) && !/[^aeiou]y$/.test(x) && !/e$/.test(x);
+  };
+  const s3Fallback = [{ w: 'jump', zh: '跳', e: '🐰' }, { w: 'read', zh: '读', e: '📖' }, { w: 'play', zh: '玩', e: '🎮' }];
+  /* 空池兜底：每个池都要非空，否则 pick 返回 undefined，w.zh 直接抛错 */
+  const nonEmpty = (a, fallback) => (a && a.length) ? a : fallback;
+  const foods = nonEmpty(anyFoods, anyCountable);
+  const drinks = nonEmpty(anyDrinks, foods);
+  const acts = nonEmpty(anyActions, []);
+  const nnn = nonEmpty(anyNouns, anyCountable);
+  const cnt = nonEmpty(anyCountable, nnn);
+  const s3Pool = nonEmpty(acts.filter(w => s3Safe(w.w)), s3Fallback);
+  const ingPool = (() => {
+    const has = acts.filter(w => ingOf(w.w));
+    return has.length ? has : ['eat','sing','jump','read','sleep','play','fly','draw','cry','laugh','drink','dance']
+      .map(k => ({ w: k, zh: (typeof ING_ZH === 'object' && ING_ZH[k]) ? ING_ZH[k] : k, e: '🎬' }));
+  })();
+  const pickSafe = (arr, not) => {
+    const cand = arr.filter(x => x.w !== not);
+    return pick(cand.length ? cand : arr) || { w: 'it', zh: '它', e: '🐱' };
+  };
 
-  const makers = [
-    () => { const w = pick(anyFoods); return { q: `我吃${w.zh}`, sent: `I __ ${w.w}.`, opts: ['eat','drink','look'], ans: 'eat', zh: `I eat ${w.w}. 我吃${w.zh}。`, e: w.e }; },
-    () => { const w = pick(anyDrinks); return { q: `我喝${w.zh}`, sent: `I __ ${w.w}.`, opts: ['drink','eat','read'], ans: 'drink', zh: `I drink ${w.w}. 我喝${w.zh}。`, e: w.e }; },
-    () => { const w = pick(anyActions); return { q: `我会${w.zh}`, sent: `I can __.`, opts: [w.w, w.w + 's', 'am'], ans: w.w, zh: `I can ${w.w}. 我会${w.zh}。`, e: w.e }; },
-    () => { const w = pick(anyNouns); const pl = plurOf(w); return { q: `我喜欢${w.zh}（复数）`, sent: `I like __.`, opts: [pl, w.w, w.w + 'es'], ans: pl, zh: `I like ${pl}. 我喜欢${w.zh}。`, e: w.e }; },
-    () => ({ q: '我是一个男孩', sent: `I __ a boy.`, opts: ['am','is','are'], ans: 'am', zh: 'I am a boy.', e: '👦' }),
-    () => ({ q: '她是一个女孩', sent: `She __ a girl.`, opts: ['is','am','are'], ans: 'is', zh: 'She is a girl.', e: '👧' }),
-    () => ({ q: '这是我的妈妈', sent: `This __ my mom.`, opts: ['is','are','am'], ans: 'is', zh: 'This is my mom.', e: '👩' }),
+  /* 三档难度：基础（第一/二人称 + be/冠词/复数）/ 进阶（三单 + 否定）/ 挑战（疑问 + There be + 进行时）
+     每档都会兜底混入更简单的题，保证空池/生词池也能出满 6 题。 */
+  const M_BASIC = [
+    () => { const w = pickSafe(foods); return { q: `我吃${w.zh}`, sent: `I __ ${w.w}.`, opts: ['eat','drink','look'], ans: 'eat', zh: `I eat ${w.w}. 我吃${w.zh}。`, e: w.e }; },
+    () => { const w = pickSafe(drinks); return { q: `我喝${w.zh}`, sent: `I __ ${w.w}.`, opts: ['drink','eat','read'], ans: 'drink', zh: `I drink ${w.w}. 我喝${w.zh}。`, e: w.e }; },
+    () => { const w = pickSafe(acts); return { q: `我会${w.zh}`, sent: `I can __.`, opts: [w.w, w.w + 's', 'am'], ans: w.w, zh: `I can ${w.w}. 我会${w.zh}。`, e: w.e }; },
+    () => { const w = pickSafe(nnn); const pl = plurOf(w); return { q: `我喜欢${w.zh}（复数）`, sent: `I like __.`, opts: [pl, w.w, w.w + 'es'], ans: pl, zh: `I like ${pl}. 我喜欢${w.zh}。`, e: w.e }; },
+    () => ({ q: '我是一个男孩', sent: `I __ a boy.`, opts: ['am','is','are'], ans: 'am', zh: 'I am a boy. 我是一个男孩。', e: '👦' }),
+    () => ({ q: '她是一个女孩', sent: `She __ a girl.`, opts: ['is','am','are'], ans: 'is', zh: 'She is a girl. 她是一个女孩。', e: '👧' }),
+    () => ({ q: '这是我的妈妈', sent: `This __ my mom.`, opts: ['is','are','am'], ans: 'is', zh: 'This is my mom. 这是我的妈妈。', e: '👩' }),
     () => {
-      const w = pick(anyCountable);
+      const w = pickSafe(cnt);
       const right = artOf(w.w), other = right === 'a' ? 'an' : 'a';
       return { q: `这是${w.zh}`, sent: `This is __ ${w.w}.`, opts: [right, other, 'the'], ans: right,
         zh: `This is ${right} ${w.w}. 这是${w.zh}。`, e: w.e };
     },
   ];
-  const qs = shuffle(makers).slice(0, 6).map(mk => mk());
+  const M_MID = [
+    () => { const w = pickSafe(nnn, 'box'); const pl = plurOf(w);
+      return { q: `他喜欢${w.zh}（复数）`, sent: `He likes __.`, opts: [pl, w.w, w.w + 'es'], ans: pl,
+        zh: `He likes ${pl}. 他喜欢${w.zh}。`, e: w.e }; },
+    () => { const w = pickSafe(s3Pool); return { q: `她每天${w.zh}`, sent: `She __ every day.`, opts: [w.w + 's', w.w, 'am'], ans: w.w + 's',
+        zh: `She ${w.w}s every day. 她每天${w.zh}。`, e: w.e }; },
+    () => { const w = pickSafe(nnn); return { q: `我不喜欢${w.zh}`, sent: `I __ like ${w.w}.`, opts: ["don't", "can't", "am not"], ans: "don't",
+        zh: `I don't like ${w.w}. 我不喜欢${w.zh}。`, e: w.e }; },
+    () => { const w = pickSafe(acts); return { q: `他不会${w.zh}`, sent: `He __ ${w.w}.`, opts: ["can't", "don't", "doesn't"], ans: "can't",
+        zh: `He can't ${w.w}. 他不会${w.zh}。`, e: w.e }; },
+    () => { const w = pickSafe(nnn, 'box'); const pl = plurOf(w);
+      return { q: `你有几个${w.zh}？`, sent: `How many __ do you have?`, opts: [pl, w.w, 'a ' + w.w], ans: pl,
+        zh: `How many ${pl} do you have? 你有几个${w.zh}？`, e: w.e }; },
+  ];
+  const M_HARD = [
+    () => {
+      const w = pickSafe(cnt);
+      return { q: `这是${w.zh}吗？`, sent: `Is this __ ${w.w}?`, opts: [artOf(w.w), 'am', 'are'], ans: artOf(w.w),
+        zh: `Is this ${artOf(w.w)} ${w.w}? 这是${w.zh}吗？`, e: w.e };
+    },
+    () => { const w = pickSafe(nnn, 'box'); const pl = plurOf(w);
+      return { q: `他们是${w.zh}吗？`, sent: `Are these __?`, opts: [pl, w.w, 'a ' + w.w], ans: pl,
+        zh: `Are these ${pl}? 他们是${w.zh}吗？`, e: w.e }; },
+    () => { const w = pickSafe(nnn, 'box'); const pl = plurOf(w);
+      return { q: `桌子上有一些${w.zh}`, sent: `There __ some ${pl} on the table.`, opts: ['are', 'is', 'am'], ans: 'are',
+        zh: `There are some ${pl} on the table. 桌子上有一些${w.zh}。`, e: w.e }; },
+    () => { const w = pickSafe(cnt); return { q: `桌子上有一个${w.zh}`, sent: `There __ ${artOf(w.w)} ${w.w} on the table.`, opts: ['is', 'are', 'am'], ans: 'is',
+        zh: `There is ${artOf(w.w)} ${w.w} on the table. 桌子上有一个${w.zh}。`, e: w.e }; },
+    () => {
+      const w = pickSafe(ingPool);
+      const ing = ingOf(w.w);
+      return { q: `他正在${w.zh}`, sent: `He is __.`, opts: [ing, w.w, w.w + 's'], ans: ing,
+        zh: `He is ${ing}. 他正在${w.zh}。`, e: w.e };
+    },
+    () => {
+      const w = pickSafe(ingPool);
+      const ing = ingOf(w.w);
+      return { q: `她没在${w.zh}`, sent: `She is not __.`, opts: [ing, w.w, w.w + 's'], ans: ing,
+        zh: `She is not ${ing}. 她没在${w.zh}。`, e: w.e };
+    },
+    () => { const w = pickSafe(acts); return { q: `你想要${w.zh}吗？`, sent: `Do you want to __?`, opts: [w.w, w.w + 's', 'am'], ans: w.w,
+        zh: `Do you want to ${w.w}? 你想要${w.zh}吗？`, e: w.e }; },
+    () => { const w = pickSafe(cnt); return { q: `这是谁的${w.zh}？`, sent: `Whose ${w.w} is this?`, opts: [w.w, plurOf(w.w), 'a'], ans: w.w,
+        zh: `Whose ${w.w} is this? 这是谁的${w.zh}？`, e: w.e }; },
+    () => {
+      const w = pickSafe(ingPool);
+      const ing = ingOf(w.w);
+      return { q: `看！他正在${w.zh}`, sent: `Look! He __ ${ing}.`, opts: ['is', 'am', 'are'], ans: 'is',
+        zh: `Look! He is ${ing}. 看！他正在${w.zh}。`, e: w.e };
+    },
+  ];
+  /* level 0/1/2 → 各自难度池；每个 maker 再按 level 递减混入更简单的题 */
+  const LEVELS = [M_BASIC, M_MID, M_HARD];
+  const mkPool = l => {
+    const out = [];
+    for (let i = l; i >= 0; i--) out.push(...LEVELS[i]);
+    return out;
+  };
+  const makers = mkPool(wlvl);
+  const qs = [];
+  const seen = new Set();
+  for (let i = 0; i < makers.length && qs.length < 6; i++) {
+    const mk = makers[Math.floor(Math.random() * makers.length)];
+    let q = null;
+    try { q = mk(); } catch (err) { q = null; }
+    if (!q || !q.sent || !q.ans || !Array.isArray(q.opts) || q.opts.length < 2) continue;
+    const key = q.sent + '|' + q.ans;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    qs.push(q);
+  }
+  /* 兜底：万一 6 题凑不满（理论上不会，因为 makers 有 8+ 个），用固定句补齐 */
+  while (qs.length < 6) {
+    const w = pickSafe(cnt);
+    qs.push({ q: `这是${w.zh}`, sent: `This is __ ${w.w}.`, opts: [artOf(w.w), 'the', 'am'], ans: artOf(w.w),
+      zh: `This is ${artOf(w.w)} ${w.w}. 这是${w.zh}。`, e: w.e });
+  }
   window._sentQs = qs;            // 自检用：题库快照（也方便排查某道题为什么怪）
   const S = { idx: 0, score: 0, first: true };
   window._sentShow = function () {
@@ -703,6 +815,11 @@ function gSentence(pool) {
   window._sentShow();
 }
 function artOf(w) { return /^[aeiou]/i.test(w) ? 'an' : 'a'; }
+/* 选完难度 → 选词库 → 开局（与 gSentencePick 配对） */
+window._sentLevel = function (lv) {
+  poolPicker('🧑‍🔧 句子火车员', '🧑‍🔧',
+    m => gSentence(getPlayPool(m, w => !w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w)), lv));
+};
 /* 共享规则在 js/grammar-engine.js（与句子工厂同一套），这里只做薄封装 */
 function plurSafe(w) { return typeof pluralSafe === 'function' ? pluralSafe(w) : !/(s|x|z|sh|ch)$/.test(w.w); }
 function plurOf(w) { return typeof pluralOf === 'function' ? pluralOf(w) : w.w + 's'; }

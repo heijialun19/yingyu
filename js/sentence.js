@@ -89,7 +89,9 @@ function __prewarmChunk(tokens, i) {
 }
 
 function speakSentence(text, el, onDone) {
-  if (!Store.d.soundOn) { soundOffHint(); return; }
+  /* 声音关着也要走完回调：游戏靠"读完自动跳题"，这里 return 掉回调
+     就等于把自动推进永久挂起（实测玩几题就卡住的元凶）。 */
+  if (!Store.d.soundOn) { soundOffHint(); if (onDone) onDone(); return; }
   const t = String(text).trim(); if (!t) { if (onDone) onDone(); return; }
   stopAllSpeech();
   const tokens = t.split(/\s+/).filter(Boolean);
