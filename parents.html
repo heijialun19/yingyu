@@ -202,9 +202,9 @@
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=26"></script>
-<script src="js/data.js?v=28"></script>
-<script src="js/app.js?v=39"></script>
-<script src="js/sentence.js?v=40"></script>
+<script src="js/data.js?v=29"></script>
+<script src="js/app.js?v=40"></script>
+<script src="js/sentence.js?v=41"></script>
 <script>
 renderNav('parents'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -232,7 +232,6 @@ renderSpeechDiag();
     { b: wordMasteredCount(), s: '🎯 全部词库已掌握' },
     { b: due, s: '🔔 待复习单词' },
     { b: grammarDoneCount() + ' / ' + GRAMMAR_LEVELS.length, s: '🏭 通过的语法关卡' },
-    { b: Object.keys(Store.d.books || {}).length + ' / ' + BOOKS_TOTAL, s: '📚 读完的绘本' },
     { b: Store.d.streak.count + ' 天', s: '🔥 连续学习' },
     { b: Store.d.stars, s: '⭐ 累计星星' },
     { b: Object.keys(Store.d.badges).length + ' / ' + BADGES.length, s: '🏅 获得徽章' },

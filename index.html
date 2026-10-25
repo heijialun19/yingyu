@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
-<meta name="description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子小火车万能公式，12 本点读绘本，4 个复习游戏。安全纯净，进度保存在本机。">
+<meta name="description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子小火车万能公式，4 个复习游戏。安全纯净，进度保存在本机。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="小鸟英语乐园 · 一年级英语启蒙">
-<meta property="og:description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子小火车万能公式，12 本点读绘本，4 个复习游戏。安全纯净，进度保存在本机。">
+<meta property="og:description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子小火车万能公式，4 个复习游戏。安全纯净，进度保存在本机。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/index.html">
 <meta name="twitter:card" content="summary_large_image">
@@ -88,9 +88,9 @@
 </main>
 
 <script src="js/words-data.js?v=26"></script>
-<script src="js/data.js?v=28"></script>
-<script src="js/app.js?v=39"></script>
-<script src="js/sentence.js?v=40"></script>
+<script src="js/data.js?v=29"></script>
+<script src="js/app.js?v=40"></script>
+<script src="js/sentence.js?v=41"></script>
 <script>
 renderNav('index'); renderDecor();
 
@@ -135,7 +135,7 @@ function showHome() {
   document.getElementById('gradeLink').onclick = openProfileModal;
 
   /* 推荐逻辑：单词闯关是绝对主线——字母小朋友基本都会，不再主动推。
-     主卡顺序：单词 → 绘本 → 句子工厂 → 学字母（仅「自己已经开始学」的孩子）→ 游戏。
+     主卡顺序：单词 → 句子工厂 → 学字母（仅「自己已经开始学」的孩子）→ 游戏。
      「正在学字母」= 自己在字母岛学过 1-25 个，且没点过「我会字母了」。 */
   const letterN = letterCount();
   const lettersFinished = Store.d.lettersSkip || letterN >= 26;
@@ -144,7 +144,6 @@ function showHome() {
   const gradeDone = cumMasteredCount(), gradeAll = cumWordCount();
   let step;
   if (gradeDone < gradeAll) step = { e:'🏘️', t:'单词闯关', s:`${myGrade().name}词库：已掌握 ${gradeDone}/${gradeAll}`, href:'words.html?mode=plan', now:gradeDone, all:gradeAll };
-  else if (Object.keys(Store.d.books||{}).length < BOOKS_TOTAL) step = { e:'📚', t:'读今天的绘本', s:`已读 ${Object.keys(Store.d.books||{}).length}/${BOOKS_TOTAL} 本`, href:'books.html', now:Object.keys(Store.d.books||{}).length, all:BOOKS_TOTAL };
   else if (grammarDoneCount() < GRAMMAR_LEVELS.length) step = { e:'🏭', t:'句子工厂闯关', s:`已通过 ${grammarDoneCount()}/${GRAMMAR_LEVELS.length} 关`, href:'grammar.html', now:grammarDoneCount(), all:GRAMMAR_LEVELS.length };
   else if (nextLetter) step = { e:'🏝️', t:`学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}`, s:`${nextLetter.shape} · 故事+拼读`, href:'letters.html', now:letterN, all:26 };
   else step = { e:'🎡', t:'去游戏乐园复习', s:'边玩边巩固', href:'games.html', now:0, all:0 };
@@ -170,7 +169,6 @@ function showHome() {
 
   const islands = lettersFinished ? [
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
-    { e:'📚', n:'绘本馆', d:Object.keys(Store.d.books||{}).length+'/'+BOOKS_TOTAL, href:'books.html' },
     { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
     { e:'🎡', n:'游戏乐园', d:'4个游戏', href:'games.html' },
     { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
@@ -178,7 +176,6 @@ function showHome() {
   ] : [
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
     { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
-    { e:'📚', n:'绘本馆', d:Object.keys(Store.d.books||{}).length+'/'+BOOKS_TOTAL, href:'books.html' },
     { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
     { e:'🎡', n:'游戏乐园', d:'4个游戏', href:'games.html' },
     { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },

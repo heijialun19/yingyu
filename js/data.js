@@ -7,8 +7,6 @@
 const THEMES = GRADES.flatMap(g => g.themes.map(t => Object.assign({ grade: g.id, gradeName: g.name }, t)));
 const TOTAL_WORDS = THEMES.reduce((s, t) => s + t.words.length, 0);
 
-/* 绘本总数（书名/插画详见 books.html 的 BOOKS + BOOKS2） */
-const BOOKS_TOTAL = 12;
 
 /* ---------- 词性（用孩子能看懂的方式解释） ---------- */
 const POS_INFO = {
@@ -421,7 +419,6 @@ const BADGES = [
   {id:'word1000',  emoji:'🧠', name:'千词小博士', desc:'掌握全部 1000 个单词'},
   {id:'grammar1',  emoji:'🔧', name:'句子小工程师', desc:'通过句子工厂全部 19 关'},
   {id:'grammar8',  emoji:'🚃', name:'公式小达人', desc:'通过第一阶段全部关卡'},
-  {id:'reader6',   emoji:'📖', name:'小书虫',   desc:'读完绘本馆全部 12 本绘本'},
   {id:'streak3',   emoji:'🔥', name:'坚持之星',   desc:'连续学习 3 天'},
   {id:'streak7',   emoji:'🌈', name:'七日学霸',   desc:'连续学习 7 天'},
   {id:'star100',   emoji:'✨', name:'百星少年',   desc:'收集 100 颗星星'},

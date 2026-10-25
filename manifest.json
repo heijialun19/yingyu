@@ -1,7 +1,7 @@
 {
   "name": "小鸟英语乐园 Birdie ABC",
   "short_name": "小鸟英语",
-  "description": "一年级起步的小学英语学习网站：1000词、自然拼读、绘本、语法游戏",
+  "description": "一年级起步的小学英语学习网站：1000词、自然拼读、语法闯关、复习游戏",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
