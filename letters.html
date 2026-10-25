@@ -175,7 +175,9 @@ function renderStage(speakIt) {
 function sayName() {
   const l = LETTERS[cur];
   sfx.pop();
- speak(l.L, 'en-US', 1);
+  /* 用字母名的英文拼写请求：有道对单字母 Z/E/P/R/T/X 等音质只有 56kbps，
+     用 "zee"/"ee"/"pee" 等请求能拿到 128-224kbps，听感差别很大。 */
+  speak(l.nameEn || l.L, 'en-US', 1);
 }
 function saySound() {
   const l = LETTERS[cur];
@@ -187,7 +189,7 @@ function sayChant() {
   const w = l.words[0].w;
   sfx.pop();
   speakChain([
-    { text: l.L, rate: 1 },
+    { text: l.nameEn || l.L, rate: 1 },
     { text: w, rate: 1 }
   ]);
 }
