@@ -336,10 +336,39 @@ function renderGradePicker(sel) {
    稳定性靠缓存与预热，不靠增益。
    真要逐条归一化，唯一可行路线是把音频预处理成**同源静态文件**（另立项）。
 
-   v6 链路：<audio> 直接播有道 MP3（preload=auto、volume=1、不设 crossOrigin），
-   SW 把响应原样缓存（opaque 也能存），第二次播放零网络、离线也能听。
+   v7 链路（本地优先）：
+   ① 词库里 1000 个词都有**同源离线音频** audio/<slug>.mp3?v=1 ——
+      这批文件是离线烘焙好的：裁掉首尾静音、静态压限 + RMS 归一到 -12.5 dBFS，
+      所以既不用 CORS、也不用在浏览器里算，音量还整齐（原生极差 5.3 dB → 0.2 dB）。
+   ② 取不到本地文件（短语/生僻词/文件缺失）才算回有道在线合成。
+   ③ SW 用**独立缓存** birdie-audio-v1 存音频：发版不清，6.6MB 只下一次。
    失败重试一次；仍失败给一次网络提示，绝不切机器音。 */
 const DICT_AUDIO_URL = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
+
+/* ===== 本地离线音频包 =====
+   文件名规则必须与生成脚本（_gen_audio.py 的 slug）逐字一致：
+   小写、非字母数字压成一个下划线、去首尾下划线。1000 个词无撞名。
+   AUDIO_VER 与 SW 的 AUDIO_CACHE 一起改：重做音频时两个都 +1，
+   否则 SW 会拿旧文件（URL 没变就等于没换）。 */
+const AUDIO_VER = 1;
+const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+const __LOCAL_AUDIO = (() => {
+  const set = new Set();
+  try {
+    THEMES.forEach(t => t.words.forEach(w => { const k = audioSlug(w.w); if (k) set.add(k); }));
+  } catch (e) {}
+  return set;
+})();
+const localAudioURL = t => {
+  const k = audioSlug(t);
+  return k && __LOCAL_AUDIO.has(k) ? `audio/${k}.mp3?v=${AUDIO_VER}` : '';
+};
+/* 音源优先级：有本地就用本地，本地失败自动换有道（绝不因此变哑）。
+   短语（句子连读的两词一组）一般没有本地文件，直接走有道。 */
+const __audioSources = t => {
+  const l = localAudioURL(t);
+  return l ? [l, DICT_AUDIO_URL(t)] : [DICT_AUDIO_URL(t)];
+};
 let __curAudio = null;
 let __inflight = new Set();   // 所有在途 Audio（含预热），统一管理
 let __firstPlayDone = false;
@@ -352,7 +381,7 @@ const __guards = new Set();        // 所有加载/播放超时计时器，stopA
 function prewarmWord(text, onFail) {
   if (!text) return;
   try {
-    const a = new Audio(DICT_AUDIO_URL(text));
+    const a = new Audio(__audioSources(text)[0]);   // 有本地就预热本地，第二次点开零等待
     a.preload = 'auto';
     __inflight.add(a);
     a.oncanplay = () => { __inflight.delete(a); };
@@ -361,17 +390,19 @@ function prewarmWord(text, onFail) {
 }
 /* 播放入口：直接走媒体元素。epoch 在这里统一递增；
    timeoutMs 可选（连读链传短超时保持节奏）。 */
-function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs) {
+function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs, startIdx) {
   const epoch = ++__audioEpoch;
   const t = String(text).trim();
   if (!t) { if (onFail) onFail(); return; }
-  __playMediaElement(t, rate, epoch, onEnd, onFail, isRetry, timeoutMs);
+  __playMediaElement(t, rate, epoch, onEnd, onFail, isRetry, timeoutMs, startIdx);
 }
 /* 媒体元素兜底（v4 链路，原封不动）：全新 Audio + 唯一声源保证 + 重试一次。
    epoch 由调用方传入并负责递增——重试时也走同一令牌，不会和归一化路径抢令牌。 */
-function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs) {
+function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, srcIdx) {
   rate = 1; // mobile compat: always normal speed
-  const a = new Audio(DICT_AUDIO_URL(text));
+  const srcs = __audioSources(text);
+  const si = Math.min(srcIdx || 0, srcs.length - 1);
+  const a = new Audio(srcs[si]);
   a.preload = 'auto';
   __curAudio = a;
   __inflight.add(a);
@@ -388,7 +419,11 @@ function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs
     /* 已被更新的一次点击取代：绝不重试、绝不回头抢声源
        （重试会 ++epoch，把用户正在听的新词掐掉再播回旧词）。 */
     if (epoch !== __audioEpoch) return;
-    if (!isRetry) { playDictAudio(text, rate, onEnd, onFail, true, timeoutMs); return; } // 自动重试一次
+    /* 本地文件取不到（删除/损坏/部署不全）→ 立刻换下一个音源。
+       这不算"失败重试"：孩子不该为一个仓库问题多等两秒。 */
+    if (si + 1 < srcs.length) { __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, si + 1); return; }
+    /* 自动重试一次：从"最后试过的那个音源"再来，不回头再撞 404 的本地文件 */
+    if (!isRetry) { playDictAudio(text, rate, onEnd, onFail, true, timeoutMs, si); return; }
     const now = Date.now();
     if (now - __dictFailNotified > 30000) { __dictFailNotified = now; toast('📶 发音加载失败，请检查网络后重试'); }
     if (onFail) onFail();

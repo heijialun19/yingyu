@@ -2,20 +2,25 @@
    缓存策略：
    - 页面导航：网络优先（在线永远拿到最新版页面，发版即生效；断网回退缓存）
    - 带版本号的静态资源：缓存优先（版本号变更即新 URL，天然绕开旧缓存）
+   - 本地离线音频 audio/：独立缓存 AUDIO_CACHE，**发版不清**
+     （6.6MB 只下一次；重建音频时把 AUDIO_VER 与这里同时 +1）
    - 有道发音：原样转发 + 原样缓存。opaque 响应的 body 读不到、头也改不了，
      所以这里绝不读 body、绝不 new Response 重建（那样会全站失声） */
-const CACHE = 'birdie-abc-v53';
+const CACHE = 'birdie-abc-v54';
+const AUDIO_CACHE = 'birdie-audio-v1';   // 与 js/app.js 的 AUDIO_VER 同步
 const CORE = [
   './', './index.html', './letters.html', './words.html', 
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=33', './js/words-data.js?v=27', './js/data.js?v=31', './js/app.js?v=43', './js/sentence.js?v=42', './js/grammar-engine.js?v=2', './js/ipa.js?v=1',
+  './css/style.css?v=33', './js/words-data.js?v=27', './js/data.js?v=31', './js/app.js?v=44', './js/sentence.js?v=42', './js/grammar-engine.js?v=2', './js/ipa.js?v=1',
   './manifest.json', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys()
+    .then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== AUDIO_CACHE).map(k => caches.delete(k))))
+    .then(() => self.clients.claim()));
 });
 /* 收到新版本激活指令 */
 self.addEventListener('message', e => { if (e.data === 'SKIP_WAITING') self.skipWaiting(); });
@@ -33,6 +38,21 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
+  /* 本地离线音频：单独一个缓存，发版不清理。
+     词是固定的、文件是不可变的（改内容会变 AUDIO_VER 的查询串），
+     所以缓存优先最省流量：听过一次之后永久零网络、离线可听。 */
+  if (url.origin === location.origin && /\/audio\//.test(url.pathname)) {
+    e.respondWith(
+      caches.open(AUDIO_CACHE).then(c => c.match(e.request).then(hit => {
+        if (hit) return hit;
+        return fetch(e.request).then(res => {
+          if (res && res.ok) { const copy = res.clone(); c.put(e.request, copy).catch(() => {}); }
+          return res;
+        }).catch(() => new Response('', { status: 504, statusText: 'offline' }));
+      })).catch(() => new Response('', { status: 504, statusText: 'offline' }))
+    );
+    return;
+  }
   /* 同站静态资源：缓存优先 */
   if (url.origin === location.origin) {
     e.respondWith(
@@ -43,7 +63,7 @@ self.addEventListener('fetch', e => {
       }).catch(() => {
         // 脚本/样式离线缺失时返回 504——绝不能回退 index.html，
         // 否则浏览器会把 HTML 当 JS 解析，页面静默半死（不报错但全站失灵）
-        if (e.request.destination === 'script' || e.request.destination === 'style') {
+        if (e.request.destination === 'script' || e.request.destination === 'style' || e.request.destination === 'audio') {
           return new Response('', { status: 504, statusText: 'offline' });
         }
         return caches.match('./index.html');
