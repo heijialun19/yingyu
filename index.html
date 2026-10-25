@@ -16,11 +16,11 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>小鸟英语乐园 · 一年级英语启蒙</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=30">
+<link rel="stylesheet" href="css/style.css?v=31">
 <style>
 .hello-line{text-align:center;color:#5C6273;font-size:.9rem;margin:4px 0 14px}
 .hello-line b{color:var(--ink)}
-.hello-line a{color:#78909C;text-decoration:underline dotted;cursor:pointer}
+.hello-line a{color:#6B7280;text-decoration:underline dotted;cursor:pointer}
 .main-card{text-align:center;padding:34px 20px 28px;cursor:pointer;transition:.18s;border-width:4px}
 .main-card:hover{transform:translateY(-4px)}
 .main-emoji{font-size:76px;line-height:1.15;filter:drop-shadow(0 6px 8px rgba(0,0,0,.12))}
@@ -30,15 +30,15 @@
 .main-progress i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--mint),var(--lake));transition:.4s}
 .task-strip{display:flex;justify-content:center;gap:14px;margin:10px 0 4px;font-size:.82rem;color:#5C6273;flex-wrap:wrap}
 .task-strip .tdone{color:#4E9E59;font-weight:700}
-.section-label{text-align:center;color:#78909C;font-size:.8rem;margin:22px 0 10px;letter-spacing:2px}
+.section-label{text-align:center;color:#6B7280;font-size:.8rem;margin:22px 0 10px;letter-spacing:2px}
 .big-islands{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;max-width:760px;margin:0 auto}
-.big-island{background:#fff;border-radius:24px;border:3px solid var(--sky2);box-shadow:0 5px 0 rgba(45,49,66,.08);display:flex;flex-direction:column;align-items:center;gap:2px;padding:18px 8px 14px;cursor:pointer;transition:.15s}
+.big-island{background:#fff;border-radius:24px;border:3px solid var(--sky2);box-shadow:0 5px 0 rgba(45,49,66,.08);display:flex;flex-direction:column;align-items:center;gap:2px;padding:18px 8px 14px;cursor:pointer;transition:.15s;font:inherit;color:inherit;text-align:center;width:100%}
 .big-island:hover{transform:translateY(-5px);border-color:var(--lemon)}
 .big-island .bi-emoji{font-size:52px;line-height:1.1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.1))}
 .big-island b{font-size:1.05rem}
-.big-island small{color:#78909C;font-size:.68rem}
-.foot-links{text-align:center;margin-top:26px;font-size:.78rem;color:#78909C}
-.foot-links a{color:#78909C;margin:0 8px}
+.big-island small{color:#6B7280;font-size:.78rem}
+.foot-links{text-align:center;margin-top:26px;font-size:.78rem;color:#6B7280}
+.foot-links a{color:#6B7280;margin:0 8px}
 .welcome-only{max-width:420px;margin:30px auto;text-align:center;padding:30px 24px}
 .avatar-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
 .avatar-chip{width:46px;height:46px;font-size:26px;border-radius:14px;cursor:pointer;background:#fff;border:3px solid #E8EAF0;transition:.13s}
@@ -52,6 +52,8 @@
 </head>
 <body>
 <main style="max-width:720px">
+  <!-- 语义标题：视觉上不需要（孩子看的是图），但读屏器和搜索引擎需要一个 h1 -->
+  <h1 class="sr-only">小鸟英语乐园 —— 小学英语单词、句子与发音练习</h1>
   <section id="welcome" style="display:none">
     <div class="card welcome-only">
       <div style="font-size:64px">🐤</div>
@@ -60,7 +62,7 @@
       <div class="avatar-grid" id="introAvatars"></div>
       <div class="mini-grade" id="introGrade"></div>
       <button class="btn grape big" style="width:100%" onclick="saveIntro()">🚀 开始学习！</button>
-      <small style="display:block;color:#78909C;margin-top:10px">进度保存在这台电脑上，随时可备份</small>
+      <small style="display:block;color:#6B7280;margin-top:10px">进度保存在这台电脑上，随时可备份</small>
     </div>
   </section>
 
@@ -88,7 +90,7 @@
 </main>
 
 <script src="js/words-data.js?v=26"></script>
-<script src="js/data.js?v=29"></script>
+<script src="js/data.js?v=30"></script>
 <script src="js/app.js?v=41"></script>
 <script src="js/sentence.js?v=42"></script>
 <script>
@@ -151,7 +153,13 @@ function showHome() {
   document.getElementById('mcTitle').textContent = step.t;
   document.getElementById('mcSub').textContent = step.s;
   document.getElementById('mcBar').style.width = (step.all ? Math.round(step.now/step.all*100) : 100) + '%';
-  document.getElementById('mainCard').onclick = () => location.href = step.href;
+  /* 主卡：既是按钮就得让键盘也能按（原来只有 onclick，Tab 走不到） */
+  const mcEl = document.getElementById('mainCard');
+  mcEl.onclick = () => location.href = step.href;
+  mcEl.setAttribute('role', 'button');
+  mcEl.setAttribute('tabindex', '0');
+  mcEl.setAttribute('aria-label', step.t + '——' + step.s);
+  mcEl.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.href = step.href; } };
 
   const due = dueWords();
   if (due.length) {
@@ -181,7 +189,7 @@ function showHome() {
     { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },
   ];
   document.getElementById('bigIslands').innerHTML = islands.map(i =>
-    `<div class="big-island" onclick="location.href='${i.href}'"><div class="bi-emoji">${i.e}</div><b>${i.n}</b><small>${i.d}</small></div>`).join('');
+    `<button type="button" class="big-island" onclick="location.href='${i.href}'"><span class="bi-emoji" aria-hidden="true">${i.e}</span><b>${i.n}</b><small>${i.d}</small></button>`).join('');
   maybeShowInstallHint(); // 手机浏览器：引导「添加到主屏幕」（可永久关闭）
 }
 </script>

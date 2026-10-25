@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>句子工厂 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=30">
+<link rel="stylesheet" href="css/style.css?v=31">
 <style>
 /* 句子语法解析面板（只在句子工厂用） */
 .parse{margin-top:12px;background:#F7F9FC;border:2px solid #E3E9F2;border-radius:14px;padding:12px 12px 10px}
@@ -46,10 +46,10 @@
     <p>19 关万能公式 · 每题答完都有<b>句子语法解析</b> · 第二阶段起，造句题目直接用<b>单词镇的单词</b>生成——学过什么，就造什么句！</p>
   </div>
   <div id="app"></div>
-<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
+<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=26"></script>
-<script src="js/data.js?v=29"></script>
+<script src="js/data.js?v=30"></script>
 <script src="js/app.js?v=41"></script>
 <script src="js/sentence.js?v=42"></script>
 <script src="js/grammar-engine.js?v=2"></script>
@@ -70,7 +70,7 @@ function parseHTML(sentence) {
   if (!a.tokens.length) return '';
   const cells = a.tokens.map(t => {
     const k = PARSE_KEY[t.role] || 'none';
-    return `<div class="pcell r-${k}"><b>${esc(t.display)}</b>${t.role ? `<span>${t.role}</span>` : ''}<small>${t.pos}</small></div>`;
+    return `<div class="pcell r-${k}"><b lang="en">${esc(t.display)}</b>${t.role ? `<span>${t.role}</span>` : ''}<small>${t.pos}</small></div>`;
   }).join('');
   return `<div class="parse">
     <div class="parse-h">🧩 句子解析${a.formula ? `<span class="pf">${a.formula}</span>` : ''}</div>
@@ -119,9 +119,19 @@ const POS_TIP = {
   '形容词': '形容词表示"什么样的"，可以放在 be 动词后面，比如 is happy。',
   '数词': '数词表示数量，比如 one、two、three。'
 };
+/* 词性只有一个真相：词库里的 pos（人工校对过）。
+   引擎 gxPos 只作兜底——它认不出 sunny / glad / bring / pick 这类词，
+   一律默认成名词，结果词卡写「形容词」、词性题却判「名词」，
+   同一个词在同一个 App 里自相矛盾。L17 词池里这样会判错的占 12%。 */
+const GX_POS_ZH = { n:'名词', v:'动词', adj:'形容词', num:'数词', adv:'副词',
+  pron:'代词', prep:'介词', conj:'连词', interj:'感叹词', be:'be动词', qw:'疑问词', phrase:'短语' };
+function gxPosOf(w) {
+  if (w && typeof w === 'object' && GX_POS_ZH[w.pos]) return GX_POS_ZH[w.pos];
+  return gxPos(String(w && w.w !== undefined ? w.w : w)).pos;
+}
 function gxPosBuckets(ws) {
   const by = { '名词': [], '动词': [], '形容词': [], '数词': [] };
-  ws.forEach(w => { const p = gxPos(w.w).pos; if (by[p]) by[p].push(w); });
+  ws.forEach(w => { const p = gxPosOf(w); if (by[p]) by[p].push(w); });
   return by;
 }
 /* 句型转换用的宾语：只挑"加 s 一定对"的词，避免 breads 这类错形 */

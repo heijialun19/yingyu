@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=30">
+<link rel="stylesheet" href="css/style.css?v=31">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -72,10 +72,10 @@
   </div>
 
   <div id="app"></div>
-<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
+<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=26"></script>
-<script src="js/data.js?v=29"></script>
+<script src="js/data.js?v=30"></script>
 <script src="js/app.js?v=41"></script>
 <script src="js/sentence.js?v=42"></script>
 <script>
@@ -117,8 +117,9 @@ function showPool(kind) {
         ${list.slice(0, 24).map(w => `
           <div class="word-card" onclick="speakWord('${jsq(w.w)}')" title="点一下，读一遍">
             ${(Store.d.words[w.w] || {}).box >= 2 ? '<span class="mastered-mark">✅</span>' : ''}
+            <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${w.e || '🔤'}</span>
-            <b>${w.w}</b>
+            <b lang="en">${w.w}</b>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
             ${w.wrongCount ? `<div class="dec" style="background:#FFE9E9">🔁 错过 ${w.wrongCount} 次</div>` : `<div class="dec" style="background:transparent">${w.fromGrade || w.themeEmoji + w.themeName}</div>`}
@@ -152,8 +153,9 @@ function renderSearch() {
       <div class="word-grid" style="margin-top:10px">
         ${hits.slice(0, 120).map(w => `
           <div class="word-card" style="border-color:${w.themeColor}" onclick="speakWord('${jsq(w.w)}')" title="${w.themeEmoji}${w.themeName} · 点一下，读一遍">
+            <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${w.e || '🔤'}</span>
-            <b>${w.w}</b>
+            <b lang="en">${w.w}</b>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
             ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : '<div class="dec" style="background:transparent"></div>'}
@@ -206,8 +208,12 @@ function renderBrowse() {
 
     <div class="tab-label">📚 选择主题</div>
     <div class="theme-tabs">
-      ${g.themes.map(t2 => `<button class="theme-tab ${t2.id === curTheme ? 'on' : ''}" style="color:${t2.color}" onclick="switchTheme('${t2.id}')">
-        <span class="te">${t2.emoji}</span>${t2.name}</button>`).join('')}
+      ${g.themes.map(t2 => {
+        /* 全掌握的主题打个 ✅：家长扫一眼就知道哪块还没碰过 */
+        const done = t2.words.every(w => (((Store.d.words[w.w] || {}).box) || 0) >= 2);
+        return `<button class="theme-tab ${t2.id === curTheme ? 'on' : ''}" style="color:${t2.color}" onclick="switchTheme('${t2.id}')">
+        <span class="te">${t2.emoji}</span>${t2.name}${done ? ' <span aria-label="已全部掌握">✅</span>' : ''}</button>`;
+      }).join('')}
     </div>
 
     <div class="card" style="border-color:${t.color}">
@@ -224,8 +230,9 @@ function renderBrowse() {
         ${t.words.map(w => `
           <div class="word-card" onclick="speakWord('${jsq(w.w)}')" title="点一下，读一遍">
             ${(Store.d.words[w.w] || {}).box >= 2 ? '<span class="mastered-mark">✅</span>' : ''}
+            <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${w.e || '🔤'}</span>
-            <b>${w.w}</b>
+            <b lang="en">${w.w}</b>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
             ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : '<div class="dec" style="background:transparent"></div>'}
@@ -273,17 +280,17 @@ function makeQuestion(word, pool) {
   const distract = shuffle(pool.filter(w => w.w !== word.w)).slice(0, 3);
   const type = Math.floor(Math.random() * 3);
   if (type === 0) { // 看词选图：不自动读音，词旁给 🔊 让孩子点着听（tap-to-hear）
-    return { type, word,
+    return { type, word, hint: `它的中文是「${word.zh}」`,
       prompt: `哪个图片是 <b style="font-size:1.5rem;color:#FF6B6B">${word.w}</b> <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(word.w)}')" title="点我听发音">🔊</button> ？`,
       options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: `<span class="oe">${w.e || '🔤'}</span>` })) };
   }
   if (type === 1) { // 听音选词：声音就是题目，自动读一遍 + 🔁 重听
-    return { type, word,
+    return { type, word, hint: `从 ${word.w[0]} 开头，一共 ${word.w.length} 个字母`,
       prompt: `🔊 听一听，是哪个单词？（点 🔁 再听）`,
       speakText: word.w, autoSpeak: true, replay: true,
       options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: w.w })) };
   }
-  return { type, word, // 中文选英文：中文已显示，不需要朗读
+  return { type, word, hint: `从 ${word.w[0]} 开头，一共 ${word.w.length} 个字母`, // 中文选英文：中文已显示，不需要朗读
     prompt: `「<b style="font-size:1.3rem;color:#9B72FF">${word.zh}</b>」的英语是？`,
     options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: w.w })) };
 }
@@ -361,7 +368,10 @@ function answer(btn, key) {
   } else {
     s.firstTry = false; s.tries++; sfx.wrong();
     if (s.tries >= 2) return revealWord(q);
-    $('#qexp').innerHTML = `🤔 再想想哦，你可以再听一遍提示～`;
+    /* 第一次错：给一条能用的线索，而不是干巴巴的"再想想"。
+       听音/中译英给首字母和长度；看图选词给中文（图还是要自己找）。 */
+    $('#qexp').innerHTML = `🤔 再试一次～<br>💡 ${q.hint || '再听一遍它的发音'}`;
+    if (q.replay) Flow.after(300, () => speak(q.speakText, 'en-US'));
   }
 }
 
@@ -577,7 +587,7 @@ function renderSpell() {
       <div class="sp-cn">${esc(w.zh)}</div>
       <button class="sp-listen" onclick="speak('${jsq(w.w)}')">🔊 再听一遍</button>
       ${wr.revealed ? `<div class="sp-reveal" style="font-size:1.6rem;color:#E05656">${esc(w.w)}</div><p class="sp-tip">照着上面的答案，在下面打一遍就过关～</p>` : `<p class="sp-tip">听着音，把单词<b>打出来</b>！</p>`}
-      <input class="sp-input" id="spWriteInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="在这里输入…" onkeydown="if(event.key==='Enter')spCheckWrite()">
+      <input class="sp-input" id="spWriteInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="latin" aria-label="在这里拼写单词" placeholder="在这里输入…" onkeydown="if(event.key==='Enter')spCheckWrite()">
       <div class="sp-next"><button class="btn grape big" onclick="spCheckWrite()">✅ 检查</button></div>
       ${wr.fails >= 2 && !wr.revealed ? '<div class="sp-next"><button class="btn ghost" onclick="spReveal()">👀 想不起来了，看答案</button></div>' : ''}`;
     setTimeout(() => { const el = document.getElementById('spWriteInput'); if (el) el.focus(); }, 200);

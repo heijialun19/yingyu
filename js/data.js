@@ -37,6 +37,8 @@ const POS_OVERRIDE = {
   travel:'v', visit:'v', pack:'v',
   buy:'v', sell:'v', pay:'v', cost:'v',
   paint:'v',
+  /* 数字主题里的两个"假数词"：数数(v.)、数字(n.)，都不是数词 */
+  count:'v', number:'n',
   celebrate:'v', invite:'v', prepare:'v',
   protect:'v', save:'v',
   study:'v', review:'v', believe:'v', fail:'v',

@@ -4,11 +4,11 @@
    - 带版本号的静态资源：缓存优先（版本号变更即新 URL，天然绕开旧缓存）
    - 有道发音：原样转发 + 原样缓存。opaque 响应的 body 读不到、头也改不了，
      所以这里绝不读 body、绝不 new Response 重建（那样会全站失声） */
-const CACHE = 'birdie-abc-v50';
+const CACHE = 'birdie-abc-v51';
 const CORE = [
   './', './index.html', './letters.html', './words.html', 
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=30', './js/words-data.js?v=26', './js/data.js?v=29', './js/app.js?v=41', './js/sentence.js?v=42', './js/grammar-engine.js?v=2',
+  './css/style.css?v=31', './js/words-data.js?v=26', './js/data.js?v=30', './js/app.js?v=41', './js/sentence.js?v=42', './js/grammar-engine.js?v=2',
   './manifest.json', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 self.addEventListener('install', e => {
