@@ -508,12 +508,61 @@ function soundOffHint() {
   toast('🔇 声音关着呢，点右上角（或底部「我的」里）的喇叭 🔊 打开');
 }
 
+/* ---------------- 设备静音兜底提示 ----------------
+   浏览器不暴露操作系统音量，「音量键没开」没法直接检测。
+   但有三个实用信号可以兜住：
+   ① 会话首次点读 → 温馨提示一次（不打扰，只提一嘴）
+   ② 同一个词 5 秒内连点 3 次 → 大概率是听不到，自动弹提示
+   ③ 「我的」里的「🔊 测试声音」按钮 → 主动测一次，最可靠 */
+const __volTip = { taps: [], lastHintAt: 0 };
+function volHint(msg) {
+  const now = Date.now();
+  if (now - __volTip.lastHintAt < 6000) return; // 6 秒内不重复弹
+  __volTip.lastHintAt = now;
+  toast(msg);
+}
+function maybeFirstPlayTip() {
+  try {
+    if (sessionStorage.getItem('birdie_vol_tip')) return;
+    sessionStorage.setItem('birdie_vol_tip', '1');
+  } catch (e) { return; } // 隐私模式存不了就不提示
+  setTimeout(() => volHint('💡 如果没听到声音，可能是设备静音了，按一下音量键试试 🔊'), 700);
+}
+function maybeRepeatTapTip(text) {
+  const now = Date.now();
+  const t = String(text);
+  __volTip.taps = __volTip.taps.filter(x => now - x.at < 5000);
+  __volTip.taps.push({ text: t, at: now });
+  const same = __volTip.taps.filter(x => x.text === t).length;
+  if (same >= 3) {
+    __volTip.taps = [];
+    volHint('🔇 听不到声音？检查一下设备音量键，或到「我的」里点「测试声音」🔊');
+  }
+}
+
 function speak(text, lang = 'en-US', rate = 0.85) {
   if (!Store.d.soundOn) { soundOffHint(); return; }
   const t = String(text).trim(); if (!t) return;
   if (lang.startsWith('zh')) return; // 词典不支持中文句：中文不朗读
+  maybeFirstPlayTip();
+  maybeRepeatTapTip(t);
   stopAllSpeech();
   playDictAudio(t, rate, null, null);
+}
+
+/* 测试声音：播放一段欢快音效 + 一个单词，让孩子/家长确认设备有没有声。
+   网站内的声音开关关着时自动打开（不然测了也是静音，毫无意义）。 */
+function testSound() {
+  if (!Store.d.soundOn) {
+    Store.d.soundOn = true; Store.save();
+    const sb = document.getElementById('soundBtn'); if (sb) sb.textContent = '🔊';
+    toast('🔊 已打开网站声音，正在测试…');
+  }
+  sfx.good();
+  setTimeout(() => {
+    speak('hello', 'en-US', 1);
+    setTimeout(() => toast('❓ 能听到我说话吗？如果听不到，请检查设备的音量键 🔊'), 1200);
+  }, 350);
 }
 
 /* 链式朗读：读完一句自动读下一句；单段失败（已自动重试过）跳过继续，
@@ -881,7 +930,11 @@ function openProfileModal() {
         <h2>👤 小伙伴档案</h2>
         <p style="font-size:.8rem;color:#5C6273;margin:4px 0 10px">一台电脑可以有多个小朋友，每人一份独立进度，互不打扰！</p>
         <div class="profile-list">${rows}</div>
-        <button class="btn ghost" style="margin-top:12px;width:100%" onclick="toggleSoundQuick();this.textContent=Store.d.soundOn?'🔊 声音：开':'🔇 声音：关'">🔊 声音：${Store.d.soundOn ? '开' : '关'}</button>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn ghost" style="flex:1" onclick="toggleSoundQuick();this.textContent=Store.d.soundOn?'🔊 声音：开':'🔇 声音：关'">🔊 声音：${Store.d.soundOn ? '开' : '关'}</button>
+          <button class="btn mint" style="flex:1" onclick="testSound()">🎵 测试声音</button>
+        </div>
+        <p style="font-size:.72rem;color:#5C6273;margin:8px 0 0;text-align:center">没听到声音？点「测试声音」检查设备音量键 🔊</p>
         <details class="profile-tool">
           <summary>🔧 修改当前档案的年级</summary>
           <div class="theme-tabs" style="margin-top:10px">
