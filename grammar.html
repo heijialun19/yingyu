@@ -4,39 +4,89 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
-<meta name="description" content="零基础也能懂的英语句子思维：谁 + 干什么 + 什么，16 关三阶段，造句题用单词镇的单词实时生成。">
+<meta name="description" content="零基础也能懂的英语句子思维：谁 + 干什么 + 什么，19 关三阶段，每题都有句子语法解析，造句题用单词镇的单词实时生成。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
-<meta property="og:title" content="句子工厂 · 万能公式 16 关 · 小鸟英语乐园">
-<meta property="og:description" content="零基础也能懂的英语句子思维：谁 + 干什么 + 什么，16 关三阶段，造句题用单词镇的单词实时生成。">
+<meta property="og:title" content="句子工厂 · 万能公式 19 关 · 小鸟英语乐园">
+<meta property="og:description" content="零基础也能懂的英语句子思维：谁 + 干什么 + 什么，19 关三阶段，每题都有句子语法解析，造句题用单词镇的单词实时生成。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/grammar.html">
 <meta name="twitter:card" content="summary_large_image">
 <title>句子工厂 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="css/style.css?v=28">
+<style>
+/* 句子语法解析面板（只在句子工厂用） */
+.parse{margin-top:12px;background:#F7F9FC;border:2px solid #E3E9F2;border-radius:14px;padding:12px 12px 10px}
+.parse-h{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.82rem;font-weight:800;color:#5C6273;margin-bottom:9px}
+.parse-h .pf{font-weight:700;color:#7C4DFF;font-size:.72rem;background:#F1EAFF;padding:2px 9px;border-radius:999px}
+.parse-row{display:flex;flex-wrap:wrap;gap:8px}
+.pcell{min-width:56px;max-width:120px;text-align:center;background:#fff;border-radius:10px;padding:6px 8px;border:2px solid #E3E9F2}
+.pcell b{display:block;font-size:1rem;color:#2D3142;word-break:break-word;line-height:1.3}
+.pcell span{display:block;font-size:.66rem;font-weight:800;margin-top:3px}
+.pcell small{display:block;font-size:.6rem;color:#9AA3B2;margin-top:1px}
+.pcell.r-subj{border-color:#7FC4F5;background:#EFF8FF}.pcell.r-subj span{color:#1C7FA6}
+.pcell.r-pred{border-color:#FFB27F;background:#FFF4EC}.pcell.r-pred span{color:#C2570F}
+.pcell.r-obj{border-color:#8FD9A8;background:#EFFBF2}.pcell.r-obj span{color:#2E7D32}
+.pcell.r-comp{border-color:#C3A8FF;background:#F7F2FF}.pcell.r-comp span{color:#6B3FA0}
+.pcell.r-adv{border-color:#CBD5E1;background:#F4F6FA}.pcell.r-adv span{color:#5C6273}
+.pcell.r-attr{background:#FBFCFE}.pcell.r-attr span{color:#8B93A7}
+.pcell.r-aux{border-color:#7FE0D4;background:#EEFBF9}.pcell.r-aux span{color:#0E7C6B}
+.pcell.r-lead{border-color:#FFD98A;background:#FFFAEC}.pcell.r-lead span{color:#8A6A00}
+.pcell.r-neg{border-color:#FF9C9C;background:#FFF0F0}.pcell.r-neg span{color:#C62828}
+.parse-note{margin-top:9px;font-size:.78rem;color:#5C6273;line-height:1.7}
+</style>
 </head>
 <body>
 <main>
   <div class="page-title">
     <h1>🏭 句子工厂</h1>
-    <p>16 关万能公式 · 第二阶段起，造句题目直接用<b>单词镇的单词</b>生成——学过什么，就造什么句！</p>
+    <p>19 关万能公式 · 每题答完都有<b>句子语法解析</b> · 第二阶段起，造句题目直接用<b>单词镇的单词</b>生成——学过什么，就造什么句！</p>
   </div>
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=26"></script>
-<script src="js/data.js?v=27"></script>
+<script src="js/data.js?v=28"></script>
 <script src="js/app.js?v=39"></script>
 <script src="js/sentence.js?v=40"></script>
+<script src="js/grammar-engine.js?v=1"></script>
 <script>
 renderNav('grammar'); renderDecor();
 
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const ROLES = ['谁 👦', '干什么 🏃', '什么 📦', '什么 📦'];
+
+/* ---------------- 句子语法解析面板 ----------------
+   每道题答完都要给解析：每个词标词性 + 句子成分（主语/谓语/宾语/表语…）。
+   解析由 gxAnalyze 统一产出，认不出的句子只显示词性、不瞎标成分。 */
+const PARSE_KEY = { '主语':'subj','谓语':'pred','宾语':'obj','表语':'comp','状语':'adv',
+  '定语':'attr','助动词':'aux','引导词':'lead','否定词':'neg' };
+function parseHTML(sentence) {
+  const a = gxAnalyze(sentence);
+  if (!a.tokens.length) return '';
+  const cells = a.tokens.map(t => {
+    const k = PARSE_KEY[t.role] || 'none';
+    return `<div class="pcell r-${k}"><b>${esc(t.display)}</b>${t.role ? `<span>${t.role}</span>` : ''}<small>${t.pos}</small></div>`;
+  }).join('');
+  return `<div class="parse">
+    <div class="parse-h">🧩 句子解析${a.formula ? `<span class="pf">${a.formula}</span>` : ''}</div>
+    <div class="parse-row">${cells}</div>
+    ${a.tokens.some(t => t.expanded) ? `<div class="parse-note">✂️ 缩写拆开看：isn't = is not，aren't = are not，don't = do not，doesn't = does not，can't = can not</div>` : ''}
+    ${a.note ? `<div class="parse-note">💡 ${a.note}</div>` : ''}
+  </div>`;
+}
+/* 该朗读哪句：优先题目自带的 say，其次造句的 read，最后取正确选项文本 */
+function englishOf(it) {
+  if (!it) return '';
+  if (it.say) return String(it.say);
+  if (it.read) return String(it.read);
+  if (it.type === 'choice' && it.options) return String(it.options[it.answer] || '').replace(/<[^>]*>/g, '');
+  return '';
+}
 
 let view = 'levels', curLevel = null, sess = null;
 
@@ -89,6 +139,29 @@ const MEASURE = { animal1: '只', animal2: '只', school: '个', fruit: '个', f
 const measureOf = w => MEASURE[w._theme] || '个';
 
 /* ---------------- 生成器：从单词镇生成造句题 ---------------- */
+/* 词性分桶：只收本站词库里判断明确的四类词（名词/动词/形容词/数词） */
+const POS_TIP = {
+  '名词': '名词表示人、东西或地方，可以放在 a / the 后面，比如 a dog、the book。',
+  '动词': '动词表示动作，是句子里的"动作王"，一句话只能有一个谓语动词。',
+  '形容词': '形容词表示"什么样的"，可以放在 be 动词后面，比如 is happy。',
+  '数词': '数词表示数量，比如 one、two、three。'
+};
+function gxPosBuckets(ws) {
+  const by = { '名词': [], '动词': [], '形容词': [], '数词': [] };
+  ws.forEach(w => { const p = gxPos(w.w).pos; if (by[p]) by[p].push(w); });
+  return by;
+}
+/* 句型转换用的宾语：只挑"加 s 一定对"的词，避免 breads 这类错形 */
+/* 这类动词配宾语时的中文：eat 要读成「吃苹果」，不是「吃东西苹果」 */
+const GX_VOBJ_ZH = { like:'喜欢', have:'有', see:'看见', want:'想要', eat:'吃' };
+function gxPickObject(ws, themes) {
+  let pool = ws;
+  if (themes) pool = ws.filter(w => themes.includes(String(w._theme || '')));
+  const safe = pool.filter(pluralSafe);
+  if (!safe.length) return null;
+  const w = pick(safe);
+  return { en: pluralOf(w), zh: w.zh, w };
+}
 const GEN = {
   likeChoice(ws) {
     const safe = ws.filter(pluralSafe);
@@ -198,6 +271,132 @@ const GEN = {
       slots: [['I','We','He'], ['have','has','am'], ['two','three','a'], [pl, w.w, w.w + 'es']],
       answer: ['I','have','two',pl], read: `I have two ${pl}.`, zh: `我有两${m}${w.zh}。`,
       hint: '两' + m + ' → 加 s；我用 have' };
+  },
+
+  /* ---- 词性（L17） ---- */
+  posChoice(ws) {
+    const by = gxPosBuckets(ws);
+    const kinds = Object.keys(by).filter(k => by[k].length);
+    if (kinds.length < 3) return null;
+    const right = pick(kinds);
+    const w = pick(by[right]);
+    const wrong = shuffle(kinds.filter(k => k !== right)).slice(0, 2);
+    const options = shuffle([right, ...wrong]);
+    return { type:'choice', word: w.w,
+      prompt: `「${w.zh}」= <b>${w.w}</b>，它属于哪一类词？`,
+      options, answer: options.indexOf(right), say: w.w,
+      zh: `${w.w} 是${right}。`,
+      explain: POS_TIP[right] || '' };
+  },
+  posFind(ws) {
+    const by = gxPosBuckets(ws);
+    const kinds = Object.keys(by).filter(k => by[k].length);
+    if (kinds.length < 3) return null;
+    const target = pick(kinds);
+    const right = pick(by[target]);
+    const decoys = shuffle(kinds.filter(k => k !== target)).map(k => pick(by[k])).slice(0, 2);
+    if (decoys.length < 2) return null;
+    const options = shuffle([right.w, decoys[0].w, decoys[1].w]);
+    if (new Set(options).size !== 3) return null;
+    return { type:'choice', word: right.w,
+      prompt: `下面哪个是 <b>${target}</b>？`,
+      options, answer: options.indexOf(right.w), say: right.w,
+      zh: `${right.w} 是${target}。`,
+      explain: `${right.w}（${right.zh}）是${target}；${decoys[0].w}（${decoys[0].zh}）不是，${decoys[1].w}（${decoys[1].zh}）也不是。` };
+  },
+
+  /* ---- 第三人称单数（L18） ---- */
+  thirdPerson() {
+    const v = pick(Object.keys(GX_INTRANS_ZH).filter(x => GX_THIRD[x]));
+    const s = pick(['he', 'she', 'it']);
+    const it = gxThirdItem(v, GX_INTRANS_ZH[v], s);
+    if (!it) return null;
+    it.word = v;
+    return it;
+  },
+  thirdFind() {
+    const v = pick(Object.keys(GX_INTRANS_ZH).filter(x => GX_THIRD[x]));
+    const s = pick(['he', 'she', 'it']);
+    const S = GX_SUBJ[s];
+    const right = `${S.en} ${GX_THIRD[v]}.`;
+    const w1 = `${S.en} ${v}.`;
+    const w2 = `${S.en} ${v}ing.`;
+    const options = shuffle([right, w1, w2]);
+    return { type:'choice', word: v,
+      prompt: `「${S.zh}${GX_INTRANS_ZH[v]}」——下面哪句对？`,
+      options, answer: options.indexOf(right), say: right,
+      zh: `${right} ${S.zh}${GX_INTRANS_ZH[v]}。`,
+      explain: `${S.en} 是第三人称单数，动词要变形：${v} → ${GX_THIRD[v]}。` };
+  },
+
+  /* ---- 句型转换（L19，也撒进 L10 / L13 / L16） ---- */
+  transformNeg(ws) {
+    const v = pick(['like', 'have', 'see', 'want', 'eat']);
+    const o = gxPickObject(ws, v === 'eat' ? ['fruit', 'food'] : null); if (!o) return null;
+    const s = pick(['i', 'he', 'she', 'it', 'they']);
+    const spec = { s, v, o };
+    const S = GX_SUBJ[s], third = S.person === 'third';
+    const right = gxNegative(spec);
+    const w1 = `${S.en} ${third ? "don't" : "doesn't"} ${v} ${o.en}.`;
+    const w2 = `${S.en} ${S.aux} ${third ? GX_THIRD[v] : v} ${o.en}.`;
+    const options = shuffle([right, w1, w2]);
+    if (new Set(options).size !== 3) return null;
+    return { type:'choice', word: o.w,
+      prompt: `「${gxStatement(spec)}」的否定句是哪一句？`,
+      options, answer: options.indexOf(right), say: right,
+      zh: `${right} ${S.zh}不${GX_VOBJ_ZH[v]}${o.zh}。`,
+      explain: third ? `主语是第三人称单数，否定用 doesn't，后面动词回原形 ${v}。` : `主语不是第三人称单数，否定用 don't + 动词原形 ${v}。` };
+  },
+  transformQ(ws) {
+    const v = pick(['like', 'have', 'see', 'want', 'eat']);
+    const o = gxPickObject(ws, v === 'eat' ? ['fruit', 'food'] : null); if (!o) return null;
+    const s = pick(['he', 'she', 'it']);   // 只做三单，答案唯一不歧义
+    const spec = { s, v, o };
+    const S = GX_SUBJ[s];
+    const right = gxQuestion(spec);
+    const w1 = `${S.en} ${GX_THIRD[v]} ${o.en}?`;
+    const w2 = `${S.qaux} ${GX_Q_SUBJ[s]} ${GX_THIRD[v]} ${o.en}?`;
+    const options = shuffle([right, w1, w2]);
+    if (new Set(options).size !== 3) return null;
+    return { type:'choice', word: o.w,
+      prompt: `「${gxStatement(spec)}」的疑问句是哪一句？`,
+      options, answer: options.indexOf(right), say: right,
+      zh: `${right} ${S.zh}${GX_VOBJ_ZH[v]}${o.zh}吗？`,
+      explain: `疑问句要把助动词 Does 搬到最前面，后面动词回原形 ${v}。` };
+  },
+  beTransform(ws) {
+    const adjs = ws.filter(w => gxPos(w.w).pos === '形容词');
+    const pool = adjs.length >= 2 ? adjs : [{ w: 'happy', zh: '开心' }, { w: 'tired', zh: '累' }, { w: 'hungry', zh: '饿' }];
+    const a = pick(pool);
+    const s = pick(['he', 'she', 'it', 'they']);
+    const S = GX_SUBJ[s], pred = { en: a.w, zh: a.zh };
+    const askNeg = Math.random() < 0.5;
+    const right = askNeg ? gxBeNegative({ s, pred }) : gxBeQuestion({ s, pred });
+    const w1 = askNeg ? `${S.en} ${S.aux} ${a.w}.` : `${S.en} ${S.be} ${a.w}?`;
+    const w2 = askNeg ? `${S.en} not ${S.be} ${a.w}.` : `${S.qaux} ${GX_Q_SUBJ[s]} ${S.be} ${a.w}?`;
+    const options = shuffle([right, w1, w2]);
+    if (new Set(options).size !== 3) return null;
+    return { type:'choice', word: a.w,
+      prompt: `「${gxBeStatement({ s, pred })}」的${askNeg ? '否定句' : '疑问句'}是哪一句？`,
+      options, answer: options.indexOf(right), say: right,
+      zh: `${right} ${S.zh}${askNeg ? '不' : ''}${a.zh}${askNeg ? '' : '吗'}？`,
+      explain: askNeg ? `be 动词的否定：直接在 ${S.be} 后面加 not（${S.be}n't）。` : `be 动词的疑问：把 ${S.be} 搬到句子最前面。` };
+  },
+  canTransform() {
+    const v = pick(Object.keys(GX_INTRANS_ZH));
+    const s = pick(['i', 'he', 'she', 'you', 'they']);
+    const S = GX_SUBJ[s];
+    const askNeg = Math.random() < 0.5;
+    const right = askNeg ? gxCanNegative({ s, v }) : gxCanQuestion({ s, v });
+    const w1 = askNeg ? `${S.en} ${S.aux} can ${v}.` : `${S.en} can ${v}?`;
+    const w2 = askNeg ? `${S.en} can't ${GX_THIRD[v]}.` : `${S.qaux} ${GX_Q_SUBJ[s]} can ${v}?`;
+    const options = shuffle([right, w1, w2]);
+    if (new Set(options).size !== 3) return null;
+    return { type:'choice', word: v,
+      prompt: `「${gxCanStatement({ s, v })}」的${askNeg ? '否定句' : '疑问句'}是哪一句？`,
+      options, answer: options.indexOf(right), say: right,
+      zh: `${right} ${S.zh}${askNeg ? '不' : ''}会${GX_INTRANS_ZH[v]}${askNeg ? '' : '吗'}？`,
+      explain: askNeg ? "can 的否定直接在 can 后面加 not（can't）。" : 'can 的疑问把 Can 搬到句子最前面。' };
   },
 };
 
@@ -367,15 +566,24 @@ function checkBuild() {
     sfx.correct(); confetti();
     if (it.word) touchWord(it.word, true); // 造句用到的单词也进入复习计划
     $('#trainResult').innerHTML = `🚂 ${it.read} <span class="ok-mark">✔</span>`;
-    $('#iexp').innerHTML = `✅ <b>${it.read}</b> ${it.zh}<br>🔎 ${it.answer.join(' + ')} —— 公式用对啦！`;
+    $('#iexp').innerHTML = `✅ <b>${it.read}</b> ${it.zh}<br>🔎 ${it.answer.join(' + ')} —— 公式用对啦！` + parseHTML(it.read);
     setTimeout(() => speakSentence(it.read), 600); // 等答对音效播完再朗读句子
-    setTimeout(() => { sess.idx++; renderItem(); }, 1900);
+    nextBtn();
   } else {
     sess.firstTry = false; sfx.wrong();
     slots.classList.add('bad'); setTimeout(() => slots.classList.remove('bad'), 500);
     $('#iexp').innerHTML = `🤔 火车车厢装反啦，点车厢可以把词放回去，再试试！`;
   }
 }
+
+/* 答对后不自动跳题：解析面板要读得完，孩子也能自己按「下一题」 */
+function nextBtn() {
+  const box = $('#iexp');
+  if (!box) return;
+  if (String(box.innerHTML || '').indexOf('nextItem()') >= 0) return;
+  box.insertAdjacentHTML('beforeend', '<div style="margin-top:12px"><button class="btn grape big" onclick="nextItem()">下一题 ▶</button></div>');
+}
+function nextItem() { sess.idx++; renderItem(); }
 
 /* --- 选择题交互（选项已打乱，回传原始下标） --- */
 function chooseAns(btn, j, total) {
@@ -387,9 +595,9 @@ function chooseAns(btn, j, total) {
     if (sess.firstTry) { sess.score++; addStars(1); flyStar(btn); }
     sfx.correct();
     if (it.word) touchWord(it.word, true);
-    $('#iexp').innerHTML = `✅ ${it.zh}<br>🔎 ${it.explain || ''}`;
-    setTimeout(() => speakSentence(it.zh.split('.')[0]), 550); // 等音效播完再读句
-    setTimeout(() => { sess.idx++; renderItem(); }, 1700);
+    $('#iexp').innerHTML = `✅ ${it.zh}<br>🔎 ${it.explain || ''}` + parseHTML(englishOf(it));
+    setTimeout(() => speakSentence(englishOf(it)), 550); // 等音效播完再读句
+    nextBtn();
   } else {
     sess.firstTry = false; sfx.wrong();
     $('#iexp').innerHTML = `🤔 再想想～套一套公式`;

@@ -221,15 +221,16 @@ const ING_FORM = { eat:'eating', sing:'singing', jump:'jumping', read:'reading',
   play:'playing', fly:'flying', draw:'drawing', cry:'crying', laugh:'laughing', drink:'drinking', dance:'dancing' };
 const ING_ZH = { eat:'吃东西', sing:'唱歌', jump:'跳', read:'读书', sleep:'睡觉', play:'玩耍', fly:'飞', draw:'画画', cry:'哭', laugh:'笑', drink:'喝水', dance:'跳舞' };
 
-/* ---------- 句子工厂：万能公式 16 关 ----------
+/* ---------- 句子工厂：万能公式 19 关 ----------
    stage: s1 基础公式 / s2 结合单词镇 / s3 进阶句型
    items: 静态题目（概念、口诀类）
    gen:  动态题目——开课时从单词镇词库实时生成造句题
-         kinds: likeChoice|thisIs|canDo|seeBuild|havePlural|whereIs|isQuestion|thereBe|doing|buildFamily|buildHave|buildLike */
+         kinds: likeChoice|thisIs|canDo|seeBuild|havePlural|whereIs|isQuestion|thereBe|doing|buildFamily|buildHave|buildLike
+         |posChoice|posFind|thirdPerson|thirdFind|transformNeg|transformQ|beTransform|canTransform */
 const GRAMMAR_STAGES = [
   { id:'s1', name:'第一阶段 · 基础公式（一年级）', emoji:'🚂', tip:'先认识"句子小火车"，掌握五个万能公式' },
   { id:'s2', name:'第二阶段 · 用单词镇造句（二年级）', emoji:'🏘️', tip:'题目从单词镇的词库生成，学过的单词都会来造句！' },
-  { id:'s3', name:'第三阶段 · 进阶句型（三年级起）', emoji:'🚄', tip:'疑问句、There be、进行时，向三年级进发' },
+  { id:'s3', name:'第三阶段 · 进阶句型（三年级起）', emoji:'🚄', tip:'疑问句、There be、进行时、词性、三单、句型转换' },
 ];
 
 const GRAMMAR_LEVELS = [
@@ -311,7 +312,7 @@ const GRAMMAR_LEVELS = [
   { id:'L10', stage:'s2', title:'我会做：I can __', emoji:'💪', formula:'I can + 动作', stars:3,
     intro:'说说你的本领！公式：谁 + can + 动作。can 后面的动词要用"原形"（不加 s、不加 ing）。',
     chant:'can 是"会"本领大 💪\nI can swim 我会游\ncan 后动词用原形\n不加 s 不变样！',
-    gen:{ n:4, kinds:['canDo'], themes:['action1','sport'] },
+    gen:{ n:4, kinds:['canDo','canTransform'], themes:['action1','sport'] },
     items:[
       {type:'choice', prompt:'「我会游泳」哪个说法对？', options:['I can swim.','I can swims.','I can swimming.'], answer:0, zh:'I can swim. 我会游泳。', explain:'can 后面的动词用原形 swim！'} ]},
   { id:'L11', stage:'s2', title:'它在哪里：on / in / under', emoji:'🧭', formula:'The __ is on/in/under the __', stars:3,
@@ -331,7 +332,7 @@ const GRAMMAR_LEVELS = [
   { id:'L13', stage:'s3', title:'问一问：Is this __?', emoji:'❓', formula:'Is this a/an __?', stars:3,
     intro:'想问问题？把 is 搬到句子最前面，句号变问号！Is this an apple? 这是一个苹果吗？',
     chant:'is 搬到最前头 🏃\n句号变成问号 ?\nIs this, Is this\n回答 Yes 或 No！',
-    gen:{ n:3, kinds:['isQuestion'], themes:['animal1','fruit','toy'] },
+    gen:{ n:3, kinds:['isQuestion','beTransform'], themes:['animal1','fruit','toy'] },
     items:[
       {type:'choice', prompt:'「这是一只狗吗？」怎么说？', options:['Is this a dog?','This is a dog?','Is this a dog.'], answer:0, zh:'Is this a dog?', explain:'is 提前 + 问号，才是真正的问句！'},
       {type:'choice', prompt:'「它是橙子吗？」怎么说？', options:['Is it an orange?','It is an orange?','Is it a orange?'], answer:0, zh:'Is it an orange?', explain:'orange 元音开头用 an；is 提前变问句。'} ]},
@@ -352,12 +353,62 @@ const GRAMMAR_LEVELS = [
   { id:'L16', stage:'s3', title:'综合大闯关', emoji:'🏆', formula:'全部公式', stars:5,
     intro:'所有公式都用上！静态题 + 单词镇生成题，全部答对就是真正的句子小工程师！',
     chant:'公式记心间 🏆\n谁+干什么+什么\nbe 三兄弟不吵架\n动作王，只一个\na 和 an 分得清\nI like / I can / There be\n大写句号别忘啦！',
-    gen:{ n:3, kinds:['likeChoice','thisIs','canDo','thereBe'], themes:['fruit','animal1','food','school'] },
+    gen:{ n:4, kinds:['likeChoice','thisIs','canDo','thereBe','transformNeg'], themes:['fruit','animal1','food','school'] },
     items:[
       {type:'build', prompt:'「我是一个女孩」', slots:[['I','You','He'],['am','is','are'],['a','an','two'],['girl','boy','cat']], answer:['I','am','a','girl'], read:'I am a girl.', zh:'我是一个女孩。'},
       {type:'choice', prompt:'「两只猫在跑」', options:['Two cat run.','Two cats runs.','Two cats run.'], answer:2, zh:'Two cats run.', explain:'两只猫 cats 加 s；动作王 run 一个就好。'},
       {type:'choice', prompt:'找出穿戴整齐的句子', options:['i see a bird','I see a bird.','I See A Bird.'], answer:1, zh:'I see a bird.', explain:'开头大写，结尾句号，中间乖乖小写。'},
-      {type:'choice', prompt:'「他们是我的朋友」', options:['They is my friends.','They am my friends.','They are my friends.'], answer:2, zh:'They are my friends.', explain:'他们（they）用 are！'} ]},
+      {type:'choice', prompt:'「他们是我的朋友」', options:['They is my friends.','They am my friends.','They are my friends.'], answer:2, say:'They are my friends.', zh:'They are my friends.', explain:'他们（they）用 are！'} ]},
+
+  /* ============ 第四阶段：词的身份证与句子变脸（L17-L19） ============ */
+  { id:'L17', stage:'s3', title:'词的身份证：词性', emoji:'🪪', formula:'名词 / 动词 / 形容词 / 数词', stars:3,
+    intro:'每个词都有自己的"身份证"——词性。知道它是名词还是动词，才知道它能站在句子的哪个位置。这也是造句不写成中式英语的第一步。',
+    chant:'名词是人和东西 🧸\n动词专管做动作 🏃\n形容词说啥样子 🌈\n数词一二三四五 🔢',
+    gen:{ n:5, kinds:['posChoice','posFind'], themes:['action1','verb2','adj1','num1','animal1'] },
+    items:[
+      {type:'choice', prompt:'「跑」= run，它是什么词？', options:['名词','动词','形容词'], answer:1, say:'run',
+        zh:'run 是动词。', explain:'run 表示动作，所以是动词。动词是句子里的"动作王"。'},
+      {type:'choice', prompt:'「苹果」= apple，它是什么词？', options:['动词','名词','数词'], answer:1, say:'apple',
+        zh:'apple 是名词。', explain:'apple 是一个东西，所以是名词。名词前面可以加 a / the。'},
+      {type:'choice', prompt:'「大的」= big，它是什么词？', options:['形容词','名词','动词'], answer:0, say:'big',
+        zh:'big 是形容词。', explain:'big 表示"什么样的"，是形容词，可以放在 be 后面：It is big.'} ]},
+
+  { id:'L18', stage:'s3', title:'他 / 她 / 它：动词要加 s', emoji:'🏃', formula:'He runs. / She likes cats.', stars:3,
+    intro:'主语是「他、她、它」，或者一个人、一样东西时，动词要穿上小尾巴 s。这就是「第三人称单数」，四年级最常考的一条。',
+    chant:'他她它，一个人 👦\n动词尾巴加个 s\nhe runs, she likes\n一加上 s 就对啦！',
+    gen:{ n:5, kinds:['thirdPerson','thirdFind'], themes:['action1','sport'] },
+    items:[
+      {type:'choice', prompt:'「他跑步」哪个说法对？', options:['He runs.','He run.','He running.'], answer:0, say:'He runs.',
+        zh:'He runs. 他跑步。', explain:'主语是 he（第三人称单数），run 要加 s → runs。'},
+      {type:'choice', prompt:'「她喜欢猫」哪个说法对？', options:['She like cats.','She likes cats.','She liking cats.'], answer:1, say:'She likes cats.',
+        zh:'She likes cats. 她喜欢猫。', explain:'she 是第三人称单数，like → likes。'},
+      {type:'choice', prompt:'「他有一个球」哪个说法对？', options:['He haves a ball.','He have a ball.','He has a ball.'], answer:2, say:'He has a ball.',
+        zh:'He has a ball. 他有一个球。', explain:'have 的三单是 has，不是 haves。'},
+      {type:'choice', prompt:'「小鸟飞」哪个说法对？', options:['The bird flies.','The bird flys.','The bird fly.'], answer:0, say:'The bird flies.',
+        zh:'The bird flies. 小鸟飞。', explain:'辅音字母 + y 结尾，要把 y 变 i 再加 es：fly → flies。'},
+      {type:'choice', prompt:'「他每天看电视」哪个说法对？', options:['He watch TV every day.','He watches TV every day.','He watching TV every day.'], answer:1, say:'He watches TV every day.',
+        zh:'He watches TV every day. 他每天看电视。', explain:'ch 结尾要加 es：watch → watches。'} ]},
+
+  { id:'L19', stage:'s3', title:'句子变脸：否定句和疑问句', emoji:'🎭', formula:'陈述 ⇄ 否定 ⇄ 疑问', stars:5,
+    intro:'同一句话有三张脸：说事实（陈述）、说"不"（否定）、问问题（疑问）。学会变脸，一句话能当三句用。',
+    chant:'说"不"找助动词 🚫\ndon\'t / doesn\'t 先站好\n问句把它搬最前 ❓\n句号立刻变问号！',
+    gen:{ n:5, kinds:['transformNeg','transformQ','beTransform','canTransform'], themes:['animal1','fruit','food'] },
+    items:[
+      {type:'choice', prompt:'「I like apples.」的否定句是哪一句？', options:["I don't like apples.","I not like apples.","I doesn't like apples."], answer:0, say:"I don't like apples.",
+        zh:"I don't like apples. 我不喜欢苹果。",
+        explain:"主语是 I（不是三单），否定用 don't，后面跟动词原形 like。"},
+      {type:'choice', prompt:'「He likes apples.」的否定句是哪一句？', options:["He don't like apples.","He doesn't likes apples.","He doesn't like apples."], answer:2, say:"He doesn't like apples.",
+        zh:"He doesn't like apples. 他不喜欢苹果。",
+        explain:"三单的否定用 doesn't；doesn't 已经带走了 s，后面动词回原形 like。"},
+      {type:'choice', prompt:'「You like apples.」的疑问句是哪一句？', options:['Do you like apples?','You like apples?','Does you like apples?'], answer:0, say:'Do you like apples?',
+        zh:'Do you like apples? 你喜欢苹果吗？',
+        explain:'主语是 you，助动词用 Do，并搬到句子最前面。'},
+      {type:'choice', prompt:'「She runs.」的疑问句是哪一句？', options:['Does she runs?','Does she run?','She does run?'], answer:1, say:'Does she run?',
+        zh:'Does she run? 她跑步吗？',
+        explain:'Does 提到最前面，后面的动词回原形 run。'},
+      {type:'choice', prompt:'「Is she happy?」的肯定回答是哪一句？', options:['Yes, she is.','Yes, she does.','Yes, she are.'], answer:0, say:'Yes, she is.',
+        zh:'Yes, she is. 是的，她开心。',
+        explain:'用 be 动词问，就用 be 动词答；问 is she，答 she is。'} ]},
 ];
 
 /* ---------- 徽章 ---------- */
@@ -368,7 +419,7 @@ const BADGES = [
   {id:'word100',   emoji:'📚', name:'百词小达人', desc:'掌握 100 个单词'},
   {id:'word500',   emoji:'💪', name:'五百词超人', desc:'掌握 500 个单词'},
   {id:'word1000',  emoji:'🧠', name:'千词小博士', desc:'掌握全部 1000 个单词'},
-  {id:'grammar1',  emoji:'🔧', name:'句子小工程师', desc:'通过句子工厂全部 16 关'},
+  {id:'grammar1',  emoji:'🔧', name:'句子小工程师', desc:'通过句子工厂全部 19 关'},
   {id:'grammar8',  emoji:'🚃', name:'公式小达人', desc:'通过第一阶段全部关卡'},
   {id:'reader6',   emoji:'📖', name:'小书虫',   desc:'读完绘本馆全部 12 本绘本'},
   {id:'streak3',   emoji:'🔥', name:'坚持之星',   desc:'连续学习 3 天'},
