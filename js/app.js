@@ -957,6 +957,22 @@ function openProfileModal() {
           </div>
         </details>
         <details class="profile-tool">
+          <summary>🔄 跨设备同步（同步码）</summary>
+          <div style="margin-top:10px">
+            <p style="font-size:.78rem;color:#5C6273;margin:0 0 10px;line-height:1.6">
+              在这台电脑点「生成同步码」→ 把码发到另一台设备（微信/短信/口述都行）→
+              在那台设备点「用同步码同步」粘贴进来，进度就过来了。
+            </p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn mint" onclick="showSyncCode()">📋 生成同步码</button>
+              <button class="btn orange" onclick="copySyncCode()">📋 复制</button>
+              <button class="btn grape" onclick="importFromSyncCode()">📥 用同步码同步</button>
+            </div>
+            <textarea id="syncCodeBox" readonly placeholder="点上面的按钮，这里会出现同步码。把码发给孩子另一台设备就能同步！" style="width:100%;height:88px;border:3px dashed var(--mint,#4E9E59);border-radius:14px;padding:8px;font-size:.68rem;font-family:monospace;resize:vertical;margin-top:10px"></textarea>
+            <p style="font-size:.7rem;color:#6B7280;margin:8px 0 0">🔒 同步码只在你输入时才解密，服务器（如果有）也看不到明文。</p>
+          </div>
+        </details>
+        <details class="profile-tool">
           <summary>💾 备份与恢复（换电脑、防丢失）</summary>
           <div style="margin-top:10px">
             <button class="btn" style="margin-bottom:8px" onclick="exportProfile()">📤 导出「${esc(p.name)}」的进度</button>
@@ -1018,6 +1034,149 @@ function exportProfile() {
     a.click();
   } catch (e) {}
   toast('📤 备份已生成并开始下载');
+}
+/* ---------------- 跨设备同步码 ----------------
+   跨设备同步的最小可用闭环：
+   - 本机生成「同步码」= 压缩+base64 的进度 JSON，短到能发微信/口述
+   - 另一台设备粘贴同步码 → 解码 → 新建档案并载入进度
+   不依赖后端、不依赖网络、不需要登录，孩子在奶奶家电脑上也能同步。
+
+   编码：JSON → UTF-8 字节 → deflate-raw 压缩 → base64url（去 padding）
+   解码：base64url → inflate-raw → UTF-8 → JSON
+   压缩率：典型进度 JSON 2-3KB → 同步码 600-900 字符（微信能整段粘贴）。
+   进一步压缩到 6 位数字需要服务器，纯静态做不到——这是诚实的物理约束。 */
+function b64urlEncode(bytes) {
+  let s = '';
+  for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function b64urlDecode(str) {
+  let s = str.replace(/-/g, '+').replace(/_/g, '/');
+  while (s.length % 4) s += '=';
+  const bin = atob(s);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+async function compressText(text) {
+  // CompressionStream('deflate-raw') 现代浏览器都支持
+  if (typeof CompressionStream === 'undefined') return null;
+  const cs = new CompressionStream('deflate-raw');
+  const reader = cs.readable.getReader();
+  const chunks = [];
+  let failed = false;
+  const pump = (async () => {
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+      }
+    } catch (e) { failed = true; }
+  })();
+  const w = cs.writable.getWriter();
+  try {
+    await w.write(new TextEncoder().encode(text));
+    await w.close();
+  } catch (e) { failed = true; }
+  await pump;
+  if (failed || !chunks.length) return null; // 老/异常路径，回退不压缩
+  const total = chunks.reduce((n, c) => n + c.length, 0);
+  const out = new Uint8Array(total);
+  let off = 0;
+  for (const c of chunks) { out.set(c, off); off += c.length; }
+  return out;
+}
+async function decompressText(bytes) {
+  if (typeof DecompressionStream === 'undefined') return null;
+  const ds = new DecompressionStream('deflate-raw');
+  const reader = ds.readable.getReader();
+  const chunks = [];
+  // ★ 关键：zlib 解压失败在 Node 下是 unhandledRejection，会把进程打死
+  //   （浏览器里可能是 unhandledrejection）。必须手动 pump + 显式捕获。
+  //   同时明确 inflate 失败要抛错（不能默认吞掉后返回半截文本）。
+  let inflateFailed = false;
+  const pump = (async () => {
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+      }
+    } catch (e) { inflateFailed = true; }
+  })();
+  const w = ds.writable.getWriter();
+  try {
+    await w.write(bytes);
+    await w.close();
+  } catch (e) { inflateFailed = true; }
+  await pump;
+  if (inflateFailed) throw new Error('inflate-fail');
+  if (!chunks.length) throw new Error('empty-inflate');
+  const total = chunks.reduce((n, c) => n + c.length, 0);
+  const out = new Uint8Array(total);
+  let off = 0;
+  for (const c of chunks) { out.set(c, off); off += c.length; }
+  return new TextDecoder().decode(out);
+}
+async function makeSyncCode() {
+  const raw = Profiles.exportActive();
+  const packed = await compressText(raw);
+  if (!packed) return b64urlEncode(new TextEncoder().encode(raw)); // 老浏览器：不压缩
+  return b64urlEncode(packed);
+}
+async function parseSyncCode(code) {
+  const clean = String(code).trim().replace(/\s+/g, '');
+  if (!clean) throw new Error('empty');
+  const bytes = b64urlDecode(clean);
+  // 先试解压；不行就当纯 base64 的 UTF-8
+  let text = null;
+  try { text = await decompressText(bytes); } catch (e) {}
+  if (!text) {
+    try { text = new TextDecoder().decode(bytes); } catch (e) {}
+  }
+  if (!text) throw new Error('decode-fail');
+  const obj = JSON.parse(text);
+  if (!obj || obj.app !== 'birdie-abc') throw new Error('bad-format');
+  return obj;
+}
+async function showSyncCode() {
+  try {
+    const code = await makeSyncCode();
+    const box = document.getElementById('syncCodeBox');
+    if (box) { box.value = code; box.select(); }
+    toast('📋 同步码已生成，发给孩子另一台设备就行');
+  } catch (e) {
+    toast('❌ 生成同步码失败，请重试');
+  }
+}
+function copySyncCode() {
+  const box = document.getElementById('syncCodeBox');
+  if (!box || !box.value) { toast('先点「生成同步码」'); return; }
+  box.select();
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(box.value).then(() => toast('📋 已复制到剪贴板'));
+    } else {
+      document.execCommand('copy');
+      toast('📋 已复制到剪贴板');
+    }
+  } catch (e) {
+    toast('📋 复制失败，请手动选中复制');
+  }
+}
+function importFromSyncCode() {
+  const box = document.getElementById('syncCodeBox');
+  const code = (box && box.value && box.value.trim().length > 20) ? box.value : (prompt('把同步码粘贴到这里：') || '');
+  if (!code.trim()) return;
+  parseSyncCode(code).then(obj => {
+    // 走 Profiles 的标准导入：新建档案，不覆盖现有进度
+    const p = Profiles.importActive(JSON.stringify(obj));
+    toast('📥 同步成功！欢迎回来，' + p.name);
+    setTimeout(() => location.reload(), 800);
+  }).catch(() => {
+    toast('❌ 同步码不对，请检查后重试（注意不要漏字符）');
+  });
 }
 function importProfileFile(input) {
   const f = input.files && input.files[0]; if (!f) return;

@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
-<meta name="description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员、造词实验室 5 个游戏，优先复习学过的单词。">
+<meta name="description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员、听句选图、造词实验室 6 个游戏，优先复习学过的单词。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="游戏乐园 · 边玩边学 · 小鸟英语乐园">
-<meta property="og:description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员、造词实验室 5 个游戏，优先复习学过的单词。">
+<meta property="og:description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员、听句选图、造词实验室 6 个游戏，优先复习学过的单词。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/games.html">
 <meta name="twitter:card" content="summary_large_image">
@@ -22,7 +22,7 @@
 <main>
   <div class="page-title">
     <h1>🎡 游戏乐园</h1>
-    <p>玩就是学！<b id="gameCount">5</b> 个游戏，优先复习<b>你学过的单词</b>，也可以从 1000 词库随机挑战</p>
+    <p>玩就是学！<b id="gameCount">6</b> 个游戏，优先复习<b>你学过的单词</b>，也可以从 1000 词库随机挑战</p>
   </div>
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
@@ -31,7 +31,7 @@
 <script src="svg/word-svg.js"></script>
 <script src="js/data.js?v=32"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=48"></script>
+<script src="js/app.js?v=49"></script>
 <script src="js/sentence.js?v=42"></script>
 <script src="js/grammar-engine.js?v=3"></script>
 <script src="js/ipa.js?v=2"></script>
@@ -54,6 +54,7 @@ const GAMES = [
     { id: 'memory',   emoji: '🃏', name: '图词翻翻乐', desc: '翻开卡片，图片和单词配对', color: 'var(--grape)' },
     { id: 'scramble', emoji: '🚂', name: '拼词小火车', desc: '把打乱的字母装回正确的顺序', color: 'var(--orange)' },
     { id: 'sentence', emoji: '🧑‍🔧', name: '句子火车员', desc: '句子缺了个词，你来补上！', color: 'var(--mint)' },
+    { id: 'picsent',  emoji: '🖼️', name: '听句选图', desc: '听一句话，选出对应的图片', color: '#F59E0B' },
     { id: 'wordlab',  emoji: '🧪', name: '造词实验室', desc: '每轮 10 个新词，black + board 会变成什么？', color: 'var(--coral)' },
 ];
 
@@ -69,7 +70,7 @@ function renderHome() {
     </div>`).join('')}
   </div>`;
 }
-function startGame(id) { sfx.pop(); ({ listen: gListen, memory: gMemoryPick, scramble: gScramblePick, sentence: gSentencePick, wordlab: gWordLab })[id](); }
+function startGame(id) { sfx.pop(); ({ listen: gListen, memory: gMemoryPick, scramble: gScramblePick, sentence: gSentencePick, picsent: gPicSentPick, wordlab: gWordLab })[id](); }
 function gameHomeBtn() { return `<button class="btn ghost" onclick="renderHome()">← 换个游戏</button>`; }
 
 /* 词库选择卡：我的年级优先，可复习学过的词、换年级或全部随机 */
@@ -328,7 +329,110 @@ function gScramble(pool) {
   };
   window._scrShow();
 }
-/* ---------------- 游戏5：造词实验室 ----------------
+/* ---------------- 游戏5：听句选图（句子级听力理解） ----------------
+   句子级听力的最小可用闭环：听一句话 → 选对应的图。
+   用「一个概念一张图」的词图（wordIcon），保证孩子能从图认出概念，
+   不会出现"看图选错是因为图本身画错"的情况。
+   句子生成走和句子火车员同一套 makers（I eat xxx. / This is xxx. 等），
+   但**只留单图、具体的**那些（eat/drink + 食物、动物、颜色、身体），
+   不放抽象句（I like xxx. 这种"喜欢"没有对应图）。 */
+function gPicSentPick() {
+  poolPicker('🖼️ 听句选图', '🖼️', m => gPicSent(getPlayPool(m, w => !w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w))));
+}
+function gPicSent(pool) {
+  // 只用「有图 + 具体名词」的词：避免出现 it=🐱 这种错图
+  const nouns = gxNouns(pool).filter(w => w.e || w.w.length <= 8);
+  const foods = pool.filter(w => ['egg','rice','bread','cake','chicken','beef','pork','soup','noodle','dumpling','biscuit'].includes(w.w));
+  const drinks = pool.filter(w => ['water','juice','milk','tea'].includes(w.w));
+  const animals = pool.filter(w => ['cat','dog','pig','duck','cow','horse','sheep','tiger','lion','monkey','elephant','rabbit','mouse','bird','fish'].includes(w.w));
+  const colors = pool.filter(w => ['red','yellow','blue','green','white','black','orange','pink','purple','brown'].includes(w.w));
+
+  const mk = [];
+  if (foods.length) mk.push(() => { const w = pick(foods); return { audio: `I eat ${w.w}.`, zh: `我吃${w.zh}。`, right: w, all: foods.concat(nouns).slice(0, 12) }; });
+  if (drinks.length) mk.push(() => { const w = pick(drinks); return { audio: `I drink ${w.w}.`, zh: `我喝${w.zh}。`, right: w, all: drinks.concat(nouns).slice(0, 12) }; });
+  if (animals.length) mk.push(() => { const w = pick(animals); return { audio: `This is a ${w.w}.`, zh: `这是一只${w.zh}。`, right: w, all: animals.concat(nouns).slice(0, 12) }; });
+  if (colors.length) mk.push(() => { const w = pick(colors); return { audio: `I see ${w.w}.`, zh: `我看见${w.zh}。`, right: w, all: colors.concat(nouns).slice(0, 12) }; });
+  if (nouns.length) mk.push(() => { const w = pick(nouns); return { audio: `I have a ${w.w}.`, zh: `我有一个${w.zh}。`, right: w, all: nouns.slice(0, 12) }; });
+
+  if (!mk.length) { $('#app').innerHTML = `<div class="card" style="text-align:center"><p>这个词池里没有具体名词，换一个范围试试～</p>${gameHomeBtn()}</div>`; return; }
+
+  // 6 题，每题 4 个选项（1 正确 + 3 干扰）
+  const qs = [];
+  for (let i = 0; i < 6; i++) {
+    const q = mk[i % mk.length]();
+    // 干扰项：必须有图（否则孩子看图选不出来），按词去重，不与正确项同词
+    const opts = [q.right];
+    const seen = new Set([q.right.w]);
+    for (const cand of shuffle(q.all)) {
+      if (opts.length >= 4) break;
+      if (seen.has(cand.w)) continue;
+      if (!cand.e && !cand.w) continue;       // 必须有 emoji/SVG 图
+      if (!cand.e) continue;                    // 没 emoji 的 SVG 词也接受（wordIcon 会画）
+      if (cand.e === '🔤') continue;           // 字母牌不算图
+      seen.add(cand.w); opts.push(cand);
+    }
+    if (opts.length < 2) continue; // 选项不够，跳过这题
+    q.opts = shuffle(opts);
+    qs.push(q);
+  }
+  if (!qs.length) { $('#app').innerHTML = `<div class="card" style="text-align:center"><p>题目生成失败，换一个范围试试～</p>${gameHomeBtn()}</div>`; return; }
+
+  window._picQs = qs;
+  const S = { idx: 0, score: 0, first: true, answered: false, heard: 0 };
+  window._picShow = function () {
+    Flow.reset();
+    if (S.idx >= qs.length) {
+      addStars(S.score + 1); sfx.win(); if (S.score === qs.length) confetti();
+      $('#app').innerHTML = endCard('🖼️', `听对 ${S.score} / ${qs.length} 句`, S.score + 1);
+      return;
+    }
+    const q = qs[S.idx]; S.first = true; S.answered = false;
+    $('#app').innerHTML = `
+      <div class="card" style="max-width:680px;margin:0 auto;text-align:center">
+        <div class="score-bar"><b>🖼️ 听句选图</b><span>第 ${S.idx + 1} / ${qs.length} 句 · ✅ ${S.score}</span></div>
+        <p style="font-size:.95rem;color:#5C6273;margin:4px 0 12px">听一句话，选出对应的图片 👂</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-bottom:16px">
+          <button class="btn mint big" onclick="window._picPlay()">🔊 听句子</button>
+          <button class="btn ghost" onclick="window._picPlay()">🔁 再听一遍</button>
+        </div>
+        <div id="picOpts" class="opt-row" style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:520px;margin:0 auto">
+          ${q.opts.map(o => `
+            <button class="opt" style="flex-direction:column;gap:6px;padding:18px 12px" onclick="window._picAns(this,'${o.w.replace(/'/g, "\\'")}')">
+              <div style="font-size:56px;line-height:1">${wordIcon(o)}</div>
+              <div style="font-size:.85rem;color:#5C6273">${esc(o.w)}</div>
+            </button>`).join('')}
+        </div>
+        <div class="explain" id="pexp" style="margin-top:14px"></div>
+        <div style="margin-top:12px">${gameHomeBtn()}</div>
+      </div>`;
+    window._picPlay = function () {
+      S.heard++;
+      speakSentence(q.audio, null, null);
+    };
+    window._picAns = function (btn, w) {
+      if (S.answered) return;
+      const ok = w === q.right.w;
+      feedback(btn, ok);
+      if (ok) {
+        if (S.first) { S.score++; flyStar(btn); }
+        S.answered = true; sfx.correct(); lockChoices(btn);
+        $('#pexp').innerHTML = `✅ <b>${q.audio}</b> — ${q.zh}`;
+        const go = Flow.make(() => { S.idx++; window._picShow(); }, 0);
+        $('#pexp').insertAdjacentHTML('beforeend', `<div style="margin-top:8px"><button class="btn ghost" style="padding:6px 18px" onclick="window._picGo()">下一个 ▶</button></div>`);
+        window._picGo = go;
+        // 读一遍正确答案（含中文），让孩子把"听到的"和"图"对上
+        speakSentence(q.audio, null, () => go.arm(900));
+      } else {
+        S.first = false; sfx.wrong();
+        $('#pexp').innerHTML = '🤔 再听一遍句子，注意听是什么东西～';
+      }
+    };
+    // 自动播一遍（孩子不用主动点）
+    setTimeout(() => { if (!S.answered) window._picPlay(); }, 500);
+  };
+  window._picShow();
+}
+/* ---------------- 游戏6：造词实验室 ----------------
    目的不是"玩游戏"，是**扩词汇量**：题库里的词绝大多数孩子没在单词镇学过，
    但都能从两个已知构件推出来（black + board、paint + -er）。
    题库 = 词库内旧表 59 条（热身）+ js/build-data.js 的 193 个新词（扩展）。
