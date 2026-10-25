@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=29">
+<link rel="stylesheet" href="css/style.css?v=30">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -76,8 +76,8 @@
 
 <script src="js/words-data.js?v=26"></script>
 <script src="js/data.js?v=29"></script>
-<script src="js/app.js?v=40"></script>
-<script src="js/sentence.js?v=41"></script>
+<script src="js/app.js?v=41"></script>
+<script src="js/sentence.js?v=42"></script>
 <script>
 renderNav('words'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -90,10 +90,13 @@ THEMES.forEach(t => t.words.forEach(w => { if (!ALL[w.w]) ALL[w.w] = Object.assi
 const themeById = id => THEMES.find(t => t.id === id);
 
 let mode = 'browse', curGrade = Store.d.grade || 'g1', curTheme = (GRADES.find(g => g.id === (Store.d.grade || 'g1')) || GRADES[0]).themes[0].id, session = null, searchQ = '', poolMode = '';
+let __quizGo = null;      // 当前题的推进器：按钮点它（与句子工厂同一个控制器）
+let __quizSay = '';       // 当前题的单词（「再听」用，绝不拼进 onclick）
 
 /* ---------------- 智能词单视图（累计制 + 错题本） ---------------- */
 function showPool(kind) {
   poolMode = kind; searchQ = ''; mode = 'browse';
+  Flow.reset();
   const plan = kind === 'plan';
   const list = plan ? planWords() : wrongWords();
   const title = plan ? '🎯 我的词单（补漏洞）' : '📓 我的错题本';
@@ -164,6 +167,7 @@ function renderSearch() {
 /* ---------------- 浏览模式 ---------------- */
 function renderBrowse() {
   mode = 'browse';
+  Flow.reset();          // 离开答题：任何挂起的推进/朗读都作废（旧版会把人拽回答题页）
   const due = dueWords();
   const g = GRADES.find(x => x.id === curGrade);
   const t = themeById(curTheme);
@@ -316,7 +320,12 @@ function renderQuiz() {
   const s = session;
   if (s.idx >= s.qs.length) return renderQuizEnd();
   const q = s.qs[s.idx];
+  /* 进入新题：作废上一题的推进与朗读，重置本题状态 */
+  Flow.reset();
+  stopAllSpeech();          // 上一题的单词还没念完也停掉：一次只出一个声音
   s.firstTry = true;
+  s.answered = false;
+  s.tries = 0;
 
   $('#app').innerHTML = `
     <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
@@ -327,33 +336,73 @@ function renderQuiz() {
       <div class="quiz-q" style="font-size:1.15rem;line-height:1.8">${q.prompt}</div>
       ${q.replay ? `<button class="btn ghost" style="margin-bottom:10px" onclick="speak('${jsq(q.speakText)}')">🔁 再听一次</button>` : ''}
       <div class="opt-row">
-        ${q.options.map(o => `<button class="opt" onclick="answer(this,'${jsq(o.key)}')">${o.html}</button>`).join('')}
+        ${q.options.map((o, i) => `<button class="opt" data-i="${i}" onclick="answer(this,'${jsq(o.key)}')">${o.html}</button>`).join('')}
       </div>
       <div class="explain" id="qexp"></div>
     </div>`;
   prewarmWord(q.word.w); // 提前拉取本题单词音频，答对回显零延迟
-  if (q.autoSpeak && q.speakText) setTimeout(() => speak(q.speakText, q.lang || 'en-US'), 350);
+  if (q.autoSpeak && q.speakText) Flow.after(350, () => speak(q.speakText, q.lang || 'en-US'));
 }
 
 function answer(btn, key) {
   const s = session, q = s.qs[s.idx];
+  if (s.answered) return;                    // 已结题：锁住，防重复计分/重复跳题
   const ok = key === q.word.w;
   feedback(btn, ok);
   if (ok) {
     if (s.firstTry) { s.score++; addStars(1); flyStar(btn); }
+    s.answered = true;
     sfx.correct();
+    lockChoices(btn);
     touchWord(q.word.w, true);
     $('#qexp').innerHTML = `✅ <b>${q.word.w}</b> ${q.word.e || ''} ${q.word.zh}${q.word.dec ? '<br>🔎 ' + q.word.dec : ''}`;
-    setTimeout(() => speak(q.word.w), 550); // 等答对音效播完再朗读，避免两个声音打架
-    setTimeout(() => { s.idx++; renderQuiz(); }, 1900);
+    Flow.after(550, () => speak(q.word.w));  // 等答对音效播完再朗读，避免两个声音打架
+    showNext(q.word.w);
   } else {
-    s.firstTry = false; sfx.wrong();
+    s.firstTry = false; s.tries++; sfx.wrong();
+    if (s.tries >= 2) return revealWord(q);
     $('#qexp').innerHTML = `🤔 再想想哦，你可以再听一遍提示～`;
   }
 }
 
+/* 错满两次：给答案和单词卡，不让孩子靠瞎点过关 */
+function revealWord(q) {
+  const s = session;
+  s.answered = true;
+  const i = q.options.findIndex(o => o.key === q.word.w);
+  lockChoices(i >= 0 ? document.querySelector('.opt[data-i="' + i + '"]') : null);
+  $('#qexp').innerHTML = `💡 正确答案：<b>${q.word.w}</b> ${q.word.e || ''} ${q.word.zh}${q.word.dec ? '<br>🔎 ' + q.word.dec : ''}`;
+  Flow.after(500, () => speak(q.word.w));
+  showNext(q.word.w);
+}
+
+/* 结题之后的唯一出口：手动。
+   以前这里是「1.9 秒自己跳」—— 单词、图、记忆法都还没看完就跳走，
+   而且计时器不随换页取消，孩子点「返回」会被自己拽回答题页。 */
+function showNext(say) {
+  const box = $('#qexp');
+  if (!box || String(box.innerHTML || '').indexOf('id="nextQ"') >= 0) return;
+  const s = session;
+  const last = s.idx >= s.qs.length - 1;
+  __quizSay = say || '';
+  __quizGo = Flow.make(() => { s.idx++; renderQuiz(); }, 0);
+  const replay = __quizSay
+    ? `<button class="btn ghost big" onclick="__sayWordAgain()">🔊 再听</button>` : '';
+  box.insertAdjacentHTML('beforeend',
+    `<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px">
+       <button class="btn grape big" id="nextQ" onclick="__quizGo()">${last ? '看结果 🏁' : '下一个 ▶'}</button>${replay}
+     </div>`);
+  /* 手机小屏时解析可能把按钮顶到屏幕外：滚到看得见为止（已经可见就不动） */
+  if (box.scrollIntoView) { try { box.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
+}
+/* 单词不拼进 onclick：英文可能带撇号，拼进去会把属性打断（绘本页踩过的坑） */
+function __sayWordAgain() { if (__quizSay) speak(__quizSay); }
+
+/* 选项锁定用 app.js 里的共享版本（与句子工厂、游戏页同一套规则） */
+
 function renderQuizEnd() {
   const s = session;
+  Flow.reset();
   const perfect = s.score === s.qs.length && s.qs.length > 0;
   const bonus = perfect ? 2 : 0;
   if (bonus) addStars(bonus);
@@ -431,6 +480,7 @@ const SP_STEPS = [['read','读'],['look','看'],['pick','选'],['split','拆'],[
 let spell = null;
 
 function startSpell() {
+  Flow.reset();      // 切到拼写工坊：作废答题页可能还挂着的推进/朗读
   let pool;
   if (poolMode === 'plan') pool = planWords();
   else if (poolMode === 'wrong') pool = wrongWords();

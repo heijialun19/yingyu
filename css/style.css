@@ -244,6 +244,13 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 @media (min-width: 721px) { .install-hint { display: none; } }
 .opt.good { border-color: var(--mint); background: #E5F9E9; animation: pop .4s; }
 .opt.bad  { border-color: var(--coral); background: #FFE9E9; animation: shake .4s; }
+/* 结题后的锁定态：正确的留在这里，其余淡出且不可点，孩子一眼就知道"这题结束了" */
+.opt.locked { pointer-events: none; }
+.opt.dim { opacity: .4; }
+.opt.good-keep { border-color: var(--mint); background: #E5F9E9; box-shadow: 0 0 0 3px rgba(46,125,50,.18); }
+/* 造句台锁定：答对后再点词块/检查都不改变结果 */
+.build-slots.done .slot, .build-slots.done #checkBtn { pointer-events: none; }
+.slot-bank.locked { pointer-events: none; opacity: .55; }
 @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)} }
 @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
 .explain {

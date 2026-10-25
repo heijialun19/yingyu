@@ -55,7 +55,7 @@ function __hiChunk(spans, i, n) { __clearHi(spans); if (spans) for (let k = i; k
 
 /* 主链：i 从第几个词开始；fails = 连续单词级失败次数；链内 6 秒超时保持节奏 */
 function __speakFrom(tokens, spans, i, fails) {
-  if (i >= tokens.length) { __clearHi(spans); return; }
+  if (i >= tokens.length) { __finishSpeak(spans); return; }
   const n = Math.min(__CHUNK_MAX, tokens.length - i);
   const text = tokens.slice(i, i + n).map(__spokenToken).join(' ');
   if (__brokenChunks.has(text)) { __speakOne(tokens, spans, i, i + n, fails); return; }
@@ -77,7 +77,7 @@ function __speakOne(tokens, spans, i, end, fails) {
   playDictAudio(__spokenToken(tokens[i]), 1,
     () => __speakOne(tokens, spans, i + 1, end, 0),
     () => {
-      if (fails + 1 >= 3) { __clearHi(spans); return; }
+      if (fails + 1 >= 3) { __finishSpeak(spans); return; }
       __speakOne(tokens, spans, i + 1, end, fails + 1);
     }, false, 6000);
 }
@@ -88,13 +88,30 @@ function __prewarmChunk(tokens, i) {
   if (!__prewarmed.has(text)) { __prewarmed.add(text); prewarmWord(text, () => __brokenChunks.add(text)); }
 }
 
-function speakSentence(text, el) {
+function speakSentence(text, el, onDone) {
   if (!Store.d.soundOn) { soundOffHint(); return; }
-  const t = String(text).trim(); if (!t) return;
+  const t = String(text).trim(); if (!t) { if (onDone) onDone(); return; }
   stopAllSpeech();
   const tokens = t.split(/\s+/).filter(Boolean);
-  if (!tokens.length) return;
+  if (!tokens.length) { if (onDone) onDone(); return; }
   if (el) el.innerHTML = tokens.map(tok => `<span class="w">${esc(tok)}</span>`).join(' ');
   const spans = el ? Array.prototype.slice.call(el.querySelectorAll('span.w')) : null;
+  /* 整句读完（含放弃）回调：给"听完再走"的页面用。
+     用序号作废——被新句子/stopAllSpeech 打断的旧链，不会再触发旧回调。 */
+  const my = ++__speakSeq;
+  __speakDone = typeof onDone === 'function'
+    ? () => { if (my === __speakSeq) onDone(); }
+    : null;
   __speakFrom(tokens, spans, 0, 0);
 }
+
+let __speakSeq = 0;
+let __speakDone = null;
+function __finishSpeak(spans) {
+  __clearHi(spans);
+  const cb = __speakDone;
+  __speakDone = null;
+  if (cb) cb();
+}
+/* 打断正在读的句子时，旧的回调必须作废（否则"读完自动跳题"会在新页面上触发） */
+window.__cancelSpeak = () => { __speakSeq++; __speakDone = null; };

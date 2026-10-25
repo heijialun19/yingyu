@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>游戏乐园 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=29">
+<link rel="stylesheet" href="css/style.css?v=30">
 </head>
 <body>
 <main>
@@ -29,8 +29,8 @@
 
 <script src="js/words-data.js?v=26"></script>
 <script src="js/data.js?v=29"></script>
-<script src="js/app.js?v=40"></script>
-<script src="js/sentence.js?v=41"></script>
+<script src="js/app.js?v=41"></script>
+<script src="js/sentence.js?v=42"></script>
 <script src="js/grammar-engine.js?v=2"></script>
 <script>
 renderNav('games'); renderDecor();
@@ -45,6 +45,7 @@ const learnedPool = () => Object.keys(Store.d.words).map(w => ALLW[w.w]).filter(
 
 /* ---------------- 游戏主页 ---------------- */
 function renderHome() {
+  Flow.reset();      // 回游戏菜单：作废所有挂起的自动推进（否则 1.5 秒后被拽回上一局）
   const games = [
     { id: 'listen',   emoji: '👂', name: '听音选字母', desc: '听字母名或字母音，选出它！', color: 'var(--lake)' },
     { id: 'memory',   emoji: '🃏', name: '图词翻翻乐', desc: '翻开卡片，图片和单词配对', color: 'var(--grape)' },
@@ -118,12 +119,14 @@ function gListen() {
     S.qs.push({ right, opts, mode: Math.random() < 0.5 ? 'name' : 'sound' });
   }
   window._listenNext = function () {
+    Flow.reset();                     // 新一题：作废上一题的自动推进（否则退出后会被拽回来）
     if (S.idx >= total) {
       addStars(S.score); sfx.win(); if (S.score >= 8) confetti();
       $('#app').innerHTML = endCard('👂', `答对 ${S.score} / ${total}`, S.score);
       return;
     }
     S.first = true;
+    S.answered = false;
     const q = S.qs[S.idx];
     const isName = q.mode === 'name';
     $('#app').innerHTML = `
@@ -137,7 +140,7 @@ function gListen() {
         <div style="margin-top:12px">${gameHomeBtn()}</div>
       </div>`;
     window._curQ = q;
-    setTimeout(() => window._listenSay(), 350);
+    Flow.after(350, () => window._listenSay());
   };
   window._listenSay = function () {
     const q = window._curQ;
@@ -146,13 +149,21 @@ function gListen() {
   };
   window.listenAns = function (btn, L) {
     const q = window._curQ;
+    if (S.answered) return;              // 已答对：锁住，防重复计分与重复跳题
     const ok = L === q.right.L;
     feedback(btn, ok);
     if (ok) {
       if (S.first) { S.score++; }
+      S.answered = true;
       sfx.correct(); speak(q.right.words[0].w);
+      lockChoices(btn);
       $('#lexp').innerHTML = `✅ <b>${q.right.L}</b>${q.right.emoji}${q.right.shape} · 读音 ${q.right.szh} —— ${q.right.words[0].w} ${q.right.words[0].e}`;
-      setTimeout(() => { S.idx++; window._listenNext(); }, 1500);
+      /* 游戏回合没有解析要读，允许多停一会儿再自动走；
+         但这个自动和「下一个」按钮是同一个推进器，孩子点按钮就走，不冲突 */
+      const go = Flow.make(() => { S.idx++; window._listenNext(); }, 1800);
+      $('#lexp').insertAdjacentHTML('beforeend',
+        `<div style="margin-top:10px"><button class="btn ghost" style="padding:6px 18px" onclick="window._listenGo()">下一个 ▶</button></div>`);
+      window._listenGo = go;
     } else { S.first = false; sfx.wrong(); $('#lexp').innerHTML = '🤔 再听一遍～'; window._listenSay(); }
   };
   window._listenNext();
@@ -240,6 +251,7 @@ function gScramble(pool) {
   const picks = shuffle(pool).slice(0, 6);
   const S = { idx: 0, score: 0 };
   window._scrShow = function () {
+    Flow.reset();                    // 新一题：作废旧回合的自动推进
     if (S.idx >= picks.length) {
       addStars(S.score + 1); sfx.win(); if (S.score === picks.length) confetti();
       $('#app').innerHTML = endCard('🚂', `拼对 ${S.score} / ${picks.length} 个单词`, S.score + 1);
@@ -251,6 +263,7 @@ function gScramble(pool) {
        如 is → 「s 小蛇说：is 是」），题面就等于白送——这类挪到答对之后展示。 */
     const decLeaks = !!(w.dec && w.dec.toLowerCase().includes(w.w.toLowerCase()));
     window._scrBuilt = ''; window._scrWord = w.w; window._scrDec = decLeaks ? w.dec : '';
+    S.answered = false;
     $('#app').innerHTML = `
       <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🚂 拼词小火车</b><span>第 ${S.idx + 1} / ${picks.length} 词</span></div>
@@ -269,7 +282,7 @@ function gScramble(pool) {
       </div>`;
   };
   window.scrTap = function (btn, c) {
-    if (btn.classList.contains('used')) return;
+    if (btn.classList.contains('used') || S.answered) return;
     const slots = $$('#scrSlots .slot');
     const pos = window._scrBuilt.length;
     if (c === window._scrWord[pos]) {
@@ -279,8 +292,13 @@ function gScramble(pool) {
       slots[pos].classList.add('filled');
       if (window._scrBuilt === window._scrWord) {
         S.score++; sfx.correct(); speak(window._scrWord); flyStar(btn);
+        S.answered = true;
         $('#sexp').innerHTML = `✅ <b>${window._scrWord}</b>！${allZh(window._scrWord)}` + (window._scrDec ? `<br>💡 ${window._scrDec}` : '');
-        setTimeout(() => { S.idx++; window._scrShow(); }, 1300);
+        /* 单词念完约 1 秒，给 1.6 秒停留再看下一题；按钮随时可以提前走 */
+        const go = Flow.make(() => { S.idx++; window._scrShow(); }, 1600);
+        $('#sexp').insertAdjacentHTML('beforeend',
+          `<div style="margin-top:8px"><button class="btn ghost" style="padding:6px 18px" onclick="window._scrGo()">下一个 ▶</button></div>`);
+        window._scrGo = go;
       }
     } else {
       sfx.wrong(); btn.classList.add('bad'); setTimeout(() => btn.classList.remove('bad'), 400);
@@ -328,12 +346,13 @@ function gSentence(pool) {
   window._sentQs = qs;            // 自检用：题库快照（也方便排查某道题为什么怪）
   const S = { idx: 0, score: 0, first: true };
   window._sentShow = function () {
+    Flow.reset();                    // 新一题：作废旧回合的自动推进
     if (S.idx >= qs.length) {
       addStars(S.score + 1); sfx.win(); if (S.score === qs.length) confetti();
       $('#app').innerHTML = endCard('🧑‍🔧', `补对 ${S.score} / ${qs.length} 句`, S.score + 1);
       return;
     }
-    const q = qs[S.idx]; S.first = true;
+    const q = qs[S.idx]; S.first = true; S.answered = false;
     $('#app').innerHTML = `
       <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🧑‍🔧 句子火车员</b><span>第 ${S.idx + 1} / ${qs.length} 句 · ✅ ${S.score}</span></div>
@@ -349,15 +368,23 @@ function gSentence(pool) {
   };
   window.sentAns = function (btn, o) {
     const q = qs[S.idx];
+    if (S.answered) return;
     const ok = o === q.ans;
     feedback(btn, ok);
     if (ok) {
       // 只计分不发星：星星在游戏结束统一结算（与其他游戏一致，避免双重发星）
       if (S.first) { S.score++; flyStar(btn); }
+      S.answered = true;
       sfx.correct();
+      lockChoices(btn);
       $('#sexp2').innerHTML = `✅ <b>${q.zh}</b>`;
-      speakSentence(q.zh.split('.')[0]);
-      setTimeout(() => { S.idx++; window._sentShow(); }, 1500);
+      /* 这句要念完（2~4 秒），所以自动跳要等朗读结束再起算；
+         原来写死 1.5 秒，等于每次都在句子念到一半时掐掉。按钮随时可走。 */
+      const go = Flow.make(() => { S.idx++; window._sentShow(); }, 0);
+      $('#sexp2').insertAdjacentHTML('beforeend',
+        `<div style="margin-top:8px"><button class="btn ghost" style="padding:6px 18px" onclick="window._sentGo()">下一个 ▶</button></div>`);
+      window._sentGo = go;
+      speakSentence(q.zh.split('.')[0], null, () => go.arm(900));
     } else { S.first = false; sfx.wrong(); $('#sexp2').innerHTML = '🤔 想想公式：谁 + 干什么 + 什么'; }
   };
   window._sentShow();

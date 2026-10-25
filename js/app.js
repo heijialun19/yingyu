@@ -424,6 +424,8 @@ function stopAllSpeech() {
   __inflight.forEach(a => { try { a.onended = a.onerror = a.oncanplay = a.onplaying = null; a.pause(); } catch (e) {} });
   __inflight.clear();
   __curAudio = null;
+  /* 句子朗读的"读完了"回调也要作废：否则被打断的旧句子会在新页面上触发自动跳题 */
+  if (typeof window.__cancelSpeak === 'function') window.__cancelSpeak();
 }
 
 /* 统一朗读入口：只走词典真人发音。失败保持安静（绝不出现机器音）。 */
@@ -554,6 +556,62 @@ function tone(freq, delay, dur, type = 'sine', vol = 0.18) {
   o.connect(g); g.connect(ctx.destination);
   o.start(t0); o.stop(t0 + dur + 0.05);
 }
+/* ---------------- 答题推进器 Flow：全站唯一的「下一题」出口 ----------------
+
+   以前「自动跳题」和「下一题按钮」是两套各自独立的逻辑：
+   练一练答对 1.9 秒自己跳走（字还没看清），句子工厂必须手点（节奏又太慢）；
+   更糟的是自动计时器不随换页取消 —— 孩子答对后点「返回」，
+   一秒多之后会被自己拽回答题页。这是真实存在的 bug，不是理论风险。
+
+   现在只有一种推进动作 next()，两个触发器：
+     ① 孩子点「下一个」按钮 —— 永远都在，想走就走
+     ② 纯游戏回合的自动计时 —— 只是按钮的超时兜底，不让孩子干等
+
+   三条铁律（改这里之前先读完）：
+     1) 幂等：一次答题只推进一次。连点、按钮与自动撞车，都不会跳两题。
+     2) 可取消：换页/退出必须 Flow.reset()，旧计时器一律作废。
+     3) 不抢时间：凡是有解析 / 单词 / 记忆法要读的题，autoMs 必须传 0。
+        自动跳只允许出现在「答对后除了庆祝没有别的信息」的纯游戏回合。 */
+const Flow = (() => {
+  let seq = 0;                 // 题号令牌：reset 一次 +1，旧闭包全部失效
+  let adv = null;              // 自动推进计时器
+  const timers = new Set();    // 与本题同生命周期的普通计时器（朗读、音效）
+  const clearAdv = () => { if (adv) { clearTimeout(adv); adv = null; } };
+  return {
+    /* 换题/换页：作废本题所有挂起动作 */
+    reset() {
+      seq++; clearAdv();
+      timers.forEach(t => clearTimeout(t)); timers.clear();
+    },
+    /* 造一个一次性推进器。autoMs > 0 才会到点自动触发；返回的函数给按钮用 */
+    make(next, autoMs) {
+      clearAdv();
+      const my = seq;
+      let used = false;
+      const fire = () => {
+        if (used || my !== seq) return false;   // 已推进过 / 已换页 → 静默忽略
+        used = true; clearAdv(); next(); return true;
+      };
+      /* 之后再挂自动推进：给"等这句话读完再走"的场景用（句子火车员） */
+      fire.arm = ms => {
+        if (used || my !== seq) return;
+        clearAdv();
+        adv = setTimeout(fire, ms);
+      };
+      if (autoMs > 0) adv = setTimeout(fire, autoMs);
+      return fire;
+    },
+    /* 朗读、音效这类"只是效果"的延时：换页就哑掉，不会串到下一个页面 */
+    after(ms, fn) {
+      const my = seq;
+      const t = setTimeout(() => { timers.delete(t); if (my === seq) fn(); }, ms);
+      timers.add(t);
+    },
+    /* 只停自动推进（手动按钮仍可用） */
+    stop: clearAdv,
+  };
+})();
+
 const sfx = {
   pop()      { tone(520, 0, 0.08, 'triangle', 0.12); },
   correct()  { tone(523, 0, 0.12); tone(659, 0.09, 0.12); tone(784, 0.18, 0.22); },
@@ -718,6 +776,17 @@ function feedback(el, ok) {
   if (!el) return;
   el.classList.add(ok ? 'good' : 'bad');
   setTimeout(() => el.classList.remove('good', 'bad'), 700);
+}
+
+/* 结题后锁住选项：正确的保持绿底，其余变淡且不可点。
+   以前不锁 —— 孩子答对后再点一下别的，解析会被"再想想"覆盖；
+   点回正确项还会再计一次分、再挂一个跳题计时器，一下就跳两题。 */
+function lockChoices(keep) {
+  document.querySelectorAll('.opt').forEach(b => {
+    b.classList.add('locked');
+    if (b === keep) b.classList.add('good-keep');
+    else b.classList.add('dim');
+  });
 }
 
 /* ---------------- 小伙伴档案管理弹窗 ---------------- */

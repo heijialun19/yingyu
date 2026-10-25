@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>句子工厂 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=29">
+<link rel="stylesheet" href="css/style.css?v=30">
 <style>
 /* 句子语法解析面板（只在句子工厂用） */
 .parse{margin-top:12px;background:#F7F9FC;border:2px solid #E3E9F2;border-radius:14px;padding:12px 12px 10px}
@@ -50,8 +50,8 @@
 
 <script src="js/words-data.js?v=26"></script>
 <script src="js/data.js?v=29"></script>
-<script src="js/app.js?v=40"></script>
-<script src="js/sentence.js?v=41"></script>
+<script src="js/app.js?v=41"></script>
+<script src="js/sentence.js?v=42"></script>
 <script src="js/grammar-engine.js?v=2"></script>
 <script>
 renderNav('grammar'); renderDecor();
@@ -89,6 +89,8 @@ function englishOf(it) {
 }
 
 let view = 'levels', curLevel = null, sess = null;
+let __itemGo = null;      // 当前题的推进器：按钮点它，自动跳也点它（同一个动作）
+let __itemSay = '';       // 当前题的英文句子（「再听」用，绝不拼进 onclick）
 
 /* ---------------- 单词镇词池工具 ---------------- */
 const themeWords = ids => {
@@ -398,6 +400,7 @@ function buildLevelItems(lv) {
 /* ---------------- 关卡地图（按阶段分组） ---------------- */
 function renderLevels() {
   view = 'levels';
+  Flow.reset();          // 离开关卡：作废所有挂起的推进与朗读
   const done = i => !!Store.d.grammar[GRAMMAR_LEVELS[i].id];
   const unlocked = i => i === 0 || done(i - 1);
   const STAGE_GRADE = { s1: '一年级', s2: '二年级', s3: '三年级+' };
@@ -457,7 +460,12 @@ function renderItem() {
   const lv = GRAMMAR_LEVELS[curLevel];
   if (sess.idx >= sess.items.length) return renderLevelEnd();
   const it = sess.items[sess.idx];
+  /* 进入新题：作废上一题所有挂起的推进/朗读，重置本题状态 */
+  Flow.reset();
+  stopAllSpeech();          // 上一题的句子还没念完也停掉：一次只出一个声音
   sess.firstTry = true;
+  sess.answered = false;   // 本题是否已结题（答对 或 错满两次看答案）
+  sess.tries = 0;          // 错了几次：第 2 次给答案，不让孩子卡死
 
   const head = `
     <div class="card" style="max-width:720px;margin:0 auto">
@@ -479,7 +487,7 @@ function renderItem() {
       ${it.generated ? `<div style="font-size:.72rem;color:#4E9E59;font-weight:700;margin-bottom:4px">🏘️ 单词镇出题${it.fromTheme ? ' · ' + it.fromTheme : ''}</div>` : ''}
       <div class="quiz-q" style="font-size:1.05rem;line-height:1.8">${it.prompt}</div>
       <div class="opt-row">
-        ${shuffle(it.options.map((o, j) => ({ o, j }))).map(x => `<button class="opt" style="font-size:${String(x.o).length > 24 ? '.85rem' : '1rem'}" onclick="chooseAns(this,${x.j},${it.options.length})">${esc(x.o)}</button>`).join('')}
+        ${shuffle(it.options.map((o, j) => ({ o, j }))).map(x => `<button class="opt" data-j="${x.j}" style="font-size:${String(x.o).length > 24 ? '.85rem' : '1rem'}" onclick="chooseAns(this,${x.j},${it.options.length})">${esc(x.o)}</button>`).join('')}
       </div>
       <div class="explain" id="iexp"></div>`;
   } else { // build 造句
@@ -528,56 +536,103 @@ function updateTrainPreview() {
   $('#trainResult').innerHTML = '🚂 ' + sess.sels.map(s => s || '＿＿').join(' ');
 }
 function checkBuild() {
-  const lv = GRAMMAR_LEVELS[curLevel];
   const it = sess.items[sess.idx];
+  if (sess.answered) return;              // 已结题：台子锁住，不再响应
   const ok = sess.sels.join(' ') === it.answer.join(' ');
   const slots = $('#slots');
   if (ok) {
     if (sess.firstTry) { sess.score++; addStars(1); }
+    sess.answered = true;
     sfx.correct(); confetti();
+    lockBuild();
     if (it.word) touchWord(it.word, true); // 造句用到的单词也进入复习计划
     $('#trainResult').innerHTML = `🚂 ${it.read} <span class="ok-mark">✔</span>`;
-    $('#iexp').innerHTML = `✅ <b>${it.read}</b> ${it.zh}<br>🔎 ${it.answer.join(' + ')} —— 公式用对啦！` + parseHTML(it.read);
-    setTimeout(() => speakSentence(it.read), 600); // 等答对音效播完再朗读句子
-    nextBtn();
+    $('#iexp').innerHTML = `✅ <b>${esc(it.read)}</b> ${it.zh}<br>🔎 ${it.answer.join(' + ')} —— 公式用对啦！` + parseHTML(it.read);
+    Flow.after(600, () => speakSentence(it.read));   // 等答对音效播完再朗读句子
+    showNext(it.read);
   } else {
-    sess.firstTry = false; sfx.wrong();
-    slots.classList.add('bad'); setTimeout(() => slots.classList.remove('bad'), 500);
+    sess.firstTry = false; sess.tries++; sfx.wrong();
+    slots.classList.add('bad'); Flow.after(500, () => slots.classList.remove('bad'));
+    if (sess.tries >= 2) return revealBuild(it);
     $('#iexp').innerHTML = `🤔 火车车厢装反啦，点车厢可以把词放回去，再试试！`;
   }
 }
 
-/* 答对后不自动跳题：解析面板要读得完，孩子也能自己按「下一题」 */
-function nextBtn() {
-  const box = $('#iexp');
-  if (!box) return;
-  if (String(box.innerHTML || '').indexOf('nextItem()') >= 0) return;
-  box.insertAdjacentHTML('beforeend', '<div style="margin-top:12px"><button class="btn grape big" onclick="nextItem()">下一题 ▶</button></div>');
+/* 错满两次：给正确摆法。不是为了放水，是别让孩子靠瞎猜过关 */
+function revealBuild(it) {
+  sess.answered = true;
+  lockBuild();
+  $('#trainResult').innerHTML = `🚂 ${it.read}`;
+  $('#iexp').innerHTML = `💡 正确摆法：<b>${esc(it.read)}</b> ${it.zh}<br>🔎 ${it.answer.join(' + ')}` + parseHTML(it.read);
+  Flow.after(500, () => speakSentence(it.read));
+  showNext(it.read);
 }
-function nextItem() { sess.idx++; renderItem(); }
+
+/* 造句台锁定：答对后再点词块/检查都不改变结果 */
+function lockBuild() {
+  $('#slots').classList.add('done');
+  const bank = $('.slot-bank'); if (bank) bank.classList.add('locked');
+}
+
+/* 结题之后：不自动跳，给一个按钮。
+   句子工厂每题都有解析要读，1.7 秒自动跳等于没给读的时间 —— 这里永远 autoMs = 0。 */
+function showNext(say) {
+  const box = $('#iexp');
+  if (!box || String(box.innerHTML || '').indexOf('id="nextBtn"') >= 0) return;  // 一题只有一个出口
+  const last = sess.idx >= sess.items.length - 1;
+  /* 句子不拼进 onclick：英文里有撇号（He doesn't…），拼进去会把属性打断（绘本页踩过的坑） */
+  __itemSay = say || '';
+  __itemGo = Flow.make(() => { sess.idx++; renderItem(); }, 0);
+  const replay = __itemSay
+    ? `<button class="btn ghost big" onclick="__sayAgain()">🔊 再听</button>` : '';
+  box.insertAdjacentHTML('beforeend',
+    `<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px">
+       <button class="btn grape big" id="nextBtn" onclick="__itemGo()">${last ? '看结果 🏁' : '下一个 ▶'}</button>${replay}
+     </div>`);
+  /* 手机小屏时解析可能把按钮顶到屏幕外：滚到看得见为止（已经可见就不动） */
+  if (box.scrollIntoView) { try { box.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
+}
+function __sayAgain() { if (__itemSay) speakSentence(__itemSay); }
 
 /* --- 选择题交互（选项已打乱，回传原始下标） --- */
 function chooseAns(btn, j, total) {
-  const lv = GRAMMAR_LEVELS[curLevel];
   const it = sess.items[sess.idx];
+  if (sess.answered) return;              // 答对后锁住：以前不锁会把解析冲掉、甚至再计一次分
   const ok = j === it.answer;
   feedback(btn, ok);
   if (ok) {
     if (sess.firstTry) { sess.score++; addStars(1); flyStar(btn); }
+    sess.answered = true;
     sfx.correct();
+    lockChoices(btn);
     if (it.word) touchWord(it.word, true);
     $('#iexp').innerHTML = `✅ ${it.zh}<br>🔎 ${it.explain || ''}` + parseHTML(englishOf(it));
-    setTimeout(() => speakSentence(englishOf(it)), 550); // 等音效播完再读句
-    nextBtn();
+    Flow.after(550, () => speakSentence(englishOf(it)));  // 等音效播完再读句
+    showNext(englishOf(it));
   } else {
-    sess.firstTry = false; sfx.wrong();
+    sess.firstTry = false; sess.tries++; sfx.wrong();
+    if (sess.tries >= 2) return revealChoice(it);
     $('#iexp').innerHTML = `🤔 再想想～套一套公式`;
   }
 }
 
+/* 错满两次：点亮正确项 + 给解析，然后走同一个出口 */
+function revealChoice(it) {
+  sess.answered = true;
+  const right = it.options[it.answer];
+  const keep = document.querySelector('.opt[data-j="' + it.answer + '"]');
+  lockChoices(keep);
+  $('#iexp').innerHTML = `💡 正确答案：<b>${esc(right)}</b><br>🔎 ${it.explain || ''}` + parseHTML(englishOf(it));
+  Flow.after(500, () => speakSentence(englishOf(it)));
+  showNext(englishOf(it));
+}
+
+/* 选项锁定用 app.js 里的共享版本（与单词页、游戏页同一套规则） */
+
 /* ---------------- 关卡结束 ---------------- */
 function renderLevelEnd() {
   const lv = GRAMMAR_LEVELS[curLevel];
+  Flow.reset();          // 收尾：作废本题所有挂起动作
   const total = sess.items.length;
   const perfect = sess.score === total;
   if (perfect) { addStars(2); confetti(); }
