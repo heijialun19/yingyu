@@ -225,13 +225,16 @@ function gScramble(pool) {
     }
     const w = picks[S.idx];
     const letters = shuffle(w.w.split(''));
-    window._scrBuilt = ''; window._scrWord = w.w;
+    /* 记忆法当提示用可以，但当它自己就把答案写出来时（999 条里有 63 条这样，
+       如 is → 「s 小蛇说：is 是」），题面就等于白送——这类挪到答对之后展示。 */
+    const decLeaks = !!(w.dec && w.dec.toLowerCase().includes(w.w.toLowerCase()));
+    window._scrBuilt = ''; window._scrWord = w.w; window._scrDec = decLeaks ? w.dec : '';
     $('#app').innerHTML = `
       <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🚂 拼词小火车</b><span>第 ${S.idx + 1} / ${picks.length} 词</span></div>
         <div style="font-size:64px">${w.e || '🔤'}</div>
         <div style="font-size:1.1rem;font-weight:700">${w.zh} <button class="btn ghost" style="padding:4px 12px;font-size:.8rem" onclick="speak('${w.w.replace(/'/g, "\\'")}')">🔊 听</button></div>
-        ${w.dec ? `<div class="explain" style="text-align:left;margin:10px 0">💡 ${w.dec}</div>` : ''}
+        ${w.dec && !decLeaks ? `<div class="explain" style="text-align:left;margin:10px 0">💡 ${w.dec}</div>` : ''}
         <div class="build-word-slots" id="scrSlots">${w.w.split('').map(() => `<span class="slot"></span>`).join('')}</div>
         <div class="scramble-row">
           ${letters.map((c, i) => `<button class="scramble-tile" data-i="${i}" onclick="scrTap(this,'${c}')">${c.toUpperCase()}</button>`).join('')}
@@ -254,7 +257,7 @@ function gScramble(pool) {
       slots[pos].classList.add('filled');
       if (window._scrBuilt === window._scrWord) {
         S.score++; sfx.correct(); speak(window._scrWord); flyStar(btn);
-        $('#sexp').innerHTML = `✅ <b>${window._scrWord}</b>！${allZh(window._scrWord)}`;
+        $('#sexp').innerHTML = `✅ <b>${window._scrWord}</b>！${allZh(window._scrWord)}` + (window._scrDec ? `<br>💡 ${window._scrDec}` : '');
         setTimeout(() => { S.idx++; window._scrShow(); }, 1300);
       }
     } else {

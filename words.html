@@ -29,6 +29,9 @@
 .sp-cn{font-size:1.25rem;font-weight:800;color:#5C6273;text-align:center;margin-top:4px}
 .sp-reveal{font-size:2.1rem;font-weight:800;letter-spacing:.3em;text-align:center;color:#2D3142;margin:8px 0 2px;word-break:break-all}
 .sp-tip{color:#5C6273;font-size:.88rem;text-align:center;line-height:1.7;margin:8px 0}
+.sp-ask{font-size:1rem}
+.sp-ask b{color:#5C6273}
+.sp-ask-e{font-size:1.15rem;margin-left:2px}
 .sp-count{text-align:center;color:#8B93A7;font-size:.85rem;font-weight:700;margin-top:6px}
 .sp-listen{display:block;margin:10px auto 0;padding:14px 26px;border-radius:999px;border:3px solid #4EC5F1;background:#EAF7FD;color:#1C7FA6;font-size:1.05rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 0 rgba(45,49,66,.10)}
 .sp-listen:active{transform:translateY(2px);box-shadow:none}
@@ -375,7 +378,12 @@ function renderQuizEnd() {
 /* ---------------- 拼写工坊 · 六步法（读→看→选→拆→拼→写） ----------------
    借鉴自家 blockcraft 实验站已验证的六步拼写流程：
    先听音（不认字母）→ 认形 → 从打乱字母里挑 → 切音块 → 整体拼装 → 听音默写。
-   把"最难的一步"（默写）放在最后，前面每一步都在为它搭梯子。 */
+   把"最难的一步"（默写）放在最后，前面每一步都在为它搭梯子。
+
+   ★ 铁律：顶栏（spHead）绝不能出现英文拼写。
+   六步里只有「看」和「拆」两步需要看见字母，而它们各自在正文里呈现
+   （看：大字 sp-reveal；拆：字母切分条 sp-cutline）。顶栏一旦露出单词，
+   后面的「选/拼/写」就全变成抄写，六步法当场失去意义。 */
 
 /* 音块切分：只做"参考切法"，不判对错。 元音块橙、辅音块蓝。 */
 const SP_VG = ['igh','air','ear','eer','ea','ee','oo','ou','ow','oi','oy','ai','ay','au','aw','ie','ue','ui','oa','ar','or','er','ir','ur'];
@@ -457,9 +465,11 @@ function spStepsBar() {
 }
 function spHead() {
   const w = spWord();
+  /* 只给中文意思 + 图，不给英文拼写——答案要孩子自己从记忆里取（见上方铁律）。
+     想听发音：第 0/2/5 步各有自己的 🔊，第 4 步的提示行也带一个。 */
   return `<div class="score-bar"><b>🔤 拼写工坊</b><span>第 ${spell.wi + 1} / ${spell.words.length} 词 · ⭐${spell.stars}</span></div>
     ${spStepsBar()}
-    <p class="sp-tip" style="margin:0 0 10px"><b style="color:#9B72FF">${esc(w.w)}</b> · ${esc(w.zh)} ${w.e || ''}</p>`;
+    <p class="sp-tip sp-ask" style="margin:0 0 10px"><b>${esc(w.zh)}</b> <span class="sp-ask-e">${w.e || '🔤'}</span></p>`;
 }
 function spFoot(extra) {
   return `<div class="sp-foot">
@@ -481,7 +491,7 @@ function renderSpell() {
       <span class="sp-bigimg">${w.e || '🔤'}</span>
       <button class="sp-listen" onclick="spListen()">🔊 点我听发音</button>
       <div class="sp-count" id="spCount">已听 ${spell.listened || 0} / 2 遍</div>
-      <p class="sp-tip">先别急着看字母，<b>只听声音</b>，猜猜是哪个东西。听够两遍再往下走～</p>
+      <p class="sp-tip">先别急着看字母，<b>只听声音</b>，把音记住。听够两遍再往下走～</p>
       ${spNextBtn('spGoRead', '下一步 ▶', !spell.listened || spell.listened < 2)}`;
   } else if (spell.step === 1) {
     body = `
@@ -506,7 +516,7 @@ function renderSpell() {
       ${spNextBtn('spGoSplit', '下一步 ▶')}`;
   } else if (spell.step === 4) {
     body = `
-      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${w.e || ''}</p>
+      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${w.e || ''} <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(w.w)}')">🔊</button></p>
       <p class="sp-tip" style="margin-top:0">还记得字母顺序吗？把字母块摆回台子上！点台上的字母可以拿回来。</p>
       ${spBoard()}
       ${spNextBtn('spGoBuild', '下一步 ▶', !spell.board.solved)}`;
