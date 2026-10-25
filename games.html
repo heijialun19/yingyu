@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
-<meta name="description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员 4 个游戏，优先复习学过的单词。">
+<meta name="description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员、造词实验室 5 个游戏，优先复习学过的单词。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="游戏乐园 · 边玩边学 · 小鸟英语乐园">
-<meta property="og:description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员 4 个游戏，优先复习学过的单词。">
+<meta property="og:description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员、造词实验室 5 个游戏，优先复习学过的单词。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/games.html">
 <meta name="twitter:card" content="summary_large_image">
@@ -22,7 +22,7 @@
 <main>
   <div class="page-title">
     <h1>🎡 游戏乐园</h1>
-    <p>玩就是学！优先复习<b>你学过的单词</b>，也可以从 1000 词库随机挑战</p>
+    <p>玩就是学！<b id="gameCount">5</b> 个游戏，优先复习<b>你学过的单词</b>，也可以从 1000 词库随机挑战</p>
   </div>
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
@@ -44,16 +44,22 @@ const ALLW = {};
 THEMES.forEach(t => t.words.forEach(w => { if (!ALLW[w.w]) ALLW[w.w] = w; }));
 const learnedPool = () => Object.keys(Store.d.words).map(w => ALLW[w.w]).filter(Boolean);
 
-/* ---------------- 游戏主页 ---------------- */
-function renderHome() {
-  Flow.reset();      // 回游戏菜单：作废所有挂起的自动推进（否则 1.5 秒后被拽回上一局）
-  const games = [
+/* ---------------- 游戏主页 ----------------
+   游戏清单提到模块级：页头文案、首页岛屿的数量都对得上，
+   免得"写了 4 个却放着 5 个"这种错（真的发生过）。 */
+const GAMES = [
     { id: 'listen',   emoji: '👂', name: '听音选字母', desc: '听字母名或字母音，选出它！', color: 'var(--lake)' },
     { id: 'memory',   emoji: '🃏', name: '图词翻翻乐', desc: '翻开卡片，图片和单词配对', color: 'var(--grape)' },
     { id: 'scramble', emoji: '🚂', name: '拼词小火车', desc: '把打乱的字母装回正确的顺序', color: 'var(--orange)' },
     { id: 'sentence', emoji: '🧑‍🔧', name: '句子火车员', desc: '句子缺了个词，你来补上！', color: 'var(--mint)' },
     { id: 'wordlab',  emoji: '🧪', name: '造词实验室', desc: '每轮 10 个新词，black + board 会变成什么？', color: 'var(--coral)' },
-  ];
+];
+
+function renderHome() {
+  Flow.reset();
+  const gc = document.getElementById('gameCount');
+  if (gc) gc.textContent = String(GAMES.length);      // 回游戏菜单：作废所有挂起的自动推进（否则 1.5 秒后被拽回上一局）
+  const games = GAMES;
   $('#app').innerHTML = `<div class="game-grid">
     ${games.map(g => `<div class="island" style="border-color:${g.color}" onclick="startGame('${g.id}')">
       <span class="tag" style="border-color:${g.color};color:${g.color}">点击开始</span>
@@ -330,8 +336,9 @@ function gScramble(pool) {
 const WL_ROUND = 10;
 const WL_POS = { n: '名词', v: '动词', adj: '形容词', adv: '副词', pron: '代词' };
 /* 旧表（词库内 23 组）没写后缀含义，这里补齐 */
-const WL_SUF_ZH = { er: '做…的人/物', r: '做…的人/物', or: '做…的人', ist: '…家 / …者',
-  ful: '充满…的', less: '没有…的', y: '有…的 / 多…的', ly: '…地', ing: '…（名词）' };
+const WL_SUF_ZH = { er: '做…的人 / 做…的物', r: '做…的人 / 做…的物', or: '做…的人',
+  ist: '…家 / …者', ful: '充满…的', less: '没有…的', y: '有…的 / 多…的', ly: '…地',
+  ing: '…的动作 / 产物' };
 
 function wlPool() {
   if (window.__wlPool) return window.__wlPool;
@@ -343,7 +350,7 @@ function wlPool() {
   /* 旧表：词库内的 59 个词（孩子学过，当热身） */
   Object.keys(WORD_FAMILY).forEach(b => {
     const f = WORD_FAMILY[b];
-    pool.push({ kind: 'der', w: f.d, base: b, baseZh: zhOf(b), suf: f.suf, sz: WL_SUF_ZH[f.suf] || '', pre: 0,
+    pool.push({ kind: 'der', w: f.d, base: b, baseZh: zhOf(b), s: f.suf, sz: WL_SUF_ZH[f.suf] || '', pre: 0,
       zh: zhOf(f.d), p: posOfW(f.d), ipa: ipaOfW(f.d), note: f.note || '' });
   });
   COMPOUNDS.forEach(c => {
@@ -374,9 +381,18 @@ function wlOptions(q, pool) {
   const wrong = [];
   const add = z => { if (z && z !== q.zh && wrong.length < 2 && !wrong.includes(z)) wrong.push(z); };
   if (q.kind === 'com') { add(q.az); add(q.bz); }
-  else { add(q.baseZh); if (q.pre) add('再一次'); }
+  else {
+    add(q.baseZh);
+    if (q.s === 're') add('再一次 / 重新');   // 只有 re- 才谈得上"再一次"，un- 加这个是错的
+    /* 第三选项优先用"同一个后缀造出来的另一个词"：画家/歌手/老师同属 -er 家族，
+       孩子必须真的看懂基础词才选得对，而不是靠排除法。 */
+    const same = pool.filter(x => x.kind === 'der' && x.s === q.s && x.zh !== q.zh);
+    if (same.length) add(pick(same).zh);
+  }
+  /* 再不够才用同类词（合成找合成、派生找派生），最后才随机 */
   let guard = 0;
-  while (wrong.length < 2 && guard++ < 40) add(pick(pool).zh);
+  const sameKind = pool.filter(x => x.kind === q.kind && x.zh !== q.zh);
+  while (wrong.length < 2 && guard++ < 40) add(pick(sameKind.length ? sameKind : pool).zh);
   return shuffle([q.zh, ...wrong.slice(0, 2)]);
 }
 
@@ -437,7 +453,11 @@ function gWordLab() {
     $('#app').innerHTML = `
       <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🧪 造词实验室</b><span>第 ${S.idx + 1} / ${total} 题 · ✅ ${S.score}</span></div>
-        <p class="wl-hint">${q.kind === 'com' ? '两个词拼在一起，会变成一个什么词？' : q.pre ? '加上这个小零件，意思会变成什么？' : '给它加个小尾巴，会变成什么词？'}</p>
+        <p class="wl-hint">${q.kind === 'com'
+          ? `「${esc(q.a)}」+「${esc(q.b)}」合起来，是一个什么词？`
+          : q.pre
+            ? `前缀 <b>${esc(q.s)}-</b> 的意思是「${esc(q.sz)}」；加在 ${esc(q.base)}（${esc(q.baseZh)}）前面，会变成什么？`
+            : `后缀 <b>-${esc(q.s)}</b> 的意思是「${esc(q.sz)}」；${esc(q.base)}（${esc(q.baseZh)}）加上它，会变成什么？`}</p>
         <div class="wl-formula">${formulaOf(q)}</div>
         <div class="opt-row">
           ${q.options.map((o, i) => `<button class="opt" onclick="wlAns(this,${i})" style="font-size:1rem">${esc(o)}</button>`).join('')}
@@ -475,7 +495,7 @@ function gWordLab() {
         <button class="mini-speaker" onclick="event.stopPropagation();wlSay()" title="点我听发音">🔊</button>
       </div>
       <div style="margin-top:4px">✅ <b>${esc(q.zh)}</b> —— ${made}</div>
-      <div style="margin-top:2px;color:#6B7280">${why}${q.note ? '；' + esc(q.note) : ''}</div>`;
+      <div style="margin-top:2px;color:#6B7280">${why}${q.kind === 'der' ? `（${esc(q.pre ? q.s + '-' : '-' + q.s)} = ${esc(q.sz)}）` : ''}${q.note ? '；' + esc(q.note) : ''}</div>`;
     speak(q.w);
     /* 这里有新词 + 音标 + 释义要读，按全站铁律 autoMs = 0：只留按钮，不自动跳 */
     const last = S.idx >= total - 1;
