@@ -1,13 +1,14 @@
 /* ============================================================
    小鸟英语乐园 · 单词音标（CMUdict 转写的美式音标）
-   只给 words.html 用：其他页面不加载，省 12KB 传输。
+   words.html（词卡/选图题）与 games.html（造词实验室）加载；
+     其余页面不加载，省 12KB 传输。
    只收录读音唯一的词：同形异音词（read/live/use/close/wind…）
    与短语一律不标 —— 标错比不标更糟。
    ============================================================ */
 'use strict';
 /* ---------------- 音标（CMUdict 转写的美式音标，与 App 播放的美音一致）
    只收录读音唯一的词：同形异音词（read/live/use/close/wind…）与短语一律不标，
-   标错比不标更糟。全库 967/1000 个词有音标。 ---------------- */
+   标错比不标更糟。全库 969/1000 个词有音标（31 个短语/同形异音词按规则不标）。 ---------------- */
 const IPA = {
   "hello":"/həˈloʊ/", "hi":"/haɪ/", "goodbye":"/ɡʊdˈbaɪ/", "bye":"/baɪ/", "good":"/ɡʊd/",
   "thank":"/θæŋk/", "thanks":"/θæŋks/", "please":"/pliz/", "sorry":"/ˈsɑri/", "welcome":"/ˈwelkəm/",
@@ -23,7 +24,7 @@ const IPA = {
   "seven":"/ˈsevən/", "eight":"/eɪt/", "nine":"/naɪn/", "ten":"/ten/", "count":"/kaʊnt/",
   "number":"/ˈnʌmbər/", "red":"/red/", "yellow":"/ˈjeloʊ/", "blue":"/blu/", "green":"/ɡrin/",
   "white":"/waɪt/", "black":"/blæk/", "orange":"/ˈɔrəndʒ/", "pink":"/pɪŋk/", "purple":"/ˈpɜrpəl/",
-  "brown":"/braʊn/", "grey":"/ɡreɪ/", "colour":"/ˈkʌlər/", "school":"/skul/", "book":"/bʊk/",
+  "brown":"/braʊn/", "grey":"/ɡreɪ/", "colour":"/ˈkʌlər/", "school":"/skul/", "schoolbag":"/ˈskulbæɡ/", "mooncake":"/ˈmunkek/", "book":"/bʊk/",
   "pen":"/pen/", "pencil":"/ˈpensəl/", "ruler":"/ˈrulər/", "bag":"/bæɡ/", "eraser":"/ɪˈreɪsər/",
   "desk":"/desk/", "chair":"/tʃer/", "blackboard":"/ˈblækbɔrd/", "crayon":"/ˈkreɪɑn/", "card":"/kɑrd/",
   "picture":"/ˈpɪktʃər/", "teacher":"/ˈtitʃər/", "student":"/ˈstudənt/", "class":"/klæs/", "classroom":"/ˈklæsrum/",

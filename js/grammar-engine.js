@@ -108,6 +108,30 @@ function gxPos(word) {
   return { pos: '名词' };
 }
 
+/* ============================================================
+   按词性取词 —— 全站唯一入口
+   ------------------------------------------------------------
+   任何"把词填进一句话"的地方都必须先过这里。
+   不筛词性就会造出这种题（真实发生过，500 轮里 115 种）：
+     This is a from.        ← 介词被当成名词
+     This is an and.        ← 连词被当成名词
+     I can yoga.            ← 名词被当成动词
+   「拼写对、语法错」比不出题更糟：孩子会照着背下来。
+   词库的 pos 是人工校对过的（data.js 已挂到每个词条），gxPos 只兜底。
+   ============================================================ */
+const GX_POS_CODE = { '名词':'n', '动词':'v', '形容词':'adj', '数词':'num', '副词':'adv',
+  '代词':'pron', '介词':'prep', '连词':'conj', '感叹词':'interj', 'be 动词':'be',
+  '疑问词':'qw', '短语':'phrase' };
+function gxPosCode(w) {
+  const o = (w && typeof w === 'object') ? w : { w };
+  if (o.pos) return o.pos;                        // 词库真相优先
+  return GX_POS_CODE[gxPos(o.w).pos] || 'n';      // 引擎兜底
+}
+/* 只留"真名词"：介词 / 动词 / 形容词一律不进（单字词、短语也不要） */
+const gxNouns = ws => ws.filter(w => gxPosCode(w) === 'n' && !String(w.w).includes(' '));
+/* 只留动词原形（三单形不能填进 I can __） */
+const gxVerbs = ws => ws.filter(w => gxPosCode(w) === 'v');
+
 /* ---------------- 分词 ---------------- */
 const GX_CONTRACTION = {
   "isn't": ['is', 'not'], "aren't": ['are', 'not'], "wasn't": ['was', 'not'],

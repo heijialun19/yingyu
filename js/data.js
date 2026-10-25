@@ -39,6 +39,9 @@ const POS_OVERRIDE = {
   paint:'v',
   /* 数字主题里的两个"假数词"：数数(v.)、数字(n.)，都不是数词 */
   count:'v', number:'n',
+  /* 主题默认是名词，但实际不是名词的：不修就会出 "This is a cheap." 这种错句 */
+  cheap:'adj', expensive:'adj', foreign:'adj', fresh:'adj', silent:'adj',
+  now:'adv',
   celebrate:'v', invite:'v', prepare:'v',
   protect:'v', save:'v',
   study:'v', review:'v', believe:'v', fail:'v',

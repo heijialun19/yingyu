@@ -14,7 +14,7 @@ const GRADES = [
     W('hello','你好','👋','h 举高高——挥着高高的小手打招呼'), W('hi','嗨','🙋','h 高高——把手举高高说嗨'), W('goodbye','再见','🤚','good 好 + bye 拜——"好·拜"再见'),
     W('bye','拜拜','🖐️','谐音"拜"——拜拜'), W('good','好的','👍','g 鸽子点头：好的好的'), W('good morning','早上好','🌅','morning 早上——早上的问候'),
     W('good afternoon','下午好','','after 在后 + noon 中午：中午之后是下午'), W('good night','晚安','','night 夜晚——夜晚说晚安'),
-    W('thank','感谢','🙏','th 吐舌头——真诚地说谢谢'), W('thanks','谢谢','🙏','thank 加 s——谢了又谢'), W('please','请','🤲','p 手掌摊开——掌心向上说"请"'),
+    W('thank','感谢','🙏','th 吐舌头——真诚地说谢谢'), W('thanks','谢谢','🙇','thank 加 s——谢了又谢，鞠个躬'), W('please','请','🤲','p 手掌摊开——掌心向上说"请"'),
     W('sorry','对不起','😞','s 小蛇绕来绕去——不好意思地扭扭'), W('welcome','欢迎','🎊','wel + come 来——欢迎你来到'), W('yes','是的','✅','y 举手喊 yes！'),
     W('no','不','❌','n 摇头：不不不'), W('OK','好的','👌','画个圈圈 OK 啦') ]},
   { id: 'self', name: '我和你', emoji: '🧒', color: '#4EC5F1', pos: 'pron', words: [
@@ -27,7 +27,7 @@ const GRADES = [
     W('this','这','','近的用 this——手指眼前'), W('that','那','','远的用 that——指向那边') ]},
   { id: 'people', name: '人物', emoji: '👥', color: '#FF9F45', pos: 'n', words: [
     W('man','男人','🧍‍♂️','m 山一样可靠的男人'), W('woman','女人','🧍‍♀️','w 水 + man：似水的女人'), W('boy','男孩','👦','b 棒小伙子'), W('girl','女孩','👧','g 鸽子般蹦跳的女孩'),
-    W('child','孩子','🧒','小小的 child'), W('children','孩子们','🧒','child 的复数变身 children'), W('kid','小孩','🧒','k 踢来踢去的小孩'),
+    W('child','孩子','🧒','小小的 child'), W('children','孩子们','🧒','child 的复数变身 children'), W('kid','小孩','','k 踢来踢去的小孩；和 child 一个意思，口语更常说'),
     W('adult','大人','🧑','a 小鸟长成了大鸟：大人'), W('lady','女士','','l 长裙飘的女士'), W('sir','先生','','sir——尊敬的先生'),
     W('Mr','先生','','M+r：Mr 王、Mr 李'), W('Miss','小姐(未婚)','','Miss——小小姐'), W('twin','双胞胎','','tw 是"二"家族（two）：两个一起'), W('gentleman','绅士','','gentle 温柔 + man 人：温柔的人') ]},
   { id: 'num1', name: '数字 1-10', emoji: '🔢', color: '#9B72FF', pos: 'num', words: [
@@ -43,7 +43,7 @@ const GRADES = [
     W('purple','紫色','','pur+ple：紫葡萄串串'), W('brown','棕色','','br：棕熊 brown'), W('grey','灰色','','grey 灰猫'), W('colour','颜色(英式)','🌈','colour 英国写法，color 美国写法') ]},
   { id: 'school', name: '学校文具', emoji: '🏫', color: '#4EC5F1', pos: 'n', words: [
     W('school','学校','🏫','sc 鱼群游进学校'), W('book','书','📖','b 板子——书是纸板做的'), W('pen','钢笔','🖊️','p 薄薄——笔尖薄薄的'),
-    W('pencil','铅笔','✏️','pen 笔 + cil：铅笔'), W('ruler','尺子','📏','r 直直的尺'), W('bag','书包','🎒','b 背包——书包背在背上'),
+    W('pencil','铅笔','✏️','pen 笔 + cil：铅笔'), W('ruler','尺子','📏','r 直直的尺'), W('bag','包','👝','b 背包——包包背在背上'),
     W('eraser','橡皮','','e 眼睛盯着擦干净'), W('desk','课桌','','d 桌板平平'), W('chair','椅子','💺','ch air：能坐的空气椅'), W('blackboard','黑板','','black 黑 + board 板：黑板'),
     W('crayon','蜡笔','🖍️','c ray 光线——画出彩色光线'), W('pencil-box','铅笔盒','📦','pencil 铅笔 + box 盒'), W('card','卡片','🃏','c 手里的卡片'), W('picture','图片','🖼️','pi+c+ture：画出来的图'),
     W('teacher','老师','👩‍🏫','teach 教 + er 人：教书的人'), W('student','学生','🎓','s 学习的 dent？记住：study 学习 → student 学生'), W('class','班级','','cl 手拉手成一个班'),
@@ -60,7 +60,7 @@ const GRADES = [
     W('giraffe','长颈鹿','🦒','g 鸽子腿——长颈鹿也 g 开头'), W('goose','大鹅','🦢','g 嘎嘎——大鹅'),
     W('owl','猫头鹰','🦉','o 圆眼睛的猫头鹰'), W('eagle','老鹰','🦅','e 锐利的鹰眼'), W('koala','考拉','🐨','k 抱树的考拉'), W('zebra','斑马','🦓','z 闪电——斑马条纹像闪电 z') ]},
   { id: 'family', name: '家庭', emoji: '👨‍👩‍👧', color: '#FF9F45', pos: 'n', words: [
-    W('dad','爸爸','👨','d 低头亲亲你的爸爸'), W('mom','妈妈','👩','m 大山——妈妈像大山一样可靠'),
+    W('dad','爸爸','👨‍👦','d 低头亲亲你的爸爸'), W('mom','妈妈','👩‍👦','m 大山——妈妈像大山一样可靠'),
     W('father','父亲','👨','fa + ther：正式版的爸爸'), W('mother','母亲','👩','mo + ther：正式版的妈妈'), W('brother','兄弟','','bro 哥 + ther：兄弟'), W('sister','姐妹','','sis 姐 + ter：姐妹'),
     W('grandpa','爷爷','👴','grand 大 + pa 爸：爸爸的爸爸'), W('grandma','奶奶','👵','grand 大 + ma 妈：妈妈的妈妈'), W('family','家','👨‍👩‍👧‍👦','fa + mi + ly：一家人'),
     W('baby','宝宝','👶','ba by：抱抱宝宝'), W('uncle','叔叔','🧔','un + cle：叔叔'), W('aunt','阿姨','👩‍🦰','au + nt：阿姨'), W('friend','朋友','🤝','fri + end：到哪都是朋友（end 到头）') ]},

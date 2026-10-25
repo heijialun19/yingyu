@@ -27,12 +27,13 @@
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=28"></script>
-<script src="js/data.js?v=31"></script>
+<script src="js/words-data.js?v=29"></script>
+<script src="js/data.js?v=32"></script>
 <script src="js/build-data.js?v=1"></script>
 <script src="js/app.js?v=46"></script>
 <script src="js/sentence.js?v=42"></script>
-<script src="js/grammar-engine.js?v=2"></script>
+<script src="js/grammar-engine.js?v=3"></script>
+<script src="js/ipa.js?v=2"></script>
 <script>
 renderNav('games'); renderDecor();
 
@@ -334,7 +335,10 @@ function gScramble(pool) {
    **音标 / 词性 / 中文释义 / 拼写变化**，同时朗读（本地离线音频）。
    每轮 10 题；答完给「这一轮认识的新词」清单，可以一个个点着听。 */
 const WL_ROUND = 10;
-const WL_POS = { n: '名词', v: '动词', adj: '形容词', adv: '副词', pron: '代词' };
+/* 词性中文名：直接读 data.js 的 POS_INFO（12 种全覆盖）。
+   别在这里维护第二张表——旧表只有 5 种，遇到 interj / phrase / prep 就印空白。 */
+const wlPos = p => (typeof POS_INFO !== 'undefined' && POS_INFO[p]) ? POS_INFO[p].zh : '';
+const wlMeta = q => [wlPos(q.p), q.zh].filter(Boolean).map(esc).join(' · ');
 /* 旧表（词库内 23 组）没写后缀含义，这里补齐 */
 const WL_SUF_ZH = { er: '做…的人 / 做…的物', r: '做…的人 / 做…的物', or: '做…的人',
   ist: '…家 / …者', ful: '充满…的', less: '没有…的', y: '有…的 / 多…的', ly: '…地',
@@ -343,8 +347,10 @@ const WL_SUF_ZH = { er: '做…的人 / 做…的物', r: '做…的人 / 做…
 function wlPool() {
   if (window.__wlPool) return window.__wlPool;
   const zhOf = w => (ALLW[w] || {}).zh || PART_ZH[w] || '';
-  const ipaOfW = w => (typeof IPA !== 'undefined' && IPA[w]) || '';
-  const posOfW = w => ((ALLW[w] || {}).pos) || '';
+  /* 音标：IPA 表（967 词）优先，数据里自带 ipa 的（BUILD_*）其次。
+     两个都没有就不显示那一行——留一个空行比不显示更像 bug。 */
+  const ipaOfW = w => (typeof IPA !== 'undefined' && IPA[w]) || (ALLW[w] || {}).ipa || '';
+  const posOfW = w => (ALLW[w] || {}).pos || (typeof gxPosCode === 'function' ? gxPosCode(w) : 'n');
   const pool = [];
 
   /* 旧表：词库内的 59 个词（孩子学过，当热身） */
@@ -422,8 +428,8 @@ function gWordLab() {
     <div class="wl-card">
       <div class="wlCardHead"><b lang="en">${esc(q.w)}</b>
         <button class="mini-speaker" onclick="event.stopPropagation();wlSayAt(${i})" title="点我听发音">🔊</button></div>
-      <div class="ph" lang="en">${esc(q.ipa || '')}</div>
-      <div class="wlCardMeta">${WL_POS[q.p] || ''} · ${esc(q.zh)}</div>
+      ${q.ipa ? `<div class="ph" lang="en">${esc(q.ipa)}</div>` : ''}
+      <div class="wlCardMeta">${wlMeta(q)}</div>
     </div>`).join('');
 
   /* 朗读入口：词从闭包取，绝不拼进 onclick（英文撇号会打断属性） */
@@ -490,8 +496,8 @@ function gWordLab() {
     $('#wlexp').innerHTML = `
       <div class="wlAnsHead">
         <b lang="en">${esc(q.w)}</b>
-        <span class="ph" lang="en">${esc(q.ipa || '')}</span>
-        <em>${WL_POS[q.p] || ''}</em>
+        ${q.ipa ? `<span class="ph" lang="en">${esc(q.ipa)}</span>` : ''}
+        <em>${wlPos(q.p)}</em>
         <button class="mini-speaker" onclick="event.stopPropagation();wlSay()" title="点我听发音">🔊</button>
       </div>
       <div style="margin-top:4px">✅ <b>${esc(q.zh)}</b> —— ${made}</div>
@@ -516,15 +522,18 @@ function gSentence(pool) {
   const foods = pool.filter(w => ['egg','rice','bread','cake','chicken','beef','pork','soup','noodle','dumpling','mooncake','biscuit','sweet','moon'].includes(w.w));
   const drinks = pool.filter(w => ['water','juice','milk','tea'].includes(w.w));
   const actions = pool.filter(w => ['run','jump','swim','sing','dance','read','write','draw','fly','walk','sleep','play'].includes(w.w));
-  /* 名词池：只留"加 s 一定对"的词（不可数 / 不规则 / -y 结尾一律不进），
-     否则会生成 I like breads. / I like strawberrys. 这种错英文。 */
-  const nouns = pool.filter(w => plurSafe(w) && w.w.length <= 8);
+  /* 名词池：先过词性（gxNouns），再过"加 s 一定对"的白名单。
+     ★ 词性这一步不能省。只筛 plurSafe 的话，long / from / and 这些
+     形容词、介词、连词都会被当成名词，造出 "This is a from." 这种错句
+     （实测 500 轮里出现 115 种）。孩子会照着背下来——拼写对、语法错，
+     比不出题更糟。 */
+  const nouns = gxNouns(pool).filter(w => plurSafe(w) && w.w.length <= 8);
   const countableNouns = nouns.filter(w => isCountable(w));
   const anyFoods = foods.length ? foods : themeWordsById(['food']);
   const anyDrinks = drinks.length ? drinks : themeWordsById(['food']).filter(w => ['water','juice','milk','tea'].includes(w.w));
   const anyActions = actions.length ? actions : themeWordsById(['action1']);
-  const anyNouns = nouns.length ? nouns : themeWordsById(['animal1']).filter(plurSafe);
-  const anyCountable = countableNouns.length ? countableNouns : themeWordsById(['animal1']).filter(isCountable);
+  const anyNouns = nouns.length ? nouns : gxNouns(themeWordsById(['animal1'])).filter(plurSafe);
+  const anyCountable = countableNouns.length ? countableNouns : gxNouns(themeWordsById(['animal1'])).filter(w => isCountable(w));
 
   const makers = [
     () => { const w = pick(anyFoods); return { q: `我吃${w.zh}`, sent: `I __ ${w.w}.`, opts: ['eat','drink','look'], ans: 'eat', zh: `I eat ${w.w}. 我吃${w.zh}。`, e: w.e }; },

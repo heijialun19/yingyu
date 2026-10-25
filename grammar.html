@@ -48,11 +48,11 @@
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=28"></script>
-<script src="js/data.js?v=31"></script>
+<script src="js/words-data.js?v=29"></script>
+<script src="js/data.js?v=32"></script>
 <script src="js/app.js?v=46"></script>
 <script src="js/sentence.js?v=42"></script>
-<script src="js/grammar-engine.js?v=2"></script>
+<script src="js/grammar-engine.js?v=3"></script>
 <script>
 renderNav('grammar'); renderDecor();
 
@@ -156,7 +156,9 @@ const GEN = {
       zh: `I like ${pl}. 我喜欢${w.zh}。`, explain: '喜欢很多东西时，单词尾巴加 s。' };
   },
   thisIs(ws) {
-    const safe = ws.filter(countable);
+    /* 先过词性闸门：sweet / round 这些形容词混在 fruit / food 主题里，
+       不筛就会出 "This is a sweet." */
+    const safe = gxNouns(ws).filter(countable);
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w);
     return { type:'choice', word: w.w,
@@ -165,21 +167,26 @@ const GEN = {
       zh: `This is ${a} ${w.w}. 这是${w.zh}。`, explain: `This 用 is；${w.w} 是${/^[aeiou]/i.test(w.w) ? '元音' : '辅音'}开头，用 ${a}。` };
   },
   canDo(ws) {
-    const w = pick(ws);
+    /* can 后面只能跟动词原形。不筛词性会出 "I can yoga." / "I can winner." */
+    const vs = gxVerbs(ws);
+    if (!vs.length) return null;
+    const w = pick(vs);
     return { type:'choice', word: w.w,
       prompt: `「我会${w.zh}」哪个说法对？ ${w.e || ''}`,
       options: [`I can ${w.w}.`, `I cans ${w.w}.`, `I can to ${w.w}.`], answer: 0,
       zh: `I can ${w.w}. 我会${w.zh}。`, explain: 'can 后面的动词用原形，不加 s 不加 to。' };
   },
   whereIs(ws, lv) {
-    const w = pick(ws); const p = pick((lv.gen.places || ['bed']).map(x => ({ w: x, zh: themeWordZh(x) })));
+    const ns = gxNouns(ws);
+    if (!ns.length) return null;
+    const w = pick(ns); const p = pick((lv.gen.places || ['bed']).map(x => ({ w: x, zh: themeWordZh(x) })));
     return { type:'choice', word: w.w,
       prompt: `「${w.zh}在${p.zh}上」哪个说法对？ ${w.e || ''}`,
       options: [`The ${w.w} is on the ${p.w}.`, `The ${w.w} on the ${p.w} is.`, `The ${w.w} is on ${p.w}.`], answer: 0,
       zh: `The ${w.w} is on the ${p.w}.`, explain: '谁 + is + on + the + 地点，顺序固定。' };
   },
   isQuestion(ws) {
-    const safe = ws.filter(countable);
+    const safe = gxNouns(ws).filter(countable);
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w);
     return { type:'choice', word: w.w,
@@ -188,7 +195,7 @@ const GEN = {
       zh: `Is this ${a} ${w.w}?`, explain: 'is 提到最前面，句号变问号 ?。' };
   },
   thereBe(ws) {
-    const safe = ws.filter(countable);
+    const safe = gxNouns(ws).filter(countable);
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     return { type:'choice', word: w.w,
@@ -204,7 +211,7 @@ const GEN = {
       zh: `The cat is ${ing}. 小猫正在${ING_ZH[v]}。`, explain: '它（the cat）用 is；正在做，动词加 ing。' };
   },
   havePlural(ws) {
-    const safe = ws.filter(pluralSafe);
+    const safe = gxNouns(ws).filter(pluralSafe);
     if (!safe.length) return null;
     const w = pick(safe); const pl = pluralOf(w);
     return { type:'choice', word: w.w,
@@ -214,7 +221,7 @@ const GEN = {
   },
   /* ---- 造句（build）类 ---- */
   seeBuild(ws) {
-    const safe = ws.filter(countable);
+    const safe = gxNouns(ws).filter(countable);
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     const others = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 2);
@@ -225,7 +232,7 @@ const GEN = {
       hint: a === 'an' ? `${w.w} 是元音开头，要用 an 哦` : '冠词选 a' };
   },
   buildLike(ws) {
-    const safe = ws.filter(pluralSafe);
+    const safe = gxNouns(ws).filter(pluralSafe);
     if (!safe.length) return null;
     const w = pick(safe);
     const others = shuffle(safe.filter(x => x.w !== w.w)).slice(0, 2);
@@ -236,8 +243,8 @@ const GEN = {
       hint: '喜欢很多东西，单词要加 s' };
   },
   buildFamily(ws) {
-    const fam = themeWords(['family']);
-    const w = pick(fam.length ? fam : ws);
+    const fam = gxNouns(themeWords(['family']));
+    const w = pick(fam.length ? fam : gxNouns(ws));
     const others = shuffle(fam.filter(x => x.w !== w.w)).slice(0, 2);
     return { type:'build', word: w.w,
       prompt: `「这是我的${w.zh}」 ${w.e || ''}`,
@@ -246,7 +253,7 @@ const GEN = {
       hint: 'my = 我的' };
   },
   buildHave(ws) {
-    const safe = ws.filter(pluralSafe);
+    const safe = gxNouns(ws).filter(pluralSafe);
     if (!safe.length) return null;
     const w = pick(safe); const m = measureOf(w); const pl = pluralOf(w);
     return { type:'build', word: w.w,

@@ -74,11 +74,11 @@
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=28"></script>
-<script src="js/data.js?v=31"></script>
+<script src="js/words-data.js?v=29"></script>
+<script src="js/data.js?v=32"></script>
 <script src="js/app.js?v=46"></script>
 <script src="js/sentence.js?v=42"></script>
-<script src="js/ipa.js?v=1"></script>
+<script src="js/ipa.js?v=2"></script>
 <script>
 renderNav('words'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -310,7 +310,22 @@ function makeQuestion(word, pool) {
   })();
   const canPic = pics.length >= 3;
   const type = canPic ? Math.floor(Math.random() * 3) : 1 + Math.floor(Math.random() * 2);
-  const distract = shuffle(pool.filter(w => w.w !== word.w)).slice(0, 3);
+  /* 干扰项不能和答案"看起来一样对"：
+     ① 中文选英文题：「书包」如果干扰项里放 bag（也是书包），孩子选哪个都算错。
+        词库里有 20 组同义词（bag/schoolbag、dad/father、family/home、small/little…），
+        必须按中文排除，不是只排掉同一个词。
+     ② 听音选词题：同音词（son/sun、two/too、here/hear）会让答案不唯一，
+        有音标的按音标排除。 */
+  const sameZh = w => w.zh === word.zh;
+  const sameIpa = w => {
+    const a = (typeof ipaOf === 'function' ? ipaOf(word.w) : '') || '';
+    const b = (typeof ipaOf === 'function' ? ipaOf(w.w) : '') || '';
+    return a && b && a === b;
+  };
+  const strict = shuffle(pool.filter(w => w.w !== word.w && !sameZh(w) && !sameIpa(w)));
+  /* 严格池不够就放宽（先放同音，再放同义）：宁可偶尔有点歧义，也不要退化成 2 个选项 */
+  const relax = shuffle(pool.filter(w => w.w !== word.w && !sameZh(w) && !strict.includes(w)));
+  const distract = (strict.length >= 3 ? strict : strict.concat(relax)).slice(0, 3);
   if (type === 0) { // 看词选图：不自动读音，词旁给 🔊 让孩子点着听（tap-to-hear）
     return { type, word, hint: `它的中文是「${word.zh}」`,
       prompt: `哪个图片是 <b style="font-size:1.5rem;color:#FF6B6B">${word.w}</b> <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(word.w)}')" title="点我听发音">🔊</button> ？`,
