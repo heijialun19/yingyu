@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>游戏乐园 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=37">
+<link rel="stylesheet" href="css/style.css?v=38">
 </head>
 <body>
 <main>
@@ -29,9 +29,10 @@
 
 <script src="js/words-data.js?v=31"></script>
 <script src="svg/word-svg.js"></script>
+<script src="svg/emoji-svg.js?v=1"></script>
 <script src="js/data.js?v=32"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=49"></script>
+<script src="js/app.js?v=50"></script>
 <script src="js/sentence.js?v=43"></script>
 <script src="js/grammar-engine.js?v=3"></script>
 <script src="js/ipa.js?v=2"></script>
@@ -778,6 +779,11 @@ function gSentence(pool, level) {
       return;
     }
     const q = qs[S.idx]; S.first = true; S.answered = false;
+    /* 选项顺序存进 S.opts，按钮只传下标。
+       以前把选项文本直接拼进 onclick（行内字符串里塞 ${o}），选项里只要有撇号
+       （chicken's / don't / can't）就把 JS 字符串提前闭合 —— 点了完全没反应。
+       项目铁律：任何可能含撇号的文本都不许拼进 onclick，一律用下标寻址。 */
+    S.opts = shuffle(q.opts.slice());
     $('#app').innerHTML = `
       <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🧑‍🔧 句子火车员</b><span>第 ${S.idx + 1} / ${qs.length} 句 · ✅ ${S.score}</span></div>
@@ -785,15 +791,17 @@ function gSentence(pool, level) {
         <div style="font-size:.95rem;color:#5C6273;margin:4px 0 8px">「${q.q}」—— 火车缺了一节车厢，补上它：</div>
         <div class="train-result" style="justify-content:center;font-size:1.6rem">${q.sent.replace('__', '<span style="color:#FF6B6B">＿＿</span>')}</div>
         <div class="opt-row">
-          ${shuffle(q.opts.slice()).map(o => `<button class="opt" style="font-size:1.2rem" onclick="sentAns(this,'${o}')">${o}</button>`).join('')}
+          ${S.opts.map((o, i) => `<button class="opt" style="font-size:1.2rem" onclick="sentAns(this,${i})">${esc(o)}</button>`).join('')}
         </div>
         <div class="explain" id="sexp2"></div>
         <div style="margin-top:10px">${gameHomeBtn()}</div>
       </div>`;
   };
-  window.sentAns = function (btn, o) {
+  window.sentAns = function (btn, i) {
     const q = qs[S.idx];
     if (S.answered) return;
+    const o = (S.opts || [])[i];      // 下标 → 选项文本（绝不从 onclick 里取字符串）
+    if (o === undefined) return;
     const ok = o === q.ans;
     feedback(btn, ok);
     if (ok) {
@@ -802,7 +810,7 @@ function gSentence(pool, level) {
       S.answered = true;
       sfx.correct();
       lockChoices(btn);
-      $('#sexp2').innerHTML = `✅ <b>${q.zh}</b>`;
+      $('#sexp2').innerHTML = `✅ <b>${esc(q.zh)}</b>`;
       /* 这句要念完（2~4 秒），所以自动跳要等朗读结束再起算；
          原来写死 1.5 秒，等于每次都在句子念到一半时掐掉。按钮随时可走。 */
       const go = Flow.make(() => { S.idx++; window._sentShow(); }, 0);

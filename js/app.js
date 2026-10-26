@@ -472,15 +472,21 @@ const WORD_COLOR = {
    宁可给字母牌，也不给假图。 */
 function wordIcon(w) {
   const name = String((w && w.w) || '').toLowerCase();
-  /* SVG 卡通插画优先（svg/word-svg.js） */
+  const emo = String((w && w.e) || '').trim();
+  /* 内置 SVG 优先：不依赖系统 emoji 字体，任何电脑画出来都一样彩色
+     （emoji 靠字体渲染，老 Windows / 精简系统 / Linux 会变黑白或吐方块） */
+  if (typeof WORD_EMOJI !== 'undefined' && emo && WORD_EMOJI[emo]) {
+    return `<span class="wsvg" role="img" aria-label="${esc(w.zh || name)}">${WORD_EMOJI[emo]}</span>`;
+  }
+  /* SVG 卡通插画（svg/word-svg.js） */
   if (typeof WORD_SVG !== 'undefined' && WORD_SVG[name]) {
     return `<span class="wsvg" role="img" aria-label="${esc(w.zh || name)}">${WORD_SVG[name]}</span>`;
   }
   if (WORD_COLOR[name]) {
     return `<span class="cchip" style="background:${WORD_COLOR[name]}" role="img" aria-label="${esc(w.zh || name)}"></span>`;
   }
-  const e = w && w.e;
-  if (e) return e;
+  /* 没内置图才退回系统 emoji，并强制走彩色 emoji 字体（.emj） */
+  if (emo) return `<span class="emj" role="img" aria-label="${esc(w.zh || name)}">${esc(emo)}</span>`;
   const ch = String((w && w.w) || '?').trim().charAt(0).toUpperCase();
   return `<span class="wtile" aria-hidden="true">${esc(ch)}</span>`;
 }
