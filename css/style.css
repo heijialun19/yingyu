@@ -147,7 +147,8 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 }
 .island:hover { transform: translateY(-6px) scale(1.02); }
 .island:active { transform: translateY(0); }
-.island .isl-emoji { font-size: 62px; filter: drop-shadow(0 4px 6px rgba(0,0,0,.15)); }
+/* 同上：不用 filter（会把内联 SVG 画成空白） */
+.island .isl-emoji { font-size: 62px; }
 .island h3 { margin: 0; font-size: 1.25rem; }
 .island p { margin: 0; color: var(--ink2); font-size: .8rem; text-align: center; }
 .island .tag {
@@ -345,7 +346,15 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 /* 触屏上 title 提示永远不显示，孩子不知道卡片能点。给一个可见的小喇叭 */
 .word-card .spk { position: absolute; top: 10px; right: 12px; font-size: 15px; opacity: .55; }
 .word-card:hover { transform: translateY(-4px); }
-.word-card .we { font-size: 56px; display: block; filter: drop-shadow(0 4px 5px rgba(0,0,0,.12)); }
+.word-card .we { font-size: 56px; display: block; }
+/* 词卡图位：淡蓝圆角底 + 内缩。
+   ★ 2026-10-26：这里原本是 filter: drop-shadow(0 4px 5px rgba(0,0,0,.12))。
+     实测（Edge，非偶发）filter 会把部分内联 SVG 光栅化成**完全空白** ——
+     大页面里多个 SVG 一起渲染时必现，看到的就是「纯白色」。
+     改用淡色底：既绕开这个渲染 bug，又让白色系 emoji 在白卡上有边界。
+     词库里白色为主的 emoji 有 20 个（📄纸 🥛牛奶 ☁️云 🍚米饭 🥚蛋
+     🧊冰 🦷牙齿 🪞镜子 🪥牙刷 🩹创可贴 ☁️雾 等），没底就是一片白。 */
+.word-card .wsvg { background: #F4F9FF; border-radius: 26%; padding: .18em; }
 .word-card b { display: block; font-size: 1.3rem; margin-top: 6px; letter-spacing: .5px; }
 .word-card .zh { color: var(--ink2); font-size: .92rem; margin-top: 2px; }
 /* 词族：告诉孩子这个词是怎么"长"出来的，不是让他多背一个 */
