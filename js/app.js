@@ -474,9 +474,9 @@ function wordIcon(w) {
   const name = String((w && w.w) || '').toLowerCase();
   const emo = String((w && w.e) || '').trim();
   /* 内置 SVG 优先：不依赖系统 emoji 字体，任何电脑画出来都一样彩色
-     （emoji 靠字体渲染，老 Windows / 精简系统 / Linux 会变黑白或吐方块） */
-  if (typeof WORD_EMOJI !== 'undefined' && emo && WORD_EMOJI[emo]) {
-    return `<span class="wsvg" role="img" aria-label="${esc(w.zh || name)}">${WORD_EMOJI[emo]}</span>`;
+     （emoji 靠字体渲染，会变黑白或吐方块，见下面 emojiClusters 的说明） */
+  if (emo && hasEmojiSvg(emo)) {
+    return `<span class="wsvg" role="img" aria-label="${esc(w.zh || name)}">${emoSvg(emo)}</span>`;
   }
   /* SVG 卡通插画（svg/word-svg.js） */
   if (typeof WORD_SVG !== 'undefined' && WORD_SVG[name]) {
@@ -511,16 +511,250 @@ function hasIcon(w) {
   return !/class="wtile"/.test(iconOf(w));
 }
 
-/* 孤立的 emoji 字符也要走内置图库 —— 题目里硬编码的 '👦' '🧩' 同样靠系统字体，
-   老 Windows 上一样黑白/方块。表里没有的才退回字符（至少给个能看的字形）。 */
+/* ================= emoji → 内置矢量图 =================
+   ★ 2026-10-26：这是「整页显示黑白」的根因修复。
+
+   emoji 在网页上是「字体字形」，不是图片。浏览器挑字体的规则是：
+   用字体栈里第一个**含这个字形**的字体。
+   我们原来的字体栈是
+     "Microsoft YaHei", "Segoe UI Symbol", "Segoe UI Emoji", sans-serif
+   而微软雅黑自带 🎡🔎🔒 这类符号的**单色字形** —— 它排在彩色 emoji 字体前面，
+   浏览器就近取用，画出来就是黑白线条。
+   实测（Win11 + Edge，不是老电脑）：🎡🔎🔒 全黑白。
+   更老的机器（Win7/8）根本没有彩色 emoji 字体，只有黑白轮廓；
+   精简系统 / Linux 没有对应字形，直接吐空白方块。
+
+   只调字体栈救不了 Win7，所以把 emoji 全部换成内置 SVG
+   （svg/emoji-svg.js，Twemoji 15.0.0，CC-BY 4.0）。 */
+
+/* 判断一个码位是否属于 emoji / 符号区。
+   刻意**不用** \p{Extended_Pictographic}：那是 ES2018 的 Unicode 属性转义，
+   微信 X5 内核和老 Android 不支持 —— 正则字面量会在**解析阶段**抛 SyntaxError，
+   整个脚本挂掉，比黑白严重得多。所以用码位区间手写。 */
+function isEmojiCp(cp) {
+  return (cp >= 0x1F000 && cp <= 0x1FAFF) || (cp >= 0x2600 && cp <= 0x27BF) ||
+         (cp >= 0x2B00 && cp <= 0x2BFF) || (cp >= 0x2190 && cp <= 0x21FF) ||
+         (cp >= 0x2300 && cp <= 0x23FF) || (cp >= 0x25A0 && cp <= 0x25FF) ||
+         cp === 0x2934 || cp === 0x2935 || cp === 0x203C || cp === 0x2049 ||
+         cp === 0x3030 || cp === 0x303D || cp === 0x3297 || cp === 0x3299 ||
+         cp === 0x20E3;
+}
+
+/* 把字符串切成 emoji 视觉单元（cluster）。
+   ⚠️ 切分规则必须与 _audit/gen_emoji_svg2.py 的 clusters() 逐字一致，
+   否则图库 key 对不上，等于没图。
+   返回 [{ text, emoji }]，非 emoji 字符逐字返回。 */
+function emojiClusters(str) {
+  const s = String(str == null ? '' : str);
+  const out = [];
+  const n = s.length;
+  let i = 0;
+  while (i < n) {
+    const ch = s.charAt(i);
+    const cp = s.codePointAt(i);
+    /* 键帽：数字 / # / *  + 可选 FE0F + U+20E3（如 1️⃣） */
+    if ('#*0123456789'.indexOf(ch) >= 0) {
+      let j = i + 1;
+      if (j < n && s.charCodeAt(j) === 0xFE0F) j++;
+      if (j < n && s.charCodeAt(j) === 0x20E3) {
+        out.push({ text: s.slice(i, j + 1), emoji: true });
+        i = j + 1;
+        continue;
+      }
+    }
+    if (!isEmojiCp(cp)) {
+      out.push({ text: ch, emoji: false });
+      i += 1;
+      continue;
+    }
+    let j = i + (cp > 0xFFFF ? 2 : 1);
+    while (j < n) {
+      const c2 = s.charCodeAt(j);
+      if (c2 === 0xFE0F || c2 === 0x20E3) { j++; continue; }   // 变体选择符 / 键帽组合
+      if (c2 === 0x200D) {                                      // ZWJ：把下一个 emoji 也并入
+        j++;
+        if (j < n) {
+          const c3 = s.codePointAt(j);
+          if (isEmojiCp(c3)) j += (c3 > 0xFFFF ? 2 : 1);
+        }
+        continue;
+      }
+      break;
+    }
+    out.push({ text: s.slice(i, j), emoji: true });
+    i = j;
+  }
+  return out;
+}
+
+/* key 规范化：去掉 U+FE0F。这样 🏘 和 🏘️ 查到同一张图，
+   不会再出现「带不带变体选择符决定有没有图」这种随机 bug。 */
+function normEmoji(cl) { return String(cl).replace(/\uFE0F/g, ''); }
+
+const __emojiSvgCache = new Map();
+function emojiSvgFor(cl) {
+  const k = normEmoji(cl);
+  if (__emojiSvgCache.has(k)) return __emojiSvgCache.get(k);
+  const v = (typeof WORD_EMOJI !== 'undefined' && WORD_EMOJI[k]) ? WORD_EMOJI[k] : '';
+  __emojiSvgCache.set(k, v);
+  return v;
+}
+
+/* 这个 emoji 串里只要有一个字符能画出来，就返回 true */
+function hasEmojiSvg(emo) {
+  const s = String(emo || '').trim();
+  if (!s) return false;
+  const segs = emojiClusters(s);
+  for (let i = 0; i < segs.length; i++) {
+    if (segs[i].emoji && emojiSvgFor(segs[i].text)) return true;
+  }
+  return false;
+}
+
+/* emoji 串 → 内置 SVG 的 HTML。
+   图库里没有的（← → ★ ✓ 这类纯符号，Twemoji 15 已移除它们的彩色版本）
+   原样保留：它们在所有系统上本来就是黑白符号字符，不是 bug。 */
 function emoSvg(emo, size) {
-  const e = String(emo || '').trim();
+  const e = String(emo == null ? '' : emo).trim();
   if (!e) return '';
   const box = size ? ` style="width:${size}px;height:${size}px"` : '';
-  if (typeof WORD_EMOJI !== 'undefined' && WORD_EMOJI[e]) {
-    return `<span class="wsvg"${box} aria-hidden="true">${WORD_EMOJI[e]}</span>`;
+  let out = '';
+  const segs = emojiClusters(e);
+  for (let i = 0; i < segs.length; i++) {
+    const g = segs[i];
+    if (!g.emoji) { out += esc(g.text); continue; }
+    const svg = emojiSvgFor(g.text);
+    out += svg
+      ? `<span class="emj-img"${box} aria-hidden="true">${svg}</span>`
+      : `<span class="emj"${box} aria-hidden="true">${esc(g.text)}</span>`;
   }
-  return `<span class="emj"${box} aria-hidden="true">${esc(e)}</span>`;
+  return out;
+}
+
+/* ---------------- DOM 级兜底：把页面上残留的 emoji 全换成内置图 ----------------
+   为什么要扫 DOM，而不是只改渲染代码：
+   全站有 150+ 处直接写 emoji 字符（首页 6 个岛屿、各页标题、按钮、
+   解析符号、底部导航、声音开关、云朵装饰…）。逐个改既容易漏，
+   以后新加内容还会再漏。这里一处兜底，静态 HTML 和 innerHTML 重绘都覆盖。 */
+
+const __noPaintTag = {
+  SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, CODE: 1, PRE: 1, SVG: 1, TITLE: 1, OPTION: 1
+};
+
+/* 快速判断：这段文字里有没有 emoji 码位（纯中文/英文直接跳过，不建 TreeWalker） */
+function __hasEmojiChar(s) {
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charCodeAt(i);
+    if (c >= 0xD800 && c <= 0xDBFF) {
+      if (isEmojiCp(s.codePointAt(i))) return true;
+      i++;                                   // 跳过代理对低位
+    } else if (isEmojiCp(c)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/* 处理一个文本节点：把里面的 emoji 换成 <span class="emj-img"><svg/></span> */
+function __paintTextNode(node) {
+  const s = node.nodeValue;
+  if (!s || !__hasEmojiChar(s)) return;
+  const segs = emojiClusters(s);
+  let any = false;
+  for (let i = 0; i < segs.length; i++) {
+    if (segs[i].emoji && emojiSvgFor(segs[i].text)) { any = true; break; }
+  }
+  if (!any) return;                          // 全是画不出来的符号，别动 DOM
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < segs.length; i++) {
+    const g = segs[i];
+    const svg = g.emoji ? emojiSvgFor(g.text) : '';
+    if (svg) {
+      const sp = document.createElement('span');
+      sp.className = 'emj-img';
+      sp.setAttribute('aria-hidden', 'true');
+      sp.innerHTML = svg;                    // Twemoji 是我们自己的常量，无注入风险
+      frag.appendChild(sp);
+    } else {
+      frag.appendChild(document.createTextNode(g.text));
+    }
+  }
+  if (node.parentNode) node.parentNode.replaceChild(frag, node);
+}
+
+function paintEmoji(root) {
+  if (typeof document === 'undefined') return;
+  root = root || document.body;
+  if (!root) return;
+  if (root.nodeType === 3) { __paintTextNode(root); return; }
+  if (root.nodeType !== 1) return;
+  if (__noPaintTag[root.nodeName]) return;
+  if (typeof WORD_EMOJI === 'undefined') return;   // 图库没加载，别折腾
+  if (!__hasEmojiChar(root.textContent || '')) return;
+  if (typeof document.createTreeWalker !== 'function') return;
+  /* 先收集再改：TreeWalker 边走边改会漏节点 */
+  const walker = document.createTreeWalker(root, 4 /* SHOW_TEXT */, null, false);
+  const list = [];
+  let n;
+  while ((n = walker.nextNode())) {
+    const p = n.parentNode;
+    if (!p || __noPaintTag[p.nodeName]) continue;
+    if (p.classList && p.classList.contains('emj-img')) continue;
+    if (__hasEmojiChar(n.nodeValue || '')) list.push(n);
+  }
+  for (let i = 0; i < list.length; i++) __paintTextNode(list[i]);
+}
+
+/* 观察器：innerHTML 重绘出来的新节点也要补上 */
+let __emojiPending = [];
+let __emojiTimer = 0;
+function __emojiFlush() {
+  __emojiTimer = 0;
+  const list = __emojiPending;
+  __emojiPending = [];
+  for (let i = 0; i < list.length; i++) {
+    const t = list[i];
+    if (!t || !t.parentNode) continue;
+    try { paintEmoji(t.nodeType === 3 ? t.parentNode : t); } catch (e) { /* 不能因为画图挂掉整页 */ }
+  }
+}
+function __emojiQueue(n) {
+  __emojiPending.push(n);
+  if (__emojiTimer) return;
+  __emojiTimer = (typeof requestAnimationFrame === 'function')
+    ? requestAnimationFrame(__emojiFlush)
+    : setTimeout(__emojiFlush, 16);
+}
+let __emojiMO = null;
+function __bootEmojiPaint() {
+  if (typeof document === 'undefined' || !document.body) return;
+  if (typeof WORD_EMOJI === 'undefined') return;
+  paintEmoji(document.body);
+  if (typeof MutationObserver !== 'function' || __emojiMO) return;
+  __emojiMO = new MutationObserver(function (muts) {
+    let got = false;
+    for (let i = 0; i < muts.length; i++) {
+      const m = muts[i];
+      if (m.type === 'characterData') { __emojiQueue(m.target); got = true; continue; }
+      const add = m.addedNodes;
+      for (let k = 0; k < add.length; k++) {
+        const nd = add[k];
+        if (nd.nodeType !== 1 && nd.nodeType !== 3) continue;
+        /* 跳过自己刚插进去的 .emj-img，否则会自己触发自己 */
+        if (nd.nodeType === 1 && nd.classList && nd.classList.contains('emj-img')) continue;
+        __emojiQueue(nd);
+        got = true;
+      }
+    }
+    return got;
+  });
+  try {
+    __emojiMO.observe(document.body, { childList: true, subtree: true, characterData: true });
+  } catch (e) { /* 老内核不支持就只做首屏那一次 */ }
+}
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', __bootEmojiPaint);
+  else __bootEmojiPaint();
 }
 
 /* 立刻闭嘴：所有在途音频解除回调并暂停（翻页/切题/点新词时用） */
