@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=39">
+<link rel="stylesheet" href="css/style.css?v=40">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -78,7 +78,7 @@
 <script src="svg/word-svg.js?v=2"></script>
 <script src="svg/emoji-svg.js?v=1"></script>
 <script src="js/data.js?v=32"></script>
-<script src="js/app.js?v=50"></script>
+<script src="js/app.js?v=51"></script>
 <script src="js/sentence.js?v=43"></script>
 <script src="js/speech.js?v=1"></script>
 <script src="js/ipa.js?v=2"></script>
@@ -298,16 +298,20 @@ function famLine(word) {
 
 function makeQuestion(word, pool) {
   /* 代词/介词这类词没有图，不能出「看词选图」——四个选项全是字母牌，孩子没得选。
-     ★ 而且选项里的图**必须互不相同**：emoji 里有大量词组共用同一张图
-     （👦 同时是 he/his/him/boy/brother），不去重就会出现两个一样的图，
-     孩子根本没法选。这里按图去重，凑不出 3 张不同的就不出这种题。 */
-  const picPool = pool.filter(w => w.e && w.w !== word.w);
+     ★ 判断「有没有图」必须看 wordIcon 实际画出了什么，不能看 w.e：
+       345 个词靠自绘 SVG，w.e 是空的 —— 按 w.e 过滤会把它们全部判成「没图」，
+       既出不了题，也当不了别人的干扰项。
+     ★ 选项里的图**必须互不相同**：emoji 里有大量词组共用同一张图
+       （👦 同时是 he/his/him/boy/brother，1️⃣ 同时是 one/Monday/January），
+       不去重就会出现两个一样的图，孩子根本没法选。这里按「渲染出的图」去重。 */
+  const picPool = pool.filter(w => w.w !== word.w && hasIcon(w));
   const pics = (() => {
-    if (!word.e) return [];
-    const seen = new Set([word.e]), out = [];
+    if (!hasIcon(word)) return [];
+    const seen = new Set([iconOf(word)]), out = [];
     for (const w of shuffle(picPool)) {
-      if (seen.has(w.e)) continue;
-      seen.add(w.e); out.push(w);
+      const k = iconOf(w);
+      if (seen.has(k)) continue;
+      seen.add(k); out.push(w);
       if (out.length >= 3) break;
     }
     return out;
@@ -333,7 +337,7 @@ function makeQuestion(word, pool) {
   if (type === 0) { // 看词选图：不自动读音，词旁给 🔊 让孩子点着听（tap-to-hear）
     return { type, word, hint: `它的中文是「${word.zh}」`,
       prompt: `哪个图片是 <b style="font-size:1.5rem;color:#FF6B6B">${word.w}</b> <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(word.w)}')" title="点我听发音">🔊</button> ？`,
-      options: shuffle([word, ...pics]).map(w => ({ key: w.w, html: `<span class="oe">${w.e}</span>` })) };
+      options: shuffle([word, ...pics]).map(w => ({ key: w.w, html: `<span class="oe">${iconOf(w)}</span>` })) };
   }
   if (type === 1) { // 听音选词：声音就是题目，自动读一遍 + 🔁 重听
     return { type, word, hint: `从 ${word.w[0]} 开头，一共 ${word.w.length} 个字母`,
@@ -413,7 +417,7 @@ function answer(btn, key) {
     sfx.correct();
     lockChoices(btn);
     touchWord(q.word.w, true);
-    $('#qexp').innerHTML = `✅ <b>${q.word.w}</b> ${q.word.e || ''} ${q.word.zh}${q.word.dec ? '<br>🔎 ' + q.word.dec : ''}`;
+    $('#qexp').innerHTML = `✅ <b>${q.word.w}</b> ${iconOf(q.word)} ${q.word.zh}${q.word.dec ? '<br>🔎 ' + q.word.dec : ''}`;
     Flow.after(550, () => speak(q.word.w));  // 等答对音效播完再朗读，避免两个声音打架
     showNext(q.word.w);
   } else {
@@ -432,7 +436,7 @@ function revealWord(q) {
   s.answered = true;
   const i = q.options.findIndex(o => o.key === q.word.w);
   lockChoices(i >= 0 ? document.querySelector('.opt[data-i="' + i + '"]') : null);
-  $('#qexp').innerHTML = `💡 正确答案：<b>${q.word.w}</b> ${q.word.e || ''} ${q.word.zh}${q.word.dec ? '<br>🔎 ' + q.word.dec : ''}`;
+  $('#qexp').innerHTML = `💡 正确答案：<b>${q.word.w}</b> ${iconOf(q.word)} ${q.word.zh}${q.word.dec ? '<br>🔎 ' + q.word.dec : ''}`;
   Flow.after(500, () => speak(q.word.w));
   showNext(q.word.w);
 }
@@ -543,7 +547,7 @@ function renderSpeak() {
     window.speakSyl = (btn, syl) => { sfx.pop(); speak(syl, 'en-US', 1); btn.style.transform = 'scale(1.1)'; setTimeout(() => btn.style.transform = '', 200); };
     window.speakOk = () => {
       s.score++; addStars(1); sfx.correct();
-      $('#sexp').innerHTML = `🎉 做得很好！记住 <b>${q.word.w}</b> ${q.word.e || ''} ${q.word.zh}`;
+      $('#sexp').innerHTML = `🎉 做得很好！记住 <b>${q.word.w}</b> ${iconOf(q.word)} ${q.word.zh}`;
       Flow.after(1200, () => { s.idx++; renderSpeak(); });
     };
     return;
@@ -743,7 +747,7 @@ function spHead() {
      想听发音：第 0/2/5 步各有自己的 🔊，第 4 步的提示行也带一个。 */
   return `<div class="score-bar"><b>🔤 拼写工坊</b><span>第 ${spell.wi + 1} / ${spell.words.length} 词 · ⭐${spell.stars}</span></div>
     ${spStepsBar()}
-    <p class="sp-tip sp-ask" style="margin:0 0 10px"><b>${esc(w.zh)}</b> <span class="sp-ask-e">${w.e || '🔤'}</span></p>`;
+    <p class="sp-tip sp-ask" style="margin:0 0 10px"><b>${esc(w.zh)}</b> <span class="sp-ask-e">${iconOf(w)}</span></p>`;
 }
 function spFoot(extra) {
   return `<div class="sp-foot">
@@ -762,14 +766,14 @@ function renderSpell() {
   let body = '';
   if (spell.step === 0) {
     body = `
-      <span class="sp-bigimg">${w.e || '🔤'}</span>
+      <span class="sp-bigimg">${iconOf(w)}</span>
       <button class="sp-listen" onclick="spListen()">🔊 点我听发音</button>
       <div class="sp-count" id="spCount">已听 ${spell.listened || 0} / 2 遍</div>
       <p class="sp-tip">先别急着看字母，<b>只听声音</b>，把音记住。听够两遍再往下走～</p>
       ${spNextBtn('spGoRead', '下一步 ▶', !spell.listened || spell.listened < 2)}`;
   } else if (spell.step === 1) {
     body = `
-      <span class="sp-bigimg">${w.e || '🔤'}</span>
+      <span class="sp-bigimg">${iconOf(w)}</span>
       <div class="sp-cn">${esc(w.zh)}</div>
       <div class="sp-reveal">${esc(w.w)}</div>
       <p class="sp-tip">看清楚：<b>几个字母？哪两个字母是好搭档？</b>记一下，马上字母块会被打乱！</p>
@@ -777,7 +781,7 @@ function renderSpell() {
     setTimeout(() => speak(w.w), 350);
   } else if (spell.step === 2) {
     body = `
-      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${w.e || ''} <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(w.w)}')">🔊</button></p>
+      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${iconOf(w)} <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(w.w)}')">🔊</button></p>
       <p class="sp-tip" style="margin-top:0">这个单词用到了哪些字母？<b>多余的不要选</b>。</p>
       ${spBoard()}
       ${spNextBtn('spGoPick', '下一步 ▶', !spell.board.solved)}`;
@@ -791,14 +795,14 @@ function renderSpell() {
       ${spNextBtn('spGoSplit', '下一步 ▶')}`;
   } else if (spell.step === 4) {
     body = `
-      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${w.e || ''} <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(w.w)}')">🔊</button></p>
+      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${iconOf(w)} <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(w.w)}')">🔊</button></p>
       <p class="sp-tip" style="margin-top:0">还记得字母顺序吗？把字母块摆回台子上！点台上的字母可以拿回来。</p>
       ${spBoard()}
       ${spNextBtn('spGoBuild', '下一步 ▶', !spell.board.solved)}`;
   } else if (spell.step === 5) {
     const wr = spell.write;
     body = `
-      <span class="sp-bigimg" style="font-size:64px">${w.e || '🔤'}</span>
+      <span class="sp-bigimg" style="font-size:64px">${iconOf(w)}</span>
       <div class="sp-cn">${esc(w.zh)}</div>
       <button class="sp-listen" onclick="speak('${jsq(w.w)}')">🔊 再听一遍</button>
       ${wr.revealed ? `<div class="sp-reveal" style="font-size:1.6rem;color:#E05656">${esc(w.w)}</div><p class="sp-tip">照着上面的答案，在下面打一遍就过关～</p>` : `<p class="sp-tip">听着音，把单词<b>打出来</b>！</p>`}

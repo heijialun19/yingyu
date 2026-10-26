@@ -453,13 +453,46 @@ function gxThirdItem(verb, zh, subj) {
    fish 只是复数同形（走 IRREG_PLURAL），chicken 正常加 s。 */
 const UNCOUNTABLE = new Set(['bread','milk','water','juice','rice','meat','soup','tea',
   'coffee','butter','cheese','food','ice','grass','snow','rain','paper','money',
-  'music','homework','sugar','salt','fruit']);
+  'music','homework','sugar','salt','fruit','news']);
+/* 只有复数形式的名词：英语里从不单用，所以既不能加 a/an，也不能当单数主语。
+   ★ 2026-10-26 修的 bug：这些词原来被 countable() 判成可数，生成了
+     "There is a scissors on the desk" / "This is a pants" 这种错句。
+     scissors 一套两片、trousers/pants/shorts 两条腿、clothes 衣件总称 ——
+     只能用 a pair of ... 或者直接复数主语。 */
+const PLURAL_ONLY = new Set(['scissors','trousers','pants','shorts','clothes',
+  'jeans','pyjamas','pajamas','chopsticks','french fries']);
 const IRREG_PLURAL = { fish:'fish', goose:'geese', mouse:'mice', sheep:'sheep', deer:'deer',
   ox:'oxen', person:'people', man:'men', woman:'women', child:'children', foot:'feet',
   tooth:'teeth', knife:'knives', leaf:'leaves', tomato:'tomatoes', potato:'potatoes',
   photo:'photos', piano:'pianos' };
 const wordOf = w => String(w && w.w !== undefined ? w.w : w);
-const countable = w => !UNCOUNTABLE.has(wordOf(w).toLowerCase());
+const countable = w => {
+  const x = wordOf(w).toLowerCase();
+  return !UNCOUNTABLE.has(x) && !PLURAL_ONLY.has(x);
+};
+/* 能不能用「a/an + 词」：可数单数才行 */
+const takesArticle = w => countable(w);
+
+/* ---------------- a / an 的判定 ----------------
+   ★ 2026-10-26 修的 bug：原来用首字母判断（/^[aeiou]/ → an），
+     这必然错 —— 冠词看的是**读音首音素**，不是首字母：
+       a hour（h 不发音，实际 /aʊə/ 元音开头）→ 应该 an hour
+       a honest boy（同上）→ 应该 an honest
+       a useful book（u 发 /juː/，辅音开头）→ 现在给的是 an useful（错）
+       a one-way street（o 发 /w/）→ 现在给的是 an one（错）
+     例外表比规则可靠：小学词库会踩坑的就这几个，穷举掉最稳。 */
+const AN_WORDS = new Set(['hour','honest','honor','honour','heir','herb','honorary']);
+const A_WORDS = new Set(['one','once','useful','useless','university','uniform','united',
+  'unit','union','unique','user','usual','usually','utility','european','music',
+  'ukulele','eulogy','ewe','ubiquitous']);
+function artOf(w) {
+  const x = wordOf(w).toLowerCase().trim();
+  if (!x) return 'a';
+  if (AN_WORDS.has(x)) return 'an';
+  if (A_WORDS.has(x)) return 'a';
+  /* 缩写按字母名读：an MBA / an hour，但 a UFO —— 词库里没有缩写，先不处理 */
+  return /^[aeiou]/i.test(x) ? 'an' : 'a';
+}
 /* 只有"加 s 一定对"的词才进复数题——白名单比黑名单可靠：
    除了 s/x/z/sh/ch/o/f/fe/man/ouse/oose 结尾和辅音+y、不规则复数，
    其余才放行（giraffe 这种 -ffe 结尾是安全的，单独放行）。 */

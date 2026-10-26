@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>字母岛 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=39">
+<link rel="stylesheet" href="css/style.css?v=40">
 </head>
 <body>
 <main>
@@ -49,7 +49,7 @@
 <script src="svg/word-svg.js?v=2"></script>
 <script src="svg/emoji-svg.js?v=1"></script>
 <script src="js/data.js?v=32"></script>
-<script src="js/app.js?v=50"></script>
+<script src="js/app.js?v=51"></script>
 <script src="js/sentence.js?v=43"></script>
 <script>
 renderNav('letters'); renderDecor();
@@ -146,7 +146,7 @@ function renderStage(speakIt) {
         <h2>🎯 小练习（答对得星星）</h2>
         <div class="quiz-q">1️⃣ 听一听、看一看：哪个单词是 ${l.L} 开头的？</div>
         <div class="opt-row" id="q1row">
-          ${q1opts.map(o => `<button class="opt" onclick="q1(this,'${String(o.w).replace(/'/g, "\\'")}',${o.right})"><span class="oe">${o.e}</span>${o.w}</button>`).join('')}
+          ${q1opts.map(o => `<button class="opt" onclick="q1(this,'${String(o.w).replace(/'/g, "\\'")}',${o.right})"><span class="oe">${iconOf(o)}</span>${o.w}</button>`).join('')}
         </div>
         <div class="quiz-q" style="margin-top:16px">2️⃣ ${l.L}${l.L.toLowerCase()} 的象形朋友是谁？</div>
         <div class="opt-row" id="q2row">

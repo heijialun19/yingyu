@@ -733,3 +733,21 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   line-height: 1;
   white-space: nowrap;
 }
+
+/* ---------- 图位容器里的 SVG：按容器字号 1:1 显示 ----------
+   .wsvg 默认 2.2em 是给「单词卡大图」用的；塞进选项/题图/拼写工坊这些
+   文字流里就会被撑到 2.2 倍，把按钮撑破。这些位置一律按 1em 走，
+   和它替换掉的 emoji 字符占位完全一致。 */
+.opt .oe .wsvg,
+.mem-pic .wsvg,
+.sp-bigimg .wsvg,
+.sp-ask-e .wsvg,
+.qexp-inline .wsvg { width: 1em; height: 1em; }
+/* 句子工厂题目里的小图：比正文大一点，行高不变 */
+.quiz-q .wsvg,
+.explain .wsvg,
+#iexp .wsvg,
+#qexp .wsvg,
+#sexp .wsvg,
+#sexp2 .wsvg,
+#pexp .wsvg { width: 1.15em; height: 1.15em; vertical-align: -0.18em; }

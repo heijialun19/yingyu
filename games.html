@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>游戏乐园 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=39">
+<link rel="stylesheet" href="css/style.css?v=40">
 </head>
 <body>
 <main>
@@ -32,9 +32,9 @@
 <script src="svg/emoji-svg.js?v=1"></script>
 <script src="js/data.js?v=32"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=50"></script>
+<script src="js/app.js?v=51"></script>
 <script src="js/sentence.js?v=43"></script>
-<script src="js/grammar-engine.js?v=3"></script>
+<script src="js/grammar-engine.js?v=4"></script>
 <script src="js/ipa.js?v=2"></script>
 <script>
 renderNav('games'); renderDecor();
@@ -76,7 +76,8 @@ function gameHomeBtn() { return `<button class="btn ghost" onclick="renderHome()
 
 /* 词库选择卡：我的年级优先，可复习学过的词、换年级或全部随机 */
 function poolPicker(title, emoji, onStart) {
-  const learned = learnedPool().filter(w => w.e && !w.w.includes(' '));
+  /* 「有没有图」看 hasIcon，不能看 w.e —— 345 个词靠自绘 SVG，w.e 是空的 */
+  const learned = learnedPool().filter(w => hasIcon(w) && !w.w.includes(' '));
   const canReview = learned.length >= 4;
   const g = myGrade();
   window._poolStart = onStart;
@@ -184,12 +185,12 @@ function gListen() {
 /* ---------------- 游戏2：图词翻翻乐 ---------------- */
 function gMemoryPick() {
   poolPicker('🃏 图词翻翻乐', '🃏', m => {
-    let p = getPlayPool(m, w => w.e && !w.w.includes(' '));
+    let p = getPlayPool(m, w => hasIcon(w) && !w.w.includes(' '));
     /* 抽象主题（虚词、学习与未来…）带图的词可能只剩一两个，
        开局就凑不齐牌。这时退回全库带图的词，别让孩子点进来就卡住。 */
-    if (p.filter(w => w.e).length < 4) {
+    if (p.filter(w => hasIcon(w)).length < 4) {
       const all = [];
-      THEMES.forEach(t => t.words.forEach(w => { if (w.e && !w.w.includes(' ')) all.push(w); }));
+      THEMES.forEach(t => t.words.forEach(w => { if (hasIcon(w) && !w.w.includes(' ')) all.push(w); }));
       p = all;
       toast('这个主题的图太少，换成了全局图库～');
     }
@@ -202,10 +203,14 @@ function gMemory(pool) {
     /* 抽词规则：图片必须互不重复。
        全库有 212 组 emoji 被多个词共用（👦 = he / his / him / boy / brother），
        同一张脸出现两次，孩子根本没法判断它配哪个词。 */
+    /* 原来按 w.e 去重 —— 345 个词的 w.e 是空的，会被判成「同一个」只留下第一个；
+       而且没图的词（字母牌）根本配不出「图 ↔ 词」的配对。改成按渲染出的图去重。 */
     const seen = new Set(), picks = [];
     for (const w of shuffle(pool)) {
-      if (seen.has(w.e)) continue;
-      seen.add(w.e);
+      if (!hasIcon(w)) continue;          // 字母牌不进配对
+      const k = iconOf(w);
+      if (seen.has(k)) continue;
+      seen.add(k);
       picks.push(w);
       if (picks.length >= 4) break;
     }
@@ -216,7 +221,7 @@ function gMemory(pool) {
        原来一律 2rem，在 4 列网格里会被裁掉。 */
     const sizeCls = n => n >= 10 ? ' w-xxl' : n >= 8 ? ' w-xl' : n >= 6 ? ' w-l' : '';
     const cards = shuffle(picks.flatMap(w => ([
-      { key: w.w, html: `<span class="mem-pic">${w.e}</span>` },
+      { key: w.w, html: `<span class="mem-pic">${iconOf(w)}</span>` },
       { key: w.w, html: `<span class="mem-word${sizeCls(w.w.length)}">${esc(w.w)}</span>` }
     ])));
 
@@ -337,12 +342,29 @@ function gScramble(pool) {
    句子生成走和句子火车员同一套 makers（I eat xxx. / This is xxx. 等），
    但**只留单图、具体的**那些（eat/drink + 食物、动物、颜色、身体），
    不放抽象句（I like xxx. 这种"喜欢"没有对应图）。 */
+/* 中文量词：英文说 a book，中文得说「一本书」不是「一个书」。
+   小学词库常用名词就这些，穷举一个小表，没收录的退回「个」。 */
+const ZH_QTY = { book:'一本书', pen:'一支笔', pencil:'一支铅笔', ruler:'一把尺子', eraser:'一块橡皮',
+  bag:'一个书包', desk:'一张课桌', chair:'一把椅子', apple:'一个苹果', egg:'一个鸡蛋',
+  cake:'一块蛋糕', cup:'一个杯子', ball:'一个球', cat:'一只猫', dog:'一只狗', pig:'一只猪',
+  duck:'一只鸭子', cow:'一头牛', horse:'一匹马', sheep:'一只羊', tiger:'一只老虎',
+  lion:'一只狮子', monkey:'一只猴子', elephant:'一头大象', rabbit:'一只兔子', mouse:'一只老鼠',
+  bird:'一只鸟', fish:'一条鱼', car:'一辆小汽车', bus:'一辆公交车', bike:'一辆自行车',
+  bike2:'', house:'一座房子', tree:'一棵树', flower:'一朵花', star:'一颗星星',
+  umbrella:'一把雨伞', hat:'一顶帽子', shirt:'一件衬衫', dress:'一条连衣裙', coat:'一件外套',
+  shoe:'一只鞋', sock:'一只袜子', banana:'一根香蕉', orange:'一个橙子', pear:'一个梨',
+  tomato:'一个番茄', potato:'一个土豆', carrot:'一根胡萝卜', clock:'一个时钟', picture:'一幅画' };
+const zhQty = w => ZH_QTY[String(w.w || '').toLowerCase()] || ('一个' + w.zh);
+
 function gPicSentPick() {
   poolPicker('🖼️ 听句选图', '🖼️', m => gPicSent(getPlayPool(m, w => !w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w))));
 }
 function gPicSent(pool) {
-  // 只用「有图 + 具体名词」的词：避免出现 it=🐱 这种错图
-  const nouns = gxNouns(pool).filter(w => w.e || w.w.length <= 8);
+  /* 只用「有图 + 可数单数」的具体名词：
+     · hasIcon —— 避免出现 it=🐱 这种错图
+     · isCountable —— 否则会说出 "I have a bread." / "I have a scissors."
+       （bread 不可数、scissors 只有复数，都不能加 a） */
+  const nouns = gxNouns(pool).filter(w => hasIcon(w) && w.w.length <= 8 && isCountable(w));
   const foods = pool.filter(w => ['egg','rice','bread','cake','chicken','beef','pork','soup','noodle','dumpling','biscuit'].includes(w.w));
   const drinks = pool.filter(w => ['water','juice','milk','tea'].includes(w.w));
   const animals = pool.filter(w => ['cat','dog','pig','duck','cow','horse','sheep','tiger','lion','monkey','elephant','rabbit','mouse','bird','fish'].includes(w.w));
@@ -351,9 +373,10 @@ function gPicSent(pool) {
   const mk = [];
   if (foods.length) mk.push(() => { const w = pick(foods); return { audio: `I eat ${w.w}.`, zh: `我吃${w.zh}。`, right: w, all: foods.concat(nouns).slice(0, 12) }; });
   if (drinks.length) mk.push(() => { const w = pick(drinks); return { audio: `I drink ${w.w}.`, zh: `我喝${w.zh}。`, right: w, all: drinks.concat(nouns).slice(0, 12) }; });
-  if (animals.length) mk.push(() => { const w = pick(animals); return { audio: `This is a ${w.w}.`, zh: `这是一只${w.zh}。`, right: w, all: animals.concat(nouns).slice(0, 12) }; });
+  /* 冠词必须走 artOf —— 硬编码 a 会说出 "This is a elephant." */
+  if (animals.length) mk.push(() => { const w = pick(animals); return { audio: `This is ${artOf(w.w)} ${w.w}.`, zh: `这是一只${w.zh}。`, right: w, all: animals.concat(nouns).slice(0, 12) }; });
   if (colors.length) mk.push(() => { const w = pick(colors); return { audio: `I see ${w.w}.`, zh: `我看见${w.zh}。`, right: w, all: colors.concat(nouns).slice(0, 12) }; });
-  if (nouns.length) mk.push(() => { const w = pick(nouns); return { audio: `I have a ${w.w}.`, zh: `我有一个${w.zh}。`, right: w, all: nouns.slice(0, 12) }; });
+  if (nouns.length) mk.push(() => { const w = pick(nouns); return { audio: `I have ${artOf(w.w)} ${w.w}.`, zh: `我有${zhQty(w)}。`, right: w, all: nouns.slice(0, 12) }; });
 
   if (!mk.length) { $('#app').innerHTML = `<div class="card" style="text-align:center"><p>这个词池里没有具体名词，换一个范围试试～</p>${gameHomeBtn()}</div>`; return; }
 
@@ -362,14 +385,19 @@ function gPicSent(pool) {
   for (let i = 0; i < 6; i++) {
     const q = mk[i % mk.length]();
     // 干扰项：必须有图（否则孩子看图选不出来），按词去重，不与正确项同词
+    /* 原来的三行判断是坏的：第一行 `!cand.e && !cand.w` 永远不成立（w 必定有值），
+       第二行 `if (!cand.e) continue` 反而把所有靠自绘 SVG 的词全排除了，
+       注释写着「也接受（wordIcon 会画）」和代码完全相反。改成统一看 hasIcon。 */
     const opts = [q.right];
     const seen = new Set([q.right.w]);
+    const seenIcon = new Set([iconOf(q.right)]);
     for (const cand of shuffle(q.all)) {
       if (opts.length >= 4) break;
       if (seen.has(cand.w)) continue;
-      if (!cand.e && !cand.w) continue;       // 必须有 emoji/SVG 图
-      if (!cand.e) continue;                    // 没 emoji 的 SVG 词也接受（wordIcon 会画）
-      if (cand.e === '🔤') continue;           // 字母牌不算图
+      if (!hasIcon(cand)) continue;             // 字母牌不算图
+      const k = iconOf(cand);
+      if (seenIcon.has(k)) continue;            // 同一张图不能出现两次
+      seenIcon.add(k);
       seen.add(cand.w); opts.push(cand);
     }
     if (opts.length < 2) continue; // 选项不够，跳过这题
@@ -399,7 +427,7 @@ function gPicSent(pool) {
         <div id="picOpts" class="opt-row" style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:520px;margin:0 auto">
           ${q.opts.map(o => `
             <button class="opt" style="flex-direction:column;gap:6px;padding:18px 12px" onclick="window._picAns(this,'${o.w.replace(/'/g, "\\'")}')">
-              <div style="font-size:56px;line-height:1">${wordIcon(o)}</div>
+              <div style="font-size:56px;line-height:1">${iconOf(o)}</div>
               <div style="font-size:.85rem;color:#5C6273">${esc(o.w)}</div>
             </button>`).join('')}
         </div>
@@ -716,10 +744,11 @@ function gSentence(pool, level) {
       return { q: `他们是${w.zh}吗？`, sent: `Are these __?`, opts: [pl, w.w, 'a ' + w.w], ans: pl,
         zh: `Are these ${pl}? 他们是${w.zh}吗？`, e: w.e }; },
     () => { const w = pickSafe(nnn, 'box'); const pl = plurOf(w);
-      return { q: `桌子上有一些${w.zh}`, sent: `There __ some ${pl} on the table.`, opts: ['are', 'is', 'am'], ans: 'are',
-        zh: `There are some ${pl} on the table. 桌子上有一些${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(cnt); return { q: `桌子上有一个${w.zh}`, sent: `There __ ${artOf(w.w)} ${w.w} on the table.`, opts: ['is', 'are', 'am'], ans: 'is',
-        zh: `There is ${artOf(w.w)} ${w.w} on the table. 桌子上有一个${w.zh}。`, e: w.e }; },
+      /* 同上：on the table 对 classroom/horse 这种名词荒谬，改 over there */
+      return { q: `那边有一些${w.zh}`, sent: `There __ some ${pl} over there.`, opts: ['are', 'is', 'am'], ans: 'are',
+        zh: `There are some ${pl} over there. 那边有一些${w.zh}。`, e: w.e }; },
+    () => { const w = pickSafe(cnt); return { q: `那边有一个${w.zh}`, sent: `There __ ${artOf(w.w)} ${w.w} over there.`, opts: ['is', 'are', 'am'], ans: 'is',
+        zh: `There is ${artOf(w.w)} ${w.w} over there. 那边有一个${w.zh}。`, e: w.e }; },
     () => {
       const w = pickSafe(ingPool);
       const ing = ingOf(w.w);
@@ -787,7 +816,7 @@ function gSentence(pool, level) {
     $('#app').innerHTML = `
       <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🧑‍🔧 句子火车员</b><span>第 ${S.idx + 1} / ${qs.length} 句 · ✅ ${S.score}</span></div>
-        <div style="font-size:44px">${q.e || '🧩'}</div>
+        <div style="font-size:44px">${q.e ? emoSvg(q.e) : emoSvg('🧩')}</div>
         <div style="font-size:.95rem;color:#5C6273;margin:4px 0 8px">「${q.q}」—— 火车缺了一节车厢，补上它：</div>
         <div class="train-result" style="justify-content:center;font-size:1.6rem">${q.sent.replace('__', '<span style="color:#FF6B6B">＿＿</span>')}</div>
         <div class="opt-row">
@@ -822,7 +851,7 @@ function gSentence(pool, level) {
   };
   window._sentShow();
 }
-function artOf(w) { return /^[aeiou]/i.test(w) ? 'an' : 'a'; }
+/* artOf 统一放在 js/grammar-engine.js（冠词看读音不看首字母，见那里的注释） */
 /* 选完难度 → 选词库 → 开局（与 gSentencePick 配对） */
 window._sentLevel = function (lv) {
   poolPicker('🧑‍🔧 句子火车员', '🧑‍🔧',

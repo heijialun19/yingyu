@@ -491,6 +491,38 @@ function wordIcon(w) {
   return `<span class="wtile" aria-hidden="true">${esc(ch)}</span>`;
 }
 
+/* ---------------- 词图的统一取用口 ----------------
+   ★ 血泪教训（2026-10-26）：wordIcon 修好之后，页面上仍有一大半地方直接写
+     `${w.e}` 渲染 emoji 字符 —— 等于把「靠系统字体画图」的老毛病原样留着，
+     老 Windows 上照样黑白/方块。凡是「给孩子看的词图」一律走下面两个函数：
+       iconOf(w)  拿渲染好的 HTML（带缓存，1000 词批量出题也不卡）
+       hasIcon(w) 判断有没有真图（字母牌不算图，不能拿去做「看图选」的选项）
+   例外：站点导航图标（岛屿、按钮、标题前缀）是界面装饰，不是词图，不在此列。 */
+const __iconCache = new Map();
+function iconOf(w) {
+  if (!w) return '';
+  const key = String(w.w || '') + '\u0001' + String(w.e || '') + '\u0001' + String(w.zh || '');
+  let hit = __iconCache.get(key);
+  if (hit === undefined) { hit = wordIcon(w); __iconCache.set(key, hit); }
+  return hit;
+}
+/* 字母牌 = 没有真图。这类词不能进「看图选」的选项，否则孩子看到四个字母牌没得选。 */
+function hasIcon(w) {
+  return !/class="wtile"/.test(iconOf(w));
+}
+
+/* 孤立的 emoji 字符也要走内置图库 —— 题目里硬编码的 '👦' '🧩' 同样靠系统字体，
+   老 Windows 上一样黑白/方块。表里没有的才退回字符（至少给个能看的字形）。 */
+function emoSvg(emo, size) {
+  const e = String(emo || '').trim();
+  if (!e) return '';
+  const box = size ? ` style="width:${size}px;height:${size}px"` : '';
+  if (typeof WORD_EMOJI !== 'undefined' && WORD_EMOJI[e]) {
+    return `<span class="wsvg"${box} aria-hidden="true">${WORD_EMOJI[e]}</span>`;
+  }
+  return `<span class="emj"${box} aria-hidden="true">${esc(e)}</span>`;
+}
+
 /* 立刻闭嘴：所有在途音频解除回调并暂停（翻页/切题/点新词时用） */
 function stopAllSpeech() {
   __audioEpoch++;                          // 作废所有迟到的加载/失败回调
