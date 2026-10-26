@@ -101,7 +101,11 @@ const themeWords = ids => {
   return out;
 };
 const themeEmoji = ids => { const t = THEMES.find(x => ids.includes(x.id)); return t ? t.emoji + ' ' + t.name : '🏘️ 单词镇'; };
-const art = w => /^[aeiou]/i.test(w) ? 'an' : 'a';
+/* ★ 冠词统一走 js/grammar-engine.js 的 artOf（看读音首音素，不是首字母）。
+   这里原来自己留了一份 /^[aeiou]/ 的首字母版本，上面注释还写着「已移到 grammar-engine.js，
+   共用同一套，避免各写一份又写错」—— 移了名词规则但漏了冠词，
+   结果句子工厂仍然出 "This is a hour." / "This is an useful book."。 */
+const art = w => (typeof artOf === 'function' ? artOf(w) : (/^[aeiou]/i.test(w) ? 'an' : 'a'));
 
 /* ---- 名词/动词形态规则：出题引擎的底线是"生成出来的英文必须是对的" ----
    宁可少出一道题，也不能教孩子 I like breads. / two mouses. / The cat is danceing.
@@ -166,7 +170,10 @@ const GEN = {
     return { type:'choice', word: w.w,
       prompt: `「这是${w.zh}」哪个说法对？ ${iconOf(w)}`,
       options: [`This is ${a} ${w.w}.`, `This are ${a} ${w.w}.`, `Is this ${a} ${w.w}.`], answer: 0,
-      zh: `This is ${a} ${w.w}. 这是${w.zh}。`, explain: `This 用 is；${w.w} 是${/^[aeiou]/i.test(w.w) ? '元音' : '辅音'}开头，用 ${a}。` };
+      zh: `This is ${a} ${w.w}. 这是${w.zh}。`,
+      /* 解析也跟着 art 走，别再自己用首字母判元音 ——
+         否则 hour 会被说成「辅音开头，用 an」，自相矛盾。 */
+      explain: `This 后面用 is；${w.w} 前面用 ${a}（看读音开头，不是看字母）。` };
   },
   canDo(ws) {
     /* can 后面只能跟动词原形。不筛词性会出 "I can yoga." / "I can winner." */
@@ -235,7 +242,7 @@ const GEN = {
       prompt: `「我看见一${m}${w.zh}」 ${iconOf(w)}`,
       slots: [['I','We'], ['see','like'], ['a','an'], [w.w, ...others.map(o => o.w)]],
       answer: ['I','see',a,w.w], read: `I see ${a} ${w.w}.`, zh: `我看见一${m}${w.zh}。`,
-      hint: a === 'an' ? `${w.w} 是元音开头，要用 an 哦` : '冠词选 a' };
+      hint: '读一读这个词的开头，冠词该用 a 还是 an？' };
   },
   buildLike(ws) {
     const safe = gxNouns(ws).filter(pluralSafe);
@@ -246,7 +253,7 @@ const GEN = {
       prompt: `「我们喜欢${w.zh}（复数）」 ${iconOf(w)}`,
       slots: [['We','I','They'], ['like','likes','am'], [pluralOf(w), w.w, w.w + 'es']],
       answer: ['We','like',pluralOf(w)], read: `We like ${pluralOf(w)}.`, zh: `我们喜欢${w.zh}。`,
-      hint: '喜欢很多东西，单词要加 s' };
+      hint: '喜欢的是很多个东西，单词要不要变形？' };
   },
   buildFamily(ws) {
     const fam = gxNouns(themeWords(['family']));
@@ -256,7 +263,7 @@ const GEN = {
       prompt: `「这是我的${w.zh}」 ${iconOf(w)}`,
       slots: [['This','He','She'], ['is','am','are'], ['my','the','a'], [w.w, ...others.map(o => o.w)]],
       answer: ['This','is','my',w.w], read: `This is my ${w.w}.`, zh: `这是我的${w.zh}。`,
-      hint: 'my = 我的' };
+      hint: 'my 就是「我的」，放在名词前面' };
   },
   buildHave(ws) {
     const safe = gxNouns(ws).filter(pluralSafe);
@@ -266,7 +273,7 @@ const GEN = {
       prompt: `「我有两${m}${w.zh}」 ${iconOf(w)}`,
       slots: [['I','We','He'], ['have','has','am'], ['two','three','a'], [pl, w.w, w.w + 'es']],
       answer: ['I','have','two',pl], read: `I have two ${pl}.`, zh: `我有两${m}${w.zh}。`,
-      hint: '两' + m + ' → 加 s；我用 have' };
+      hint: '数量是「两」，单词和 have 都该变一变？' };
   },
 
   /* ---- 词性（L17） ---- */

@@ -297,6 +297,31 @@ function famLine(word) {
 }
 
 function makeQuestion(word, pool) {
+  /* 同义词组：中文写法不同但指同一件事，不能互相当干扰项。
+     ★ 2026-10-26 修的 bug：原来只比 w.zh === word.zh，但同义词的中文写法本来就不一样
+       （爸爸/父亲、在里面/在里面、秋天/秋天(美式)），字符串比对抓不到 ——
+       结果「父亲的英语是？」的选项里同时出现 dad 和 father，两个都对。
+       宁可多排除几个（干扰项还有 900 多个词可选），也不能让一题有两个正确答案。 */
+  const SYN_GROUPS = [
+    ['dad','father'], ['bag','schoolbag'], ['in','inside'], ['above','over'],
+    ['below','under'], ['small','little'], ['family','home'], ['house','home'],
+    ['learn','study'], ['photo','picture'], ['exam','test'], ['autumn','fall'],
+    ['colour','color'], ['shop','store'], ['road','street'], ['ill','sick'],
+    ['happy','glad'], ['look','see','watch'], ['say','speak','talk'],
+    ['begin','start'], ['want','need'], ['carry','bring','take'], ['near','next'],
+    ['many','much'], ['beautiful','pretty'], ['funny','interesting'],
+  ];
+  const sameZh = w => {
+    if (w.zh === word.zh) return true;
+    const a = String(w.w).toLowerCase(), b = String(word.w).toLowerCase();
+    return SYN_GROUPS.some(g => g.includes(a) && g.includes(b));
+  };
+  const sameIpa = w => {
+    const a = (typeof ipaOf === 'function' ? ipaOf(word.w) : '') || '';
+    const b = (typeof ipaOf === 'function' ? ipaOf(w.w) : '') || '';
+    return a && b && a === b;
+  };
+
   /* 代词/介词这类词没有图，不能出「看词选图」——四个选项全是字母牌，孩子没得选。
      ★ 判断「有没有图」必须看 wordIcon 实际画出了什么，不能看 w.e：
        345 个词靠自绘 SVG，w.e 是空的 —— 按 w.e 过滤会把它们全部判成「没图」，
@@ -304,7 +329,7 @@ function makeQuestion(word, pool) {
      ★ 选项里的图**必须互不相同**：emoji 里有大量词组共用同一张图
        （👦 同时是 he/his/him/boy/brother，1️⃣ 同时是 one/Monday/January），
        不去重就会出现两个一样的图，孩子根本没法选。这里按「渲染出的图」去重。 */
-  const picPool = pool.filter(w => w.w !== word.w && hasIcon(w));
+  const picPool = pool.filter(w => w.w !== word.w && hasIcon(w) && !sameZh(w));
   const pics = (() => {
     if (!hasIcon(word)) return [];
     const seen = new Set([iconOf(word)]), out = [];
@@ -324,28 +349,30 @@ function makeQuestion(word, pool) {
         必须按中文排除，不是只排掉同一个词。
      ② 听音选词题：同音词（son/sun、two/too、here/hear）会让答案不唯一，
         有音标的按音标排除。 */
-  const sameZh = w => w.zh === word.zh;
-  const sameIpa = w => {
-    const a = (typeof ipaOf === 'function' ? ipaOf(word.w) : '') || '';
-    const b = (typeof ipaOf === 'function' ? ipaOf(w.w) : '') || '';
-    return a && b && a === b;
-  };
   const strict = shuffle(pool.filter(w => w.w !== word.w && !sameZh(w) && !sameIpa(w)));
   /* 严格池不够就放宽（先放同音，再放同义）：宁可偶尔有点歧义，也不要退化成 2 个选项 */
   const relax = shuffle(pool.filter(w => w.w !== word.w && !sameZh(w) && !strict.includes(w)));
   const distract = (strict.length >= 3 ? strict : strict.concat(relax)).slice(0, 3);
+  /* ★ 提示不能白送答案：原来 hint 一律写「从 X 开头」，
+     但干扰项没排除同首字母的词 —— 选项是 apple / book / cat / dog 时，
+     「从 a 开头」直接把答案圈出来了，孩子根本不用听、不用想。
+     只有当干扰项里真有一个同首字母的，这个提示才算"抓手"，否则降级成只说字母数。 */
+  const firstOf = w => String(w.w || '').slice(0, 1).toLowerCase();
+  const hintFirst = distract.some(w => firstOf(w) === firstOf(word))
+    ? `从 ${word.w[0]} 开头，一共 ${word.w.length} 个字母`
+    : `一共 ${word.w.length} 个字母`;
   if (type === 0) { // 看词选图：不自动读音，词旁给 🔊 让孩子点着听（tap-to-hear）
     return { type, word, hint: `它的中文是「${word.zh}」`,
       prompt: `哪个图片是 <b style="font-size:1.5rem;color:#FF6B6B">${word.w}</b> <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(word.w)}')" title="点我听发音">🔊</button> ？`,
       options: shuffle([word, ...pics]).map(w => ({ key: w.w, html: `<span class="oe">${iconOf(w)}</span>` })) };
   }
   if (type === 1) { // 听音选词：声音就是题目，自动读一遍 + 🔁 重听
-    return { type, word, hint: `从 ${word.w[0]} 开头，一共 ${word.w.length} 个字母`,
+    return { type, word, hint: hintFirst,
       prompt: `🔊 听一听，是哪个单词？（点 🔁 再听）`,
       speakText: word.w, autoSpeak: true, replay: true,
       options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: w.w })) };
   }
-  return { type, word, hint: `从 ${word.w[0]} 开头，一共 ${word.w.length} 个字母`, // 中文选英文：中文已显示，不需要朗读
+  return { type, word, hint: hintFirst, // 中文选英文：中文已显示，不需要朗读
     prompt: `「<b style="font-size:1.3rem;color:#9B72FF">${word.zh}</b>」的英语是？`,
     options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: w.w })) };
 }
