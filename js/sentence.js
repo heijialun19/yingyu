@@ -90,8 +90,10 @@ function __prewarmChunk(tokens, i) {
 
 function speakSentence(text, el, onDone) {
   /* 声音关着也要走完回调：游戏靠"读完自动跳题"，这里 return 掉回调
-     就等于把自动推进永久挂起（实测玩几题就卡住的元凶）。 */
-  if (!Store.d.soundOn) { soundOffHint(); if (onDone) onDone(); return; }
+     就等于把自动推进永久挂起（实测玩几题就卡住的元凶）。
+     2026-10-26：这里原本会调 soundOffHint() 弹「声音关着呢」，
+     那个提示已经删掉了（用户反馈太烦），现在完全静默。 */
+  if (!Store.d.soundOn) { if (onDone) onDone(); return; }
   const t = String(text).trim(); if (!t) { if (onDone) onDone(); return; }
   stopAllSpeech();
   const tokens = t.split(/\s+/).filter(Boolean);

@@ -770,54 +770,22 @@ function stopAllSpeech() {
 }
 
 /* 统一朗读入口：只走词典真人发音。失败保持安静（绝不出现机器音）。 */
-/* 声音被关掉时，点发音按钮给一声轻提示——否则用户只会觉得「网站坏了」。
-   toast 本身没有去重，连续点击会叠罗汉，这里自己节流 2.5 秒。 */
-let __soundHintAt = 0;
-function soundOffHint() {
-  const now = Date.now();
-  if (now - __soundHintAt < 2500) return;
-  __soundHintAt = now;
-  toast('🔇 声音关着呢，点右上角（或底部「我的」里）的喇叭 🔊 打开');
-}
+/* ★ 2026-10-26：删掉所有「猜你没听到声音」的自动提示。
 
-/* ---------------- 设备静音兜底提示 ----------------
-   浏览器不暴露操作系统音量，「音量键没开」没法直接检测。
-   但有三个实用信号可以兜住：
-   ① 会话首次点读 → 温馨提示一次（不打扰，只提一嘴）
-   ② 同一个词 5 秒内连点 3 次 → 大概率是听不到，自动弹提示
-   ③ 「我的」里的「🔊 测试声音」按钮 → 主动测一次，最可靠 */
-const __volTip = { taps: [], lastHintAt: 0 };
-function volHint(msg) {
-  const now = Date.now();
-  if (now - __volTip.lastHintAt < 6000) return; // 6 秒内不重复弹
-  __volTip.lastHintAt = now;
-  toast(msg);
-}
-function maybeFirstPlayTip() {
-  try {
-    if (sessionStorage.getItem('birdie_vol_tip')) return;
-    sessionStorage.setItem('birdie_vol_tip', '1');
-  } catch (e) { return; } // 隐私模式存不了就不提示
-  setTimeout(() => volHint('💡 如果没听到声音，可能是设备静音了，按一下音量键试试 🔊'), 700);
-}
-function maybeRepeatTapTip(text) {
-  const now = Date.now();
-  const t = String(text);
-  __volTip.taps = __volTip.taps.filter(x => now - x.at < 5000);
-  __volTip.taps.push({ text: t, at: now });
-  const same = __volTip.taps.filter(x => x.text === t).length;
-  if (same >= 3) {
-    __volTip.taps = [];
-    volHint('🔇 听不到声音？检查一下设备音量键，或到「我的」里点「测试声音」🔊');
-  }
-}
+   原来有三处会主动弹 toast：
+     ① 声音关闭时每次点发音都弹（节流 2.5 秒）—— 反复点词就反复弹
+     ② 会话首次点读 → 700ms 后弹「设备可能静音了」
+     ③ 同一个词 5 秒内连点 3 次 → 弹「听不到？按一下音量键」
+   这三个都是在**猜**：用户明明听得见，①②照样弹。
+   用户反馈「光出现太烦人」，全部去掉，一个都不留。
+
+   声音状态本来就写在右上角喇叭上（🔊 / 🔇），想自查有「我的 → 测试声音」，
+   都是用户主动看的，不需要任何自动弹窗。 */
 
 function speak(text, lang = 'en-US', rate = 0.85) {
-  if (!Store.d.soundOn) { soundOffHint(); return; }
+  if (!Store.d.soundOn) return;                    // 静默：一个字都不弹
   const t = String(text).trim(); if (!t) return;
   if (lang.startsWith('zh')) return; // 词典不支持中文句：中文不朗读
-  maybeFirstPlayTip();
-  maybeRepeatTapTip(t);
   stopAllSpeech();
   playDictAudio(t, rate, null, null);
 }
@@ -840,7 +808,7 @@ function testSound() {
 /* 链式朗读：读完一句自动读下一句；单段失败（已自动重试过）跳过继续，
    连续失败 3 次才整链停止——不因个别词失败打断整段朗读（绝不切机器音） */
 function speakChain(items) {
-  if (!Store.d.soundOn) { soundOffHint(); return; }
+  if (!Store.d.soundOn) return;                    // 静默：不弹提示
   stopAllSpeech();
   let stopped = false, fails = 0;
   const next = i => {
