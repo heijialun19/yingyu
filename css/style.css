@@ -330,6 +330,13 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   border: 2px solid rgba(15, 23, 42, .18);
   box-shadow: inset 0 1px 2px rgba(255,255,255,.45);
 }
+/* 白色色块（white 词）在纯白卡上等于没图 —— 单独加深描边 + 内圈。
+   .cchip 的 background 是行内 style，只能用属性选择器挑出来。 */
+.cchip[style*="#FFFFFF"] {
+  border-color: rgba(15, 23, 42, .34);
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .10);
+  background: #FFFFFF;
+}
 .wtile {
   display: inline-flex; align-items: center; justify-content: center;
   font-size: .5em; width: 2em; height: 2em; line-height: 1; font-weight: 800;
@@ -354,7 +361,7 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
      改用淡色底：既绕开这个渲染 bug，又让白色系 emoji 在白卡上有边界。
      词库里白色为主的 emoji 有 20 个（📄纸 🥛牛奶 ☁️云 🍚米饭 🥚蛋
      🧊冰 🦷牙齿 🪞镜子 🪥牙刷 🩹创可贴 ☁️雾 等），没底就是一片白。 */
-.word-card .wsvg { background: #F4F9FF; border-radius: 26%; padding: .18em; }
+/* 底已上移到全局 .wsvg，这里不再单独写 */
 .word-card b { display: block; font-size: 1.3rem; margin-top: 6px; letter-spacing: .5px; }
 .word-card .zh { color: var(--ink2); font-size: .92rem; margin-top: 2px; }
 /* 词族：告诉孩子这个词是怎么"长"出来的，不是让他多背一个 */
@@ -732,7 +739,18 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 }
 
 /* SVG 单词插画 */
-.wsvg { display:inline-flex; width:2.2em; height:2.2em; vertical-align:middle; }
+/* ★ 2026-10-26：所有图位统一加一层淡色底 + 内缩。
+   为什么必须有底：词库里有 20 个白色系 emoji —— ☁️云 🥛牛奶 📄纸 🥚蛋 🍚米饭
+   🧊冰 🦷牙齿 🪞镜子 🪥牙刷 🩹创可贴 🌫️雾 🧾账单 📋清单 📜历史 🕯️蜡烛
+   🕊️鸽子 🗓️日历 📝句子 🀄语文 🥥椰子 —— 图案本身就是白的，
+   画在纯白卡片上和「没图」一模一样（用户就是这么报的：「很多空白的卡片」）。
+   加淡蓝底 + padding 让底色露一圈，白色图形才有边界。
+   padding 用 em（相对自身字号），配合全局 `* { box-sizing: border-box }`
+   从固定宽高里扣，不会撑大盒子。 */
+.wsvg {
+  display: inline-flex; width: 2.2em; height: 2.2em; vertical-align: middle;
+  background: #F4F9FF; border-radius: 26%; padding: .16em;
+}
 .wsvg svg { width:100%; height:100%; }
 
 /* ---------- 内置 emoji 矢量图 ----------
@@ -768,11 +786,15 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
    .wsvg 默认 2.2em 是给「单词卡大图」用的；塞进选项/题图/拼写工坊这些
    文字流里就会被撑到 2.2 倍，把按钮撑破。这些位置一律按 1em 走，
    和它替换掉的 emoji 字符占位完全一致。 */
+/* 用 1.25em 而不是 1em：.wsvg 现在有 .16em 的 padding（给淡底留边）。
+   全局是 border-box，padding 会从 width 里扣掉，所以盒子要放大一点，
+   里面的图形才仍然接近原来的 1em（1.25 - 0.32 ≈ 0.93em），
+   既不撑破按钮，也不会让图形明显变小。 */
 .opt .oe .wsvg,
 .mem-pic .wsvg,
 .sp-bigimg .wsvg,
 .sp-ask-e .wsvg,
-.qexp-inline .wsvg { width: 1em; height: 1em; }
+.qexp-inline .wsvg { width: 1.25em; height: 1.25em; }
 /* 句子工厂题目里的小图：比正文大一点，行高不变 */
 .quiz-q .wsvg,
 .explain .wsvg,
