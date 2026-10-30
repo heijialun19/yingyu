@@ -18,7 +18,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=26"></script>
-<script src="js/app.js?v=36"></script>
+<script src="js/app.js?v=37"></script>
 <script src="js/sentence.js?v=38"></script>
 <script>
 renderNav('games'); renderDecor();
@@ -263,7 +263,7 @@ function gSentence(pool) {
   const foods = pool.filter(w => ['egg','rice','bread','cake','chicken','beef','pork','soup','noodle','dumpling','mooncake','biscuit','sweet','moon'].includes(w.w));
   const drinks = pool.filter(w => ['water','juice','milk','tea'].includes(w.w));
   const actions = pool.filter(w => ['run','jump','swim','sing','dance','read','write','draw','fly','walk','sleep','play'].includes(w.w));
-  const nouns = pool.filter(w => !/(s|x|z|sh|ch)$/.test(w.w) && w.w.length <= 8);
+  const nouns = pool.filter(w => w.pos === 'n' && !/(s|x|z|sh|ch)$/.test(w.w) && w.w.length <= 8); // 只用真名词，避免造出 "I like ams" 这类病句
   const anyFoods = foods.length ? foods : themeWordsById(['food']);
   const anyDrinks = drinks.length ? drinks : themeWordsById(['food']).filter(w => ['water','juice','milk','tea'].includes(w.w));
   const anyActions = actions.length ? actions : themeWordsById(['action1']);
@@ -277,7 +277,7 @@ function gSentence(pool) {
     () => ({ q: '我是一个男孩', sent: `I __ a boy.`, opts: ['am','is','are'], ans: 'am', zh: 'I am a boy.', e: '👦' }),
     () => ({ q: '她是一个女孩', sent: `She __ a girl.`, opts: ['is','am','are'], ans: 'is', zh: 'She is a girl.', e: '👧' }),
     () => ({ q: '这是我的妈妈', sent: `This __ my mom.`, opts: ['is','are','am'], ans: 'is', zh: 'This is my mom.', e: '👩' }),
-    () => { const w = pick(anyNouns); return { q: `这是${w.zh}`, sent: `This is __ ${w.w}.`, opts: [artOf(w.w), 'an', 'the'], ans: artOf(w.w), zh: `This is ${artOf(w.w)} ${w.w}. 这是${w.zh}。`, e: w.e }; },
+    () => { const w = pick(anyNouns); const a = artOf(w.w); return { q: `这是${w.zh}`, sent: `This is __ ${w.w}.`, opts: [a, a === 'an' ? 'a' : 'an', 'the'], ans: a, zh: `This is ${a} ${w.w}. 这是${w.zh}。`, e: w.e }; },
   ];
   const qs = shuffle(makers).slice(0, 6).map(mk => mk());
   const S = { idx: 0, score: 0, first: true };
@@ -287,7 +287,7 @@ function gSentence(pool) {
       $('#app').innerHTML = endCard('🧑‍🔧', `补对 ${S.score} / ${qs.length} 句`, S.score + 1);
       return;
     }
-    const q = qs[S.idx]; S.first = true;
+    const q = qs[S.idx]; S.first = true; S.lock = false; // 新句解锁点击
     $('#app').innerHTML = `
       <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🧑‍🔧 句子火车员</b><span>第 ${S.idx + 1} / ${qs.length} 句 · ✅ ${S.score}</span></div>
@@ -303,7 +303,9 @@ function gSentence(pool) {
   };
   window.sentAns = function (btn, o) {
     const q = qs[S.idx];
+    if (S.lock) return; // 已答对进入过渡动画，忽略连点（防止跳句与重复计分）
     const ok = o === q.ans;
+    if (ok) S.lock = true;
     feedback(btn, ok);
     if (ok) {
       // 只计分不发星：星星在游戏结束统一结算（与其他游戏一致，避免双重发星）
