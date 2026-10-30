@@ -3,20 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#4EC5F1">
-<meta name="description" content="小学 1-6 年级 1000 个必背词汇，按年级分主题，每个词都有记忆法拆解；练一练、拼写工坊、中英搜索、艾宾浩斯复习。">
-<link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
-<meta property="og:title" content="单词镇 · 小学 1000 词 · 小鸟英语乐园">
-<meta property="og:description" content="小学 1-6 年级 1000 个必背词汇，按年级分主题，每个词都有记忆法拆解；练一练、拼写工坊、中英搜索、艾宾浩斯复习。">
-<meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
-<meta property="og:url" content="https://heijialun19.github.io/yingyu/words.html">
-<meta name="twitter:card" content="summary_large_image">
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=43">
+<link rel="stylesheet" href="css/style.css?v=27">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -29,9 +18,6 @@
 .sp-cn{font-size:1.25rem;font-weight:800;color:#5C6273;text-align:center;margin-top:4px}
 .sp-reveal{font-size:2.1rem;font-weight:800;letter-spacing:.3em;text-align:center;color:#2D3142;margin:8px 0 2px;word-break:break-all}
 .sp-tip{color:#5C6273;font-size:.88rem;text-align:center;line-height:1.7;margin:8px 0}
-.sp-ask{font-size:1rem}
-.sp-ask b{color:#5C6273}
-.sp-ask-e{font-size:1.15rem;margin-left:2px}
 .sp-count{text-align:center;color:#8B93A7;font-size:.85rem;font-weight:700;margin-top:6px}
 .sp-listen{display:block;margin:10px auto 0;padding:14px 26px;border-radius:999px;border:3px solid #4EC5F1;background:#EAF7FD;color:#1C7FA6;font-size:1.05rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 0 rgba(45,49,66,.10)}
 .sp-listen:active{transform:translateY(2px);box-shadow:none}
@@ -72,16 +58,12 @@
   </div>
 
   <div id="app"></div>
-<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
+<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=31"></script>
-<script src="svg/word-svg.js?v=2"></script>
-<script src="svg/emoji-svg.js?v=2"></script>
-<script src="js/data.js?v=32"></script>
-<script src="js/app.js?v=53"></script>
-<script src="js/sentence.js?v=44"></script>
-<script src="js/speech.js?v=1"></script>
-<script src="js/ipa.js?v=2"></script>
+<script src="js/words-data.js?v=25"></script>
+<script src="js/data.js?v=26"></script>
+<script src="js/app.js?v=36"></script>
+<script src="js/sentence.js?v=38"></script>
 <script>
 renderNav('words'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -94,13 +76,10 @@ THEMES.forEach(t => t.words.forEach(w => { if (!ALL[w.w]) ALL[w.w] = Object.assi
 const themeById = id => THEMES.find(t => t.id === id);
 
 let mode = 'browse', curGrade = Store.d.grade || 'g1', curTheme = (GRADES.find(g => g.id === (Store.d.grade || 'g1')) || GRADES[0]).themes[0].id, session = null, searchQ = '', poolMode = '';
-let __quizGo = null;      // 当前题的推进器：按钮点它（与句子工厂同一个控制器）
-let __quizSay = '';       // 当前题的单词（「再听」用，绝不拼进 onclick）
 
 /* ---------------- 智能词单视图（累计制 + 错题本） ---------------- */
 function showPool(kind) {
   poolMode = kind; searchQ = ''; mode = 'browse';
-  Flow.reset();
   const plan = kind === 'plan';
   const list = plan ? planWords() : wrongWords();
   const title = plan ? '🎯 我的词单（补漏洞）' : '📓 我的错题本';
@@ -116,18 +95,15 @@ function showPool(kind) {
     <div class="card" style="border-color:${plan ? 'var(--mint)' : 'var(--coral)'}">
       <h2>${title}</h2>
       <p style="margin:6px 0 0;color:#5C6273;font-size:.86rem;line-height:1.8">${desc}</p>
-      ${list.length >= 4 ? `<div style="margin:12px 0;display:flex;gap:10px;flex-wrap:wrap"><button class="btn mint" onclick="startPractice()">✏️ 练这一批（得星星）</button><button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button><button class="btn orange" onclick="startSpeak()">🎤 跟读打分</button></div>` : '<p style="margin:12px 0;color:#4E9E59;font-weight:700">太棒了，这里暂时是空的！去按主题浏览学新词吧～</p>'}
+      ${list.length >= 4 ? `<div style="margin:12px 0;display:flex;gap:10px;flex-wrap:wrap"><button class="btn mint" onclick="startPractice()">✏️ 练这一批（得星星）</button><button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button></div>` : '<p style="margin:12px 0;color:#4E9E59;font-weight:700">太棒了，这里暂时是空的！去按主题浏览学新词吧～</p>'}
       <div class="word-grid">
         ${list.slice(0, 24).map(w => `
           <div class="word-card" onclick="speakWord('${jsq(w.w)}')" title="点一下，读一遍">
             ${(Store.d.words[w.w] || {}).box >= 2 ? '<span class="mastered-mark">✅</span>' : ''}
-            <span class="spk" aria-hidden="true">🔊</span>
-            <span class="we">${wordIcon(w)}</span>
-            <b lang="en">${w.w}</b>
-            <div class="ph" lang="en">${ipaOf(w.w)}</div>
+            <span class="we">${w.e || '🔤'}</span>
+            <b>${w.w}</b>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
-            ${famLine(w.w)}
             ${w.wrongCount ? `<div class="dec" style="background:#FFE9E9">🔁 错过 ${w.wrongCount} 次</div>` : `<div class="dec" style="background:transparent">${w.fromGrade || w.themeEmoji + w.themeName}</div>`}
           </div>`).join('')}
       </div>
@@ -159,13 +135,10 @@ function renderSearch() {
       <div class="word-grid" style="margin-top:10px">
         ${hits.slice(0, 120).map(w => `
           <div class="word-card" style="border-color:${w.themeColor}" onclick="speakWord('${jsq(w.w)}')" title="${w.themeEmoji}${w.themeName} · 点一下，读一遍">
-            <span class="spk" aria-hidden="true">🔊</span>
-            <span class="we">${wordIcon(w)}</span>
-            <b lang="en">${w.w}</b>
-            <div class="ph" lang="en">${ipaOf(w.w)}</div>
+            <span class="we">${w.e || '🔤'}</span>
+            <b>${w.w}</b>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
-            ${famLine(w.w)}
             ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : '<div class="dec" style="background:transparent"></div>'}
           </div>`).join('')}
       </div>
@@ -177,7 +150,6 @@ function renderSearch() {
 /* ---------------- 浏览模式 ---------------- */
 function renderBrowse() {
   mode = 'browse';
-  Flow.reset();          // 离开答题：任何挂起的推进/朗读都作废（旧版会把人拽回答题页）
   const due = dueWords();
   const g = GRADES.find(x => x.id === curGrade);
   const t = themeById(curTheme);
@@ -216,12 +188,8 @@ function renderBrowse() {
 
     <div class="tab-label">📚 选择主题</div>
     <div class="theme-tabs">
-      ${g.themes.map(t2 => {
-        /* 全掌握的主题打个 ✅：家长扫一眼就知道哪块还没碰过 */
-        const done = t2.words.every(w => (((Store.d.words[w.w] || {}).box) || 0) >= 2);
-        return `<button class="theme-tab ${t2.id === curTheme ? 'on' : ''}" style="color:${t2.color}" onclick="switchTheme('${t2.id}')">
-        <span class="te">${t2.emoji}</span>${t2.name}${done ? ' <span aria-label="已全部掌握">✅</span>' : ''}</button>`;
-      }).join('')}
+      ${g.themes.map(t2 => `<button class="theme-tab ${t2.id === curTheme ? 'on' : ''}" style="color:${t2.color}" onclick="switchTheme('${t2.id}')">
+        <span class="te">${t2.emoji}</span>${t2.name}</button>`).join('')}
     </div>
 
     <div class="card" style="border-color:${t.color}">
@@ -232,20 +200,16 @@ function renderBrowse() {
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px">
         <button class="btn mint" onclick="startPractice()">✏️ 练一练（得星星）</button>
         <button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button>
-        <button class="btn orange" onclick="startSpeak()">🎤 跟读打分</button>
         <button class="btn" onclick="listenAll()">🔊 全部听一遍</button>
       </div>
       <div class="word-grid">
         ${t.words.map(w => `
           <div class="word-card" onclick="speakWord('${jsq(w.w)}')" title="点一下，读一遍">
             ${(Store.d.words[w.w] || {}).box >= 2 ? '<span class="mastered-mark">✅</span>' : ''}
-            <span class="spk" aria-hidden="true">🔊</span>
-            <span class="we">${wordIcon(w)}</span>
-            <b lang="en">${w.w}</b>
-            <div class="ph" lang="en">${ipaOf(w.w)}</div>
+            <span class="we">${w.e || '🔤'}</span>
+            <b>${w.w}</b>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
-            ${famLine(w.w)}
             ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : '<div class="dec" style="background:transparent"></div>'}
           </div>`).join('')}
       </div>
@@ -287,92 +251,21 @@ function listenAll() {
 }
 
 /* ---------------- 出题 ---------------- */
-/* 词族提示：只对 23 组白名单里的词显示。
-   写法一律是"基础词 + 后缀 = 派生词"，让孩子看见构词，而不是多背一个词。
-   注意：这里出现的字母不算泄漏答案——能看到这行时，单词本身早就摊开了。 */
-function famLine(word) {
-  const f = familyOf(word);
-  if (!f) return '';
-  return `<div class="fam" title="${f.zh}">👪 ${f.base} <span class="op">+</span> ${f.suf} <span class="op">=</span> ${f.d}</div>`;
-}
-
 function makeQuestion(word, pool) {
-  /* 同义词组：中文写法不同但指同一件事，不能互相当干扰项。
-     ★ 2026-10-26 修的 bug：原来只比 w.zh === word.zh，但同义词的中文写法本来就不一样
-       （爸爸/父亲、在里面/在里面、秋天/秋天(美式)），字符串比对抓不到 ——
-       结果「父亲的英语是？」的选项里同时出现 dad 和 father，两个都对。
-       宁可多排除几个（干扰项还有 900 多个词可选），也不能让一题有两个正确答案。 */
-  const SYN_GROUPS = [
-    ['dad','father'], ['bag','schoolbag'], ['in','inside'], ['above','over'],
-    ['below','under'], ['small','little'], ['family','home'], ['house','home'],
-    ['learn','study'], ['photo','picture'], ['exam','test'], ['autumn','fall'],
-    ['colour','color'], ['shop','store'], ['road','street'], ['ill','sick'],
-    ['happy','glad'], ['look','see','watch'], ['say','speak','talk'],
-    ['begin','start'], ['want','need'], ['carry','bring','take'], ['near','next'],
-    ['many','much'], ['beautiful','pretty'], ['funny','interesting'],
-  ];
-  const sameZh = w => {
-    if (w.zh === word.zh) return true;
-    const a = String(w.w).toLowerCase(), b = String(word.w).toLowerCase();
-    return SYN_GROUPS.some(g => g.includes(a) && g.includes(b));
-  };
-  const sameIpa = w => {
-    const a = (typeof ipaOf === 'function' ? ipaOf(word.w) : '') || '';
-    const b = (typeof ipaOf === 'function' ? ipaOf(w.w) : '') || '';
-    return a && b && a === b;
-  };
-
-  /* 代词/介词这类词没有图，不能出「看词选图」——四个选项全是字母牌，孩子没得选。
-     ★ 判断「有没有图」必须看 wordIcon 实际画出了什么，不能看 w.e：
-       345 个词靠自绘 SVG，w.e 是空的 —— 按 w.e 过滤会把它们全部判成「没图」，
-       既出不了题，也当不了别人的干扰项。
-     ★ 选项里的图**必须互不相同**：emoji 里有大量词组共用同一张图
-       （👦 同时是 he/his/him/boy/brother，1️⃣ 同时是 one/Monday/January），
-       不去重就会出现两个一样的图，孩子根本没法选。这里按「渲染出的图」去重。 */
-  const picPool = pool.filter(w => w.w !== word.w && hasIcon(w) && !sameZh(w));
-  const pics = (() => {
-    if (!hasIcon(word)) return [];
-    const seen = new Set([iconOf(word)]), out = [];
-    for (const w of shuffle(picPool)) {
-      const k = iconOf(w);
-      if (seen.has(k)) continue;
-      seen.add(k); out.push(w);
-      if (out.length >= 3) break;
-    }
-    return out;
-  })();
-  const canPic = pics.length >= 3;
-  const type = canPic ? Math.floor(Math.random() * 3) : 1 + Math.floor(Math.random() * 2);
-  /* 干扰项不能和答案"看起来一样对"：
-     ① 中文选英文题：「书包」如果干扰项里放 bag（也是书包），孩子选哪个都算错。
-        词库里有 20 组同义词（bag/schoolbag、dad/father、family/home、small/little…），
-        必须按中文排除，不是只排掉同一个词。
-     ② 听音选词题：同音词（son/sun、two/too、here/hear）会让答案不唯一，
-        有音标的按音标排除。 */
-  const strict = shuffle(pool.filter(w => w.w !== word.w && !sameZh(w) && !sameIpa(w)));
-  /* 严格池不够就放宽（先放同音，再放同义）：宁可偶尔有点歧义，也不要退化成 2 个选项 */
-  const relax = shuffle(pool.filter(w => w.w !== word.w && !sameZh(w) && !strict.includes(w)));
-  const distract = (strict.length >= 3 ? strict : strict.concat(relax)).slice(0, 3);
-  /* ★ 提示不能白送答案：原来 hint 一律写「从 X 开头」，
-     但干扰项没排除同首字母的词 —— 选项是 apple / book / cat / dog 时，
-     「从 a 开头」直接把答案圈出来了，孩子根本不用听、不用想。
-     只有当干扰项里真有一个同首字母的，这个提示才算"抓手"，否则降级成只说字母数。 */
-  const firstOf = w => String(w.w || '').slice(0, 1).toLowerCase();
-  const hintFirst = distract.some(w => firstOf(w) === firstOf(word))
-    ? `从 ${word.w[0]} 开头，一共 ${word.w.length} 个字母`
-    : `一共 ${word.w.length} 个字母`;
+  const distract = shuffle(pool.filter(w => w.w !== word.w)).slice(0, 3);
+  const type = Math.floor(Math.random() * 3);
   if (type === 0) { // 看词选图：不自动读音，词旁给 🔊 让孩子点着听（tap-to-hear）
-    return { type, word, hint: `它的中文是「${word.zh}」`,
+    return { type, word,
       prompt: `哪个图片是 <b style="font-size:1.5rem;color:#FF6B6B">${word.w}</b> <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(word.w)}')" title="点我听发音">🔊</button> ？`,
-      options: shuffle([word, ...pics]).map(w => ({ key: w.w, html: `<span class="oe">${iconOf(w)}</span>` })) };
+      options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: `<span class="oe">${w.e || '🔤'}</span>` })) };
   }
   if (type === 1) { // 听音选词：声音就是题目，自动读一遍 + 🔁 重听
-    return { type, word, hint: hintFirst,
+    return { type, word,
       prompt: `🔊 听一听，是哪个单词？（点 🔁 再听）`,
       speakText: word.w, autoSpeak: true, replay: true,
       options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: w.w })) };
   }
-  return { type, word, hint: hintFirst, // 中文选英文：中文已显示，不需要朗读
+  return { type, word, // 中文选英文：中文已显示，不需要朗读
     prompt: `「<b style="font-size:1.3rem;color:#9B72FF">${word.zh}</b>」的英语是？`,
     options: shuffle([word, ...distract]).map(w => ({ key: w.w, html: w.w })) };
 }
@@ -409,12 +302,7 @@ function renderQuiz() {
   const s = session;
   if (s.idx >= s.qs.length) return renderQuizEnd();
   const q = s.qs[s.idx];
-  /* 进入新题：作废上一题的推进与朗读，重置本题状态 */
-  Flow.reset();
-  stopAllSpeech();          // 上一题的单词还没念完也停掉：一次只出一个声音
   s.firstTry = true;
-  s.answered = false;
-  s.tries = 0;
 
   $('#app').innerHTML = `
     <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
@@ -425,76 +313,33 @@ function renderQuiz() {
       <div class="quiz-q" style="font-size:1.15rem;line-height:1.8">${q.prompt}</div>
       ${q.replay ? `<button class="btn ghost" style="margin-bottom:10px" onclick="speak('${jsq(q.speakText)}')">🔁 再听一次</button>` : ''}
       <div class="opt-row">
-        ${q.options.map((o, i) => `<button class="opt" data-i="${i}" onclick="answer(this,'${jsq(o.key)}')">${o.html}</button>`).join('')}
+        ${q.options.map(o => `<button class="opt" onclick="answer(this,'${jsq(o.key)}')">${o.html}</button>`).join('')}
       </div>
       <div class="explain" id="qexp"></div>
     </div>`;
   prewarmWord(q.word.w); // 提前拉取本题单词音频，答对回显零延迟
-  if (q.autoSpeak && q.speakText) Flow.after(350, () => speak(q.speakText, q.lang || 'en-US'));
+  if (q.autoSpeak && q.speakText) setTimeout(() => speak(q.speakText, q.lang || 'en-US'), 350);
 }
 
 function answer(btn, key) {
   const s = session, q = s.qs[s.idx];
-  if (s.answered) return;                    // 已结题：锁住，防重复计分/重复跳题
   const ok = key === q.word.w;
   feedback(btn, ok);
   if (ok) {
     if (s.firstTry) { s.score++; addStars(1); flyStar(btn); }
-    s.answered = true;
     sfx.correct();
-    lockChoices(btn);
     touchWord(q.word.w, true);
-    $('#qexp').innerHTML = `✅ <b>${q.word.w}</b> ${iconOf(q.word)} ${q.word.zh}${q.word.dec ? '<br>🔎 ' + q.word.dec : ''}`;
-    Flow.after(550, () => speak(q.word.w));  // 等答对音效播完再朗读，避免两个声音打架
-    showNext(q.word.w);
+    $('#qexp').innerHTML = `✅ <b>${q.word.w}</b> ${q.word.e || ''} ${q.word.zh}${q.word.dec ? '<br>🔎 ' + q.word.dec : ''}`;
+    setTimeout(() => speak(q.word.w), 550); // 等答对音效播完再朗读，避免两个声音打架
+    setTimeout(() => { s.idx++; renderQuiz(); }, 1900);
   } else {
-    s.firstTry = false; s.tries++; sfx.wrong();
-    if (s.tries >= 2) return revealWord(q);
-    /* 第一次错：给一条能用的线索，而不是干巴巴的"再想想"。
-       听音/中译英给首字母和长度；看图选词给中文（图还是要自己找）。 */
-    $('#qexp').innerHTML = `🤔 再试一次～<br>💡 ${q.hint || '再听一遍它的发音'}`;
-    if (q.replay) Flow.after(300, () => speak(q.speakText, 'en-US'));
+    s.firstTry = false; sfx.wrong();
+    $('#qexp').innerHTML = `🤔 再想想哦，你可以再听一遍提示～`;
   }
 }
 
-/* 错满两次：给答案和单词卡，不让孩子靠瞎点过关 */
-function revealWord(q) {
-  const s = session;
-  s.answered = true;
-  const i = q.options.findIndex(o => o.key === q.word.w);
-  lockChoices(i >= 0 ? document.querySelector('.opt[data-i="' + i + '"]') : null);
-  $('#qexp').innerHTML = `💡 正确答案：<b>${q.word.w}</b> ${iconOf(q.word)} ${q.word.zh}${q.word.dec ? '<br>🔎 ' + q.word.dec : ''}`;
-  Flow.after(500, () => speak(q.word.w));
-  showNext(q.word.w);
-}
-
-/* 结题之后的唯一出口：手动。
-   以前这里是「1.9 秒自己跳」—— 单词、图、记忆法都还没看完就跳走，
-   而且计时器不随换页取消，孩子点「返回」会被自己拽回答题页。 */
-function showNext(say) {
-  const box = $('#qexp');
-  if (!box || String(box.innerHTML || '').indexOf('id="nextQ"') >= 0) return;
-  const s = session;
-  const last = s.idx >= s.qs.length - 1;
-  __quizSay = say || '';
-  __quizGo = Flow.make(() => { s.idx++; renderQuiz(); }, 0);
-  const replay = __quizSay
-    ? `<button class="btn ghost big" onclick="__sayWordAgain()">🔊 再听</button>` : '';
-  box.insertAdjacentHTML('beforeend',
-    `<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px">
-       <button class="btn grape big" id="nextQ" onclick="__quizGo()">${last ? '看结果 🏁' : '下一个 ▶'}</button>${replay}
-     </div>`);
-  /* 手机小屏时解析可能把按钮顶到屏幕外：滚到看得见为止（已经可见就不动） */
-  if (box.scrollIntoView) { try { box.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
-}
-/* 单词不拼进 onclick：英文可能带撇号，拼进去会把属性打断（绘本页踩过的坑） */
-function __sayWordAgain() { if (__quizSay) speak(__quizSay); }
-
-/* 选项锁定用 app.js 里的共享版本（与句子工厂、游戏页同一套规则） */
-
 function renderQuizEnd() {
   const s = session;
-  Flow.reset();
   const perfect = s.score === s.qs.length && s.qs.length > 0;
   const bonus = perfect ? 2 : 0;
   if (bonus) addStars(bonus);
@@ -516,178 +361,10 @@ function renderQuizEnd() {
   session = null; mode = 'browse';
 }
 
-/* ---------------- 跟读打分（听清度） ----------------
-   用浏览器原生 SpeechRecognition 把孩子的跟读识别成文字，再和目标句比对。
-   ★ 评分口径：叫「听清度」不叫「发音分」——浏览器只识别词对不对，
-   听不出口音/重音/语调。识别不准时宁可说「再试一次」也绝不打击孩子。
-   识别不支持的浏览器（Firefox 等）自动降级为「点击音节跟读」：
-   按音节切开，点一个音节听一个音节，孩子跟着念完即算完成。 */
-function startSpeak() {
-  let pool, label;
-  if (poolMode === 'plan') { pool = shuffle(planWords()).slice(0, 8); label = '🎯 我的词单'; }
-  else if (poolMode === 'wrong') { pool = shuffle(wrongWords()).slice(0, 8); label = '📓 错题本'; }
-  else { const t = themeById(curTheme); pool = t.words; label = t.emoji + ' ' + t.name; }
-  if (!pool.length) { toast('这个词单是空的，先选些词～'); return; }
-
-  // 只用有图 + 单词（不取短语）的词：跟读要短、要有图给孩子提示
-  const qs = shuffle(pool).filter(w => !w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w) && w.w.length <= 8).slice(0, 6).map(w => {
-    // 用简单句模板，让孩子读完整的句子（不是孤零零一个词）
-    const templates = [
-      t => `I see a ${t.w}.`,
-      t => `This is ${t.w}.`,
-      t => `I like ${t.w}.`,
-    ];
-    return { word: w, sentence: templates[w.w.length % 3](w) };
-  });
-  if (!qs.length) { toast('这些词太长了，换一批试试～'); return; }
-
-  const supported = speechRecognitionAvailable();
-  session = { kind: 'speak', qs, idx: 0, score: 0, label, supported, tries: 0, best: [] };
-  mode = 'speak'; renderSpeak();
-}
-
-function renderSpeak() {
-  const s = session;
-  Flow.reset(); stopAllSpeech();
-  if (s.idx >= s.qs.length) return renderSpeakEnd();
-  const q = s.qs[s.idx];
-  s.tries = 0;
-
-  if (!s.supported) {
-    // 降级：点击音节跟读
-    const syllables = q.word.w.toLowerCase().match(/[aeiouy]+|[bcdfghjklmnpqrstvwxz]+/g) || [q.word.w];
-    $('#app').innerHTML = `
-      <div class="card" style="max-width:620px;margin:0 auto;text-align:center">
-        <div class="score-bar"><b>🎤 跟读 · ${esc(s.label)}</b><span>第 ${s.idx + 1} / ${s.qs.length} 个 · ✅ ${s.score}</span></div>
-        <p style="font-size:.95rem;color:#5C6273;margin:4px 0 10px">点下面的音节，跟着念（每点一个就念一个）👇</p>
-        <div style="font-size:56px;margin:8px 0">${wordIcon(q.word)}</div>
-        <div style="font-size:1.6rem;letter-spacing:2px;margin:10px 0;font-weight:700">${q.word.w}</div>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0">
-          ${syllables.map((syl, i) => `<button class="btn mint" style="font-size:1.3rem;padding:12px 22px" onclick="speakSyl(this,'${syl}')">${syl}</button>`).join('')}
-        </div>
-        <div class="explain" id="sexp"></div>
-        <div style="margin-top:12px;display:flex;gap:10px;justify-content:center">
-          <button class="btn grape big" onclick="speakOk()">✅ 我跟读完了</button>
-          <button class="btn ghost" onclick="renderBrowse()">← 返回</button>
-        </div>
-      </div>`;
-    window.speakSyl = (btn, syl) => { sfx.pop(); speak(syl, 'en-US', 1); btn.style.transform = 'scale(1.1)'; setTimeout(() => btn.style.transform = '', 200); };
-    window.speakOk = () => {
-      s.score++; addStars(1); sfx.correct();
-      $('#sexp').innerHTML = `🎉 做得很好！记住 <b>${q.word.w}</b> ${iconOf(q.word)} ${q.word.zh}`;
-      Flow.after(1200, () => { s.idx++; renderSpeak(); });
-    };
-    return;
-  }
-
-  $('#app').innerHTML = `
-    <div class="card" style="max-width:620px;margin:0 auto;text-align:center;position:relative" id="speakCard">
-      <div class="score-bar"><b>🎤 跟读 · ${esc(s.label)}</b><span>第 ${s.idx + 1} / ${s.qs.length} 个 · ✅ ${s.score}</span></div>
-      <p style="font-size:.95rem;color:#5C6273;margin:4px 0 8px">听一遍，然后<strong style="color:#4E9E59">对着麦克风跟着念</strong> 🎙️</p>
-      <div style="font-size:56px;margin:8px 0">${wordIcon(q.word)}</div>
-      <div style="font-size:1.5rem;letter-spacing:1px;margin:10px 0;font-weight:700;font-family:var(--mono,monospace)">${q.sentence}</div>
-      <div id="spStatus" style="font-size:.95rem;color:#5C6273;margin:10px 0;min-height:2em"></div>
-      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="btn mint big" onclick="window._spPlay()">🔊 听一遍</button>
-        <button class="btn orange big" id="spMic" onclick="window._spRecord()">🎤 开始跟读</button>
-      </div>
-      <div class="explain" id="spResult" style="margin-top:12px"></div>
-      <div style="margin-top:10px;display:flex;gap:10px;justify-content:center">
-        <button class="btn ghost" onclick="window._spSkip()">跳过这个 ▶</button>
-        <button class="btn ghost" onclick="renderBrowse()">← 返回</button>
-      </div>
-    </div>`;
-
-  window._spPlay = () => { sfx.pop(); speak(q.sentence, 'en-US', 0.85); };
-  window._spSkip = () => { s.idx++; renderSpeak(); };
-  window._spRecord = () => {
-    const mic = document.getElementById('spMic');
-    const status = document.getElementById('spStatus');
-    mic.disabled = true;
-    status.innerHTML = '🎙️ 听着呢... 对着麦克风说 <b>' + esc(q.sentence) + '</b>';
-    const rec = startListening({
-      lang: 'en-US',
-      onResult: (heard) => {
-        const r = speechScore(q.sentence, heard);
-        const v = speechVerdict(r.score);
-        const card = document.getElementById('speakCard');
-        if (r.score !== null) speechBurst(card);
-        const html = `
-          <div style="font-size:2.2rem;margin:6px 0">${v.emoji}</div>
-          <div style="font-size:1.25rem;font-weight:700;color:${r.score >= 75 ? '#4E9E59' : '#B45309'}">
-            听清度 <b style="font-size:1.6rem">${r.score === null ? '—' : r.score}</b> / 100 &nbsp;·&nbsp; ${v.text}
-          </div>
-          <div style="font-size:1.15rem;letter-spacing:1px;margin:10px 0;line-height:2">
-            ${speechMarkSpans(q.sentence, r)}
-          </div>
-          <div style="font-size:.85rem;color:#6B7280">识别到：「${esc(heard)}」</div>
-        `;
-        document.getElementById('spResult').innerHTML = html;
-        if (r.score !== null && r.score >= 75) {
-          s.score++; addStars(1); sfx.correct();
-          if (s.best[q.word.w] === undefined || s.best[q.word.w] < r.score) s.best[q.word.w] = r.score;
-          Flow.after(1400, () => { s.idx++; renderSpeak(); });
-        } else {
-          sfx.wrong();
-          document.getElementById('spResult').insertAdjacentHTML('beforeend',
-            `<div style="margin-top:10px;display:flex;gap:10px;justify-content:center"><button class="btn orange" onclick="window._spRecord()">🔁 再试一次</button></div>`);
-        }
-        mic.disabled = false;
-      },
-      onError: (err) => {
-        mic.disabled = false;
-        const msg = err === 'not-allowed'
-          ? '🚫 麦克风权限被拒了——点地址栏的 🔒 图标允许麦克风，再试一次'
-          : err === 'no-speech'
-          ? '🤔 没听到声音——靠近麦克风一点，再说一次'
-          : err === 'unsupported'
-          ? '😅 这个浏览器不支持语音识别，换 Chrome 或 Edge 试试'
-          : '📶 识别失败，检查网络后重试';
-        status.innerHTML = msg;
-        if (err === 'unsupported') {
-          // 改走降级路径
-          s.supported = false; renderSpeak();
-        }
-      },
-      onEnd: () => {},
-    });
-    if (!rec) {
-      mic.disabled = false;
-      status.innerHTML = '😅 这个浏览器不支持语音识别，换 Chrome 或 Edge 试试';
-    }
-  };
-  // 自动听一遍（不用孩子主动点）
-  Flow.after(400, () => window._spPlay());
-}
-
-function renderSpeakEnd() {
-  const s = session;
-  const avg = s.qs.length ? Math.round(s.score / s.qs.length * 100) : 0;
-  addStars(s.score + 1); sfx.win();
-  if (s.score === s.qs.length) confetti();
-  $('#app').innerHTML = `
-    <div class="card bounce-in" style="max-width:520px;margin:0 auto;text-align:center;padding:32px 22px">
-      <div style="font-size:70px">${avg >= 80 ? '🎉' : avg >= 50 ? '👍' : '🌱'}</div>
-      <h2 style="justify-content:center">${avg >= 80 ? '跟读很棒！' : avg >= 50 ? '不错，继续练！' : '多听多念会更棒！'}</h2>
-      <p style="font-size:1.05rem">读对 <b>${s.score} / ${s.qs.length}</b> 个，获得 ${'⭐'.repeat(Math.min(s.score + 1, 10))}</p>
-      <p style="font-size:.85rem;color:#6B7280">「听清度」是看你说的词对不对，不是发音评分哦～多念几遍会越来越清楚 🎙️</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:14px">
-        <button class="btn mint big" onclick="startSpeak()">再跟读一批</button>
-        <button class="btn ghost big" onclick="renderBrowse()">回单词浏览</button>
-      </div>
-    </div>`;
-  mode = 'browse';
-}
-
 /* ---------------- 拼写工坊 · 六步法（读→看→选→拆→拼→写） ----------------
    借鉴自家 blockcraft 实验站已验证的六步拼写流程：
    先听音（不认字母）→ 认形 → 从打乱字母里挑 → 切音块 → 整体拼装 → 听音默写。
-   把"最难的一步"（默写）放在最后，前面每一步都在为它搭梯子。
-
-   ★ 铁律：顶栏（spHead）绝不能出现英文拼写。
-   六步里只有「看」和「拆」两步需要看见字母，而它们各自在正文里呈现
-   （看：大字 sp-reveal；拆：字母切分条 sp-cutline）。顶栏一旦露出单词，
-   后面的「选/拼/写」就全变成抄写，六步法当场失去意义。 */
+   把"最难的一步"（默写）放在最后，前面每一步都在为它搭梯子。 */
 
 /* 音块切分：只做"参考切法"，不判对错。 元音块橙、辅音块蓝。 */
 const SP_VG = ['igh','air','ear','eer','ea','ee','oo','ou','ow','oi','oy','ai','ay','au','aw','ie','ue','ui','oa','ar','or','er','ir','ur'];
@@ -735,7 +412,6 @@ const SP_STEPS = [['read','读'],['look','看'],['pick','选'],['split','拆'],[
 let spell = null;
 
 function startSpell() {
-  Flow.reset();      // 切到拼写工坊：作废答题页可能还挂着的推进/朗读
   let pool;
   if (poolMode === 'plan') pool = planWords();
   else if (poolMode === 'wrong') pool = wrongWords();
@@ -759,7 +435,7 @@ function spMakeBoard(word, nDecoys) {
   const alpha = 'abcdefghijklmnopqrstuvwxyz'; let guard = 0;
   while (bank.length < letters.length + nDecoys && guard++ < 60) {
     const ch = alpha[Math.floor(Math.random() * 26)];
-    if (!letters.includes(ch) && !bank.some(t => t.ch === ch)) bank.push({ id: 'd' + guard, ch, decoy: true, used: false });
+    if (!letters.includes(ch)) bank.push({ id: 'd' + guard, ch, decoy: true, used: false });
   }
   for (let i = bank.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [bank[i], bank[j]] = [bank[j], bank[i]]; }
   spell.board = { word: word.toLowerCase(), bank, slots: letters.map(() => null), solved: false };
@@ -770,11 +446,9 @@ function spStepsBar() {
 }
 function spHead() {
   const w = spWord();
-  /* 只给中文意思 + 图，不给英文拼写——答案要孩子自己从记忆里取（见上方铁律）。
-     想听发音：第 0/2/5 步各有自己的 🔊，第 4 步的提示行也带一个。 */
   return `<div class="score-bar"><b>🔤 拼写工坊</b><span>第 ${spell.wi + 1} / ${spell.words.length} 词 · ⭐${spell.stars}</span></div>
     ${spStepsBar()}
-    <p class="sp-tip sp-ask" style="margin:0 0 10px"><b>${esc(w.zh)}</b> <span class="sp-ask-e">${iconOf(w)}</span></p>`;
+    <p class="sp-tip" style="margin:0 0 10px"><b style="color:#9B72FF">${esc(w.w)}</b> · ${esc(w.zh)} ${w.e || ''}</p>`;
 }
 function spFoot(extra) {
   return `<div class="sp-foot">
@@ -793,14 +467,14 @@ function renderSpell() {
   let body = '';
   if (spell.step === 0) {
     body = `
-      <span class="sp-bigimg">${iconOf(w)}</span>
+      <span class="sp-bigimg">${w.e || '🔤'}</span>
       <button class="sp-listen" onclick="spListen()">🔊 点我听发音</button>
       <div class="sp-count" id="spCount">已听 ${spell.listened || 0} / 2 遍</div>
-      <p class="sp-tip">先别急着看字母，<b>只听声音</b>，把音记住。听够两遍再往下走～</p>
+      <p class="sp-tip">先别急着看字母，<b>只听声音</b>，猜猜是哪个东西。听够两遍再往下走～</p>
       ${spNextBtn('spGoRead', '下一步 ▶', !spell.listened || spell.listened < 2)}`;
   } else if (spell.step === 1) {
     body = `
-      <span class="sp-bigimg">${iconOf(w)}</span>
+      <span class="sp-bigimg">${w.e || '🔤'}</span>
       <div class="sp-cn">${esc(w.zh)}</div>
       <div class="sp-reveal">${esc(w.w)}</div>
       <p class="sp-tip">看清楚：<b>几个字母？哪两个字母是好搭档？</b>记一下，马上字母块会被打乱！</p>
@@ -808,32 +482,29 @@ function renderSpell() {
     setTimeout(() => speak(w.w), 350);
   } else if (spell.step === 2) {
     body = `
-      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${iconOf(w)} <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(w.w)}')">🔊</button></p>
+      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${w.e || ''} <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(w.w)}')">🔊</button></p>
       <p class="sp-tip" style="margin-top:0">这个单词用到了哪些字母？<b>多余的不要选</b>。</p>
-      ${spBoard()}
-      ${spNextBtn('spGoPick', '下一步 ▶', !spell.board.solved)}`;
+      ${spBoard()}`;
   } else if (spell.step === 3) {
     body = `
       <p class="sp-tip"><b>切一刀，把单词分成几个音块</b>——按"一口气读得出来"来分。</p>
       <div class="sp-cutline">${spCutline()}</div>
       <p class="sp-tip" style="margin-top:6px">两个字母打一个音的（<b>sh、ee、ai</b>）不要拆开哦。${spell.split.ref ? '' : '<button class="btn ghost" style="margin-left:6px;padding:4px 12px;font-size:.8rem" onclick="spShowRef()">看参考切法</button>'}</p>
-      ${familyOf(w.w) ? `<p class="sp-tip sp-fam">👪 这一家的其他人：<b>${familyOf(w.w).base}</b> + <b>${familyOf(w.w).suf}</b> = <b>${familyOf(w.w).d}</b>（${familyOf(w.w).zh}${familyOf(w.w).note ? '，' + familyOf(w.w).note : ''}）</p>` : ''}
       ${spell.split.ref ? `<div class="sp-ref">${chunkWord(w.w).map(c => `<span class="sp-chunk ${/[aeiou]/.test(c) ? 'v' : 'c'}">${c}</span>`).join('')}</div><div class="sp-ref-label">↑ 参考切法（橙色是含元音的音块）</div>` : ''}
       ${spNextBtn('spGoSplit', '下一步 ▶')}`;
   } else if (spell.step === 4) {
     body = `
-      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${iconOf(w)} <button class="mini-speaker" onclick="event.stopPropagation();speak('${jsq(w.w)}')">🔊</button></p>
+      <p class="sp-tip" style="font-size:1rem"><b>${esc(w.zh)}</b> ${w.e || ''}</p>
       <p class="sp-tip" style="margin-top:0">还记得字母顺序吗？把字母块摆回台子上！点台上的字母可以拿回来。</p>
-      ${spBoard()}
-      ${spNextBtn('spGoBuild', '下一步 ▶', !spell.board.solved)}`;
+      ${spBoard()}`;
   } else if (spell.step === 5) {
     const wr = spell.write;
     body = `
-      <span class="sp-bigimg" style="font-size:64px">${iconOf(w)}</span>
+      <span class="sp-bigimg" style="font-size:64px">${w.e || '🔤'}</span>
       <div class="sp-cn">${esc(w.zh)}</div>
       <button class="sp-listen" onclick="speak('${jsq(w.w)}')">🔊 再听一遍</button>
       ${wr.revealed ? `<div class="sp-reveal" style="font-size:1.6rem;color:#E05656">${esc(w.w)}</div><p class="sp-tip">照着上面的答案，在下面打一遍就过关～</p>` : `<p class="sp-tip">听着音，把单词<b>打出来</b>！</p>`}
-      <input class="sp-input" id="spWriteInput" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="latin" aria-label="在这里拼写单词" placeholder="在这里输入…" onkeydown="if(event.key==='Enter')spCheckWrite()">
+      <input class="sp-input" id="spWriteInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="在这里输入…" onkeydown="if(event.key==='Enter')spCheckWrite()">
       <div class="sp-next"><button class="btn grape big" onclick="spCheckWrite()">✅ 检查</button></div>
       ${wr.fails >= 2 && !wr.revealed ? '<div class="sp-next"><button class="btn ghost" onclick="spReveal()">👀 想不起来了，看答案</button></div>' : ''}`;
     setTimeout(() => { const el = document.getElementById('spWriteInput'); if (el) el.focus(); }, 200);
@@ -864,7 +535,7 @@ function spBoard() {
     }).join('')}</div>
     <div class="sp-bank">${b.bank.map(t =>
       `<button class="sp-tile ${t.used ? 'used' : ''}" id="tile-${t.id}" onclick="spTapTile('${t.id}')">${t.ch}</button>`).join('')}</div>
-    ${b.solved ? '<p class="sp-tip" style="color:#2E7D32;font-weight:800">✅ 摆对啦！点下面的「下一步」继续～</p>' : ''}`;
+    ${b.solved ? '<p class="sp-tip" style="color:#2E7D32;font-weight:800">✅ 摆对啦！</p>' : ''}`;
 }
 function spTapTile(id) {
   const b = spell.board; if (b.solved) return;

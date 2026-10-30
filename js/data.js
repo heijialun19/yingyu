@@ -7,6 +7,8 @@
 const THEMES = GRADES.flatMap(g => g.themes.map(t => Object.assign({ grade: g.id, gradeName: g.name }, t)));
 const TOTAL_WORDS = THEMES.reduce((s, t) => s + t.words.length, 0);
 
+/* 绘本总数（书名/插画详见 books.html 的 BOOKS + BOOKS2） */
+const BOOKS_TOTAL = 12;
 
 /* ---------- 词性（用孩子能看懂的方式解释） ---------- */
 const POS_INFO = {
@@ -37,11 +39,6 @@ const POS_OVERRIDE = {
   travel:'v', visit:'v', pack:'v',
   buy:'v', sell:'v', pay:'v', cost:'v',
   paint:'v',
-  /* 数字主题里的两个"假数词"：数数(v.)、数字(n.)，都不是数词 */
-  count:'v', number:'n',
-  /* 主题默认是名词，但实际不是名词的：不修就会出 "This is a cheap." 这种错句 */
-  cheap:'adj', expensive:'adj', foreign:'adj', fresh:'adj', silent:'adj',
-  now:'adv',
   celebrate:'v', invite:'v', prepare:'v',
   protect:'v', save:'v',
   study:'v', review:'v', believe:'v', fail:'v',
@@ -58,255 +55,157 @@ const POS_OVERRIDE = {
 THEMES.forEach(t => t.words.forEach(w => {
   w.pos = POS_OVERRIDE[w.w] || (w.w.includes(' ') ? 'phrase' : (t.pos || 'n'));
 }));
-/* ---------------- 词族（同根派生）：23 组，人工核对过 ----------------
-   只收"意思透明的真派生"：teach→teacher 是"教书的人"，sun→sunny 是"有太阳的"。
-   规则自动扫能扫出 34 组，但 bus→busy、man→many、sweat→sweater、store→story
-   这类是假朋友，硬凑会教错，所以这里用白名单，不用规则。 */
-const WORD_FAMILY = {
-  art:     { d: 'artist',    suf: 'ist', zh: '艺术 → 艺术家' },
-  build:   { d: 'building',  suf: 'ing', zh: '建造 → 建筑物' },
-  care:    { d: 'careful',   suf: 'ful', zh: '用心 → 仔细的', note: 'care 去 e 加 -ful' },
-  cloud:   { d: 'cloudy',    suf: 'y',   zh: '云 → 多云的' },
-  dance:   { d: 'dancer',    suf: 'r',   zh: '跳舞 → 舞者', note: 'dance 去 e 加 -r' },
-  farm:    { d: 'farmer',    suf: 'er',  zh: '种田 → 农民' },
-  foreign: { d: 'foreigner', suf: 'er',  zh: '外国的 → 外国人' },
-  friend:  { d: 'friendly',  suf: 'ly',  zh: '朋友 → 友好的', note: 'ly 结尾但是形容词不是副词' },
-  health:  { d: 'healthy',   suf: 'y',   zh: '健康 → 健康的' },
-  help:    { d: 'helpful',   suf: 'ful', zh: '帮助 → 有帮助的' },
-  rain:    { d: 'rainy',     suf: 'y',   zh: '雨 → 下雨的' },
-  sail:    { d: 'sailor',    suf: 'or',  zh: '航行 → 水手' },
-  sing:    { d: 'singer',    suf: 'er',  zh: '唱歌 → 歌手' },
-  slow:    { d: 'slowly',    suf: 'ly',  zh: '慢的 → 慢慢地' },
-  snow:    { d: 'snowy',     suf: 'y',   zh: '雪 → 下雪的' },
-  sun:     { d: 'sunny',     suf: 'y',   zh: '太阳 → 晴朗的', note: 'n 要双写' },
-  teach:   { d: 'teacher',   suf: 'er',  zh: '教 → 老师' },
-  use:     { d: 'useful',    suf: 'ful', zh: '用 → 有用的', note: 'use 去 e 加 -ful' },
-  wait:    { d: 'waiter',    suf: 'er',  zh: '等 → 服务员' },
-  win:     { d: 'winner',    suf: 'er',  zh: '赢 → 获胜者', note: 'n 要双写' },
-  wind:    { d: 'windy',     suf: 'y',   zh: '风 → 刮风的' },
-  work:    { d: 'worker',    suf: 'er',  zh: '工作 → 工人' },
-  write:   { d: 'writer',    suf: 'r',   zh: '写 → 作家', note: 'write 去 e 加 -r' },
-};
-/* ---------------- 合成词：36 个，两个现成的词拼起来 ----------------
-   「拆词」是语言学事实，不受版权保护；这 36 个都核对过 a + b 能还原成整词。 */
-const COMPOUNDS = [
-  { w: "blackboard", a: "black", b: "board" },
-  { w: "classroom", a: "class", b: "room" },
-  { w: "schoolbag", a: "school", b: "bag" },
-  { w: "watermelon", a: "water", b: "melon" },
-  { w: "strawberry", a: "straw", b: "berry" },
-  { w: "pineapple", a: "pine", b: "apple", note: "实际来自早期英语的松果一词，不是松树+苹果" },
-  { w: "blueberry", a: "blue", b: "berry" },
-  { w: "mooncake", a: "moon", b: "cake" },
-  { w: "bedroom", a: "bed", b: "room" },
-  { w: "raincoat", a: "rain", b: "coat" },
-  { w: "eggplant", a: "egg", b: "plant", note: "因形状像蛋得名，不是蛋+植物" },
-  { w: "notebook", a: "note", b: "book" },
-  { w: "football", a: "foot", b: "ball" },
-  { w: "airport", a: "air", b: "port" },
-  { w: "weekend", a: "week", b: "end" },
-  { w: "weekday", a: "week", b: "day" },
-  { w: "birthday", a: "birth", b: "day" },
-  { w: "policeman", a: "police", b: "man" },
-  { w: "playground", a: "play", b: "ground" },
-  { w: "homework", a: "home", b: "work" },
-  { w: "classmate", a: "class", b: "mate" },
-  { w: "toothbrush", a: "tooth", b: "brush", note: "brush 在这里是刷子不是画笔" },
-  { w: "passport", a: "pass", b: "port" },
-  { w: "gentleman", a: "gentle", b: "man" },
-  { w: "goodbye", a: "good", b: "bye", note: "实际来自 God be with ye，拆成 good+bye 是帮记忆不是词源" },
-  { w: "basketball", a: "basket", b: "ball" },
-  { w: "supermarket", a: "super", b: "market" },
-  { w: "grandpa", a: "grand", b: "pa" },
-  { w: "grandma", a: "grand", b: "ma" },
-  { w: "breakfast", a: "break", b: "fast", note: "fast 在这里是禁食（夜里不吃），break fast = 打破禁食 = 吃早餐" },
-  { w: "sometimes", a: "some", b: "times" },
-  { w: "everyone", a: "every", b: "one" },
-  { w: "something", a: "some", b: "thing" },
-  { w: "nothing", a: "no", b: "thing" },
-  { w: "bathroom", a: "bath", b: "room" },
-  { w: "living room", a: "living", b: "room" }
-];
-
-/* 构词成分的中文：有些成分（board / berry / straw…）本身不是词库里的词条，
-   但做"诱饵选项"时必须说得出意思，否则题目只能拿不相关的词凑数。 */
-const PART_ZH = {
-  board: '板', room: '房间', straw: '稻草', berry: '浆果', pine: '松树', note: '笔记',
-  port: '港口', birth: '出生', ground: '场地', mate: '伙伴', pass: '通行',
-  basket: '篮子', super: '超级', grand: '（外）祖', pa: '爸', ma: '妈',
-  break: '打破', times: '次', bath: '洗澡', living: '生活',
-  brush: '刷', fast: '禁食', egg: '蛋', plant: '植物', pine: '松树', apple: '苹果',
-};
-
-const FAMILY_OF = (() => {
-  const m = {};
-  for (const b in WORD_FAMILY) { m[b] = b; m[WORD_FAMILY[b].d] = b; }
-  return m;
-})();
-/* 给一个词，返回它所在的那一家（基础词 / 派生词 / 后缀 / 中文关系），没有就返回 null */
-function familyOf(w) {
-  const base = FAMILY_OF[w];
-  if (!base) return null;
-  const f = WORD_FAMILY[base];
-  return { base, d: f.d, suf: f.suf, zh: f.zh, note: f.note || '' };
-}
-
 const posInfo = p => POS_INFO[p] || POS_INFO.n;
 
 /* ---------- 26 个字母的象形故事 ----------
    v: 是否元音  shape: 象形物  short: 格子短名
    s: 自然拼读音（可朗读） szh: 中文注音  story/py/words 同前
-   nameEn: 字母名的英文拼写（用于朗读字母名）
-     ★ 有道对单字母的音质不稳定（E/I/J/O/P/R/T/U/X/Z 只有 56-64kbps，
-     其他字母 128-320kbps），用字母名的英文单词请求能拿到更好的音源
-     （如 Z→"zee" 从 56kbps 升到 224kbps）。只用正确的字母名拼写，
-     不用 jai/kai 这种读音不对的近似词。
    words: 3个代表词，第一个总是以该字母开头 */
 const LETTERS = [
-  { L:'A', nameEn:'ay', v:true, shape:'小鸟', emoji:'🐦', color:'#FF6B6B', s:'ah', szh:'/æ/ 啊',
+  { L:'A', v:true, shape:'小鸟', emoji:'🐦', color:'#FF6B6B', s:'ah', szh:'/æ/ 啊',
     story:'大写 A 像小鸟张开的两只翅膀。小鸟张开嘴巴"啊——"地唱歌，a 的读音就藏在这里！',
     words:[ {w:'apple',zh:'苹果',e:'🍎',dec:'a 小鸟开头的词——小鸟最爱吃苹果！'},
             {w:'ant',zh:'蚂蚁',e:'🐜',dec:'小小的 a，小小的蚂蚁。'},
             {w:'cat',zh:'小猫',e:'🐱',dec:'c 小手抓 + a 唱歌 + t 说话 = 小猫抓老鼠喵喵叫！'} ]},
-  { L:'B', nameEn:'B', v:false, shape:'小棒子', short:'棒子', emoji:'🏏', color:'#FF9F45', s:'buh', szh:'/b/ 波',
-    story:'b 像一根小棒子（棒球棒），敲敲打打真有劲！联想小窍门：b 的东西常常是棒子和板子做的。',
+  { L:'B', v:false, shape:'小棒子', short:'棒子', emoji:'🏏', color:'#FF9F45', s:'buh', szh:'/b/ 波',
+    story:'b 像一根小棒子（棒球棒），敲敲打打真有劲！词源小秘密：b 的东西常常是棒子和板子做的。',
     py:'拼音里也有 b（读"播"），英语 b 读 /b/，像轻轻的"布"。',
     words:[ {w:'ball',zh:'球',e:'⚽',dec:'用棒子打的球，b 开头！'},
             {w:'bat',zh:'球棒',e:'🏏',dec:'bat 就是棒子本棒！'},
             {w:'bed',zh:'床',e:'🛏️',dec:'b 和 d 像床的两头的挡板，e 在中间睡大觉。'} ]},
-  { L:'C', nameEn:'C', v:false, shape:'小手抓', short:'小手', emoji:'🤏', color:'#FFD93D', s:'kuh', szh:'/k/ 克',
+  { L:'C', v:false, shape:'小手抓', short:'小手', emoji:'🤏', color:'#FFD93D', s:'kuh', szh:'/k/ 克',
     story:'c 像一只弯弯的小手，看见东西就想抓——catch（抓住）！',
     words:[ {w:'cat',zh:'小猫',e:'🐱',dec:'c 小手抓——小猫是抓老鼠的小能手！'},
             {w:'car',zh:'小汽车',e:'🚗',dec:'小手 c 握住方向盘，嘀嘀！'},
             {w:'cake',zh:'蛋糕',e:'🎂',dec:'用手捧来的蛋糕，真香！'} ]},
-  { L:'D', nameEn:'dee', v:false, shape:'往下', emoji:'⬇️', color:'#6BCB77', s:'duh', szh:'/d/ 得',
+  { L:'D', v:false, shape:'往下', emoji:'⬇️', color:'#6BCB77', s:'duh', szh:'/d/ 得',
     story:'d 的圆肚子长在下面，总是往低处跑：down（向下）、dig（挖土）。',
     py:'拼音 d 读"得"，英语 d 读 /d/，像短短的"的"。',
     words:[ {w:'down',zh:'向下',e:'⬇️',dec:'d 就是往下！'},
             {w:'dig',zh:'挖土',e:'⛏️',dec:'往低处挖呀挖。'},
             {w:'dog',zh:'小狗',e:'🐶',dec:'小狗爱低头闻来闻去。'} ]},
-  { L:'E', nameEn:'ee', v:true, shape:'小眼睛', short:'眼睛', emoji:'👁️', color:'#4EC5F1', s:'eh', szh:'/e/ 哎',
+  { L:'E', v:true, shape:'小眼睛', short:'眼睛', emoji:'👁️', color:'#4EC5F1', s:'eh', szh:'/e/ 哎',
     story:'小写 e 像一只亮晶晶的小眼睛，眨呀眨，什么新奇事都逃不过它。两只小手(p p)搭在眼睛(e e)上偷看，就是 peep（偷看）！',
     words:[ {w:'egg',zh:'鸡蛋',e:'🥚',dec:'e 小眼睛开头的词。'},
             {w:'elephant',zh:'大象',e:'🐘',dec:'e 开头的大象甩鼻子。'},
             {w:'red',zh:'红色',e:'🔴',dec:'r + e 唱歌 + d，红红的！'} ]},
-  { L:'F', nameEn:'ef', v:false, shape:'小手', emoji:'🖐️', color:'#9B72FF', s:'fuh', szh:'/f/ 夫',
+  { L:'F', v:false, shape:'小手', emoji:'🖐️', color:'#9B72FF', s:'fuh', szh:'/f/ 夫',
     story:'f 像一只举起的小手，五根手指头看得清清楚楚：finger（手指）、five（五）！',
     py:'拼音 f 读"佛"，英语 f 读 /f/，像轻轻吹气"呼"。',
     words:[ {w:'finger',zh:'手指',e:'👆',dec:'f 小手 + inger，手指！'},
             {w:'five',zh:'五',e:'🖐️',dec:'一只小手正好五根手指！'},
             {w:'fish',zh:'鱼',e:'🐟',dec:'伸出小手抓鱼咯！'} ]},
-  { L:'G', nameEn:'gee', v:false, shape:'小鸽子', short:'鸽子', emoji:'🕊️', color:'#FF6B6B', s:'guh', szh:'/g/ 哥',
+  { L:'G', v:false, shape:'小鸽子', short:'鸽子', emoji:'🕊️', color:'#FF6B6B', s:'guh', szh:'/g/ 哥',
     story:'g 像一只小鸽子，"咕咕咕"叫个不停，g 的读音就像鸽子的"哥"。',
     py:'拼音 g 读"哥"，英语 g 读 /g/，和"哥"很像！',
     words:[ {w:'girl',zh:'女孩',e:'👧',dec:'小鸽子 g 开头。'},
             {w:'green',zh:'绿色',e:'🟢',dec:'绿绿的草地，鸽子来做客。'},
             {w:'goose',zh:'大鹅',e:'🦢',dec:'g 开头的嘎嘎大鹅！'} ]},
-  { L:'H', nameEn:'aitch', v:false, shape:'高高的', short:'高高的', emoji:'🪜', color:'#FF9F45', s:'huh', szh:'/h/ 喝',
-    story:'h 像一把高高的梯子，一直往上爬。联想小窍门：h 的词常常和"高"有关：high（高）、hat（高帽子）、head（头，身体最高的地方）。',
+  { L:'H', v:false, shape:'高高的', short:'高高的', emoji:'🪜', color:'#FF9F45', s:'huh', szh:'/h/ 喝',
+    story:'h 像一把高高的梯子，一直往上爬。词源小秘密：h 的词常常和"高"有关：high（高）、hat（高帽子）、head（头，身体最高的地方）。',
     py:'拼音 h 读"喝"，英语 h 读 /h/，像哈哈大笑的气音。',
     words:[ {w:'hat',zh:'帽子',e:'🎩',dec:'高高的帽子 h 开头！'},
             {w:'head',zh:'头',e:'🙂',dec:'头是身体最高的地方。'},
             {w:'hot',zh:'热',e:'🥵',dec:'热气都是往上飘的！'} ]},
-  { L:'I', nameEn:'I', v:true, shape:'小人', emoji:'🧍', color:'#FFD93D', s:'ih', szh:'/ɪ/ 衣（短促）',
+  { L:'I', v:true, shape:'小人', emoji:'🧍', color:'#FFD93D', s:'ih', szh:'/ɪ/ 衣（短促）',
     story:'i 像一个站得直直的小人，头上的小圆点就是他的脑袋。大写 I 单独一个字母时，意思就是"我"！',
     words:[ {w:'ice cream',zh:'冰淇淋',e:'🍦',dec:'i 开头的甜甜凉凉。'},
             {w:'in',zh:'在里面',e:'📥',dec:'i 开头：在里面。'},
             {w:'pig',zh:'小猪',e:'🐷',dec:'p + i 唱歌 + g，小猪噜噜。'} ]},
-  { L:'J', nameEn:'J', v:false, shape:'小鱼钩', short:'鱼钩', emoji:'🎣', color:'#6BCB77', s:'juh', szh:'/dʒ/ 基',
+  { L:'J', v:false, shape:'小鱼钩', short:'鱼钩', emoji:'🎣', color:'#6BCB77', s:'juh', szh:'/dʒ/ 基',
     story:'j 像一只小鱼钩，下面弯弯的钩子，甩出去就能钓大鱼！',
     py:'拼音 j 读"鸡"，英语 j 读 /dʒ/，像"jeep 吉普"的 j。',
     words:[ {w:'jump',zh:'跳',e:'🤸',dec:'像鱼钩甩出去一样跳起来！'},
             {w:'juice',zh:'果汁',e:'🧃',dec:'j 开头的甜甜果汁。'},
             {w:'jeep',zh:'吉普车',e:'🚙',dec:'jeep 吉普车，发音和汉字"吉普"超像！'} ]},
-  { L:'K', nameEn:'K', v:false, shape:'踢腿', emoji:'🦵', color:'#4EC5F1', s:'kuh', szh:'/k/ 科',
+  { L:'K', v:false, shape:'踢腿', emoji:'🦵', color:'#4EC5F1', s:'kuh', szh:'/k/ 科',
     story:'K 像一条用力踢出去的腿。踢！kick（踢）！这个单词的样子和意思一模一样。',
     py:'拼音 k 读"科"，英语 k 读 /k/，和 c 抓手是亲戚（读音一样）。',
     words:[ {w:'kick',zh:'踢',e:'⚽',dec:'K 踢腿踢球！'},
             {w:'kite',zh:'风筝',e:'🪁',dec:'踢腿放风筝，飞高高。'},
             {w:'key',zh:'钥匙',e:'🔑',dec:'y 举手接过钥匙。'} ]},
-  { L:'L', nameEn:'L', v:false, shape:'长腿', emoji:'🦵', color:'#9B72FF', s:'luh', szh:'/l/ 勒',
-    story:'l 像一条又长又直的腿，也像一根长长的线。联想小窍门：l 的词常常和"长"有关：leg（腿）、line（线）。',
+  { L:'L', v:false, shape:'长腿', emoji:'🦵', color:'#9B72FF', s:'luh', szh:'/l/ 勒',
+    story:'l 像一条又长又直的腿，也像一根长长的线。词源小秘密：l 的词常常和"长"有关：leg（腿）、line（线）。',
     py:'拼音 l 读"勒"，英语 l 读 /l/，像舌头顶着上牙说"了"。',
     words:[ {w:'leg',zh:'腿',e:'🦵',dec:'l 长腿本腿！'},
             {w:'line',zh:'线',e:'➖',dec:'l 就是长长的线。'},
             {w:'look',zh:'看',e:'👀',dec:'站起来看长长的一条线。'} ]},
-  { L:'M', nameEn:'M', v:false, shape:'大山', emoji:'⛰️', color:'#FF6B6B', s:'muh', szh:'/m/ 摸',
+  { L:'M', v:false, shape:'大山', emoji:'⛰️', color:'#FF6B6B', s:'muh', szh:'/m/ 摸',
     story:'M 像两座尖尖的大山！mountain（山）的开头就是 M。男人像山一样顶天立地，就是 man。',
     py:'拼音 m 读"摸"，英语 m 读 /m/，闭上嘴巴"姆"。',
     words:[ {w:'mountain',zh:'大山',e:'⛰️',dec:'M 大山本山！'},
             {w:'moon',zh:'月亮',e:'🌙',dec:'两座山上挂着圆圆的月亮。'},
             {w:'mom',zh:'妈妈',e:'👩',dec:'妈妈也像大山一样可靠。'} ]},
-  { L:'N', nameEn:'en', v:false, shape:'摇头说不', short:'摇头', emoji:'🙅', color:'#FF9F45', s:'nuh', szh:'/n/ 讷',
+  { L:'N', v:false, shape:'摇头说不', short:'摇头', emoji:'🙅', color:'#FF9F45', s:'nuh', szh:'/n/ 讷',
     story:'n 像一个人在摇头：不、不、不！no（不）、not（不是）、never（从来不）都是 n 开头。',
     py:'拼音 n 读"讷"，英语 n 读 /n/，鼻子哼气"呢"。',
     words:[ {w:'no',zh:'不',e:'❌',dec:'n 摇头 = 不！'},
             {w:'nose',zh:'鼻子',e:'👃',dec:'摇摇头，鼻子也跟着动。'},
             {w:'nine',zh:'九',e:'9️⃣',dec:'数到九，摇摇头还不够十。'} ]},
-  { L:'O', nameEn:'O', v:true, shape:'圆嘴巴', emoji:'👄', color:'#FFD93D', s:'aw', szh:'/ɒ/ 喔',
+  { L:'O', v:true, shape:'圆嘴巴', emoji:'👄', color:'#FFD93D', s:'oh', szh:'/ɒ/ 喔',
     story:'o 像张得圆圆的嘴巴，"喔——"。o 开头的词常常是圆圆的东西：orange（橙子）圆圆的、octopus（章鱼）圆圆的脑袋。词中间的 o 呢？它只负责唱歌，不表义哦（比如 nose 里唱歌的 o）。',
     words:[ {w:'orange',zh:'橙子',e:'🍊',dec:'o 圆圆的橙子！'},
             {w:'octopus',zh:'章鱼',e:'🐙',dec:'o 开头的八爪章鱼。'},
             {w:'nose',zh:'鼻子',e:'👃',dec:'n 开头哼一哼；o 在中间只负责唱歌。'} ]},
-  { L:'P', nameEn:'pee', v:false, shape:'小手掌', short:'手掌', emoji:'🖐️', color:'#6BCB77', s:'puh', szh:'/p/ 泼',
-    story:'p 像举起的小手掌，拍出一面小旗。联想小窍门：p 的东西常常薄薄的、平平的：paper（纸）、pen（笔尖薄薄）。',
+  { L:'P', v:false, shape:'小手掌', short:'手掌', emoji:'🖐️', color:'#6BCB77', s:'puh', szh:'/p/ 泼',
+    story:'p 像举起的小手掌，拍出一面小旗。词源小秘密：p 的东西常常薄薄的、平平的：paper（纸）、pen（笔尖薄薄）。',
     py:'拼音 p 读"坡"（有气流），英语 p 读 /p/，也是轻轻扑气。小心别和 q、b 混淆哦！',
     words:[ {w:'paper',zh:'纸',e:'📄',dec:'p = 薄薄的纸！'},
             {w:'pen',zh:'钢笔',e:'🖊️',dec:'笔尖薄薄的。'},
             {w:'pig',zh:'小猪',e:'🐷',dec:'小猪蹄印像小手掌 p。'} ]},
-  { L:'Q', nameEn:'Q', v:false, shape:'小气球', short:'气球', emoji:'🎈', color:'#4EC5F1', s:'kwuh', szh:'/kw/ 阔',
+  { L:'Q', v:false, shape:'小气球', short:'气球', emoji:'🎈', color:'#4EC5F1', s:'kwuh', szh:'/kw/ 阔',
     story:'q 像一只圆圆的气球，下面拖着一条小尾巴，风一吹就飞上天。q 总是和 u 手拉手一起出现：qu！',
     py:'拼音 q 读"七"，英语 q 几乎都和 u 组合成 qu，读"克乌"。',
     words:[ {w:'queen',zh:'女王',e:'👑',dec:'qu 手拉手开头！'},
             {w:'quiet',zh:'安静',e:'🤫',dec:'嘘——q 开头轻一点。'},
             {w:'question',zh:'问题',e:'❓',dec:'提问也要 qu 开头。'} ]},
-  { L:'R', nameEn:'ar', v:false, shape:'小草往上长', short:'小草', emoji:'🌱', color:'#9B72FF', s:'ruh', szh:'/r/ 若',
-    story:'r 像一棵刚探出小脑袋的草，使劲使劲往上长。联想小窍门：r 的词常常和"长、跑、立"有关：run（跑）、rise（升起）。',
+  { L:'R', v:false, shape:'小草往上长', short:'小草', emoji:'🌱', color:'#9B72FF', s:'ruh', szh:'/r/ 若',
+    story:'r 像一棵刚探出小脑袋的草，使劲使劲往上长。词源小秘密：r 的词常常和"长、跑、立"有关：run（跑）、rise（升起）。',
     py:'拼音 r 读"日"，英语 r 读 /r/，舌头卷起来说"若"。',
     words:[ {w:'run',zh:'跑',e:'🏃',dec:'像小草一样使劲往上冲！'},
             {w:'rain',zh:'雨',e:'🌧️',dec:'雨水浇得小草嗖嗖长。'},
             {w:'red',zh:'红色',e:'🔴',dec:'r 开头的红。'} ]},
-  { L:'S', nameEn:'S', v:false, shape:'小蛇', emoji:'🐍', color:'#FF6B6B', s:'suh', szh:'/s/ 丝',
+  { L:'S', v:false, shape:'小蛇', emoji:'🐍', color:'#FF6B6B', s:'suh', szh:'/s/ 丝',
     story:'s 像一条弯弯扭扭的小蛇，"咝咝咝"。swim（游泳）就像小蛇一样扭来扭去！',
     py:'拼音 s 读"丝"，英语 s 读 /s/，也像小蛇咝咝。',
     words:[ {w:'sun',zh:'太阳',e:'☀️',dec:'s 小蛇晒太阳，暖和得咝咝叫。'},
             {w:'six',zh:'六',e:'6️⃣',dec:'s 开头的六。'},
             {w:'swim',zh:'游泳',e:'🏊',dec:'像小蛇一样扭着游！'} ]},
-  { L:'T', nameEn:'tee', v:false, shape:'小话筒', short:'话筒', emoji:'🎤', color:'#FF9F45', s:'tuh', szh:'/t/ 特',
-    story:'t 像一个小话筒，最爱说话。联想小窍门：t 的词常常和"说"有关：talk（说话）、teach（教）。',
+  { L:'T', v:false, shape:'小话筒', short:'话筒', emoji:'🎤', color:'#FF9F45', s:'tuh', szh:'/t/ 特',
+    story:'t 像一个小话筒，最爱说话。词源小秘密：t 的词常常和"说"有关：talk（说话）、teach（教）。',
     py:'拼音 t 读"特"，英语 t 读 /t/，像轻轻的"特"。',
     words:[ {w:'talk',zh:'说话',e:'💬',dec:'t 话筒说话！'},
             {w:'two',zh:'二',e:'✌️',dec:'t 开头的二。'},
             {w:'tiger',zh:'老虎',e:'🐯',dec:'嗷呜——t 开头的大老虎。'} ]},
-  { L:'U', nameEn:'yoo', v:true, shape:'小杯子', short:'杯子', emoji:'🥤', color:'#FFD93D', s:'uh', szh:'/ʌ/ 厄',
+  { L:'U', v:true, shape:'小杯子', short:'杯子', emoji:'🥤', color:'#FFD93D', s:'uh', szh:'/ʌ/ 厄',
     story:'u 像一只小杯子，肚子圆圆能装水。cup（杯子）的结尾就藏着 u！up（向上）也是 u 开头哦。',
     words:[ {w:'up',zh:'向上',e:'⬆️',dec:'u 开头——向上 up！'},
             {w:'umbrella',zh:'雨伞',e:'☂️',dec:'u 开头：圆圆的雨伞。'},
             {w:'cup',zh:'杯子',e:'🥤',dec:'结尾藏着 u 小杯子——帮你联想记住它。'} ]},
-  { L:'V', nameEn:'vee', v:false, shape:'胜利手势', short:'胜利', emoji:'✌️', color:'#6BCB77', s:'vuh', szh:'/v/ 呜（咬下唇）',
+  { L:'V', v:false, shape:'胜利手势', short:'胜利', emoji:'✌️', color:'#6BCB77', s:'vuh', szh:'/v/ 呜（咬下唇）',
     story:'v 像张开的两根手指：胜利！耶！v 开头的词也不少：van（面包车）、violin（小提琴）；five（五）和 seven（七）里也藏着小 v。',
     py:'注意：拼音里没有 v，它是英语的新朋友，读 /v/，上牙咬下唇说"呜"。上面是 u，下面是 v。',
     words:[ {w:'van',zh:'面包车',e:'🚐',dec:'v 开头——v 胜利出发！'},
             {w:'violin',zh:'小提琴',e:'🎻',dec:'v 开头：拉起小提琴。'},
             {w:'five',zh:'五',e:'🖐️',dec:'fi-ve，五里藏着 v！'} ]},
-  { L:'W', nameEn:'W', v:false, shape:'水波波', short:'水波波', emoji:'🌊', color:'#4EC5F1', s:'wuh', szh:'/w/ 窝',
+  { L:'W', v:false, shape:'水波波', short:'水波波', emoji:'🌊', color:'#4EC5F1', s:'wuh', szh:'/w/ 窝',
     story:'W 像水面上一串波浪！一个大发现：w 开头的词常常和水有关——water（水）、wash（洗）、wave（波浪）。盐+水是咸水，所以 sweat（汗水）也是 w！',
     words:[ {w:'water',zh:'水',e:'💧',dec:'w 水波 + ater = 水！'},
             {w:'wash',zh:'洗',e:'🧼',dec:'用水 wash 洗手手。'},
             {w:'wave',zh:'波浪',e:'🌊',dec:'W 就是波浪本浪！'} ]},
-  { L:'X', nameEn:'ex', v:false, shape:'剪刀交叉', short:'剪刀', emoji:'✂️', color:'#9B72FF', s:'eks', szh:'/ks/ 咔嚓',
+  { L:'X', v:false, shape:'剪刀交叉', short:'剪刀', emoji:'✂️', color:'#9B72FF', s:'eks', szh:'/ks/ 咔嚓',
     story:'x 像两把小剪刀交叉在一起，咔嚓咔嚓。x 很害羞，常常躲在单词的结尾：box（盒子）、fox（狐狸）、six（六）；开头的话最常见的是 X-ray（X光）。',
     py:'拼音 x 读"西"，英语 x 读 /ks/，像"咔嚓"——不一样哦！',
     words:[ {w:'X-ray',zh:'X光',e:'🩻',dec:'x 开头：拍一张 X 光。'},
             {w:'fox',zh:'狐狸',e:'🦊',dec:'结尾咔嚓一个 x。'},
             {w:'box',zh:'盒子',e:'📦',dec:'box 盒子，结尾 x。'} ]},
-  { L:'Y', nameEn:'wye', v:false, shape:'举手欢呼', short:'举手', emoji:'🙌', color:'#FF6B6B', s:'yuh', szh:'/j/ 耶',
+  { L:'Y', v:false, shape:'举手欢呼', short:'举手', emoji:'🙌', color:'#FF6B6B', s:'yuh', szh:'/j/ 耶',
     story:'y 像高高举起双手喊"耶——"的样子。yes（是的）就是举手说"好"！',
     py:'拼音 y 读"衣"（当声母），英语 y 开头读 /j/，像"耶"。',
     words:[ {w:'yes',zh:'是的',e:'✅',dec:'举手喊 yes！'},
             {w:'yellow',zh:'黄色',e:'💛',dec:'y 开头的黄。'},
             {w:'yo-yo',zh:'悠悠球',e:'🪀',dec:'y o y o，像球甩上甩下！'} ]},
-  { L:'Z', nameEn:'zee', v:false, shape:'小闪电', short:'闪电', emoji:'⚡', color:'#FF9F45', s:'zuh', szh:'/z/ 滋',
+  { L:'Z', v:false, shape:'小闪电', short:'闪电', emoji:'⚡', color:'#FF9F45', s:'zuh', szh:'/z/ 滋',
     story:'z 像一道小闪电，嗖——地划过天空，弯弯折折跑得飞快！zoo（动物园）里的动物都跑不过小 z。',
     py:'拼音 z 读"资"，英语 z 读 /z/，像蜜蜂嗡嗡"滋"。',
     words:[ {w:'zoo',zh:'动物园',e:'🦁',dec:'z 开头跑得快！'},
@@ -316,22 +215,17 @@ const LETTERS = [
 
 /* 进行时安全动词（-ing 拼写规则简单） */
 const ING_VERBS = ['eat','sing','jump','read','sleep','play','fly','draw','cry','laugh','drink','dance'];
-/* 现在分词要一个个写死，不能用 v+'ing' 拼——dance→danceing 就是这么错的。
-   （出题引擎只认这张表，表里没有的动词不会出现在题目里） */
-const ING_FORM = { eat:'eating', sing:'singing', jump:'jumping', read:'reading', sleep:'sleeping',
-  play:'playing', fly:'flying', draw:'drawing', cry:'crying', laugh:'laughing', drink:'drinking', dance:'dancing' };
 const ING_ZH = { eat:'吃东西', sing:'唱歌', jump:'跳', read:'读书', sleep:'睡觉', play:'玩耍', fly:'飞', draw:'画画', cry:'哭', laugh:'笑', drink:'喝水', dance:'跳舞' };
 
-/* ---------- 句子工厂：万能公式 19 关 ----------
+/* ---------- 句子工厂：万能公式 16 关 ----------
    stage: s1 基础公式 / s2 结合单词镇 / s3 进阶句型
    items: 静态题目（概念、口诀类）
    gen:  动态题目——开课时从单词镇词库实时生成造句题
-         kinds: likeChoice|thisIs|canDo|seeBuild|havePlural|whereIs|isQuestion|thereBe|doing|buildFamily|buildHave|buildLike
-         |posChoice|posFind|thirdPerson|thirdFind|transformNeg|transformQ|beTransform|canTransform */
+         kinds: likeChoice|thisIs|canDo|seeBuild|havePlural|whereIs|isQuestion|thereBe|doing|buildFamily|buildHave|buildLike */
 const GRAMMAR_STAGES = [
   { id:'s1', name:'第一阶段 · 基础公式（一年级）', emoji:'🚂', tip:'先认识"句子小火车"，掌握五个万能公式' },
   { id:'s2', name:'第二阶段 · 用单词镇造句（二年级）', emoji:'🏘️', tip:'题目从单词镇的词库生成，学过的单词都会来造句！' },
-  { id:'s3', name:'第三阶段 · 进阶句型（三年级起）', emoji:'🚄', tip:'疑问句、There be、进行时、词性、三单、句型转换' },
+  { id:'s3', name:'第三阶段 · 进阶句型（三年级起）', emoji:'🚄', tip:'疑问句、There be、进行时，向三年级进发' },
 ];
 
 const GRAMMAR_LEVELS = [
@@ -354,7 +248,7 @@ const GRAMMAR_LEVELS = [
       {type:'choice', prompt:'「这是一只狗」怎么说？', options:['This a dog is.','This is a dog.','Is this dog a.'], answer:1, zh:'This is a dog. 这是一只狗。', explain:'谁（This）+ 是（is）+ 什么（a dog）。'},
       {type:'choice', prompt:'哪个句子挂对了车厢？', options:['I eat apple an.','An apple I eat.','I eat an apple.'], answer:2, zh:'I eat an apple. 我吃一个苹果。', explain:'谁 + 干什么 + 什么，顺序不能乱！'} ]},
   { id:'L3', stage:'s1', title:'be 动词三兄弟', emoji:'👨‍👨‍👦', formula:'am / is / are', stars:3,
-    intro:'is、am、are 是三胞胎兄弟，都表示「是」。他们分工明确，谁跟谁搭配是固定的！',
+    intro:'is、am、are 是三胞胎兄弟，都表示「是」。他们分工明确，谁跟谁搭配是固定的！记住：就算句子里没有「是」字，也常常要用他们哦！',
     chant:'我用 am 👶\n你用 are 🧒\nis 跟着他、她、它 👦👧🐱\n我们你们他们都用 are！',
     items:[
       {type:'choice', prompt:'I __ a boy.（我是一个男孩）', options:['am','is','are'], answer:0, zh:'I am a boy.', explain:'口诀第一句：我（I）用 am！'},
@@ -362,7 +256,9 @@ const GRAMMAR_LEVELS = [
       {type:'choice', prompt:'It __ a cat.（它是一只猫）', options:['am','is','are'], answer:1, zh:'It is a cat.', explain:'is 跟着它（it）！'},
       {type:'choice', prompt:'You __ my friend.（你是我的朋友）', options:['am','is','are'], answer:2, zh:'You are my friend.', explain:'口诀第二句：你（you）用 are！'},
       {type:'choice', prompt:'They __ happy.（他们很开心）', options:['am','is','are'], answer:2, zh:'They are happy.', explain:'他们（they）也用 are！'},
-      {type:'choice', prompt:'He __ my dad.（他是我的爸爸）', options:['am','is','are'], answer:1, zh:'He is my dad.', explain:'is 跟着他（he）！'} ]},
+      {type:'choice', prompt:'He __ my dad.（他是我的爸爸）', options:['am','is','are'], answer:1, zh:'He is my dad.', explain:'is 跟着他（he）！'},
+      {type:'choice', prompt:'「我很开心」哪个说法对？', options:['I very happy.','I am happy.','Happy I am.'], answer:1, zh:'I am very happy.', explain:'中文说"我很开心"没有"是"，英文必须有：I am happy。be 动词不只翻译成"是"！'},
+      {type:'choice', prompt:'「他在家」哪个说法对？', options:['He at home.','He is at home.','Home is he.'], answer:1, zh:'He is at home.', explain:'中文"在家"没有"是"，英文也必须有 be 动词：He is at home。'} ]},
   { id:'L4', stage:'s1', title:'一个句子只有一个动作王', emoji:'👑', formula:'谁 + 动作王 + 什么', stars:3,
     intro:'重要规则：一句话只能有一个「动作王」（动词）！就像一列火车只有一个司机。找出句子里的动作王吧！',
     chant:'动作王，真威风 👑\n一句句子只一个\n车头货物都不是\n国王坐在正中间！',
@@ -401,21 +297,24 @@ const GRAMMAR_LEVELS = [
   { id:'L8', stage:'s2', title:'我喜欢：I like __', emoji:'❤️', formula:'I like + 单词', stars:3,
     intro:'说出你的喜欢！公式：谁 + like + 什么。题目全部来自单词镇——水果、食物、小动物都会来和你造句！',
     chant:'我喜欢，I like 🖐️\n喜欢什么跟在后\nI like apples 甜又甜\n你也来说一说！',
-    gen:{ n:4, kinds:['likeChoice','buildLike'], themes:['fruit','food','animal1'] },
+    gen:{ n:4, kinds:['likeChoice','buildLike'], themes:['fruit','food','animal1','color'] },
     items:[
-      {type:'choice', prompt:'「我喜欢香蕉」哪个说法对？', options:['I like bananas.','I like banana two.','Like I bananas.'], answer:0, zh:'I like bananas. 我喜欢香蕉。', explain:'喜欢很多东西时，单词加 s（bananas）。'} ]},
+      {type:'choice', prompt:'「我喜欢香蕉」哪个说法对？', options:['I like bananas.','I like banana two.','Like I bananas.'], answer:0, zh:'I like bananas. 我喜欢香蕉。', explain:'喜欢很多东西时，单词加 s（bananas）。'},
+      {type:'choice', prompt:'「我不喜欢香蕉」哪个说法对？', options:['I not like bananas.',"I don't like bananas.",'I no like bananas.'], answer:1, zh:"I don't like bananas. 我不喜欢香蕉。", explain:'说"不喜欢"要用 don\'t：I don\'t like...（do not 的缩写）。'} ]},
   { id:'L9', stage:'s2', title:'这是我的家人：This is my __', emoji:'👨‍👩‍👧', formula:'This is my + 家人', stars:3,
     intro:'向朋友介绍家人！公式：This is my + 谁。my 的意思是"我的"。',
     chant:'伸出手指介绍忙 👉\nThis is my dad\nThis is my mom\n这是我的爸爸妈妈！',
     gen:{ n:4, kinds:['buildFamily','thisIs'], themes:['family','animal1'] },
     items:[
-      {type:'choice', prompt:'介绍家人时怎么说？', options:['This is my mom.','This is mom my.','My mom this is.'], answer:0, zh:'This is my mom. 这是我的妈妈。', explain:'This is my + 家人，顺序固定哦。'} ]},
+      {type:'choice', prompt:'介绍家人时怎么说？', options:['This is my mom.','This is mom my.','My mom this is.'], answer:0, zh:'This is my mom. 这是我的妈妈。', explain:'This is my + 家人，顺序固定哦。'},
+      {type:'choice', prompt:'「这是她的书包」哪个说法对？', options:['This is she bag.','This is her bag.','This is hers bag.'], answer:1, zh:'This is her bag. 这是她的书包。', explain:'她的 = her，他的 = his；her / his 后面要接东西（her bag）。'} ]},
   { id:'L10', stage:'s2', title:'我会做：I can __', emoji:'💪', formula:'I can + 动作', stars:3,
     intro:'说说你的本领！公式：谁 + can + 动作。can 后面的动词要用"原形"（不加 s、不加 ing）。',
     chant:'can 是"会"本领大 💪\nI can swim 我会游\ncan 后动词用原形\n不加 s 不变样！',
-    gen:{ n:4, kinds:['canDo','canTransform'], themes:['action1','sport'] },
+    gen:{ n:4, kinds:['canDo'], themes:['action1','sport'] },
     items:[
-      {type:'choice', prompt:'「我会游泳」哪个说法对？', options:['I can swim.','I can swims.','I can swimming.'], answer:0, zh:'I can swim. 我会游泳。', explain:'can 后面的动词用原形 swim！'} ]},
+      {type:'choice', prompt:'「我会游泳」哪个说法对？', options:['I can swim.','I can swims.','I can swimming.'], answer:0, zh:'I can swim. 我会游泳。', explain:'can 后面的动词用原形 swim！'},
+      {type:'choice', prompt:'「你会游泳吗」哪个说法对？', options:['You can swim?','Can you swim?','Swim can you?'], answer:1, zh:'Can you swim? Yes, I can. 你会游泳吗？会的！', explain:'问别人就把 can 搬到最前面：Can you swim? 回答：Yes, I can. / No, I can\'t.'} ]},
   { id:'L11', stage:'s2', title:'它在哪里：on / in / under', emoji:'🧭', formula:'The __ is on/in/under the __', stars:3,
     intro:'说位置！公式：谁 + is + 位置词 + the + 地点。小猫在床上、球在椅子下……单词镇的家和玩具都来帮忙！',
     chant:'on 在上面 🆙\nin 在里面 📥\nunder 在下面 ⬇️\nThe cat is on the bed!',
@@ -433,7 +332,7 @@ const GRAMMAR_LEVELS = [
   { id:'L13', stage:'s3', title:'问一问：Is this __?', emoji:'❓', formula:'Is this a/an __?', stars:3,
     intro:'想问问题？把 is 搬到句子最前面，句号变问号！Is this an apple? 这是一个苹果吗？',
     chant:'is 搬到最前头 🏃\n句号变成问号 ?\nIs this, Is this\n回答 Yes 或 No！',
-    gen:{ n:3, kinds:['isQuestion','beTransform'], themes:['animal1','fruit','toy'] },
+    gen:{ n:3, kinds:['isQuestion'], themes:['animal1','fruit','toy'] },
     items:[
       {type:'choice', prompt:'「这是一只狗吗？」怎么说？', options:['Is this a dog?','This is a dog?','Is this a dog.'], answer:0, zh:'Is this a dog?', explain:'is 提前 + 问号，才是真正的问句！'},
       {type:'choice', prompt:'「它是橙子吗？」怎么说？', options:['Is it an orange?','It is an orange?','Is it a orange?'], answer:0, zh:'Is it an orange?', explain:'orange 元音开头用 an；is 提前变问句。'} ]},
@@ -443,7 +342,8 @@ const GRAMMAR_LEVELS = [
     gen:{ n:3, kinds:['thereBe'], themes:['animal1','school','fruit'] },
     items:[
       {type:'choice', prompt:'「桌上有一本书」哪个说法对？', options:['There is a book on the desk.','There are a book on the desk.','There is book on desk.'], answer:0, zh:'There is a book on the desk.', explain:'一本书是单数，用 There is；还要记得 a 和 the。'},
-      {type:'choice', prompt:'「包里有两支铅笔」哪个说法对？', options:['There is two pencils in the bag.','There are two pencils in the bag.','There are two pencil in bag.'], answer:1, zh:'There are two pencils in the bag.', explain:'两支是复数：There are + pencils。'} ]},
+      {type:'choice', prompt:'「包里有两支铅笔」哪个说法对？', options:['There is two pencils in the bag.','There are two pencils in the bag.','There are two pencil in bag.'], answer:1, zh:'There are two pencils in the bag.', explain:'两支是复数：There are + pencils。'},
+      {type:'choice', prompt:'「桌上有一支钢笔和两个鸡蛋」哪个说法对？', options:['There is a pen and two eggs on the desk.','There are a pen and two eggs on the desk.','There is a pen and two egg on the desk.'], answer:0, zh:'There is a pen and two eggs on the desk.', explain:'就近原则：be 动词只看离它最近的那个——最近的是 a pen（单数），所以用 is！'} ]},
   { id:'L15', stage:'s3', title:'正在做：am/is/are + ing', emoji:'🏃', formula:'谁 + is + doing', stars:3,
     intro:'说"正在做"的事！公式：谁 + be动词 + 动词ing。The cat is eating. 小猫正在吃东西。',
     chant:'正在做，看现在 ⏱️\nis 加动词 ing\neat 变 eating 好神奇\n小猫 eating 喵喵喵！',
@@ -454,62 +354,14 @@ const GRAMMAR_LEVELS = [
   { id:'L16', stage:'s3', title:'综合大闯关', emoji:'🏆', formula:'全部公式', stars:5,
     intro:'所有公式都用上！静态题 + 单词镇生成题，全部答对就是真正的句子小工程师！',
     chant:'公式记心间 🏆\n谁+干什么+什么\nbe 三兄弟不吵架\n动作王，只一个\na 和 an 分得清\nI like / I can / There be\n大写句号别忘啦！',
-    gen:{ n:4, kinds:['likeChoice','thisIs','canDo','thereBe','transformNeg'], themes:['fruit','animal1','food','school'] },
+    gen:{ n:3, kinds:['likeChoice','thisIs','canDo','thereBe'], themes:['fruit','animal1','food','school'] },
     items:[
       {type:'build', prompt:'「我是一个女孩」', slots:[['I','You','He'],['am','is','are'],['a','an','two'],['girl','boy','cat']], answer:['I','am','a','girl'], read:'I am a girl.', zh:'我是一个女孩。'},
       {type:'choice', prompt:'「两只猫在跑」', options:['Two cat run.','Two cats runs.','Two cats run.'], answer:2, zh:'Two cats run.', explain:'两只猫 cats 加 s；动作王 run 一个就好。'},
       {type:'choice', prompt:'找出穿戴整齐的句子', options:['i see a bird','I see a bird.','I See A Bird.'], answer:1, zh:'I see a bird.', explain:'开头大写，结尾句号，中间乖乖小写。'},
-      {type:'choice', prompt:'「他们是我的朋友」', options:['They is my friends.','They am my friends.','They are my friends.'], answer:2, say:'They are my friends.', zh:'They are my friends.', explain:'他们（they）用 are！'} ]},
-
-  /* ============ 第四阶段：词的身份证与句子变脸（L17-L19） ============ */
-  { id:'L17', stage:'s3', title:'词的身份证：词性', emoji:'🪪', formula:'名词 / 动词 / 形容词 / 数词', stars:3,
-    intro:'每个词都有自己的"身份证"——词性。知道它是名词还是动词，才知道它能站在句子的哪个位置。这也是造句不写成中式英语的第一步。',
-    chant:'名词是人和东西 🧸\n动词专管做动作 🏃\n形容词说啥样子 🌈\n数词一二三四五 🔢',
-    gen:{ n:5, kinds:['posChoice','posFind'], themes:['action1','verb2','adj1','num1','animal1'] },
-    items:[
-      {type:'choice', prompt:'「跑」= run，它是什么词？', options:['名词','动词','形容词'], answer:1, say:'run',
-        zh:'run 是动词。', explain:'run 表示动作，所以是动词。动词是句子里的"动作王"。'},
-      {type:'choice', prompt:'「苹果」= apple，它是什么词？', options:['动词','名词','数词'], answer:1, say:'apple',
-        zh:'apple 是名词。', explain:'apple 是一个东西，所以是名词。名词前面可以加 a / the。'},
-      {type:'choice', prompt:'「大的」= big，它是什么词？', options:['形容词','名词','动词'], answer:0, say:'big',
-        zh:'big 是形容词。', explain:'big 表示"什么样的"，是形容词，可以放在 be 后面：It is big.'} ]},
-
-  { id:'L18', stage:'s3', title:'他 / 她 / 它：动词要加 s', emoji:'🏃', formula:'He runs. / She likes cats.', stars:3,
-    intro:'主语是「他、她、它」，或者一个人、一样东西时，动词要穿上小尾巴 s。这就是「第三人称单数」，四年级最常考的一条。',
-    chant:'他她它，一个人 👦\n动词尾巴加个 s\nhe runs, she likes\n一加上 s 就对啦！',
-    gen:{ n:5, kinds:['thirdPerson','thirdFind'], themes:['action1','sport'] },
-    items:[
-      {type:'choice', prompt:'「他跑步」哪个说法对？', options:['He runs.','He run.','He running.'], answer:0, say:'He runs.',
-        zh:'He runs. 他跑步。', explain:'主语是 he（第三人称单数），run 要加 s → runs。'},
-      {type:'choice', prompt:'「她喜欢猫」哪个说法对？', options:['She like cats.','She likes cats.','She liking cats.'], answer:1, say:'She likes cats.',
-        zh:'She likes cats. 她喜欢猫。', explain:'she 是第三人称单数，like → likes。'},
-      {type:'choice', prompt:'「他有一个球」哪个说法对？', options:['He haves a ball.','He have a ball.','He has a ball.'], answer:2, say:'He has a ball.',
-        zh:'He has a ball. 他有一个球。', explain:'have 的三单是 has，不是 haves。'},
-      {type:'choice', prompt:'「小鸟飞」哪个说法对？', options:['The bird flies.','The bird flys.','The bird fly.'], answer:0, say:'The bird flies.',
-        zh:'The bird flies. 小鸟飞。', explain:'辅音字母 + y 结尾，要把 y 变 i 再加 es：fly → flies。'},
-      {type:'choice', prompt:'「他每天看电视」哪个说法对？', options:['He watch TV every day.','He watches TV every day.','He watching TV every day.'], answer:1, say:'He watches TV every day.',
-        zh:'He watches TV every day. 他每天看电视。', explain:'ch 结尾要加 es：watch → watches。'} ]},
-
-  { id:'L19', stage:'s3', title:'句子变脸：否定句和疑问句', emoji:'🎭', formula:'陈述 ⇄ 否定 ⇄ 疑问', stars:5,
-    intro:'同一句话有三张脸：说事实（陈述）、说"不"（否定）、问问题（疑问）。学会变脸，一句话能当三句用。',
-    chant:'说"不"找助动词 🚫\ndon\'t / doesn\'t 先站好\n问句把它搬最前 ❓\n句号立刻变问号！',
-    gen:{ n:5, kinds:['transformNeg','transformQ','beTransform','canTransform'], themes:['animal1','fruit','food'] },
-    items:[
-      {type:'choice', prompt:'「I like apples.」的否定句是哪一句？', options:["I don't like apples.","I not like apples.","I doesn't like apples."], answer:0, say:"I don't like apples.",
-        zh:"I don't like apples. 我不喜欢苹果。",
-        explain:"主语是 I（不是三单），否定用 don't，后面跟动词原形 like。"},
-      {type:'choice', prompt:'「He likes apples.」的否定句是哪一句？', options:["He don't like apples.","He doesn't likes apples.","He doesn't like apples."], answer:2, say:"He doesn't like apples.",
-        zh:"He doesn't like apples. 他不喜欢苹果。",
-        explain:"三单的否定用 doesn't；doesn't 已经带走了 s，后面动词回原形 like。"},
-      {type:'choice', prompt:'「You like apples.」的疑问句是哪一句？', options:['Do you like apples?','You like apples?','Does you like apples?'], answer:0, say:'Do you like apples?',
-        zh:'Do you like apples? 你喜欢苹果吗？',
-        explain:'主语是 you，助动词用 Do，并搬到句子最前面。'},
-      {type:'choice', prompt:'「She runs.」的疑问句是哪一句？', options:['Does she runs?','Does she run?','She does run?'], answer:1, say:'Does she run?',
-        zh:'Does she run? 她跑步吗？',
-        explain:'Does 提到最前面，后面的动词回原形 run。'},
-      {type:'choice', prompt:'「Is she happy?」的肯定回答是哪一句？', options:['Yes, she is.','Yes, she does.','Yes, she are.'], answer:0, say:'Yes, she is.',
-        zh:'Yes, she is. 是的，她开心。',
-        explain:'用 be 动词问，就用 be 动词答；问 is she，答 she is。'} ]},
+      {type:'choice', prompt:'「他们是我的朋友」', options:['They is my friends.','They am my friends.','They are my friends.'], answer:2, zh:'They are my friends.', explain:'他们（they）用 are！'},
+      {type:'choice', prompt:'「这只小狗喜欢土豆」哪个说法对？', options:['The dog like potatoes.','The dog likes potatoes.','The dogs likes potatoes.'], answer:1, zh:'The dog likes potatoes.', explain:'他 / 她 / 它（三单）做主语，动词要加 s——名词变多的 s 就是动词三单的 s！'},
+      {type:'choice', prompt:'「天很大，但我的房间很小」哪个说法对？', options:['The sky is big, but my room is small.','The sky big, but my room small.','The sky is big, and my room is small.'], answer:0, zh:'The sky is big, but my room is small.', explain:'两句话用 and / but 串起来：and 是"并且"，but 是"但是"。'} ]},
 ];
 
 /* ---------- 徽章 ---------- */
@@ -520,8 +372,9 @@ const BADGES = [
   {id:'word100',   emoji:'📚', name:'百词小达人', desc:'掌握 100 个单词'},
   {id:'word500',   emoji:'💪', name:'五百词超人', desc:'掌握 500 个单词'},
   {id:'word1000',  emoji:'🧠', name:'千词小博士', desc:'掌握全部 1000 个单词'},
-  {id:'grammar1',  emoji:'🔧', name:'句子小工程师', desc:'通过句子工厂全部 19 关'},
+  {id:'grammar1',  emoji:'🔧', name:'句子小工程师', desc:'通过句子工厂全部 16 关'},
   {id:'grammar8',  emoji:'🚃', name:'公式小达人', desc:'通过第一阶段全部关卡'},
+  {id:'reader6',   emoji:'📖', name:'小书虫',   desc:'读完绘本馆全部 12 本绘本'},
   {id:'streak3',   emoji:'🔥', name:'坚持之星',   desc:'连续学习 3 天'},
   {id:'streak7',   emoji:'🌈', name:'七日学霸',   desc:'连续学习 7 天'},
   {id:'star100',   emoji:'✨', name:'百星少年',   desc:'收集 100 颗星星'},

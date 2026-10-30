@@ -3,39 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#4EC5F1">
-<meta name="description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员、听句选图、造词实验室 6 个游戏，优先复习学过的单词。">
-<link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
-<meta property="og:title" content="游戏乐园 · 边玩边学 · 小鸟英语乐园">
-<meta property="og:description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员、听句选图、造词实验室 6 个游戏，优先复习学过的单词。">
-<meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
-<meta property="og:url" content="https://heijialun19.github.io/yingyu/games.html">
-<meta name="twitter:card" content="summary_large_image">
 <title>游戏乐园 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=43">
+<link rel="stylesheet" href="css/style.css?v=27">
 </head>
 <body>
 <main>
   <div class="page-title">
     <h1>🎡 游戏乐园</h1>
-    <p>玩就是学！<b id="gameCount">6</b> 个游戏，优先复习<b>你学过的单词</b>，也可以从 1000 词库随机挑战</p>
+    <p>玩就是学！优先复习<b>你学过的单词</b>，也可以从 1000 词库随机挑战</p>
   </div>
   <div id="app"></div>
-<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
+<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=31"></script>
-<script src="svg/word-svg.js?v=2"></script>
-<script src="svg/emoji-svg.js?v=2"></script>
-<script src="js/data.js?v=32"></script>
-<script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=53"></script>
-<script src="js/sentence.js?v=44"></script>
-<script src="js/grammar-engine.js?v=4"></script>
-<script src="js/ipa.js?v=2"></script>
+<script src="js/words-data.js?v=25"></script>
+<script src="js/data.js?v=26"></script>
+<script src="js/app.js?v=36"></script>
+<script src="js/sentence.js?v=38"></script>
 <script>
 renderNav('games'); renderDecor();
 
@@ -47,23 +31,14 @@ const ALLW = {};
 THEMES.forEach(t => t.words.forEach(w => { if (!ALLW[w.w]) ALLW[w.w] = w; }));
 const learnedPool = () => Object.keys(Store.d.words).map(w => ALLW[w.w]).filter(Boolean);
 
-/* ---------------- 游戏主页 ----------------
-   游戏清单提到模块级：页头文案、首页岛屿的数量都对得上，
-   免得"写了 4 个却放着 5 个"这种错（真的发生过）。 */
-const GAMES = [
+/* ---------------- 游戏主页 ---------------- */
+function renderHome() {
+  const games = [
     { id: 'listen',   emoji: '👂', name: '听音选字母', desc: '听字母名或字母音，选出它！', color: 'var(--lake)' },
     { id: 'memory',   emoji: '🃏', name: '图词翻翻乐', desc: '翻开卡片，图片和单词配对', color: 'var(--grape)' },
     { id: 'scramble', emoji: '🚂', name: '拼词小火车', desc: '把打乱的字母装回正确的顺序', color: 'var(--orange)' },
     { id: 'sentence', emoji: '🧑‍🔧', name: '句子火车员', desc: '句子缺了个词，你来补上！', color: 'var(--mint)' },
-    { id: 'picsent',  emoji: '🖼️', name: '听句选图', desc: '听一句话，选出对应的图片', color: '#F59E0B' },
-    { id: 'wordlab',  emoji: '🧪', name: '造词实验室', desc: '每轮 10 个新词，black + board 会变成什么？', color: 'var(--coral)' },
-];
-
-function renderHome() {
-  Flow.reset();
-  const gc = document.getElementById('gameCount');
-  if (gc) gc.textContent = String(GAMES.length);      // 回游戏菜单：作废所有挂起的自动推进（否则 1.5 秒后被拽回上一局）
-  const games = GAMES;
+  ];
   $('#app').innerHTML = `<div class="game-grid">
     ${games.map(g => `<div class="island" style="border-color:${g.color}" onclick="startGame('${g.id}')">
       <span class="tag" style="border-color:${g.color};color:${g.color}">点击开始</span>
@@ -71,13 +46,12 @@ function renderHome() {
     </div>`).join('')}
   </div>`;
 }
-function startGame(id) { sfx.pop(); ({ listen: gListen, memory: gMemoryPick, scramble: gScramblePick, sentence: gSentencePick, picsent: gPicSentPick, wordlab: gWordLab })[id](); }
+function startGame(id) { sfx.pop(); ({ listen: gListen, memory: gMemoryPick, scramble: gScramblePick, sentence: gSentencePick })[id](); }
 function gameHomeBtn() { return `<button class="btn ghost" onclick="renderHome()">← 换个游戏</button>`; }
 
 /* 词库选择卡：我的年级优先，可复习学过的词、换年级或全部随机 */
 function poolPicker(title, emoji, onStart) {
-  /* 「有没有图」看 hasIcon，不能看 w.e —— 345 个词靠自绘 SVG，w.e 是空的 */
-  const learned = learnedPool().filter(w => hasIcon(w) && !w.w.includes(' '));
+  const learned = learnedPool().filter(w => w.e && !w.w.includes(' '));
   const canReview = learned.length >= 4;
   const g = myGrade();
   window._poolStart = onStart;
@@ -116,9 +90,8 @@ function getPlayPool(mode, filter) {
     GRADES.slice(0, gi + 1).forEach(g => g.themes.forEach(t => t.words.forEach(w => { if (filter(w)) ws.push(w); })));
     if (ws.length >= 4) return shuffle(ws);
   }
-  // 随机：挑一个满足条件的主题（没有合格主题就返回空，由调用方提示，绝不崩）
+  // 随机：挑一个满足条件的主题
   const ok = THEMES.filter(t => t.words.filter(filter).length >= 4);
-  if (!ok.length) return [];
   return pick(ok).words.filter(filter);
 }
 
@@ -132,14 +105,12 @@ function gListen() {
     S.qs.push({ right, opts, mode: Math.random() < 0.5 ? 'name' : 'sound' });
   }
   window._listenNext = function () {
-    Flow.reset();                     // 新一题：作废上一题的自动推进（否则退出后会被拽回来）
     if (S.idx >= total) {
       addStars(S.score); sfx.win(); if (S.score >= 8) confetti();
       $('#app').innerHTML = endCard('👂', `答对 ${S.score} / ${total}`, S.score);
       return;
     }
     S.first = true;
-    S.answered = false;
     const q = S.qs[S.idx];
     const isName = q.mode === 'name';
     $('#app').innerHTML = `
@@ -153,7 +124,7 @@ function gListen() {
         <div style="margin-top:12px">${gameHomeBtn()}</div>
       </div>`;
     window._curQ = q;
-    Flow.after(350, () => window._listenSay());
+    setTimeout(() => window._listenSay(), 350);
   };
   window._listenSay = function () {
     const q = window._curQ;
@@ -162,21 +133,13 @@ function gListen() {
   };
   window.listenAns = function (btn, L) {
     const q = window._curQ;
-    if (S.answered) return;              // 已答对：锁住，防重复计分与重复跳题
     const ok = L === q.right.L;
     feedback(btn, ok);
     if (ok) {
       if (S.first) { S.score++; }
-      S.answered = true;
       sfx.correct(); speak(q.right.words[0].w);
-      lockChoices(btn);
       $('#lexp').innerHTML = `✅ <b>${q.right.L}</b>${q.right.emoji}${q.right.shape} · 读音 ${q.right.szh} —— ${q.right.words[0].w} ${q.right.words[0].e}`;
-      /* 游戏回合没有解析要读，允许多停一会儿再自动走；
-         但这个自动和「下一个」按钮是同一个推进器，孩子点按钮就走，不冲突 */
-      const go = Flow.make(() => { S.idx++; window._listenNext(); }, 1800);
-      $('#lexp').insertAdjacentHTML('beforeend',
-        `<div style="margin-top:10px"><button class="btn ghost" style="padding:6px 18px" onclick="window._listenGo()">下一个 ▶</button></div>`);
-      window._listenGo = go;
+      setTimeout(() => { S.idx++; window._listenNext(); }, 1500);
     } else { S.first = false; sfx.wrong(); $('#lexp').innerHTML = '🤔 再听一遍～'; window._listenSay(); }
   };
   window._listenNext();
@@ -184,56 +147,20 @@ function gListen() {
 
 /* ---------------- 游戏2：图词翻翻乐 ---------------- */
 function gMemoryPick() {
-  poolPicker('🃏 图词翻翻乐', '🃏', m => {
-    let p = getPlayPool(m, w => hasIcon(w) && !w.w.includes(' '));
-    /* 抽象主题（虚词、学习与未来…）带图的词可能只剩一两个，
-       开局就凑不齐牌。这时退回全库带图的词，别让孩子点进来就卡住。 */
-    if (p.filter(w => hasIcon(w)).length < 4) {
-      const all = [];
-      THEMES.forEach(t => t.words.forEach(w => { if (hasIcon(w) && !w.w.includes(' ')) all.push(w); }));
-      p = all;
-      toast('这个主题的图太少，换成了全局图库～');
-    }
-    gMemory(p);
-  });
+  poolPicker('🃏 图词翻翻乐', '🃏', m => gMemory(getPlayPool(m, w => w.e && !w.w.includes(' '))));
 }
 function gMemory(pool) {
-  if (!pool || !pool.length) { toast('这一批没有带图片的词，换一批试试～'); return; }
   window.memStart = function () {
-    /* 抽词规则：图片必须互不重复。
-       全库有 212 组 emoji 被多个词共用（👦 = he / his / him / boy / brother），
-       同一张脸出现两次，孩子根本没法判断它配哪个词。 */
-    /* 原来按 w.e 去重 —— 345 个词的 w.e 是空的，会被判成「同一个」只留下第一个；
-       而且没图的词（字母牌）根本配不出「图 ↔ 词」的配对。改成按渲染出的图去重。 */
-    const seen = new Set(), picks = [];
-    for (const w of shuffle(pool)) {
-      if (!hasIcon(w)) continue;          // 字母牌不进配对
-      const k = iconOf(w);
-      if (seen.has(k)) continue;
-      seen.add(k);
-      picks.push(w);
-      if (picks.length >= 4) break;
-    }
-    if (!picks.length) { toast('这一批词没有配图，换一批试试～'); return; }
-
-    const N = picks.length;
-    /* 单词卡按长度缩字号：最长 11 个字母（watermelon / pencil-box），
-       原来一律 2rem，在 4 列网格里会被裁掉。 */
-    const sizeCls = n => n >= 10 ? ' w-xxl' : n >= 8 ? ' w-xl' : n >= 6 ? ' w-l' : '';
-    const cards = shuffle(picks.flatMap(w => ([
-      { key: w.w, html: `<span class="mem-pic">${iconOf(w)}</span>` },
-      { key: w.w, html: `<span class="mem-word${sizeCls(w.w.length)}">${esc(w.w)}</span>` }
-    ])));
-
+    const picks = shuffle(pool).slice(0, 4);
+    const cards = shuffle(picks.flatMap(w => [{ key: w.w, html: `<span style="font-size:2.6rem">${w.e}</span>` }, { key: w.w, html: w.w }]));
     const st = { open: [], done: 0, misses: 0, lock: false };
     $('#app').innerHTML = `
       <div class="card" style="max-width:620px;margin:0 auto;text-align:center">
         <div class="score-bar">
-          <b>🃏 图词配对</b><span id="memStat">配对 0/${N} · 翻错 0</span>
+          <b>🃏 图词配对</b><span id="memStat">配对 0/4 · 翻错 0</span>
         </div>
-        <p style="color:#5C6273;font-size:.82rem;margin:0 0 10px">翻开两张，把<b>图片</b>和它的<b>单词</b>配成一对</p>
         <div class="mem-grid">
-          ${cards.map((c, i) => `<div class="mem-card" data-i="${i}" data-key="${esc(c.key)}" onclick="memFlip(this)">
+          ${cards.map((c, i) => `<div class="mem-card" data-i="${i}" data-key="${c.key}" onclick="memFlip(this)">
             <div class="face back">❓</div><div class="face front">${c.html}</div>
           </div>`).join('')}
         </div>
@@ -242,32 +169,34 @@ function gMemory(pool) {
           ${gameHomeBtn()}
         </div>
       </div>`;
-    const stat = () => { $('#memStat').textContent = `配对 ${st.done}/${N} · 翻错 ${st.misses}`; };
     window.memFlip = function (el) {
       if (st.lock || el.classList.contains('open') || el.classList.contains('matched')) return;
       el.classList.add('open'); sfx.pop();
       st.open.push(el);
-      if (st.open.length !== 2) return;
-      st.lock = true;
-      const [a, b] = st.open;
-      if (a.dataset.key === b.dataset.key) {
-        setTimeout(() => {
-          a.classList.add('matched'); b.classList.add('matched');
-          speak(a.dataset.key); sfx.correct(); flyStar(a);
-          st.done++; st.open = []; st.lock = false; stat();
-          if (st.done === N) {
-            const stars = st.misses <= 2 ? 5 : st.misses <= 5 ? 3 : 2;
-            addStars(stars); confetti(); sfx.win();
-            $('#app').innerHTML = endCard('🃏', `全部配对成功！翻错 ${st.misses} 次`, stars);
-          }
-        }, 500);
-      } else {
-        st.misses++; stat();
-        setTimeout(() => { a.classList.remove('open'); b.classList.remove('open'); st.open = []; st.lock = false; }, 950);
+      if (st.open.length === 2) {
+        st.lock = true;
+        const [a, b] = st.open;
+        if (a.dataset.key === b.dataset.key) {
+          setTimeout(() => {
+            a.classList.add('matched'); b.classList.add('matched');
+            speak(a.dataset.key); sfx.correct(); flyStar(a);
+            st.done++; st.open = []; st.lock = false;
+            $('#memStat').textContent = `配对 ${st.done}/4 · 翻错 ${st.misses}`;
+            if (st.done === 4) {
+              const stars = st.misses <= 2 ? 5 : st.misses <= 5 ? 3 : 2;
+              addStars(stars); confetti(); sfx.win();
+              $('#app').innerHTML = endCard('🃏', `全部配对成功！翻错 ${st.misses} 次`, stars);
+            }
+          }, 500);
+        } else {
+          st.misses++;
+          $('#memStat').textContent = `配对 ${st.done}/4 · 翻错 ${st.misses}`;
+          setTimeout(() => { a.classList.remove('open'); b.classList.remove('open'); st.open = []; st.lock = false; }, 950);
+        }
       }
     };
   };
-  window.memStart();     // 显式走 window：写成裸调用只有浏览器能解析，测试和严格作用域都会挂
+  memStart();
 }
 
 /* ---------------- 游戏3：拼词小火车 ---------------- */
@@ -275,11 +204,9 @@ function gScramblePick() {
   poolPicker('🚂 拼词小火车', '🚂', m => gScramble(getPlayPool(m, w => !w.w.includes(' ') && w.w.length <= 9 && /^[a-zA-Z]+$/.test(w.w))));
 }
 function gScramble(pool) {
-  if (!pool || !pool.length) { toast('这一批没有能拼的词，换一批试试～'); return; }
   const picks = shuffle(pool).slice(0, 6);
   const S = { idx: 0, score: 0 };
   window._scrShow = function () {
-    Flow.reset();                    // 新一题：作废旧回合的自动推进
     if (S.idx >= picks.length) {
       addStars(S.score + 1); sfx.win(); if (S.score === picks.length) confetti();
       $('#app').innerHTML = endCard('🚂', `拼对 ${S.score} / ${picks.length} 个单词`, S.score + 1);
@@ -287,17 +214,13 @@ function gScramble(pool) {
     }
     const w = picks[S.idx];
     const letters = shuffle(w.w.split(''));
-    /* 记忆法当提示用可以，但当它自己就把答案写出来时（999 条里有 63 条这样，
-       如 is → 「s 小蛇说：is 是」），题面就等于白送——这类挪到答对之后展示。 */
-    const decLeaks = !!(w.dec && w.dec.toLowerCase().includes(w.w.toLowerCase()));
-    window._scrBuilt = ''; window._scrWord = w.w; window._scrDec = decLeaks ? w.dec : '';
-    S.answered = false;
+    window._scrBuilt = ''; window._scrWord = w.w;
     $('#app').innerHTML = `
       <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🚂 拼词小火车</b><span>第 ${S.idx + 1} / ${picks.length} 词</span></div>
-        <div style="font-size:64px">${wordIcon(w)}</div>
+        <div style="font-size:64px">${w.e || '🔤'}</div>
         <div style="font-size:1.1rem;font-weight:700">${w.zh} <button class="btn ghost" style="padding:4px 12px;font-size:.8rem" onclick="speak('${w.w.replace(/'/g, "\\'")}')">🔊 听</button></div>
-        ${w.dec && !decLeaks ? `<div class="explain" style="text-align:left;margin:10px 0">💡 ${w.dec}</div>` : ''}
+        ${w.dec ? `<div class="explain" style="text-align:left;margin:10px 0">💡 ${w.dec}</div>` : ''}
         <div class="build-word-slots" id="scrSlots">${w.w.split('').map(() => `<span class="slot"></span>`).join('')}</div>
         <div class="scramble-row">
           ${letters.map((c, i) => `<button class="scramble-tile" data-i="${i}" onclick="scrTap(this,'${c}')">${c.toUpperCase()}</button>`).join('')}
@@ -310,7 +233,7 @@ function gScramble(pool) {
       </div>`;
   };
   window.scrTap = function (btn, c) {
-    if (btn.classList.contains('used') || S.answered) return;
+    if (btn.classList.contains('used')) return;
     const slots = $$('#scrSlots .slot');
     const pos = window._scrBuilt.length;
     if (c === window._scrWord[pos]) {
@@ -320,13 +243,8 @@ function gScramble(pool) {
       slots[pos].classList.add('filled');
       if (window._scrBuilt === window._scrWord) {
         S.score++; sfx.correct(); speak(window._scrWord); flyStar(btn);
-        S.answered = true;
-        $('#sexp').innerHTML = `✅ <b>${window._scrWord}</b>！${allZh(window._scrWord)}` + (window._scrDec ? `<br>💡 ${window._scrDec}` : '');
-        /* 单词念完约 1 秒，给 1.6 秒停留再看下一题；按钮随时可以提前走 */
-        const go = Flow.make(() => { S.idx++; window._scrShow(); }, 1600);
-        $('#sexp').insertAdjacentHTML('beforeend',
-          `<div style="margin-top:8px"><button class="btn ghost" style="padding:6px 18px" onclick="window._scrGo()">下一个 ▶</button></div>`);
-        window._scrGo = go;
+        $('#sexp').innerHTML = `✅ <b>${window._scrWord}</b>！${allZh(window._scrWord)}`;
+        setTimeout(() => { S.idx++; window._scrShow(); }, 1300);
       }
     } else {
       sfx.wrong(); btn.classList.add('bad'); setTimeout(() => btn.classList.remove('bad'), 400);
@@ -335,532 +253,70 @@ function gScramble(pool) {
   };
   window._scrShow();
 }
-/* ---------------- 游戏5：听句选图（句子级听力理解） ----------------
-   句子级听力的最小可用闭环：听一句话 → 选对应的图。
-   用「一个概念一张图」的词图（wordIcon），保证孩子能从图认出概念，
-   不会出现"看图选错是因为图本身画错"的情况。
-   句子生成走和句子火车员同一套 makers（I eat xxx. / This is xxx. 等），
-   但**只留单图、具体的**那些（eat/drink + 食物、动物、颜色、身体），
-   不放抽象句（I like xxx. 这种"喜欢"没有对应图）。 */
-/* 中文量词：英文说 a book，中文得说「一本书」不是「一个书」。
-   小学词库常用名词就这些，穷举一个小表，没收录的退回「个」。 */
-const ZH_QTY = { book:'一本书', pen:'一支笔', pencil:'一支铅笔', ruler:'一把尺子', eraser:'一块橡皮',
-  bag:'一个书包', desk:'一张课桌', chair:'一把椅子', apple:'一个苹果', egg:'一个鸡蛋',
-  cake:'一块蛋糕', cup:'一个杯子', ball:'一个球', cat:'一只猫', dog:'一只狗', pig:'一只猪',
-  duck:'一只鸭子', cow:'一头牛', horse:'一匹马', sheep:'一只羊', tiger:'一只老虎',
-  lion:'一只狮子', monkey:'一只猴子', elephant:'一头大象', rabbit:'一只兔子', mouse:'一只老鼠',
-  bird:'一只鸟', fish:'一条鱼', car:'一辆小汽车', bus:'一辆公交车', bike:'一辆自行车',
-  bike2:'', house:'一座房子', tree:'一棵树', flower:'一朵花', star:'一颗星星',
-  umbrella:'一把雨伞', hat:'一顶帽子', shirt:'一件衬衫', dress:'一条连衣裙', coat:'一件外套',
-  shoe:'一只鞋', sock:'一只袜子', banana:'一根香蕉', orange:'一个橙子', pear:'一个梨',
-  tomato:'一个番茄', potato:'一个土豆', carrot:'一根胡萝卜', clock:'一个时钟', picture:'一幅画' };
-const zhQty = w => ZH_QTY[String(w.w || '').toLowerCase()] || ('一个' + w.zh);
-
-function gPicSentPick() {
-  poolPicker('🖼️ 听句选图', '🖼️', m => gPicSent(getPlayPool(m, w => !w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w))));
-}
-function gPicSent(pool) {
-  /* 只用「有图 + 可数单数」的具体名词：
-     · hasIcon —— 避免出现 it=🐱 这种错图
-     · isCountable —— 否则会说出 "I have a bread." / "I have a scissors."
-       （bread 不可数、scissors 只有复数，都不能加 a） */
-  const nouns = gxNouns(pool).filter(w => hasIcon(w) && w.w.length <= 8 && isCountable(w));
-  const foods = pool.filter(w => ['egg','rice','bread','cake','chicken','beef','pork','soup','noodle','dumpling','biscuit'].includes(w.w));
-  const drinks = pool.filter(w => ['water','juice','milk','tea'].includes(w.w));
-  const animals = pool.filter(w => ['cat','dog','pig','duck','cow','horse','sheep','tiger','lion','monkey','elephant','rabbit','mouse','bird','fish'].includes(w.w));
-  const colors = pool.filter(w => ['red','yellow','blue','green','white','black','orange','pink','purple','brown'].includes(w.w));
-
-  const mk = [];
-  if (foods.length) mk.push(() => { const w = pick(foods); return { audio: `I eat ${w.w}.`, zh: `我吃${w.zh}。`, right: w, all: foods.concat(nouns).slice(0, 12) }; });
-  if (drinks.length) mk.push(() => { const w = pick(drinks); return { audio: `I drink ${w.w}.`, zh: `我喝${w.zh}。`, right: w, all: drinks.concat(nouns).slice(0, 12) }; });
-  /* 冠词必须走 artOf —— 硬编码 a 会说出 "This is a elephant." */
-  if (animals.length) mk.push(() => { const w = pick(animals); return { audio: `This is ${artOf(w.w)} ${w.w}.`, zh: `这是一只${w.zh}。`, right: w, all: animals.concat(nouns).slice(0, 12) }; });
-  if (colors.length) mk.push(() => { const w = pick(colors); return { audio: `I see ${w.w}.`, zh: `我看见${w.zh}。`, right: w, all: colors.concat(nouns).slice(0, 12) }; });
-  if (nouns.length) mk.push(() => { const w = pick(nouns); return { audio: `I have ${artOf(w.w)} ${w.w}.`, zh: `我有${zhQty(w)}。`, right: w, all: nouns.slice(0, 12) }; });
-
-  if (!mk.length) { $('#app').innerHTML = `<div class="card" style="text-align:center"><p>这个词池里没有具体名词，换一个范围试试～</p>${gameHomeBtn()}</div>`; return; }
-
-  // 6 题，每题 4 个选项（1 正确 + 3 干扰）
-  const qs = [];
-  for (let i = 0; i < 6; i++) {
-    const q = mk[i % mk.length]();
-    // 干扰项：必须有图（否则孩子看图选不出来），按词去重，不与正确项同词
-    /* 原来的三行判断是坏的：第一行 `!cand.e && !cand.w` 永远不成立（w 必定有值），
-       第二行 `if (!cand.e) continue` 反而把所有靠自绘 SVG 的词全排除了，
-       注释写着「也接受（wordIcon 会画）」和代码完全相反。改成统一看 hasIcon。 */
-    const opts = [q.right];
-    const seen = new Set([q.right.w]);
-    const seenIcon = new Set([iconOf(q.right)]);
-    for (const cand of shuffle(q.all)) {
-      if (opts.length >= 4) break;
-      if (seen.has(cand.w)) continue;
-      if (!hasIcon(cand)) continue;             // 字母牌不算图
-      const k = iconOf(cand);
-      if (seenIcon.has(k)) continue;            // 同一张图不能出现两次
-      seenIcon.add(k);
-      seen.add(cand.w); opts.push(cand);
-    }
-    if (opts.length < 2) continue; // 选项不够，跳过这题
-    q.opts = shuffle(opts);
-    qs.push(q);
-  }
-  if (!qs.length) { $('#app').innerHTML = `<div class="card" style="text-align:center"><p>题目生成失败，换一个范围试试～</p>${gameHomeBtn()}</div>`; return; }
-
-  window._picQs = qs;
-  const S = { idx: 0, score: 0, first: true, answered: false, heard: 0 };
-  window._picShow = function () {
-    Flow.reset();
-    if (S.idx >= qs.length) {
-      addStars(S.score + 1); sfx.win(); if (S.score === qs.length) confetti();
-      $('#app').innerHTML = endCard('🖼️', `听对 ${S.score} / ${qs.length} 句`, S.score + 1);
-      return;
-    }
-    const q = qs[S.idx]; S.first = true; S.answered = false;
-    $('#app').innerHTML = `
-      <div class="card" style="max-width:680px;margin:0 auto;text-align:center">
-        <div class="score-bar"><b>🖼️ 听句选图</b><span>第 ${S.idx + 1} / ${qs.length} 句 · ✅ ${S.score}</span></div>
-        <p style="font-size:.95rem;color:#5C6273;margin:4px 0 12px">听一句话，选出对应的图片 👂</p>
-        <div style="display:flex;gap:10px;justify-content:center;margin-bottom:16px">
-          <button class="btn mint big" onclick="window._picPlay()">🔊 听句子</button>
-          <button class="btn ghost" onclick="window._picPlay()">🔁 再听一遍</button>
-        </div>
-        <div id="picOpts" class="opt-row" style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:520px;margin:0 auto">
-          ${q.opts.map(o => `
-            <button class="opt" style="flex-direction:column;gap:6px;padding:18px 12px" onclick="window._picAns(this,'${o.w.replace(/'/g, "\\'")}')">
-              <div style="font-size:56px;line-height:1">${iconOf(o)}</div>
-              <div style="font-size:.85rem;color:#5C6273">${esc(o.w)}</div>
-            </button>`).join('')}
-        </div>
-        <div class="explain" id="pexp" style="margin-top:14px"></div>
-        <div style="margin-top:12px">${gameHomeBtn()}</div>
-      </div>`;
-    window._picPlay = function () {
-      S.heard++;
-      speakSentence(q.audio, null, null);
-    };
-    window._picAns = function (btn, w) {
-      if (S.answered) return;
-      const ok = w === q.right.w;
-      feedback(btn, ok);
-      if (ok) {
-        if (S.first) { S.score++; flyStar(btn); }
-        S.answered = true; sfx.correct(); lockChoices(btn);
-        $('#pexp').innerHTML = `✅ <b>${q.audio}</b> — ${q.zh}`;
-        const go = Flow.make(() => { S.idx++; window._picShow(); }, 0);
-        $('#pexp').insertAdjacentHTML('beforeend', `<div style="margin-top:8px"><button class="btn ghost" style="padding:6px 18px" onclick="window._picGo()">下一个 ▶</button></div>`);
-        window._picGo = go;
-        // 读一遍正确答案（含中文），让孩子把"听到的"和"图"对上
-        speakSentence(q.audio, null, () => go.arm(900));
-      } else {
-        S.first = false; sfx.wrong();
-        $('#pexp').innerHTML = '🤔 再听一遍句子，注意听是什么东西～';
-      }
-    };
-    // 自动播一遍（孩子不用主动点）
-    setTimeout(() => { if (!S.answered) window._picPlay(); }, 500);
-  };
-  window._picShow();
-}
-/* ---------------- 游戏6：造词实验室 ----------------
-   目的不是"玩游戏"，是**扩词汇量**：题库里的词绝大多数孩子没在单词镇学过，
-   但都能从两个已知构件推出来（black + board、paint + -er）。
-   题库 = 词库内旧表 59 条（热身）+ js/build-data.js 的 193 个新词（扩展）。
-   每题只给构件（带中文）和后缀含义，答完才拼出整词，并给出
-   **音标 / 词性 / 中文释义 / 拼写变化**，同时朗读（本地离线音频）。
-   每轮 10 题；答完给「这一轮认识的新词」清单，可以一个个点着听。 */
-const WL_ROUND = 10;
-/* 词性中文名：直接读 data.js 的 POS_INFO（12 种全覆盖）。
-   别在这里维护第二张表——旧表只有 5 种，遇到 interj / phrase / prep 就印空白。 */
-const wlPos = p => (typeof POS_INFO !== 'undefined' && POS_INFO[p]) ? POS_INFO[p].zh : '';
-const wlMeta = q => [wlPos(q.p), q.zh].filter(Boolean).map(esc).join(' · ');
-/* 旧表（词库内 23 组）没写后缀含义，这里补齐 */
-const WL_SUF_ZH = { er: '做…的人 / 做…的物', r: '做…的人 / 做…的物', or: '做…的人',
-  ist: '…家 / …者', ful: '充满…的', less: '没有…的', y: '有…的 / 多…的', ly: '…地',
-  ing: '…的动作 / 产物' };
-
-function wlPool() {
-  if (window.__wlPool) return window.__wlPool;
-  const zhOf = w => (ALLW[w] || {}).zh || PART_ZH[w] || '';
-  /* 音标：IPA 表（967 词）优先，数据里自带 ipa 的（BUILD_*）其次。
-     两个都没有就不显示那一行——留一个空行比不显示更像 bug。 */
-  const ipaOfW = w => (typeof IPA !== 'undefined' && IPA[w]) || (ALLW[w] || {}).ipa || '';
-  const posOfW = w => (ALLW[w] || {}).pos || (typeof gxPosCode === 'function' ? gxPosCode(w) : 'n');
-  const pool = [];
-
-  /* 旧表：词库内的 59 个词（孩子学过，当热身） */
-  Object.keys(WORD_FAMILY).forEach(b => {
-    const f = WORD_FAMILY[b];
-    pool.push({ kind: 'der', w: f.d, base: b, baseZh: zhOf(b), s: f.suf, sz: WL_SUF_ZH[f.suf] || '', pre: 0,
-      zh: zhOf(f.d), p: posOfW(f.d), ipa: ipaOfW(f.d), note: f.note || '' });
-  });
-  COMPOUNDS.forEach(c => {
-    pool.push({ kind: 'com', w: c.w, a: c.a, az: zhOf(c.a), b: c.b, bz: zhOf(c.b),
-      zh: zhOf(c.w), p: posOfW(c.w), ipa: ipaOfW(c.w) });
-  });
-
-  /* 扩展表：193 个新词，元数据（中文/词性/音标）直接写在数据里 */
-  if (typeof BUILD_COM !== 'undefined') BUILD_COM.forEach(x => pool.push(Object.assign({ kind: 'com' }, x)));
-  if (typeof BUILD_DER !== 'undefined') BUILD_DER.forEach(x => pool.push(Object.assign({ kind: 'der', base: x.b, baseZh: x.bz }, x)));
-
-  /* 没有中文的题没法出（答案无处可选），直接剔掉；同一词只留一次 */
-  const seen = new Set(), out = [];
-  pool.forEach(q => {
-    if (!q.zh || !q.w || seen.has(q.w)) return;
-    if (q.kind === 'com' && (!q.az || !q.bz)) return;
-    if (q.kind === 'der' && !q.baseZh) return;
-    seen.add(q.w); out.push(q);
-  });
-  window.__wlPool = out;
-  return out;
-}
-
-/* 三个选项：答案 + 两个"有教学价值"的诱饵
-   合成词用两个构件的直译（黑板 vs 黑色 / 木板），
-   派生词用基础词的意思（画家 vs 画画）+ 另一个新词的意思。 */
-function wlOptions(q, pool) {
-  const wrong = [];
-  const add = z => { if (z && z !== q.zh && wrong.length < 2 && !wrong.includes(z)) wrong.push(z); };
-  if (q.kind === 'com') { add(q.az); add(q.bz); }
-  else {
-    add(q.baseZh);
-    if (q.s === 're') add('再一次 / 重新');   // 只有 re- 才谈得上"再一次"，un- 加这个是错的
-    /* 第三选项优先用"同一个后缀造出来的另一个词"：画家/歌手/老师同属 -er 家族，
-       孩子必须真的看懂基础词才选得对，而不是靠排除法。 */
-    const same = pool.filter(x => x.kind === 'der' && x.s === q.s && x.zh !== q.zh);
-    if (same.length) add(pick(same).zh);
-  }
-  /* 再不够才用同类词（合成找合成、派生找派生），最后才随机 */
-  let guard = 0;
-  const sameKind = pool.filter(x => x.kind === q.kind && x.zh !== q.zh);
-  while (wrong.length < 2 && guard++ < 40) add(pick(sameKind.length ? sameKind : pool).zh);
-  return shuffle([q.zh, ...wrong.slice(0, 2)]);
-}
-
-function gWordLab() {
-  const pool = wlPool();
-  if (pool.length < WL_ROUND) { toast('造词材料不够，换一批试试～'); return; }
-  const qs = shuffle(pool).slice(0, WL_ROUND).map(q => Object.assign({}, q, { options: wlOptions(q, pool) }));
-
-  const S = { idx: 0, score: 0, answered: false };
-  const total = qs.length;
-
-  const formulaOf = q => {
-    if (q.kind === 'com') {
-      return `<span class="wl-part">${esc(q.a)}<small>${esc(q.az)}</small></span><b>+</b>
-              <span class="wl-part">${esc(q.b)}<small>${esc(q.bz)}</small></span><b>=</b>
-              <span class="wl-q">?</span>`;
-    }
-    const left = q.pre
-      ? `<span class="wl-part wl-suf">${esc(q.s)}-<small>${esc(q.sz)}</small></span><b>+</b>
-         <span class="wl-part">${esc(q.base)}<small>${esc(q.baseZh)}</small></span>`
-      : `<span class="wl-part">${esc(q.base)}<small>${esc(q.baseZh)}</small></span><b>+</b>
-         <span class="wl-part wl-suf">-${esc(q.s)}<small>${esc(q.sz)}</small></span>`;
-    return `${left}<b>=</b><span class="wl-q">?</span>`;
-  };
-
-  const reviewOf = list => list.map((q, i) => `
-    <div class="wl-card">
-      <div class="wlCardHead"><b lang="en">${esc(q.w)}</b>
-        <button class="mini-speaker" onclick="event.stopPropagation();wlSayAt(${i})" title="点我听发音">🔊</button></div>
-      ${q.ipa ? `<div class="ph" lang="en">${esc(q.ipa)}</div>` : ''}
-      <div class="wlCardMeta">${wlMeta(q)}</div>
-    </div>`).join('');
-
-  /* 朗读入口：词从闭包取，绝不拼进 onclick（英文撇号会打断属性） */
-  window.wlSayAt = i => { const q = qs[i]; if (q) speak(q.w); };
-  window.wlSay = () => { const q = window._curWL; if (q) speak(q.w); };
-
-  window._wlShow = function () {
-    Flow.reset();
-    if (S.idx >= total) {
-      addStars(S.score + 1); sfx.win(); if (S.score >= total - 2) confetti();
-      $('#app').innerHTML = `
-        <div class="card" style="max-width:680px;margin:0 auto;text-align:center">
-          <div class="score-bar"><b>🧪 造词实验室</b><span>本轮结束</span></div>
-          <div style="font-size:54px;line-height:1.1">🧪</div>
-          <h2 style="margin:6px 0">猜对 ${S.score} / ${total} 个新词</h2>
-          <p class="wl-hint">这一轮认识的新词，点 🔊 可以再听一遍：</p>
-          <div class="wl-review">${reviewOf(qs)}</div>
-          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px">
-            <button class="btn grape big" onclick="gWordLab()">再来一轮 ▶</button>
-            ${gameHomeBtn()}
-          </div>
-        </div>`;
-      return;
-    }
-    const q = qs[S.idx];
-    S.answered = false;
-    $('#app').innerHTML = `
-      <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
-        <div class="score-bar"><b>🧪 造词实验室</b><span>第 ${S.idx + 1} / ${total} 题 · ✅ ${S.score}</span></div>
-        <p class="wl-hint">${q.kind === 'com'
-          ? `「${esc(q.a)}」+「${esc(q.b)}」合起来，是一个什么词？`
-          : q.pre
-            ? `前缀 <b>${esc(q.s)}-</b> 的意思是「${esc(q.sz)}」；加在 ${esc(q.base)}（${esc(q.baseZh)}）前面，会变成什么？`
-            : `后缀 <b>-${esc(q.s)}</b> 的意思是「${esc(q.sz)}」；${esc(q.base)}（${esc(q.baseZh)}）加上它，会变成什么？`}</p>
-        <div class="wl-formula">${formulaOf(q)}</div>
-        <div class="opt-row">
-          ${q.options.map((o, i) => `<button class="opt" onclick="wlAns(this,${i})" style="font-size:1rem">${esc(o)}</button>`).join('')}
-        </div>
-        <div class="explain" id="wlexp"></div>
-        <div style="margin-top:12px">${gameHomeBtn()}</div>
-      </div>`;
-    window._curWL = q;
-  };
-
-  window.wlAns = function (btn, i) {
-    const q = window._curWL;
-    if (!q || S.answered) return;
-    if (q.options[i] !== q.zh) {
-      sfx.wrong();
-      const hint = q.kind === 'com'
-        ? `${esc(q.az)} + ${esc(q.bz)}，合起来是什么？`
-        : `「${esc(q.baseZh)}」加上 ${q.pre ? esc(q.s) + '-' : '-' + esc(q.s)}，意思会变成什么？`;
-      $('#wlexp').innerHTML = `🤔 再想想～<br>💡 ${hint}`;
-      return;
-    }
-    S.score++; S.answered = true;
-    sfx.correct(); flyStar(btn); lockChoices(btn);
-    const made = q.kind === 'com'
-      ? `${esc(q.a)} + ${esc(q.b)} = ${esc(q.w)}`
-      : q.pre ? `${esc(q.s)}- + ${esc(q.base)} = ${esc(q.w)}` : `${esc(q.base)} + -${esc(q.s)} = ${esc(q.w)}`;
-    const why = q.kind === 'com'
-      ? '两个意思合起来就是新词'
-      : q.pre ? '前缀改变了方向或态度' : '后缀换了词性，意思也跟着变';
-    $('#wlexp').innerHTML = `
-      <div class="wlAnsHead">
-        <b lang="en">${esc(q.w)}</b>
-        ${q.ipa ? `<span class="ph" lang="en">${esc(q.ipa)}</span>` : ''}
-        <em>${wlPos(q.p)}</em>
-        <button class="mini-speaker" onclick="event.stopPropagation();wlSay()" title="点我听发音">🔊</button>
-      </div>
-      <div style="margin-top:4px">✅ <b>${esc(q.zh)}</b> —— ${made}</div>
-      <div style="margin-top:2px;color:#6B7280">${why}${q.kind === 'der' ? `（${esc(q.pre ? q.s + '-' : '-' + q.s)} = ${esc(q.sz)}）` : ''}${q.note ? '；' + esc(q.note) : ''}</div>`;
-    speak(q.w);
-    /* 这里有新词 + 音标 + 释义要读，按全站铁律 autoMs = 0：只留按钮，不自动跳 */
-    const last = S.idx >= total - 1;
-    const go = Flow.make(() => { S.idx++; window._wlShow(); }, 0);
-    window._wlGo = go;
-    $('#wlexp').insertAdjacentHTML('beforeend',
-      `<div style="margin-top:10px"><button class="btn grape big" id="wlNext" onclick="window._wlGo()">${last ? '看本轮收获 🏁' : '下一个 ▶'}</button></div>`);
-  };
-  window._wlShow();
-}
 function allZh(word) { return ALLW[word] ? ALLW[word].zh : ''; }
 
 /* ---------------- 游戏4：句子火车员（句子补词） ---------------- */
 function gSentencePick() {
-  /* 先选难度，再选词库。原来只有词库三档，题型固定 8 个（3 个还是"I am a boy"
-     这种写死的），选"随机挑战"也是重复的老几样——用户反馈"选最难的也过于简单"。 */
-  $('#app').innerHTML = `
-    <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
-      <div style="font-size:60px">🧑‍🔧</div>
-      <h2 style="justify-content:center">🧑‍🔧 句子火车员</h2>
-      <p style="color:#5C6273;font-size:.88rem">先选难度，再选词库：</p>
-      <div style="display:grid;gap:12px;margin-top:14px">
-        <button class="btn mint big" onclick="_sentLevel(0)">🌱 基础：be 动词 / 冠词 / 复数</button>
-        <button class="btn orange big" onclick="_sentLevel(1)">🔥 进阶：三单 + 否定 + 疑问词</button>
-        <button class="btn coral big" onclick="_sentLevel(2)">🚀 挑战：There be + 现在进行时 + 综合</button>
-      </div>
-      <div style="margin-top:14px">${gameHomeBtn()}</div>
-    </div>`;
+  poolPicker('🧑‍🔧 句子火车员', '🧑‍🔧', m => gSentence(getPlayPool(m, w => !w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w))));
 }
-function gSentence(pool, level) {
-  const wlvl = (level === 1 || level === 2) ? level : 0;
-  /* 动词池：只认词库 pos==='v' 的原形（gxVerbs）。原来拿固定 12 个词表去 pool 里
-     intersects，词池一换（复习/随机）就剩空数组，pick([]) 返回 undefined 直接崩。 */
-  const actions = gxVerbs(pool).filter(w => w.w.length <= 6);
-  const nouns = gxNouns(pool).filter(w => plurSafe(w) && w.w.length <= 8);
-  const countableNouns = nouns.filter(w => isCountable(w));
-  const anyFoods = themeWordsById(['food']).filter(w => gxPosCode(w) === 'n');
-  const anyDrinks = themeWordsById(['food']).filter(w => ['water','juice','milk','tea'].includes(w.w));
-  const anyActions = actions.length ? actions : gxVerbs(themeWordsById(['action1']));
-  const anyNouns = nouns.length ? nouns : gxNouns(themeWordsById(['animal1'])).filter(plurSafe);
-  const anyCountable = countableNouns.length ? countableNouns : gxNouns(themeWordsById(['animal1'])).filter(w => isCountable(w));
-  /* 进行时只走白名单 ING_FORM（eat→eating），绝不 v+'ing'（dance→danceing 就是这么错的） */
-  const ingOf = w => (typeof ING_FORM === 'object' && ING_FORM[w]) ? ING_FORM[w] : null;
-  /* 三单 -s 也走白名单：只留"直接加 s 一定对"的词（box→boxs 是错的，吃/去/洗/飞也不规则） */
-  const s3Safe = w => {
-    const x = String(w).toLowerCase();
-    return /^[a-z]+$/.test(x) && !/(s|x|z|sh|ch|o|f|fe|man|ouse|oose)$/.test(x) && !/[^aeiou]y$/.test(x) && !/e$/.test(x);
-  };
-  const s3Fallback = [{ w: 'jump', zh: '跳', e: '🐰' }, { w: 'read', zh: '读', e: '📖' }, { w: 'play', zh: '玩', e: '🎮' }];
-  /* 空池兜底：每个池都要非空，否则 pick 返回 undefined，w.zh 直接抛错 */
-  const nonEmpty = (a, fallback) => (a && a.length) ? a : fallback;
-  const foods = nonEmpty(anyFoods, anyCountable);
-  const drinks = nonEmpty(anyDrinks, foods);
-  const acts = nonEmpty(anyActions, []);
-  const nnn = nonEmpty(anyNouns, anyCountable);
-  const cnt = nonEmpty(anyCountable, nnn);
-  const s3Pool = nonEmpty(acts.filter(w => s3Safe(w.w)), s3Fallback);
-  const ingPool = (() => {
-    const has = acts.filter(w => ingOf(w.w));
-    return has.length ? has : ['eat','sing','jump','read','sleep','play','fly','draw','cry','laugh','drink','dance']
-      .map(k => ({ w: k, zh: (typeof ING_ZH === 'object' && ING_ZH[k]) ? ING_ZH[k] : k, e: '🎬' }));
-  })();
-  const pickSafe = (arr, not) => {
-    const cand = arr.filter(x => x.w !== not);
-    return pick(cand.length ? cand : arr) || { w: 'it', zh: '它', e: '🐱' };
-  };
+function gSentence(pool) {
+  const foods = pool.filter(w => ['egg','rice','bread','cake','chicken','beef','pork','soup','noodle','dumpling','mooncake','biscuit','sweet','moon'].includes(w.w));
+  const drinks = pool.filter(w => ['water','juice','milk','tea'].includes(w.w));
+  const actions = pool.filter(w => ['run','jump','swim','sing','dance','read','write','draw','fly','walk','sleep','play'].includes(w.w));
+  const nouns = pool.filter(w => !/(s|x|z|sh|ch)$/.test(w.w) && w.w.length <= 8);
+  const anyFoods = foods.length ? foods : themeWordsById(['food']);
+  const anyDrinks = drinks.length ? drinks : themeWordsById(['food']).filter(w => ['water','juice','milk','tea'].includes(w.w));
+  const anyActions = actions.length ? actions : themeWordsById(['action1']);
+  const anyNouns = nouns.length ? nouns : themeWordsById(['animal1']).filter(w => !/(s|x|z|sh|ch)$/.test(w.w));
 
-  /* 三档难度：基础（第一/二人称 + be/冠词/复数）/ 进阶（三单 + 否定）/ 挑战（疑问 + There be + 进行时）
-     每档都会兜底混入更简单的题，保证空池/生词池也能出满 6 题。 */
-  const M_BASIC = [
-    () => { const w = pickSafe(foods); return { q: `我吃${w.zh}`, sent: `I __ ${w.w}.`, opts: ['eat','drink','look'], ans: 'eat', zh: `I eat ${w.w}. 我吃${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(drinks); return { q: `我喝${w.zh}`, sent: `I __ ${w.w}.`, opts: ['drink','eat','read'], ans: 'drink', zh: `I drink ${w.w}. 我喝${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(acts); return { q: `我会${w.zh}`, sent: `I can __.`, opts: [w.w, w.w + 's', 'am'], ans: w.w, zh: `I can ${w.w}. 我会${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(nnn); const pl = plurOf(w); return { q: `我喜欢${w.zh}（复数）`, sent: `I like __.`, opts: [pl, w.w, w.w + 'es'], ans: pl, zh: `I like ${pl}. 我喜欢${w.zh}。`, e: w.e }; },
-    () => ({ q: '我是一个男孩', sent: `I __ a boy.`, opts: ['am','is','are'], ans: 'am', zh: 'I am a boy. 我是一个男孩。', e: '👦' }),
-    () => ({ q: '她是一个女孩', sent: `She __ a girl.`, opts: ['is','am','are'], ans: 'is', zh: 'She is a girl. 她是一个女孩。', e: '👧' }),
-    () => ({ q: '这是我的妈妈', sent: `This __ my mom.`, opts: ['is','are','am'], ans: 'is', zh: 'This is my mom. 这是我的妈妈。', e: '👩' }),
-    () => {
-      const w = pickSafe(cnt);
-      const right = artOf(w.w), other = right === 'a' ? 'an' : 'a';
-      return { q: `这是${w.zh}`, sent: `This is __ ${w.w}.`, opts: [right, other, 'the'], ans: right,
-        zh: `This is ${right} ${w.w}. 这是${w.zh}。`, e: w.e };
-    },
+  const makers = [
+    () => { const w = pick(anyFoods); return { q: `我吃${w.zh}`, sent: `I __ ${w.w}.`, opts: ['eat','drink','look'], ans: 'eat', zh: `I eat ${w.w}. 我吃${w.zh}。`, e: w.e }; },
+    () => { const w = pick(anyDrinks); return { q: `我喝${w.zh}`, sent: `I __ ${w.w}.`, opts: ['drink','eat','read'], ans: 'drink', zh: `I drink ${w.w}. 我喝${w.zh}。`, e: w.e }; },
+    () => { const w = pick(anyActions); return { q: `我会${w.zh}`, sent: `I can __.`, opts: [w.w, w.w + 's', 'am'], ans: w.w, zh: `I can ${w.w}. 我会${w.zh}。`, e: w.e }; },
+    () => { const w = pick(anyNouns); return { q: `我喜欢${w.zh}（复数）`, sent: `I like __.`, opts: [w.w + 's', w.w, w.w + 'es'], ans: w.w + 's', zh: `I like ${w.w}s. 我喜欢${w.zh}。`, e: w.e }; },
+    () => ({ q: '我是一个男孩', sent: `I __ a boy.`, opts: ['am','is','are'], ans: 'am', zh: 'I am a boy.', e: '👦' }),
+    () => ({ q: '她是一个女孩', sent: `She __ a girl.`, opts: ['is','am','are'], ans: 'is', zh: 'She is a girl.', e: '👧' }),
+    () => ({ q: '这是我的妈妈', sent: `This __ my mom.`, opts: ['is','are','am'], ans: 'is', zh: 'This is my mom.', e: '👩' }),
+    () => { const w = pick(anyNouns); return { q: `这是${w.zh}`, sent: `This is __ ${w.w}.`, opts: [artOf(w.w), 'an', 'the'], ans: artOf(w.w), zh: `This is ${artOf(w.w)} ${w.w}. 这是${w.zh}。`, e: w.e }; },
   ];
-  const M_MID = [
-    () => { const w = pickSafe(nnn, 'box'); const pl = plurOf(w);
-      return { q: `他喜欢${w.zh}（复数）`, sent: `He likes __.`, opts: [pl, w.w, w.w + 'es'], ans: pl,
-        zh: `He likes ${pl}. 他喜欢${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(s3Pool); return { q: `她每天${w.zh}`, sent: `She __ every day.`, opts: [w.w + 's', w.w, 'am'], ans: w.w + 's',
-        zh: `She ${w.w}s every day. 她每天${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(nnn); return { q: `我不喜欢${w.zh}`, sent: `I __ like ${w.w}.`, opts: ["don't", "can't", "am not"], ans: "don't",
-        zh: `I don't like ${w.w}. 我不喜欢${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(acts); return { q: `他不会${w.zh}`, sent: `He __ ${w.w}.`, opts: ["can't", "don't", "doesn't"], ans: "can't",
-        zh: `He can't ${w.w}. 他不会${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(nnn, 'box'); const pl = plurOf(w);
-      return { q: `你有几个${w.zh}？`, sent: `How many __ do you have?`, opts: [pl, w.w, 'a ' + w.w], ans: pl,
-        zh: `How many ${pl} do you have? 你有几个${w.zh}？`, e: w.e }; },
-  ];
-  const M_HARD = [
-    () => {
-      const w = pickSafe(cnt);
-      return { q: `这是${w.zh}吗？`, sent: `Is this __ ${w.w}?`, opts: [artOf(w.w), 'am', 'are'], ans: artOf(w.w),
-        zh: `Is this ${artOf(w.w)} ${w.w}? 这是${w.zh}吗？`, e: w.e };
-    },
-    () => { const w = pickSafe(nnn, 'box'); const pl = plurOf(w);
-      return { q: `他们是${w.zh}吗？`, sent: `Are these __?`, opts: [pl, w.w, 'a ' + w.w], ans: pl,
-        zh: `Are these ${pl}? 他们是${w.zh}吗？`, e: w.e }; },
-    () => { const w = pickSafe(nnn, 'box'); const pl = plurOf(w);
-      /* 同上：on the table 对 classroom/horse 这种名词荒谬，改 over there */
-      return { q: `那边有一些${w.zh}`, sent: `There __ some ${pl} over there.`, opts: ['are', 'is', 'am'], ans: 'are',
-        zh: `There are some ${pl} over there. 那边有一些${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(cnt); return { q: `那边有一个${w.zh}`, sent: `There __ ${artOf(w.w)} ${w.w} over there.`, opts: ['is', 'are', 'am'], ans: 'is',
-        zh: `There is ${artOf(w.w)} ${w.w} over there. 那边有一个${w.zh}。`, e: w.e }; },
-    () => {
-      const w = pickSafe(ingPool);
-      const ing = ingOf(w.w);
-      return { q: `他正在${w.zh}`, sent: `He is __.`, opts: [ing, w.w, w.w + 's'], ans: ing,
-        zh: `He is ${ing}. 他正在${w.zh}。`, e: w.e };
-    },
-    () => {
-      const w = pickSafe(ingPool);
-      const ing = ingOf(w.w);
-      return { q: `她没在${w.zh}`, sent: `She is not __.`, opts: [ing, w.w, w.w + 's'], ans: ing,
-        zh: `She is not ${ing}. 她没在${w.zh}。`, e: w.e };
-    },
-    () => { const w = pickSafe(acts); return { q: `你想要${w.zh}吗？`, sent: `Do you want to __?`, opts: [w.w, w.w + 's', 'am'], ans: w.w,
-        zh: `Do you want to ${w.w}? 你想要${w.zh}吗？`, e: w.e }; },
-    () => { const w = pickSafe(cnt); return { q: `这是谁的${w.zh}？`, sent: `Whose ${w.w} is this?`, opts: [w.w, plurOf(w.w), 'a'], ans: w.w,
-        zh: `Whose ${w.w} is this? 这是谁的${w.zh}？`, e: w.e }; },
-    () => {
-      const w = pickSafe(ingPool);
-      const ing = ingOf(w.w);
-      return { q: `看！他正在${w.zh}`, sent: `Look! He __ ${ing}.`, opts: ['is', 'am', 'are'], ans: 'is',
-        zh: `Look! He is ${ing}. 看！他正在${w.zh}。`, e: w.e };
-    },
-  ];
-  /* level 0/1/2 → 各自难度池；每个 maker 再按 level 递减混入更简单的题 */
-  const LEVELS = [M_BASIC, M_MID, M_HARD];
-  const mkPool = l => {
-    const out = [];
-    for (let i = l; i >= 0; i--) out.push(...LEVELS[i]);
-    return out;
-  };
-  const makers = mkPool(wlvl);
-  const qs = [];
-  const seen = new Set();
-  for (let i = 0; i < makers.length && qs.length < 6; i++) {
-    const mk = makers[Math.floor(Math.random() * makers.length)];
-    let q = null;
-    try { q = mk(); } catch (err) { q = null; }
-    if (!q || !q.sent || !q.ans || !Array.isArray(q.opts) || q.opts.length < 2) continue;
-    const key = q.sent + '|' + q.ans;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    qs.push(q);
-  }
-  /* 兜底：万一 6 题凑不满（理论上不会，因为 makers 有 8+ 个），用固定句补齐 */
-  while (qs.length < 6) {
-    const w = pickSafe(cnt);
-    qs.push({ q: `这是${w.zh}`, sent: `This is __ ${w.w}.`, opts: [artOf(w.w), 'the', 'am'], ans: artOf(w.w),
-      zh: `This is ${artOf(w.w)} ${w.w}. 这是${w.zh}。`, e: w.e });
-  }
-  window._sentQs = qs;            // 自检用：题库快照（也方便排查某道题为什么怪）
+  const qs = shuffle(makers).slice(0, 6).map(mk => mk());
   const S = { idx: 0, score: 0, first: true };
   window._sentShow = function () {
-    Flow.reset();                    // 新一题：作废旧回合的自动推进
     if (S.idx >= qs.length) {
       addStars(S.score + 1); sfx.win(); if (S.score === qs.length) confetti();
       $('#app').innerHTML = endCard('🧑‍🔧', `补对 ${S.score} / ${qs.length} 句`, S.score + 1);
       return;
     }
-    const q = qs[S.idx]; S.first = true; S.answered = false;
-    /* 选项顺序存进 S.opts，按钮只传下标。
-       以前把选项文本直接拼进 onclick（行内字符串里塞 ${o}），选项里只要有撇号
-       （chicken's / don't / can't）就把 JS 字符串提前闭合 —— 点了完全没反应。
-       项目铁律：任何可能含撇号的文本都不许拼进 onclick，一律用下标寻址。 */
-    S.opts = shuffle(q.opts.slice());
+    const q = qs[S.idx]; S.first = true;
     $('#app').innerHTML = `
       <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🧑‍🔧 句子火车员</b><span>第 ${S.idx + 1} / ${qs.length} 句 · ✅ ${S.score}</span></div>
-        <div style="font-size:44px">${q.e ? emoSvg(q.e) : emoSvg('🧩')}</div>
+        <div style="font-size:44px">${q.e || '🧩'}</div>
         <div style="font-size:.95rem;color:#5C6273;margin:4px 0 8px">「${q.q}」—— 火车缺了一节车厢，补上它：</div>
         <div class="train-result" style="justify-content:center;font-size:1.6rem">${q.sent.replace('__', '<span style="color:#FF6B6B">＿＿</span>')}</div>
         <div class="opt-row">
-          ${S.opts.map((o, i) => `<button class="opt" style="font-size:1.2rem" onclick="sentAns(this,${i})">${esc(o)}</button>`).join('')}
+          ${shuffle(q.opts.slice()).map(o => `<button class="opt" style="font-size:1.2rem" onclick="sentAns(this,'${o}')">${o}</button>`).join('')}
         </div>
         <div class="explain" id="sexp2"></div>
         <div style="margin-top:10px">${gameHomeBtn()}</div>
       </div>`;
   };
-  window.sentAns = function (btn, i) {
+  window.sentAns = function (btn, o) {
     const q = qs[S.idx];
-    if (S.answered) return;
-    const o = (S.opts || [])[i];      // 下标 → 选项文本（绝不从 onclick 里取字符串）
-    if (o === undefined) return;
     const ok = o === q.ans;
     feedback(btn, ok);
     if (ok) {
       // 只计分不发星：星星在游戏结束统一结算（与其他游戏一致，避免双重发星）
       if (S.first) { S.score++; flyStar(btn); }
-      S.answered = true;
       sfx.correct();
-      lockChoices(btn);
-      $('#sexp2').innerHTML = `✅ <b>${esc(q.zh)}</b>`;
-      /* 这句要念完（2~4 秒），所以自动跳要等朗读结束再起算；
-         原来写死 1.5 秒，等于每次都在句子念到一半时掐掉。按钮随时可走。 */
-      const go = Flow.make(() => { S.idx++; window._sentShow(); }, 0);
-      $('#sexp2').insertAdjacentHTML('beforeend',
-        `<div style="margin-top:8px"><button class="btn ghost" style="padding:6px 18px" onclick="window._sentGo()">下一个 ▶</button></div>`);
-      window._sentGo = go;
-      speakSentence(q.zh.split('.')[0], null, () => go.arm(900));
+      $('#sexp2').innerHTML = `✅ <b>${q.zh}</b>`;
+      speakSentence(q.zh.split('.')[0]);
+      setTimeout(() => { S.idx++; window._sentShow(); }, 1500);
     } else { S.first = false; sfx.wrong(); $('#sexp2').innerHTML = '🤔 想想公式：谁 + 干什么 + 什么'; }
   };
   window._sentShow();
 }
-/* artOf 统一放在 js/grammar-engine.js（冠词看读音不看首字母，见那里的注释） */
-/* 选完难度 → 选词库 → 开局（与 gSentencePick 配对） */
-window._sentLevel = function (lv) {
-  poolPicker('🧑‍🔧 句子火车员', '🧑‍🔧',
-    m => gSentence(getPlayPool(m, w => !w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w)), lv));
-};
-/* 共享规则在 js/grammar-engine.js（与句子工厂同一套），这里只做薄封装 */
-function plurSafe(w) { return typeof pluralSafe === 'function' ? pluralSafe(w) : !/(s|x|z|sh|ch)$/.test(w.w); }
-function plurOf(w) { return typeof pluralOf === 'function' ? pluralOf(w) : w.w + 's'; }
-function isCountable(w) { return typeof countable === 'function' ? countable(w) : true; }
+function artOf(w) { return /^[aeiou]/i.test(w) ? 'an' : 'a'; }
 function themeWordsById(ids) {
   const out = [];
   ids.forEach(id => { const t = THEMES.find(x => x.id === id); if (t) t.words.forEach(w => { if (!w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w)) out.push(w); }); });
