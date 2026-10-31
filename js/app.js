@@ -805,7 +805,7 @@ function testSound() {
     const sb = document.getElementById('soundBtn'); if (sb) sb.textContent = '🔊';
     toast('🔊 已打开网站声音，正在测试…');
   }
-  sfx.good();
+  sfx.correct();
   setTimeout(() => {
     speak('hello', 'en-US', 1);
     setTimeout(() => toast('❓ 能听到我说话吗？如果听不到，请检查设备的音量键 🔊'), 1200);
