@@ -153,25 +153,15 @@ function renderLevelHome() {
   $('#app').innerHTML = `
     <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevels()">← 换一册</button>
     <div class="card" style="border-color:${lv.color}">
-      <h2>${lv.emoji} ${lv.name} <small style="font-weight:400;color:#5C6273">${lv.zh} · 已完成 ${dn}/${lv.units.length} 课</small></h2>
-      <p style="margin:6px 0 0;color:#5C6273;font-size:.88rem;line-height:1.8">${lv.desc}</p>
+      <h2>${lv.emoji} ${lv.name} <small style="font-weight:400;color:#5C6273">已完成 ${dn}/${lv.units.length} 课</small></h2>
       <div class="gs-prog" style="margin-top:10px"><i style="width:${Math.round(dn / lv.units.length * 100)}%"></i></div>
       <div style="margin-top:12px">${gsActiveLevelId() === lv.id
-        ? '<span class="gs-step on">📍 正在学这一册（当前档案）</span>'
+        ? '<span class="gs-step on">📍 正在学这一册</span>'
         : `<button class="btn mint" onclick="gsSetActive('${lv.id}')">📍 设为正在学</button>`}</div>
     </div>
-    ${firstGap && !gsDone(firstGap.id) ? `
-    <div class="gs-catch" style="margin-top:14px">
-      <span style="font-size:30px">📤</span>
-      <div style="flex:1">
-        <b>落下的课：${firstGap.title}</b>
-        <div style="font-size:.8rem;color:#5C6273">${firstGap.zh} · ${firstGap.words.length} 个单词 —— 这节课今天补上！</div>
-      </div>
-      <button class="btn coral" onclick="startUnit('${firstGap.id}')">去补课 ▶</button>
-    </div>` : ''}
     <div style="margin-top:14px">
       ${byModule.map((us, mi) => us.length ? `
-        ${us[0].modName ? `<div class="gs-modhead">${us[0].modEmoji || '📘'} ${us[0].modName} <small>${us[0].modTip || ''}</small></div>` : ''}
+        ${us[0].modName ? `<div class="gs-modhead">${us[0].modEmoji || '📘'} ${us[0].modName}</div>` : ''}
         ${us.map(u => {
           const dn2 = gsDone(u.id);
           return `<div class="gs-unit ${dn2 ? 'done' : ''}" onclick="startUnit('${u.id}')">
