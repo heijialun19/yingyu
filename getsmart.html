@@ -285,15 +285,27 @@ function gsNextWord() {
 /* ---- 出题器 ---- */
 /* 数字词用真数字块显示（eleven→11），避免所有数字共用一个 emoji 图 */
 const GS_NUM = { eleven:'11', twelve:'12', thirteen:'13', fourteen:'14', fifteen:'15', sixteen:'16', seventeen:'17', eighteen:'18', nineteen:'19', twenty:'20', thirty:'30', forty:'40', fifty:'50', sixty:'60', seventy:'70', eighty:'80', ninety:'90', hundred:'100' };
+/* 颜色词一律画实色色块（课本教颜色的方式）：
+   🔴🔵⚪ 这类圆形 emoji 一来部分设备渲染发白/空白，二来白色在白卡上隐形 */
+const GS_COLORS = {
+  red: '#EF4444', blue: '#3B82F6', yellow: '#FACC15', green: '#22C55E',
+  white: '#FFFFFF', black: '#1F2937', orange: '#F97316', pink: '#F472B6',
+  purple: '#A855F7', brown: '#92400E', grey: '#9CA3AF', gray: '#9CA3AF',
+  gold: '#D4A017', silver: '#C0C0C0'
+};
 function gsIcon(w) {
-  const n = GS_NUM[String(w.w).toLowerCase()];
+  const name = String(w.w).toLowerCase();
+  const n = GS_NUM[name];
   if (n) return '<span class="gs-num">' + n + '</span>';
+  if (GS_COLORS[name]) return '<span class="gs-num" style="background:' + GS_COLORS[name] + ';border:3px solid rgba(45,49,66,.22)"></span>';
   return iconOf(w);
 }
-/* 图选项必须互不相同：有任何重复就整体退回文字选项（孩子永远能选） */
+/* 图选项必须互不相同：有任何重复就整体退回文字选项（孩子永远能选）。
+   系统 emoji 渲染因设备而异（部分机型空白），出现即整题退回文字。 */
 function imgOpts(list) {
   const htmls = list.map(gsIcon);
   if (!list.every(hasIcon) || new Set(htmls).size !== list.length) return null;
+  if (htmls.some(h => h.includes('class="emj"'))) return null;
   return htmls;
 }
 function buildUnitQs(u) {
