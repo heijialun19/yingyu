@@ -65,6 +65,10 @@
 </style>
 </head>
 <body>
+  <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
+    <div style="font-size:52px">🐤</div>
+    <div style="font-size:.9rem;color:#5C6273;font-weight:700">加载中，请稍等…</div>
+  </div>
 <main>
   <div class="page-title">
     <h1>🏘️ 单词镇</h1>
@@ -78,7 +82,7 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script src="svg/emoji-svg.js?v=2"></script>
 <script src="js/data.js?v=32"></script>
-<script src="js/app.js?v=54"></script>
+<script src="js/app.js?v=55"></script>
 <script src="js/sentence.js?v=44"></script>
 <script src="js/speech.js?v=1"></script>
 <script src="js/ipa.js?v=2"></script>
@@ -980,6 +984,14 @@ function spEnd() {
 
 /* ---------------- 启动 ---------------- */
 renderBrowse();
+
+/* 进入页面即后台预载当前主题全部发音 */
+(function () {
+  const t = themeById(curTheme);
+  if (t && t.words) prewarmBatch(t.words.map(w => w.w), 180);
+  const origSwitch = switchTheme;
+  switchTheme = function (id) { origSwitch(id); const nt = themeById(curTheme); if (nt && nt.words) prewarmBatch(nt.words.map(w => w.w), 180); };
+})();
 const __m = new URLSearchParams(location.search).get('mode');
 if (__m === 'review') startReview();
 else if (__m === 'plan') showPool('plan');

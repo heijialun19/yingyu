@@ -50,6 +50,10 @@
 </style>
 </head>
 <body>
+  <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
+    <div style="font-size:52px">🐤</div>
+    <div style="font-size:.9rem;color:#5C6273;font-weight:700">加载中，请稍等…</div>
+  </div>
 <main>
   <div class="page-title">
     <h1>🎓 Get Smart 学堂</h1>
@@ -62,7 +66,7 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script src="svg/emoji-svg.js?v=2"></script>
 <script src="js/data.js?v=32"></script>
-<script src="js/app.js?v=54"></script>
+<script src="js/app.js?v=55"></script>
 <script src="js/sentence.js?v=44"></script>
 <script src="js/getsmart-data.js?v=9"></script>
 <script>
@@ -689,6 +693,14 @@ function renderFlowDone() {
   if (now) { curLevel = now; view = 'level'; renderLevelHome(); }
   else renderLevels();
 })();
-</script>
+
+/* 进入页面即后台预载当前册全部发音（手机首次进来不等网络） */
+(function () {
+  const lv = GS_LEVELS.find(l => l.id === gsActiveLevelId());
+  if (!lv) return;
+  const words = new Set();
+  lv.units.forEach(u => (u.words || []).forEach(w => { if (w.w) words.add(w.w); }));
+  prewarmBatch(Array.from(words), 180);
+})();</script>
 </body>
 </html>

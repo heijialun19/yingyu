@@ -55,6 +55,10 @@
 </style>
 </head>
 <body>
+  <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
+    <div style="font-size:52px">🐤</div>
+    <div style="font-size:.9rem;color:#5C6273;font-weight:700">加载中，请稍等…</div>
+  </div>
 <main style="max-width:720px">
   <!-- 语义标题：视觉上不需要（孩子看的是图），但读屏器和搜索引擎需要一个 h1 -->
   <h1 class="sr-only">小鸟英语乐园 —— 小学英语单词、句子与发音练习</h1>
@@ -98,7 +102,7 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script src="svg/emoji-svg.js?v=2"></script>
 <script src="js/data.js?v=32"></script>
-<script src="js/app.js?v=54"></script>
+<script src="js/app.js?v=55"></script>
 <script src="js/sentence.js?v=44"></script>
 <script src="js/getsmart-data.js?v=9"></script>
 <script>
