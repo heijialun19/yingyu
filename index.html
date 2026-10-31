@@ -3,31 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4EC5F1">
+<!-- ⚠ 下面两个 meta 里的数字（1000 词 / 19 关 / 6 游戏）必须与
+     words-data.js 的 TOTAL_WORDS、data.js 的 GRAMMAR_LEVELS.length、
+     games.html 的 GAMES.length 对得上。改了数据别忘改这里。 -->
+<meta name="description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子工厂 19 关万能公式，6 个复习游戏。安全纯净，进度保存在本机。">
+<link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
+<meta property="og:title" content="小鸟英语乐园 · 一年级英语启蒙">
+<meta property="og:description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子工厂 19 关万能公式，6 个复习游戏。安全纯净，进度保存在本机。">
+<meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
+<meta property="og:url" content="https://heijialun19.github.io/yingyu/index.html">
+<meta name="twitter:card" content="summary_large_image">
 <title>小鸟英语乐园 · 一年级英语启蒙</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=27">
+<link rel="stylesheet" href="css/style.css?v=43">
 <style>
 .hello-line{text-align:center;color:#5C6273;font-size:.9rem;margin:4px 0 14px}
 .hello-line b{color:var(--ink)}
-.hello-line a{color:#78909C;text-decoration:underline dotted;cursor:pointer}
+.hello-line a{color:#6B7280;text-decoration:underline dotted;cursor:pointer}
 .main-card{text-align:center;padding:34px 20px 28px;cursor:pointer;transition:.18s;border-width:4px}
 .main-card:hover{transform:translateY(-4px)}
-.main-emoji{font-size:76px;line-height:1.15;filter:drop-shadow(0 6px 8px rgba(0,0,0,.12))}
+/* 不用 filter：会把内联 SVG 画成空白 */
+.main-emoji{font-size:76px;line-height:1.15}
 .main-title{font-size:1.5rem;font-weight:800;margin:6px 0 2px}
 .main-sub{color:#5C6273;font-size:.92rem;margin-bottom:14px}
 .main-progress{height:14px;background:#EEF3F8;border-radius:999px;overflow:hidden;max-width:320px;margin:0 auto 16px}
 .main-progress i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--mint),var(--lake));transition:.4s}
 .task-strip{display:flex;justify-content:center;gap:14px;margin:10px 0 4px;font-size:.82rem;color:#5C6273;flex-wrap:wrap}
 .task-strip .tdone{color:#4E9E59;font-weight:700}
-.section-label{text-align:center;color:#78909C;font-size:.8rem;margin:22px 0 10px;letter-spacing:2px}
+.section-label{text-align:center;color:#6B7280;font-size:.8rem;margin:22px 0 10px;letter-spacing:2px}
 .big-islands{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;max-width:760px;margin:0 auto}
-.big-island{background:#fff;border-radius:24px;border:3px solid var(--sky2);box-shadow:0 5px 0 rgba(45,49,66,.08);display:flex;flex-direction:column;align-items:center;gap:2px;padding:18px 8px 14px;cursor:pointer;transition:.15s}
+.big-island{background:#fff;border-radius:24px;border:3px solid var(--sky2);box-shadow:0 5px 0 rgba(45,49,66,.08);display:flex;flex-direction:column;align-items:center;gap:2px;padding:18px 8px 14px;cursor:pointer;transition:.15s;font:inherit;color:inherit;text-align:center;width:100%}
 .big-island:hover{transform:translateY(-5px);border-color:var(--lemon)}
-.big-island .bi-emoji{font-size:52px;line-height:1.1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.1))}
+.big-island .bi-emoji{font-size:52px;line-height:1.1}
 .big-island b{font-size:1.05rem}
-.big-island small{color:#78909C;font-size:.68rem}
-.foot-links{text-align:center;margin-top:26px;font-size:.78rem;color:#78909C}
-.foot-links a{color:#78909C;margin:0 8px}
+.big-island small{color:#6B7280;font-size:.78rem}
+.foot-links{text-align:center;margin-top:26px;font-size:.78rem;color:#6B7280}
+.foot-links a{color:#6B7280;margin:0 8px}
 .welcome-only{max-width:420px;margin:30px auto;text-align:center;padding:30px 24px}
 .avatar-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
 .avatar-chip{width:46px;height:46px;font-size:26px;border-radius:14px;cursor:pointer;background:#fff;border:3px solid #E8EAF0;transition:.13s}
@@ -41,6 +56,8 @@
 </head>
 <body>
 <main style="max-width:720px">
+  <!-- 语义标题：视觉上不需要（孩子看的是图），但读屏器和搜索引擎需要一个 h1 -->
+  <h1 class="sr-only">小鸟英语乐园 —— 小学英语单词、句子与发音练习</h1>
   <section id="welcome" style="display:none">
     <div class="card welcome-only">
       <div style="font-size:64px">🐤</div>
@@ -49,7 +66,7 @@
       <div class="avatar-grid" id="introAvatars"></div>
       <div class="mini-grade" id="introGrade"></div>
       <button class="btn grape big" style="width:100%" onclick="saveIntro()">🚀 开始学习！</button>
-      <small style="display:block;color:#78909C;margin-top:10px">进度保存在这台电脑上，随时可备份</small>
+      <small style="display:block;color:#6B7280;margin-top:10px">进度保存在这台电脑上，随时可备份</small>
     </div>
   </section>
 
@@ -76,10 +93,12 @@
   </div>
 </main>
 
-<script src="js/words-data.js?v=25"></script>
-<script src="js/data.js?v=26"></script>
-<script src="js/app.js?v=36"></script>
-<script src="js/sentence.js?v=38"></script>
+<script src="js/words-data.js?v=31"></script>
+<script src="svg/word-svg.js?v=2"></script>
+<script src="svg/emoji-svg.js?v=2"></script>
+<script src="js/data.js?v=32"></script>
+<script src="js/app.js?v=53"></script>
+<script src="js/sentence.js?v=44"></script>
 <script>
 renderNav('index'); renderDecor();
 
@@ -124,7 +143,7 @@ function showHome() {
   document.getElementById('gradeLink').onclick = openProfileModal;
 
   /* 推荐逻辑：单词闯关是绝对主线——字母小朋友基本都会，不再主动推。
-     主卡顺序：单词 → 绘本 → 句子工厂 → 学字母（仅「自己已经开始学」的孩子）→ 游戏。
+     主卡顺序：单词 → 句子工厂 → 学字母（仅「自己已经开始学」的孩子）→ 游戏。
      「正在学字母」= 自己在字母岛学过 1-25 个，且没点过「我会字母了」。 */
   const letterN = letterCount();
   const lettersFinished = Store.d.lettersSkip || letterN >= 26;
@@ -133,7 +152,6 @@ function showHome() {
   const gradeDone = cumMasteredCount(), gradeAll = cumWordCount();
   let step;
   if (gradeDone < gradeAll) step = { e:'🏘️', t:'单词闯关', s:`${myGrade().name}词库：已掌握 ${gradeDone}/${gradeAll}`, href:'words.html?mode=plan', now:gradeDone, all:gradeAll };
-  else if (Object.keys(Store.d.books||{}).length < BOOKS_TOTAL) step = { e:'📚', t:'读今天的绘本', s:`已读 ${Object.keys(Store.d.books||{}).length}/${BOOKS_TOTAL} 本`, href:'books.html', now:Object.keys(Store.d.books||{}).length, all:BOOKS_TOTAL };
   else if (grammarDoneCount() < GRAMMAR_LEVELS.length) step = { e:'🏭', t:'句子工厂闯关', s:`已通过 ${grammarDoneCount()}/${GRAMMAR_LEVELS.length} 关`, href:'grammar.html', now:grammarDoneCount(), all:GRAMMAR_LEVELS.length };
   else if (nextLetter) step = { e:'🏝️', t:`学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}`, s:`${nextLetter.shape} · 故事+拼读`, href:'letters.html', now:letterN, all:26 };
   else step = { e:'🎡', t:'去游戏乐园复习', s:'边玩边巩固', href:'games.html', now:0, all:0 };
@@ -141,7 +159,13 @@ function showHome() {
   document.getElementById('mcTitle').textContent = step.t;
   document.getElementById('mcSub').textContent = step.s;
   document.getElementById('mcBar').style.width = (step.all ? Math.round(step.now/step.all*100) : 100) + '%';
-  document.getElementById('mainCard').onclick = () => location.href = step.href;
+  /* 主卡：既是按钮就得让键盘也能按（原来只有 onclick，Tab 走不到） */
+  const mcEl = document.getElementById('mainCard');
+  mcEl.onclick = () => location.href = step.href;
+  mcEl.setAttribute('role', 'button');
+  mcEl.setAttribute('tabindex', '0');
+  mcEl.setAttribute('aria-label', step.t + '——' + step.s);
+  mcEl.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.href = step.href; } };
 
   const due = dueWords();
   if (due.length) {
@@ -159,21 +183,20 @@ function showHome() {
 
   const islands = lettersFinished ? [
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
-    { e:'📚', n:'绘本馆', d:Object.keys(Store.d.books||{}).length+'/'+BOOKS_TOTAL, href:'books.html' },
     { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
-    { e:'🎡', n:'游戏乐园', d:'4个游戏', href:'games.html' },
+    { e:'🎡', n:'游戏乐园', d:'6个游戏', href:'games.html' },
     { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
     { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },
   ] : [
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
     { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
-    { e:'📚', n:'绘本馆', d:Object.keys(Store.d.books||{}).length+'/'+BOOKS_TOTAL, href:'books.html' },
     { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
-    { e:'🎡', n:'游戏乐园', d:'4个游戏', href:'games.html' },
+    { e:'🎡', n:'游戏乐园', d:'6个游戏', href:'games.html' },
     { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },
   ];
   document.getElementById('bigIslands').innerHTML = islands.map(i =>
-    `<div class="big-island" onclick="location.href='${i.href}'"><div class="bi-emoji">${i.e}</div><b>${i.n}</b><small>${i.d}</small></div>`).join('');
+    `<button type="button" class="big-island" onclick="location.href='${i.href}'"><span class="bi-emoji" aria-hidden="true">${i.e}</span><b>${i.n}</b><small>${i.d}</small></button>`).join('');
+  maybeShowInstallHint(); // 手机浏览器：引导「添加到主屏幕」（可永久关闭）
 }
 </script>
 </body>
