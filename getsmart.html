@@ -64,7 +64,7 @@
 <script src="js/data.js?v=32"></script>
 <script src="js/app.js?v=54"></script>
 <script src="js/sentence.js?v=44"></script>
-<script src="js/getsmart-data.js?v=6"></script>
+<script src="js/getsmart-data.js?v=7"></script>
 <script>
 renderNav('getsmart'); renderDecor();
 
@@ -73,11 +73,14 @@ const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { c
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const jsq = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
-/* ---------- 进度（按档案隔离） ---------- */
-Store.d.getsmart = Store.d.getsmart || {};
-const gsDone = uid => !!Store.d.getsmart[uid];
-const levelDone = lv => lv.units.filter(u => gsDone(u.id)).length;
+/* ---------- 进度（按档案隔离） ----------
+   gsEnsure：切档案后 Store.d.getsmart 可能还没建，任何入口先兜底。 */
+function gsEnsure() { if (!Store.d.getsmart) Store.d.getsmart = {}; }
+gsEnsure();
+const gsDone = uid => { gsEnsure(); return !!Store.d.getsmart[uid]; };
+const levelDone = lv => { gsEnsure(); return lv.units.filter(u => gsDone(u.id)).length; };
 function gsMarkDone(uid, stars) {
+  gsEnsure();
   const old = Store.d.getsmart[uid];
   Store.d.getsmart[uid] = { t: Date.now(), stars: Math.max(stars, old ? old.stars : 0) };
   markActivity('getsmart'); completeDailyTask('words'); Store.save();
@@ -96,12 +99,13 @@ function renderLevels() {
       <h2>🎒 学哪一册？</h2>
       <p style="margin:6px 0 0;color:#5C6273;font-size:.88rem;line-height:1.8">
         和学校的 <b>Get Smart 课本</b> 一课一课对应：每个格子就是课本里的一个单元（或复习课）。
-        点开就能学——不用怕请假落下，<b>落下的课会排在最前面等你补上</b>。</p>
+        点开就能学——不用怕请假落下，<b>落下的课会排在最前面等你补上</b>。
+        <b>「正在学」跟着每个小伙伴的档案走</b>，兄妹俩各学各的互不打扰。</p>
     </div>
     <div class="gs-levels" style="margin-top:14px">
       ${GS_LEVELS.map(lv => {
         const dn = levelDone(lv), all = lv.units.length;
-        const isNow = lv.id === GS_CURRENT_LEVEL;
+        const isNow = lv.id === gsActiveLevelId();
         return `<div class="gs-level ${isNow ? 'now' : ''}" onclick="openLevel('${lv.id}')">
           ${isNow ? '<span class="gs-badge">📍 正在学</span>' : ''}
           <span class="gle">${lv.emoji}</span>
@@ -117,6 +121,15 @@ function renderLevels() {
 function openLevel(lid) {
   curLevel = GS_LEVELS.find(l => l.id === lid); if (!curLevel) return;
   view = 'level'; stopAllSpeech(); __lessonToken++;
+  renderLevelHome();
+}
+
+/* 「正在学」跟档案走：给当前档案设定在学的册 */
+function gsSetActive(lid) {
+  gsSetActiveLevel(lid);
+  curLevel = GS_LEVELS.find(l => l.id === lid) || curLevel;
+  const lv = GS_LEVELS.find(l => l.id === lid);
+  toast('📍 已设为「' + (lv ? lv.name : lid) + '」正在学');
   renderLevelHome();
 }
 
@@ -138,6 +151,9 @@ function renderLevelHome() {
       <h2>${lv.emoji} ${lv.name} <small style="font-weight:400;color:#5C6273">${lv.zh} · 已完成 ${dn}/${lv.units.length} 课</small></h2>
       <p style="margin:6px 0 0;color:#5C6273;font-size:.88rem;line-height:1.8">${lv.desc}</p>
       <div class="gs-prog" style="margin-top:10px"><i style="width:${Math.round(dn / lv.units.length * 100)}%"></i></div>
+      <div style="margin-top:12px">${gsActiveLevelId() === lv.id
+        ? '<span class="gs-step on">📍 正在学这一册（当前档案）</span>'
+        : `<button class="btn mint" onclick="gsSetActive('${lv.id}')">📍 设为正在学</button>`}</div>
     </div>
     ${firstGap && !gsDone(firstGap.id) ? `
     <div class="gs-catch" style="margin-top:14px">
@@ -469,7 +485,7 @@ function nextUnitOf(lv, u) {
 
 /* 启动：默认打开"正在学"的那一册 */
 (function init() {
-  const now = GS_LEVELS.find(l => l.id === GS_CURRENT_LEVEL) || GS_LEVELS[0];
+  const now = GS_LEVELS.find(l => l.id === gsActiveLevelId());
   if (now) { curLevel = now; view = 'level'; renderLevelHome(); }
   else renderLevels();
 })();

@@ -7,16 +7,34 @@
         kind:'review' 的复习课词库自动取自 from 指向的单元。
    ============================================================ */
 
-/* 儿子当前在学的册（页面上会标 📍 并默认打开） */
-const GS_CURRENT_LEVEL = 'gs2';
-
-/* 首页岛卡用的进度：当前册已完成 x/y 课 */
-function gsLevelProgress(lvId) {
+/* 「正在学哪一册」跟着档案走（Store.d.gsLevel），不写死任何一个孩子。
+   档案第一次用专栏时若已有学习进度，自动按进度最多的册推断一次；
+   之后在课程表里用「📍 设为正在学」随时切换。 */
+function gsActiveLevelId() {
   try {
-    const lv = GS_LEVELS.find(l => l.id === lvId);
+    if (Store.d.gsLevel && GS_LEVELS.some(l => l.id === Store.d.gsLevel)) return Store.d.gsLevel;
+    let best = null, bestN = -1;
+    GS_LEVELS.forEach(l => {
+      const n = l.units.filter(u => Store.d.getsmart && Store.d.getsmart[u.id]).length;
+      if (n > bestN) { bestN = n; best = l.id; }
+    });
+    if (bestN > 0) { Store.d.gsLevel = best; Store.save(); return best; }
+  } catch (e) {}
+  return null;
+}
+function gsSetActiveLevel(lid) {
+  try {
+    if (GS_LEVELS.some(l => l.id === lid)) { Store.d.gsLevel = lid; Store.save(); }
+  } catch (e) {}
+}
+
+/* 首页岛卡用的进度：当前档案正在学的册已完成 x/y 课 */
+function gsLevelProgress() {
+  try {
+    const lv = GS_LEVELS.find(l => l.id === gsActiveLevelId());
     if (!lv || !lv.units.length) return '课本同步';
     const done = lv.units.filter(u => Store.d.getsmart && Store.d.getsmart[u.id]).length;
-    return done + '/' + lv.units.length + ' 课';
+    return lv.name.replace('Get Smart ', 'GS') + ' ' + done + '/' + lv.units.length + ' 课';
   } catch (e) { return '课本同步'; }
 }
 

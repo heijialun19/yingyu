@@ -99,7 +99,7 @@
 <script src="js/data.js?v=32"></script>
 <script src="js/app.js?v=54"></script>
 <script src="js/sentence.js?v=44"></script>
-<script src="js/getsmart-data.js?v=6"></script>
+<script src="js/getsmart-data.js?v=7"></script>
 <script>
 renderNav('index'); renderDecor();
 
@@ -183,14 +183,14 @@ function showHome() {
     `<span class="${tk.game ? 'tdone' : ''}">${tk.game ? '✅' : '⬜'} 🎮 玩游戏</span>`;
 
   const islands = lettersFinished ? [
-    { e:'🎓', n:'Get Smart', d:gsLevelProgress(GS_CURRENT_LEVEL), href:'getsmart.html' },
+    { e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html' },
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
     { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
     { e:'🎡', n:'游戏乐园', d:'6个游戏', href:'games.html' },
     { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
     { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },
   ] : [
-    { e:'🎓', n:'Get Smart', d:gsLevelProgress(GS_CURRENT_LEVEL), href:'getsmart.html' },
+    { e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html' },
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
     { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
     { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
