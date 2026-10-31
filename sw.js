@@ -6,7 +6,7 @@
      （6.6MB 只下一次；重建音频时把 AUDIO_VER 与这里同时 +1）
    - 有道发音：原样转发 + 原样缓存。opaque 响应的 body 读不到、头也改不了，
      所以这里绝不读 body、绝不 new Response 重建（那样会全站失声） */
-const CACHE = 'birdie-abc-v82';
+const CACHE = 'birdie-abc-v83';
 const AUDIO_CACHE = 'birdie-audio-v1';   // 与 js/app.js 的 AUDIO_VER 同步
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html',
@@ -27,14 +27,15 @@ self.addEventListener('message', e => { if (e.data === 'SKIP_WAITING') self.skip
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET') return;
-  /* 页面导航：网络优先，杜绝用户拿到旧页面 */
+  /* 坏缓存自愈判定：缓存里存过的 404/5xx 一律视为未命中（历史毒化自动修复） */
+  const good = hit => !!hit && (hit.ok || hit.type === 'opaque');
+  /* 页面导航：网络优先；只缓存成功响应——绝不再把 404/5xx 毒进缓存 */
   if (e.request.mode === 'navigate') {
     e.respondWith(
       fetch(e.request).then(res => {
-        const copy = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, copy));
+        if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {}); }
         return res;
-      }).catch(() => caches.match(e.request).then(hit => hit || caches.match('./index.html')))
+      }).catch(() => caches.match(e.request).then(hit => good(hit) ? hit : caches.match('./index.html')))
     );
     return;
   }
@@ -44,7 +45,7 @@ self.addEventListener('fetch', e => {
   if (url.origin === location.origin && /\/audio\//.test(url.pathname)) {
     e.respondWith(
       caches.open(AUDIO_CACHE).then(c => c.match(e.request).then(hit => {
-        if (hit) return hit;
+        if (good(hit)) return hit;
         return fetch(e.request).then(res => {
           if (res && res.ok) { const copy = res.clone(); c.put(e.request, copy).catch(() => {}); }
           return res;
@@ -53,20 +54,22 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
-  /* 同站静态资源：缓存优先 */
+  /* 同站静态资源：缓存优先；缓存命中若是坏响应自动走网络自愈；只缓存成功响应 */
   if (url.origin === location.origin) {
     e.respondWith(
-      caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
-        const copy = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, copy));
-        return res;
-      }).catch(() => {
-        // 脚本/样式离线缺失时返回 504——绝不能回退 index.html，
-        // 否则浏览器会把 HTML 当 JS 解析，页面静默半死（不报错但全站失灵）
-        if (e.request.destination === 'script' || e.request.destination === 'style' || e.request.destination === 'audio') {
-          return new Response('', { status: 504, statusText: 'offline' });
-        }
-        return caches.match('./index.html');
+      caches.open(CACHE).then(c => c.match(e.request).then(hit => {
+        if (good(hit)) return hit;
+        return fetch(e.request).then(res => {
+          if (res && res.ok) { const copy = res.clone(); c.put(e.request, copy).catch(() => {}); }
+          return res;
+        }).catch(() => {
+          // 脚本/样式离线缺失时返回 504——绝不能回退 index.html，
+          // 否则浏览器会把 HTML 当 JS 解析，页面静默半死（不报错但全站失灵）
+          if (e.request.destination === 'script' || e.request.destination === 'style' || e.request.destination === 'audio') {
+            return new Response('', { status: 504, statusText: 'offline' });
+          }
+          return caches.match('./index.html');
+        });
       }))
     );
     return;
