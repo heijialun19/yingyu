@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Smart 学堂 · 小鸟英语乐园</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/style.css?v=43">
+<style>
+/* ---- Get Smart 学堂专属样式（其余复用全站） ---- */
+.gs-levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.gs-level{background:#fff;border-radius:22px;border:3px solid var(--sky2);box-shadow:0 5px 0 rgba(45,49,66,.08);padding:16px 12px;text-align:center;cursor:pointer;transition:.15s;position:relative}
+.gs-level:hover{transform:translateY(-4px);border-color:var(--lemon)}
+.gs-level.now{border-color:#FF6B6B;box-shadow:0 5px 0 rgba(255,107,107,.25)}
+.gs-level .gle{font-size:40px;line-height:1.1}
+.gs-level b{display:block;margin-top:4px;font-size:1rem}
+.gs-level small{color:#6B7280;font-size:.72rem;display:block;margin-top:2px}
+.gs-badge{position:absolute;top:-10px;right:-6px;background:#FF6B6B;color:#fff;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.gs-prog{height:10px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin-top:8px}
+.gs-prog i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--mint),var(--lake))}
+.gs-modhead{margin:20px 0 10px;font-size:1.02rem;font-weight:800;color:#374151;display:flex;align-items:center;gap:8px}
+.gs-modhead small{font-weight:400;color:#6B7280;font-size:.78rem}
+.gs-unit{display:flex;align-items:center;gap:12px;background:#fff;border-radius:20px;border:3px solid var(--sky2);box-shadow:0 4px 0 rgba(45,49,66,.07);padding:13px 14px;cursor:pointer;transition:.13s;margin-bottom:10px}
+.gs-unit:hover{transform:translateY(-2px);border-color:var(--lemon)}
+.gs-unit.done{border-color:#BBE5C0;background:#F7FCF7}
+.gs-unit .gu-ic{font-size:30px;flex:none}
+.gs-unit .gu-main{flex:1;min-width:0}
+.gs-unit .gu-main b{font-size:.98rem}
+.gs-unit .gu-main small{display:block;color:#6B7280;font-size:.74rem;margin-top:2px}
+.gs-unit .gu-st{flex:none;font-size:.8rem;font-weight:800;color:#4E9E59}
+.gs-unit .gu-st.todo{color:#9CA3AF}
+.gs-catch{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#FFF4E0,#FFE9EC);border:3px solid var(--coral);border-radius:20px;padding:13px 16px;margin:0 0 14px}
+.gs-steps{display:flex;gap:6px;justify-content:center;margin:8px 0 16px;flex-wrap:wrap}
+.gs-step{font-size:.72rem;font-weight:800;color:#9CA3AF;background:#F3F4F6;border-radius:999px;padding:4px 12px}
+.gs-step.on{color:#fff;background:var(--lake)}
+.gs-step.ok{color:#4E9E59;background:#E8F7EB}
+.gs-bigword{text-align:center;padding:10px 0 4px}
+.gs-bigword .gw-ic{font-size:88px;line-height:1.15;display:block}
+.gs-bigword .gw-word{font-size:2.1rem;font-weight:900;letter-spacing:.5px;margin:6px 0 0}
+.gs-bigword .gw-ipa{color:#6B7280;font-size:1rem;min-height:1.4em}
+.gs-bigword .gw-zh{font-size:1.15rem;font-weight:800;color:var(--ink);margin:2px 0 8px}
+.gs-sent{background:#FAFDFF;border:3px dashed var(--lake);border-radius:16px;padding:10px 14px;margin-top:10px;text-align:left;font-size:.95rem;line-height:1.7}
+.gs-navrow{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.gs-sentcard{background:#fff;border-radius:18px;border:3px solid var(--sky2);padding:14px 16px;margin-bottom:12px}
+.gs-sentcard .se{font-size:1.25rem;font-weight:800;line-height:1.6}
+.gs-sentcard .sz{color:#6B7280;font-size:.9rem;margin-top:4px}
+</style>
+</head>
+<body>
+<main>
+  <div class="page-title">
+    <h1>🎓 Get Smart 学堂</h1>
+    <p>课本同步专栏 · <b>Get Smart 1 - 6 全系列</b> · 每一课 = 教材一个单元，按「学单词 → 听音辨词 → 认词选义 → 句型闯关」四步学懂一课</p>
+  </div>
+  <div id="app"></div>
+<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
+
+<script src="js/words-data.js?v=31"></script>
+<script src="svg/word-svg.js?v=2"></script>
+<script src="svg/emoji-svg.js?v=2"></script>
+<script src="js/data.js?v=32"></script>
+<script src="js/app.js?v=54"></script>
+<script src="js/sentence.js?v=44"></script>
+<script src="js/getsmart-data.js?v=1"></script>
+<script>
+renderNav('getsmart'); renderDecor();
+
+/* $/esc/iconOf/playDictAudio 等全部来自 app.js，这里只补页面自己的工具 */
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const jsq = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+
+/* ---------- 进度（按档案隔离） ---------- */
+Store.d.getsmart = Store.d.getsmart || {};
+const gsDone = uid => !!Store.d.getsmart[uid];
+const levelDone = lv => lv.units.filter(u => gsDone(u.id)).length;
+function gsMarkDone(uid, stars) {
+  const old = Store.d.getsmart[uid];
+  Store.d.getsmart[uid] = { t: Date.now(), stars: Math.max(stars, old ? old.stars : 0) };
+  markActivity('getsmart'); completeDailyTask('words'); Store.save();
+}
+
+/* ---------- 视图状态 ---------- */
+let view = 'levels', curLevel = null, curUnit = null;
+let L = null;   /* 当前课的运行时状态 */
+let __lessonToken = 0;  /* 作废旧计时器/旧音频链 */
+
+/* ================= 教材总览（六册选书） ================= */
+function renderLevels() {
+  view = 'levels'; stopAllSpeech(); __lessonToken++;
+  $('#app').innerHTML = `
+    <div class="card" style="border-color:var(--lemon)">
+      <h2>🎒 学哪一册？</h2>
+      <p style="margin:6px 0 0;color:#5C6273;font-size:.88rem;line-height:1.8">
+        和学校的 <b>Get Smart 课本</b> 一课一课对应：每个格子就是课本里的一个单元（或复习课）。
+        点开就能学——不用怕请假落下，<b>落下的课会排在最前面等你补上</b>。</p>
+    </div>
+    <div class="gs-levels" style="margin-top:14px">
+      ${GS_LEVELS.map(lv => {
+        const dn = levelDone(lv), all = lv.units.length;
+        const isNow = lv.id === GS_CURRENT_LEVEL;
+        return `<div class="gs-level ${isNow ? 'now' : ''}" onclick="openLevel('${lv.id}')">
+          ${isNow ? '<span class="gs-badge">📍 正在学</span>' : ''}
+          <span class="gle">${lv.emoji}</span>
+          <b>${lv.name}</b>
+          <small>${lv.zh}</small>
+          <div class="gs-prog"><i style="width:${all ? Math.round(dn / all * 100) : 0}%"></i></div>
+          <small style="margin-top:6px;font-weight:800;color:#4E9E59">${dn} / ${all} 课</small>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function openLevel(lid) {
+  curLevel = GS_LEVELS.find(l => l.id === lid); if (!curLevel) return;
+  view = 'level'; stopAllSpeech(); __lessonToken++;
+  renderLevelHome();
+}
+
+/* ================= 一册的课程表 ================= */
+function renderLevelHome() {
+  const lv = curLevel;
+  const dn = levelDone(lv);
+  /* 补课 = 按顺序第一节没学过的正课 */
+  const firstGap = lv.units.find(u => u.kind === 'unit' && !gsDone(u.id));
+  const byModule = [];
+  lv.units.forEach(u => {
+    const mk = u.mod || 0;
+    if (!byModule[mk]) byModule[mk] = [];
+    byModule[mk].push(u);
+  });
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevels()">← 换一册</button>
+    <div class="card" style="border-color:${lv.color}">
+      <h2>${lv.emoji} ${lv.name} <small style="font-weight:400;color:#5C6273">${lv.zh} · 已完成 ${dn}/${lv.units.length} 课</small></h2>
+      <p style="margin:6px 0 0;color:#5C6273;font-size:.88rem;line-height:1.8">${lv.desc}</p>
+      <div class="gs-prog" style="margin-top:10px"><i style="width:${Math.round(dn / lv.units.length * 100)}%"></i></div>
+    </div>
+    ${firstGap && !gsDone(firstGap.id) ? `
+    <div class="gs-catch" style="margin-top:14px">
+      <span style="font-size:30px">📤</span>
+      <div style="flex:1">
+        <b>落下的课：${firstGap.title}</b>
+        <div style="font-size:.8rem;color:#5C6273">${firstGap.zh} · ${firstGap.words.length} 个单词 —— 这节课今天补上！</div>
+      </div>
+      <button class="btn coral" onclick="startUnit('${firstGap.id}')">去补课 ▶</button>
+    </div>` : ''}
+    <div style="margin-top:14px">
+      ${byModule.map((us, mi) => us.length ? `
+        ${us[0].modName ? `<div class="gs-modhead">${us[0].modEmoji || '📘'} ${us[0].modName} <small>${us[0].modTip || ''}</small></div>` : ''}
+        ${us.map(u => {
+          const dn2 = gsDone(u.id);
+          return `<div class="gs-unit ${dn2 ? 'done' : ''}" onclick="startUnit('${u.id}')">
+            <span class="gu-ic">${u.kind === 'review' ? '🔁' : '📖'}</span>
+            <div class="gu-main">
+              <b>${u.title}</b>
+              <small>${u.zh}${u.words && u.words.length ? ' · ' + u.words.length + ' 词' : ''}${u.kind === 'review' ? ' · 混合闯关' : ''}</small>
+            </div>
+            <span class="gu-st ${dn2 ? '' : 'todo'}">${dn2 ? '⭐' + (Store.d.getsmart[u.id].stars || 0) + ' ✅' : '未学 ▶'}</span>
+          </div>`;
+        }).join('')}` : '').join('')}
+    </div>`;
+}
+
+/* ================= 上课（四步法） ================= */
+function unitById(uid) {
+  for (const lv of GS_LEVELS) { const u = lv.units.find(x => x.id === uid); if (u) return { lv, u }; }
+  return null;
+}
+function startUnit(uid) {
+  const found = unitById(uid); if (!found) return;
+  curLevel = found.lv; curUnit = found.u; view = 'unit';
+  stopAllSpeech(); __lessonToken++;
+  const u = curUnit;
+  if (u.kind === 'review') {
+    /* 复习课：把来源单元的词和句混成一套闯关题 */
+    const srcWords = [];
+    const srcSents = [];
+    (u.from || []).forEach(fid => {
+      const f = unitById(fid); if (!f) return;
+      (f.u.words || []).forEach(w => { if (!srcWords.some(x => x.w === w.w)) srcWords.push(w); });
+      (f.u.sentences || []).forEach(s => srcSents.push(s));
+    });
+    L = { kind: 'review', step: 1, qs: buildReviewQs(srcWords, srcSents, u.count || 10), qIdx: 0, score: 0, firstTry: true, lock: false, words: srcWords };
+    renderStep();
+    return;
+  }
+  L = { kind: 'unit', step: 0, wIdx: 0, sIdx: 0, qs: [], qIdx: 0, score: 0, firstTry: true, lock: false };
+  (u.words || []).forEach(w => prewarmWord(w.w));
+  renderStep();
+}
+
+const STEP_NAMES = ['学单词', '听音辨词', '认词选义', '句型闯关', '完成'];
+function stepBar() {
+  const n = L.kind === 'review' ? 2 : 5;
+  let items = '';
+  for (let i = 1; i <= n; i++) {
+    const label = L.kind === 'review' ? (i === 1 ? '混合闯关' : '完成') : STEP_NAMES[i - 1];
+    const cls = i < L.step ? 'ok' : i === L.step ? 'on' : '';
+    items += `<span class="gs-step ${cls}">${label}</span>`;
+  }
+  return `<div class="gs-steps">${items}</div>`;
+}
+
+function renderStep() {
+  const u = curUnit;
+  if (L.step === 0) return renderIntro();
+  if (L.step === 1) return L.kind === 'review' ? renderQuiz() : renderLearn();
+  if (L.step === 2) return renderQuiz();
+  if (L.step === 3) return renderSentences();
+  return renderFinish();
+}
+
+/* ---- Step 0 开场 ---- */
+function renderIntro() {
+  const u = curUnit, lv = curLevel;
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevelHome()">← 回课程表</button>
+    ${stepBar()}
+    <div class="card bounce-in" style="max-width:620px;margin:0 auto;text-align:center;border-color:${lv.color}">
+      <div style="font-size:56px">${u.kind === 'review' ? '🔁' : (lv.emoji)}</div>
+      <h2 style="justify-content:center">${u.title}</h2>
+      <p style="color:#5C6273;margin:4px 0 10px">${u.zh}</p>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0 4px">
+        ${(u.words || []).length ? `<span class="gs-step on">📘 ${u.words.length} 个单词</span>` : ''}
+        ${(u.sentences || []).length ? `<span class="gs-step on">💬 ${u.sentences.length} 个句型</span>` : ''}
+        ${u.grammar ? `<span class="gs-step on">🧩 ${u.grammar}</span>` : ''}
+      </div>
+      ${u.tip ? `<p style="font-size:.86rem;color:#6B7280;margin:10px 0 0">💡 ${u.tip}</p>` : ''}
+      <div style="margin-top:16px"><button class="btn grape big" onclick="L.step=1;renderStep()">🚀 开始上课</button></div>
+    </div>`;
+}
+
+/* ---- Step 1 学单词（一卡一词） ---- */
+function renderLearn() {
+  const u = curUnit, w = u.words[L.wIdx];
+  const ipa = ipaOf(w.w);
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevelHome()">← 回课程表</button>
+    ${stepBar()}
+    <div class="card" style="max-width:560px;margin:0 auto">
+      <div class="score-bar"><b>📘 学单词</b><span>第 ${L.wIdx + 1} / ${u.words.length} 个</span></div>
+      <div class="gs-bigword">
+        <span class="gw-ic">${iconOf(w)}</span>
+        <button class="btn coral" style="font-size:1.5rem;margin:8px 0;padding:10px 26px" onclick="speakWord('${jsq(w.w)}')">🔊 ${esc(w.w)}</button>
+        <div class="gw-ipa">${ipa ? '/' + esc(ipa) + '/' : ''}</div>
+        <div class="gw-zh">${esc(w.zh)}</div>
+        ${w.sent ? `<div class="gs-sent">💬 <b lang="en">${esc(w.sent)}</b>　<button class="mini-speaker" onclick="speakSentence('${jsq(w.sent)}')">🔊</button><br><span style="color:#6B7280">${esc(w.sentZh || '')}</span></div>` : ''}
+      </div>
+      <div class="gs-navrow">
+        ${L.wIdx > 0 ? '<button class="btn ghost big" onclick="L.wIdx--;renderStep()">◀ 上一个</button>' : ''}
+        <button class="btn grape big" onclick="gsNextWord()">${L.wIdx === u.words.length - 1 ? '都认识啦 ▶' : '下一个 ▶'}</button>
+      </div>
+    </div>`;
+  prewarmWord(u.words[L.wIdx + 1] ? u.words[L.wIdx + 1].w : '');
+}
+function gsNextWord() {
+  const u = curUnit;
+  if (L.wIdx >= u.words.length - 1) {
+    L.step = 2;
+    L.qs = buildUnitQs(u);
+    L.qIdx = 0; L.score = 0;
+    renderStep();
+  } else { L.wIdx++; renderStep(); }
+}
+
+/* ---- 出题器 ---- */
+function buildUnitQs(u) {
+  const ws = u.words || [];
+  const qs = [];
+  /* 听音辨词 6 题：有真图的用图选项，否则用单词文字 */
+  shuffle(ws).slice(0, 6).forEach(w => {
+    const distract = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 3);
+    if (distract.length < 3) return;
+    const useImg = distract.concat(w).every(hasIcon);
+    qs.push({ type: 'listen', word: w, ok: w.w,
+      opts: shuffle([w, ...distract]).map(x => ({ key: x.w, html: useImg ? iconOf(x) : `<b lang="en">${esc(x.w)}</b>` })) });
+  });
+  /* 认词选义 6 题 */
+  shuffle(ws).slice(0, 6).forEach(w => {
+    const distract = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 3);
+    if (distract.length < 3) return;
+    qs.push({ type: 'look', word: w, ok: w.zh,
+      opts: shuffle([w, ...distract]).map(x => ({ key: x.zh, html: esc(x.zh) })) });
+  });
+  return shuffle(qs);
+}
+function buildReviewQs(words, sents, count) {
+  const qs = [];
+  const pool = words.slice();
+  shuffle(pool).forEach(w => {
+    const distract = shuffle(words.filter(x => x.w !== w.w)).slice(0, 3);
+    if (distract.length < 3 || qs.length >= count - Math.min(2, sents.length)) return;
+    const useImg = distract.concat(w).every(hasIcon);
+    const qType = Math.random() < 0.5 ? 'listen' : 'look';
+    qs.push({ type: qType, word: w, ok: w.w,
+      opts: shuffle([w, ...distract]).map(x => ({ key: x.w, html: useImg ? iconOf(x) : `<b lang="en">${esc(x.w)}</b>` })) });
+  });
+  /* 句型填空 1-2 题 */
+  shuffle(sents).slice(0, 2).forEach(s => {
+    const q = sentBlank(s.en);
+    if (q) qs.push({ type: 'sent', sent: s, ok: q.answer, opts: shuffle([q.answer, ...q.distract]).map(x => ({ key: x, html: `<b lang="en">${esc(x)}</b>` })), blankText: q.text });
+  });
+  return shuffle(qs).slice(0, count);
+}
+/* 把句子里一个实词挖空 */
+function sentBlank(en) {
+  const words = en.replace(/[.!?]+$/, '').split(/\s+/).filter(x => /^[A-Za-z]{3,}$/.test(x));
+  if (!words.length) return null;
+  const answer = pick(words);
+  const distract = shuffle(words.filter(x => x !== answer)).slice(0, 2);
+  if (distract.length < 2) return null;
+  return { text: en.replace(answer, '＿＿＿'), answer, distract };
+}
+
+/* ---- Step 2/4 答题 ---- */
+function renderQuiz() {
+  const u = curUnit;
+  if (L.qIdx >= L.qs.length) {
+    if (L.kind === 'review') { L.step = 2; return renderFinish(); }
+    L.step = 3; L.sIdx = 0; return renderStep();
+  }
+  const q = L.qs[L.qIdx];
+  const label = q.type === 'listen' ? '👂 听音辨词' : q.type === 'look' ? '👀 认词选义' : '💬 句型闯关';
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevelHome()">← 回课程表</button>
+    ${stepBar()}
+    <div class="card" style="max-width:620px;margin:0 auto;text-align:center">
+      <div class="score-bar"><b>${label} · ${curUnit.kind === 'review' ? '复习课' : curUnit.title}</b><span>第 ${L.qIdx + 1} / ${L.qs.length} 题 · ✅ ${L.score}</span></div>
+      ${q.type === 'listen' ? `<button class="btn coral big" style="font-size:1.4rem;margin:6px 0 12px" onclick="playDictAudio('${jsq(q.word.w)}')">🔊 点我听</button>` : ''}
+      ${q.type === 'look' ? `<div class="quiz-q">「<b style="font-size:1.3rem;color:#9B72FF">${esc(q.word.w)}</b>」是什么意思？ <button class="mini-speaker" onclick="playDictAudio('${jsq(q.word.w)}')">🔊</button></div>` : ''}
+      ${q.type === 'sent' ? `<div class="quiz-q" lang="en" style="font-size:1.2rem">${esc(q.blankText)}</div>` : ''}
+      <div class="opt-row">
+        ${q.opts.map(o => `<button class="opt" onclick="gsAns(this,'${jsq(o.key)}')">${o.html}</button>`).join('')}
+      </div>
+      <div class="explain" id="qexp"></div>
+    </div>`;
+  if (q.type === 'listen') setTimeout(() => playDictAudio(q.word.w), 400);
+}
+function gsAns(btn, key) {
+  if (L.lock) return;
+  const q = L.qs[L.qIdx];
+  const ok = key === q.ok;
+  if (ok) L.lock = true;
+  feedback(btn, ok);
+  if (ok) {
+    if (L.firstTry) { L.score++; addStars(1); flyStar(btn); }
+    sfx.correct();
+    if (q.word) touchWord(q.word.w, true);
+    $('#qexp').innerHTML = q.word ? `✅ <b>${esc(q.word.w)}</b> ${esc(q.word.zh)}` : `✅ <b>${esc(q.ok)}</b>`;
+    setTimeout(() => { L.qIdx++; L.firstTry = true; L.lock = false; renderQuiz(); }, 1400);
+  } else {
+    L.firstTry = false; sfx.wrong();
+    if (q.word) touchWord(q.word.w, false);
+    $('#qexp').innerHTML = `🤔 再想想哦～`;
+  }
+}
+
+/* ---- Step 3 句型 ---- */
+function renderSentences() {
+  const u = curUnit;
+  const sents = u.sentences || [];
+  if (!sents.length || L.sIdx >= sents.length) { L.step = 4; return renderStep(); }
+  const s = sents[L.sIdx];
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevelHome()">← 回课程表</button>
+    ${stepBar()}
+    <div class="card" style="max-width:620px;margin:0 auto">
+      <div class="score-bar"><b>💬 句型闯关</b><span>第 ${L.sIdx + 1} / ${sents.length} 句</span></div>
+      <div class="gs-sentcard" id="sentBox" onclick="speakSentence('${jsq(s.en)}',this)" title="点一下，跟着读">
+        <div class="se" lang="en">${esc(s.en)}</div>
+        <div class="sz">${esc(s.zh)}</div>
+      </div>
+      <div style="text-align:center;margin:6px 0">
+        <button class="btn ghost" onclick="speakSentence('${jsq(s.en)}')">🔊 再听一遍</button>
+      </div>
+      <p style="text-align:center;color:#6B7280;font-size:.85rem">大声跟着读两遍，再点「会了」👇</p>
+      <div class="gs-navrow">
+        ${L.sIdx > 0 ? '<button class="btn ghost big" onclick="L.sIdx--;renderStep()">◀ 上一句</button>' : ''}
+        <button class="btn grape big" onclick="gsNextSent()">${L.sIdx === sents.length - 1 ? '都会议论啦 ▶' : '会了 ▶'}</button>
+      </div>
+    </div>`;
+  setTimeout(() => speakSentence(s.en), 500);
+}
+function gsNextSent() {
+  const u = curUnit;
+  if (L.sIdx >= (u.sentences || []).length - 1) { L.step = 4; L.score += 0; renderStep(); }
+  else { L.sIdx++; renderStep(); }
+}
+
+/* ---- Step 完成 ---- */
+function renderFinish() {
+  const u = curUnit, lv = curLevel;
+  const total = L.qs.length || 1;
+  const perfect = L.score >= total;
+  const bonus = L.kind === 'review' ? 3 : 2;
+  addStars(bonus);
+  gsMarkDone(u.id, L.score);
+  confetti(); sfx.win();
+  const next = nextUnitOf(lv, u);
+  __lessonToken++;
+  $('#app').innerHTML = `
+    <div class="card bounce-in" style="max-width:560px;margin:0 auto;text-align:center;padding:34px 24px">
+      <div style="font-size:70px">${perfect ? '🏆' : '🌟'}</div>
+      <h2 style="justify-content:center">${perfect ? '全对！这节课学完啦！' : '这节课完成啦！'}</h2>
+      <p style="font-size:1.05rem">闯关答对 <b style="color:#FF6B6B;font-size:1.5rem">${L.score}</b> / ${total} 题 · 奖励 +${bonus} ⭐</p>
+      <p style="color:#5C6273;font-size:.85rem">学过的单词已自动排好复习计划：1 天后、2 天后、4 天后、7 天后、15 天后提醒。</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+        ${next ? `<button class="btn grape big" onclick="startUnit('${next.id}')">下一课：${next.title} ▶</button>` : `<button class="btn grape big" onclick="renderLevels()">🎓 这一册通关啦！</button>`}
+        <button class="btn ghost big" onclick="renderLevelHome()">课程表</button>
+      </div>
+    </div>`;
+}
+function nextUnitOf(lv, u) {
+  const i = lv.units.findIndex(x => x.id === u.id);
+  return i >= 0 && i + 1 < lv.units.length ? lv.units[i + 1] : null;
+}
+
+/* 启动：默认打开"正在学"的那一册 */
+(function init() {
+  const now = GS_LEVELS.find(l => l.id === GS_CURRENT_LEVEL) || GS_LEVELS[0];
+  if (now) { curLevel = now; view = 'level'; renderLevelHome(); }
+  else renderLevels();
+})();
+</script>
+</body>
+</html>

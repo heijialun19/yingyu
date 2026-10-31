@@ -1017,6 +1017,7 @@ const NAV_ITEMS = [
   { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
   { id: 'letters', href: 'letters.html', emoji: '🏝️', label: '字母岛' },
   { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词镇' },
+  { id: 'getsmart', href: 'getsmart.html', emoji: '🎓', label: 'Get Smart' },
   { id: 'grammar', href: 'grammar.html', emoji: '🏭', label: '句子工厂' },
   { id: 'games',   href: 'games.html',   emoji: '🎡', label: '游戏乐园' },
   { id: 'parents', href: 'parents.html', emoji: '👨‍👩‍👧', label: '家长中心' },
@@ -1053,6 +1054,7 @@ function renderNav(activeId) {
     { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
     { id: 'letters', href: 'letters.html', emoji: '🏝️', label: '字母' },
     { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词' },
+    { id: 'getsmart', href: 'getsmart.html', emoji: '🎓', label: '课本' },
     { id: 'games',   href: 'games.html',   emoji: '🎡', label: '游戏' },
   ];
   document.body.insertAdjacentHTML('beforeend', `
