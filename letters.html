@@ -234,6 +234,9 @@ function nextL() { pick(Math.min(cur + 1, LETTERS.length - 1)); }
   cur = idx;
   renderGrid(); renderStage(false);
 })();
+
+/* 字母名本地发音索引：audio/a.mp3 ~ audio/z.mp3 已生成，离线也有声 */
+try { if (typeof __LOCAL_AUDIO !== 'undefined') 'abcdefghijklmnopqrstuvwxyz'.split('').forEach(c => __LOCAL_AUDIO.add(c)); } catch (e) {}
 </script>
 </body>
 </html>
