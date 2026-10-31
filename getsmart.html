@@ -33,6 +33,8 @@
 .gs-steps{display:flex;gap:6px;justify-content:center;margin:8px 0 16px;flex-wrap:wrap}
 .gs-step{font-size:.72rem;font-weight:800;color:#9CA3AF;background:#F3F4F6;border-radius:999px;padding:4px 12px}
 .gs-step.on{color:#fff;background:var(--lake)}
+.gs-step.lk{cursor:pointer}
+.gs-step.lk:hover{filter:brightness(.95)}
 .gs-step.ok{color:#4E9E59;background:#E8F7EB}
 .gs-bigword{text-align:center;padding:10px 0 4px}
 .gs-bigword .gw-ic{font-size:88px;line-height:1.15;display:block}
@@ -198,13 +200,28 @@ function stepBar() {
   for (let i = 1; i <= n; i++) {
     const label = L.kind === 'review' ? (i === 1 ? '混合闯关' : '完成') : STEP_NAMES[i - 1];
     const cls = i < L.step ? 'ok' : i === L.step ? 'on' : '';
-    items += `<span class="gs-step ${cls}">${label}</span>`;
+    const clickable = L.kind !== 'review' && i >= 1 && i <= 3;
+    items += `<span class="gs-step ${cls} ${clickable ? 'lk' : ''}" ${clickable ? `onclick="gsJump(${i})" title="点这里切换步骤"` : ''}>${label}</span>`;
   }
   return `<div class="gs-steps">${items}</div>`;
+}
+/* 步骤条可点击：已到过的步骤随意跳，往回重练；没到的会提示先完成当前步骤 */
+function gsJump(i) {
+  if (!L || L.kind === 'review') return;
+  if (i === 4) { toast('完成页在闯关结束后自动打开 🏁'); return; }
+  if (i > (L.maxStep || L.step)) { toast('先完成当前步骤，后面会自动解锁哦'); return; }
+  __lessonToken++;
+  stopAllSpeech();
+  const u = curUnit;
+  if (i === 1) { L.step = 1; const n = (u.words || []).length; L.wIdx = Math.max(0, Math.min(L.wIdx || 0, n - 1)); if (!n) { L.step = 2; } }
+  if (i === 2) { if (!L.qs || !L.qs.length) { L.qs = buildUnitQs(u); L.score = L.score || 0; } L.qIdx = 0; L.step = 2; }
+  if (i === 3) { L.step = 3; L.sIdx = 0; }
+  renderStep();
 }
 
 function renderStep() {
   const u = curUnit;
+  L.maxStep = Math.max(L.maxStep || 0, L.step);
   if (L.step === 0) return renderIntro();
   if (L.step === 1) return L.kind === 'review' ? renderQuiz() : renderLearn();
   if (L.step === 2) return renderQuiz();
@@ -281,10 +298,16 @@ function imgOpts(list) {
 }
 function buildUnitQs(u) {
   const ws = u.words || [];
+  /* 词少的课从同模块相邻课借干扰项，保证每课都有听辨/认义练习 */
+  const siblings = curLevel.units
+    .filter(x => x.kind === 'unit' && x.id !== u.id)
+    .flatMap(x => (x.words || []))
+    .filter(x => !ws.some(w => w.w === x.w));
+  const distractFor = w => shuffle(ws.filter(x => x.w !== w.w)).concat(shuffle(siblings)).slice(0, 3);
   const qs = [];
   /* 听音辨词 6 题：图选项需 4 图互异，否则单词文字 */
   shuffle(ws).slice(0, 6).forEach(w => {
-    const distract = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 3);
+    const distract = distractFor(w);
     if (distract.length < 3) return;
     const list = shuffle([w, ...distract]);
     const imgs = imgOpts(list);
@@ -293,7 +316,7 @@ function buildUnitQs(u) {
   });
   /* 认词选义 6 题 */
   shuffle(ws).slice(0, 6).forEach(w => {
-    const distract = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 3);
+    const distract = distractFor(w);
     if (distract.length < 3) return;
     qs.push({ type: 'look', word: w, ok: w.zh,
       opts: shuffle([w, ...distract]).map(x => ({ key: x.zh, html: esc(x.zh) })) });
