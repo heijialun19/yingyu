@@ -237,6 +237,15 @@ function nextL() { pick(Math.min(cur + 1, LETTERS.length - 1)); }
 
 /* 字母名本地发音索引：audio/a.mp3 ~ audio/z.mp3 已生成，离线也有声 */
 try { if (typeof __LOCAL_AUDIO !== 'undefined') 'abcdefghijklmnopqrstuvwxyz'.split('').forEach(c => __LOCAL_AUDIO.add(c)); } catch (e) {}
+/* 26 个字母的代表词也全部注册（dig/queen/X-ray 等不在 1000 词库里，需要单独登记） */
+try {
+  if (typeof __LOCAL_AUDIO !== 'undefined') {
+    LETTERS.forEach(l => (l.words || []).forEach(w => {
+      const k = String(w.w).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+      if (k) __LOCAL_AUDIO.add(k);
+    }));
+  }
+} catch (e) {}
 </script>
 </body>
 </html>
