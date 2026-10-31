@@ -444,7 +444,14 @@ function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs
   };
   if (a.readyState >= 1) { stopAllSpeechExcept(a); go(); }
   else {
-    a.oncanplay = () => { a.oncanplay = null; stopAllSpeechExcept(a); go(); };
+    /* 首次点击在手机上可能要等网络下载 2-5 秒——1.5 秒后还没好就提示一次，让孩子知道没坏 */
+    var __slowTip = setTimeout(() => {
+      if (!done && epoch === __audioEpoch) {
+        const now = Date.now();
+        if (now - __dictFailNotified > 30000) { __dictFailNotified = now; toast('🔊 正在加载发音，请稍等…'); }
+      }
+    }, 1500);
+    a.oncanplay = () => { a.oncanplay = null; clearTimeout(__slowTip); stopAllSpeechExcept(a); go(); };
     setG(timeoutMs || (__firstPlayDone ? 9000 : 12000));
   }
 }
@@ -1442,3 +1449,16 @@ function doImport(text) {
     toast('❌ 备份码不对，请检查后重试');
   }
 }
+
+/* ================= 批量预热 + 首屏加载指示 =================
+   手机首次进来音频要从网络下载，不等用户点就后台全部拉好，
+   用户点哪个词哪个词秒出声。 */
+function prewarmBatch(list, gap) {
+  const interval = gap || 200;
+  list.forEach((w, i) => setTimeout(() => { try { prewarmWord(w); } catch (e) {} }, i * interval));
+}
+/* 移除首屏加载指示器（app.js 是各页面最后一个共享脚本，执行到这里说明页面已可交互） */
+(function () {
+  const bl = document.getElementById('bootLoader');
+  if (bl) { bl.style.opacity = '0'; bl.style.transition = 'opacity .3s'; setTimeout(() => { try { bl.remove(); } catch (e) {} }, 300); }
+})();
