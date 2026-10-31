@@ -111,142 +111,425 @@ const GS_LEVELS = [
     ]
   },
 
-  /* ============ Get Smart 2（当前在学） ============ */
+  /* ============ Get Smart 2（儿子在学 · 官方目录逐字对齐） ============
+     结构与内容全部来自 MM 官方 New Get Smart 2 Contents（10 个 Module），
+     交叉核对旧版官方 Syllabus 与学校发的 U1-U4 词汇清单。
+     每 Module 4-5 节小课：词课一节 ≤8 词，末节复习闯关。 */
   {
-    id: 'gs2', name: 'Get Smart 2', zh: '第二册 · 正在学', emoji: '🐥', color: '#FF6B6B',
-    desc: '第 1-8 课把学校发的《Units 1-4 词汇清单》按主题分成小课补课用；「Units 1-4 词汇复习课」= 清单原样强度。正课粒度以课本为准：把课本单元页拍照发来，逐课严格对齐后上架。',
+    id: 'gs2', name: 'Get Smart 2', zh: '第二册 · 儿子在学', emoji: '🐥', color: '#FF6B6B',
+    desc: '与课本逐字对齐：10 个 Module × 4-5 节小课（官方目录 We are back! → Having fun），词课一节 5-8 个词，末节复习闯关；「U1-U4 词汇复习课」= 学校清单原样。',
     units: [
-      /* ---- 第 1 组 ---- */
-      { id: 'gs2-u01', mod: 1, modName: '第 1 组 · 校园与家人（教材 U1-U4 前半）', modEmoji: '🎒', modTip: 'What 提问 · This is... · How many', kind: 'unit',
-        title: 'Lesson 1 · School things', zh: '校园文具',
-        grammar: 'What is it? 它是什么',
+      /* ---- Module 1 · We're back!（文具 · 颜色 · 数字1-20）---- */
+      { id: 'gs2-m01l1', mod: 1, modName: 'Module 1 · We are back! 开学啦', modEmoji: '🎒', modTip: 'Phonics: short a/e · 品德: Be responsible for your pet', kind: 'unit',
+        title: 'M1-L1 · School things', zh: '文具（一）',
         words: [
-          { w: 'ruler', zh: '尺子', e: '📏' },
-          { w: 'bag', zh: '书包', e: '🎒' },
-          { w: 'pen', zh: '钢笔', e: '🖊️' },
-          { w: 'pencil', zh: '铅笔', e: '✏️' },
-          { w: 'book', zh: '书', e: '📖' },
-          { w: 'eraser', zh: '橡皮', e: '🧽' },
-          { w: 'computer', zh: '电脑', e: '💻' },
-          { w: 'desk', zh: '书桌', e: '🪑' },
-          { w: 'chair', zh: '椅子', e: '💺' },
-          { w: 'board', zh: '黑板', e: '🟩' },
-          { w: 'pencil case', zh: '铅笔盒', e: '🗃️' },
+          { w: 'bag', zh: '书包', e: '🎒' }, { w: 'book', zh: '书', e: '📖' },
+          { w: 'pen', zh: '钢笔', e: '🖊️' }, { w: 'pencil', zh: '铅笔', e: '✏️' },
+          { w: 'pencil case', zh: '铅笔盒', e: '🗃️' }, { w: 'chair', zh: '椅子', e: '💺' },
         ],
         sentences: [
-          { en: 'What is it? It is a ruler.', zh: '它是什么？它是一把尺子。' },
-          { en: 'What is it? It is my pencil case.', zh: '它是什么？它是我的铅笔盒。' },
-          { en: 'This is my bag. I like my bag.', zh: '这是我的书包。我喜欢我的书包。' },
+          { en: "What's this? It's a pencil.", zh: '这是什么？是一支铅笔。' },
+          { en: 'Is this a pencil? Yes, it is.', zh: '这是铅笔吗？是的。' },
         ] },
-      { id: 'gs2-u02', mod: 1, kind: 'unit',
-        title: 'Lesson 2 · Numbers & Colours', zh: '数字与颜色',
-        grammar: 'How many? 数字 1-10',
+      { id: 'gs2-m01l2', mod: 1, kind: 'unit',
+        title: 'M1-L2 · School things & Colours', zh: '文具（二）与颜色（一）',
         words: [
-          { w: 'one', zh: '一', e: '1️⃣' }, { w: 'two', zh: '二', e: '2️⃣' }, { w: 'three', zh: '三', e: '3️⃣' },
-          { w: 'four', zh: '四', e: '4️⃣' }, { w: 'five', zh: '五', e: '5️⃣' }, { w: 'six', zh: '六', e: '6️⃣' },
-          { w: 'seven', zh: '七', e: '7️⃣' }, { w: 'eight', zh: '八', e: '8️⃣' }, { w: 'nine', zh: '九', e: '9️⃣' },
-          { w: 'ten', zh: '十', e: '🔟' },
+          { w: 'computer', zh: '电脑', e: '💻' }, { w: 'desk', zh: '书桌', e: '🗄️' },
+          { w: 'eraser', zh: '橡皮', e: '🧽' }, { w: 'board', zh: '黑板', e: '🟩' },
           { w: 'red', zh: '红色', e: '🔴' }, { w: 'blue', zh: '蓝色', e: '🔵' }, { w: 'yellow', zh: '黄色', e: '🟡' },
-          { w: 'green', zh: '绿色', e: '🟢' }, { w: 'pink', zh: '粉色', e: '🩷' }, { w: 'orange', zh: '橙色', e: '🟠' },
-          { w: 'black', zh: '黑色', e: '⚫' }, { w: 'white', zh: '白色', e: '⚪' }, { w: 'brown', zh: '棕色', e: '🟤' },
         ],
         sentences: [
-          { en: 'How many pens? Three pens.', zh: '几支钢笔？三支钢笔。' },
-          { en: 'What colour is it? It is blue.', zh: '它是什么颜色？是蓝色。' },
-          { en: 'I can see a green book.', zh: '我看见一本绿色的书。' },
+          { en: "What are these? They're erasers.", zh: '这些是什么？是橡皮。' },
+          { en: 'It is a blue bag.', zh: '它是一个蓝色的书包。' },
         ] },
-      { id: 'gs2-u03', mod: 1, kind: 'unit',
-        title: 'Lesson 3 · My Family', zh: '我的家人',
-        grammar: 'This is... / These are...',
+      { id: 'gs2-m01l3', mod: 1, kind: 'unit',
+        title: 'M1-L3 · Colours', zh: '颜色（二）',
+        words: [
+          { w: 'green', zh: '绿色', e: '🟢' }, { w: 'orange', zh: '橙色', e: '🟠' },
+          { w: 'purple', zh: '紫色', e: '🟣' }, { w: 'white', zh: '白色', e: '⚪' },
+          { w: 'black', zh: '黑色', e: '⚫' }, { w: 'brown', zh: '棕色', e: '🟤' },
+        ],
+        sentences: [
+          { en: 'What is this? It is a green book.', zh: '这是什么？是一本绿色的书。' },
+        ] },
+      { id: 'gs2-m01l4', mod: 1, kind: 'unit',
+        title: 'M1-L4 · Numbers 11-20', zh: '数字 11-20',
+        words: [
+          { w: 'eleven', zh: '十一', e: '🔢' }, { w: 'twelve', zh: '十二', e: '🔢' },
+          { w: 'thirteen', zh: '十三', e: '🔢' }, { w: 'fourteen', zh: '十四', e: '🔢' },
+          { w: 'fifteen', zh: '十五', e: '🔢' }, { w: 'sixteen', zh: '十六', e: '🔢' },
+          { w: 'seventeen', zh: '十七', e: '🔢' }, { w: 'eighteen', zh: '十八', e: '🔢' },
+          { w: 'nineteen', zh: '十九', e: '🔢' }, { w: 'twenty', zh: '二十', e: '🔢' },
+        ],
+        sentences: [
+          { en: 'How many pencils? Twenty pencils!', zh: '多少支铅笔？二十支！' },
+        ] },
+      { id: 'gs2-m01r', mod: 1, kind: 'review', title: 'Module 1 复习闯关', zh: '文具 · 颜色 · 数字 混合闯关',
+        from: ['gs2-m01l1', 'gs2-m01l2', 'gs2-m01l3', 'gs2-m01l4'], count: 8 },
+
+      /* ---- Module 2 · Home and family（家人 · 玩具 · 房间）---- */
+      { id: 'gs2-m02l1', mod: 2, modName: 'Module 2 · Home and family 家与家人', modEmoji: '🏠', modTip: 'Phonics: short o/i · 品德: Help your elders', kind: 'unit',
+        title: 'M2-L1 · Family', zh: '家人（一）',
         words: [
           { w: 'father', zh: '爸爸', e: '👨' }, { w: 'mother', zh: '妈妈', e: '👩' },
           { w: 'sister', zh: '姐姐/妹妹', e: '👧' }, { w: 'brother', zh: '哥哥/弟弟', e: '👦' },
-          { w: 'uncle', zh: '叔叔', e: '🧔' }, { w: 'aunt', zh: '阿姨', e: '👩‍🦰' },
-          { w: 'cousin', zh: '表兄弟姊妹', e: '🧒' }, { w: 'grandfather', zh: '爷爷', e: '👴' },
-          { w: 'grandmother', zh: '奶奶', e: '👵' }, { w: 'friend', zh: '朋友', e: '🤝' }, { w: 'baby', zh: '宝宝', e: '👶' },
+          { w: 'baby', zh: '宝宝', e: '👶' },
         ],
         sentences: [
-          { en: 'This is my father. He is tall.', zh: '这是我的爸爸。他很高。' },
-          { en: 'These are my cousins. They are funny.', zh: '这些是我的表兄弟姊妹。他们很有趣。' },
-          { en: 'I love my family!', zh: '我爱我的家人！' },
+          { en: "What's that? It's my sister.", zh: '那是谁？是我的姐姐。' },
+          { en: 'Is that your mother? Yes, it is.', zh: '那是你妈妈吗？是的。' },
         ] },
-      { id: 'gs2-r1', mod: 1, kind: 'review', title: '第 1 组复习课', zh: '文具 · 数字颜色 · 家人 混合闯关',
-        from: ['gs2-u01', 'gs2-u02', 'gs2-u03'], count: 10 },
-      /* ---- 第 2 组 ---- */
-      { id: 'gs2-u04', mod: 2, modName: '第 2 组 · 房间与动物（教材 U1-U4 后半）', modEmoji: '🛏️', modTip: 'Where is...? · It can... · has got', kind: 'unit',
-        title: 'Lesson 4 · My Room', zh: '我的房间',
-        grammar: 'Where is...? It is in/on/under...',
+      { id: 'gs2-m02l2', mod: 2, kind: 'unit',
+        title: 'M2-L2 · Family', zh: '家人（二）',
         words: [
-          { w: 'puzzle', zh: '拼图', e: '🧩' }, { w: 'closet', zh: '衣柜', e: '🚪' },
-          { w: 'bed', zh: '床', e: '🛏️' }, { w: 'teddy bear', zh: '泰迪熊', e: '🧸' },
-          { w: 'doll', zh: '玩偶', e: '🎎' }, { w: 'board game', zh: '棋盘游戏', e: '🎲' },
-          { w: 'lamp', zh: '台灯', e: '🛋️' }, { w: 'couch', zh: '沙发', e: '🛋️' },
+          { w: 'grandfather', zh: '爷爷', e: '👴' }, { w: 'grandmother', zh: '奶奶', e: '👵' },
+          { w: 'uncle', zh: '叔叔', e: '🧔' }, { w: 'aunt', zh: '阿姨', e: '👩‍🦰' },
+          { w: 'cousin', zh: '表兄弟姊妹', e: '🧒' }, { w: 'friend', zh: '朋友', e: '🤝' },
+        ],
+        sentences: [
+          { en: 'He has got a brother.', zh: '他有一个哥哥。' },
+          { en: 'Is he your cousin? Yes, he is.', zh: '他是你表哥吗？是的。' },
+        ] },
+      { id: 'gs2-m02l3', mod: 2, kind: 'unit',
+        title: 'M2-L3 · Toys', zh: '玩具',
+        words: [
+          { w: 'puzzle', zh: '拼图', e: '🧩' }, { w: 'board game', zh: '棋盘游戏', e: '🎲' },
+          { w: 'doll', zh: '玩偶', e: '🎎' }, { w: 'teddy bear', zh: '泰迪熊', e: '🧸' },
+          { w: 'closet', zh: '衣柜', e: '🚪' }, { w: 'bed', zh: '床', e: '🛏️' },
+        ],
+        sentences: [
+          { en: "Where is the doll? It's in the closet.", zh: '玩偶在哪里？在衣柜里。' },
+          { en: 'This is between the lamp and the computer.', zh: '它在家灯和电脑之间。' },
+        ] },
+      { id: 'gs2-m02l4', mod: 2, kind: 'unit',
+        title: 'M2-L4 · Rooms', zh: '房间里',
+        words: [
+          { w: 'lamp', zh: '台灯', e: '💡' }, { w: 'couch', zh: '沙发', e: '🛋️' },
           { w: 'TV', zh: '电视', e: '📺' }, { w: 'window', zh: '窗户', e: '🪟' },
         ],
         sentences: [
-          { en: 'Where is my teddy bear? It is on the bed.', zh: '我的泰迪熊在哪里？它在床上。' },
-          { en: 'The lamp is on the couch.', zh: '台灯在沙发上。' },
-          { en: 'My room is big and clean!', zh: '我的房间又大又干净！' },
+          { en: 'The teddy bear is under the bed.', zh: '泰迪熊在床底下。' },
+          { en: 'They are between the lamp and the computer.', zh: '它们在台灯和电脑之间。' },
         ] },
-      { id: 'gs2-u05', mod: 2, kind: 'unit',
-        title: 'Lesson 5 · Numbers 20-50', zh: '数字 20-50',
-        grammar: 'How many...? 数一数',
+      { id: 'gs2-m02r', mod: 2, kind: 'review', title: 'Module 2 复习闯关', zh: '家人 · 玩具 · 房间 混合闯关',
+        from: ['gs2-m02l1', 'gs2-m02l2', 'gs2-m02l3', 'gs2-m02l4'], count: 8 },
+
+      /* ---- Module 3 · Friends（数字10-50 · 宠物 · 外貌 · 五官）---- */
+      { id: 'gs2-m03l1', mod: 3, modName: 'Module 3 · Friends 朋友们', modEmoji: '👫', modTip: 'Phonics: short i/e · 品德: Love your pets even if they are different', kind: 'unit',
+        title: 'M3-L1 · Numbers 10-50', zh: '数字 10-50',
         words: [
-          { w: 'twenty', zh: '二十', e: '2️⃣' }, { w: 'thirty', zh: '三十', e: '3️⃣' },
-          { w: 'forty', zh: '四十', e: '4️⃣' }, { w: 'fifty', zh: '五十', e: '5️⃣' },
+          { w: 'thirty', zh: '三十', e: '🔢' }, { w: 'forty', zh: '四十', e: '🔢' }, { w: 'fifty', zh: '五十', e: '🔢' },
         ],
         sentences: [
-          { en: 'How many crayons? Thirty crayons!', zh: '多少支蜡笔？三十支蜡笔！' },
+          { en: 'How many crayons? Thirty crayons!', zh: '多少支蜡笔？三十支！' },
         ] },
-      { id: 'gs2-u06', mod: 2, kind: 'unit',
-        title: 'Lesson 6 · Face & Hair', zh: '五官与头发',
-        grammar: 'He/She has... has got',
+      { id: 'gs2-m03l2', mod: 3, kind: 'unit',
+        title: 'M3-L2 · Hair & Pets', zh: '头发与宠物',
+        words: [
+          { w: 'cat', zh: '猫', e: '🐱' }, { w: 'dog', zh: '狗', e: '🐶' }, { w: 'snake', zh: '蛇', e: '🐍' },
+          { w: 'curly hair', zh: '卷头发', e: '💇' }, { w: 'straight hair', zh: '直头发', e: '👩' },
+          { w: 'short hair', zh: '短头发', e: '💇‍♂️' }, { w: 'long hair', zh: '长头发', e: '👩‍🦳' },
+        ],
+        sentences: [
+          { en: 'Has she got curly hair? Yes, she has.', zh: '她是卷发吗？是的。' },
+          { en: 'She has straight hair.', zh: '她是直头发。' },
+        ] },
+      { id: 'gs2-m03l3', mod: 3, kind: 'unit',
+        title: 'M3-L3 · My Face', zh: '五官',
         words: [
           { w: 'eyes', zh: '眼睛', e: '👀' }, { w: 'ears', zh: '耳朵', e: '👂' },
           { w: 'nose', zh: '鼻子', e: '👃' }, { w: 'mouth', zh: '嘴巴', e: '👄' },
-          { w: 'tooth', zh: '牙齿（单颗）', e: '🦷' }, { w: 'teeth', zh: '牙齿（全部）', e: '🦷' },
-          { w: 'curly hair', zh: '卷头发', e: '💇' }, { w: 'short hair', zh: '短头发', e: '💇‍♂️' },
-          { w: 'straight hair', zh: '直头发', e: '👩' }, { w: 'long hair', zh: '长头发', e: '👩‍🦳' },
+          { w: 'teeth', zh: '牙齿', e: '🦷' }, { w: 'pretty', zh: '漂亮的', e: '😊' }, { w: 'ugly', zh: '丑的', e: '🙈' },
         ],
         sentences: [
-          { en: 'She has big eyes and long hair.', zh: '她有大眼睛和长头发。' },
-          { en: 'He has short straight hair.', zh: '他有短的直头发。' },
-          { en: 'I brush my teeth every day!', zh: '我每天都刷牙！' },
+          { en: 'Does he have brown eyes? Yes, he does.', zh: '他有棕色眼睛吗？是的。' },
+          { en: 'She has big eyes and small ears.', zh: '她有大眼睛和小耳朵。' },
         ] },
-      { id: 'gs2-u07', mod: 2, kind: 'unit',
-        title: 'Lesson 7 · Animals', zh: '动物园',
-        grammar: 'It can... / It has...',
+      { id: 'gs2-m03r', mod: 3, kind: 'review', title: 'Module 3 复习闯关', zh: '数字 · 头发 · 五官 混合闯关',
+        from: ['gs2-m03l1', 'gs2-m03l2', 'gs2-m03l3'], count: 8 },
+
+      /* ---- Module 4 · Animals（动物 · 能力）---- */
+      { id: 'gs2-m04l1', mod: 4, modName: 'Module 4 · Animals 动物园', modEmoji: '🦁', modTip: 'Phonics: short o/u · 品德: Respect animals', kind: 'unit',
+        title: 'M4-L1 · Animals', zh: '动物（一）',
         words: [
-          { w: 'lizard', zh: '蜥蜴', e: '🦎' }, { w: 'cat', zh: '猫', e: '🐱' }, { w: 'dog', zh: '狗', e: '🐶' },
-          { w: 'snake', zh: '蛇', e: '🐍' }, { w: 'rabbit', zh: '兔子', e: '🐰' }, { w: 'elephant', zh: '大象', e: '🐘' },
-          { w: 'penguin', zh: '企鹅', e: '🐧' }, { w: 'hippo', zh: '河马', e: '🦛' }, { w: 'crocodile', zh: '鳄鱼', e: '🐊' },
-          { w: 'tiger', zh: '老虎', e: '🐯' }, { w: 'giraffe', zh: '长颈鹿', e: '🦒' }, { w: 'lion', zh: '狮子', e: '🦁' },
-          { w: 'zebra', zh: '斑马', e: '🦓' }, { w: 'parrot', zh: '鹦鹉', e: '🦜' }, { w: 'monkey', zh: '猴子', e: '🐵' },
+          { w: 'parrot', zh: '鹦鹉', e: '🦜' }, { w: 'monkey', zh: '猴子', e: '🐵' },
+          { w: 'elephant', zh: '大象', e: '🐘' }, { w: 'penguin', zh: '企鹅', e: '🐧' },
+          { w: 'hippo', zh: '河马', e: '🦛' }, { w: 'crocodile', zh: '鳄鱼', e: '🐊' }, { w: 'gorilla', zh: '大猩猩', e: '🦍' },
         ],
         sentences: [
-          { en: 'The monkey has a long tail.', zh: '猴子有一条长尾巴。' },
-          { en: 'A crocodile can swim. A bird can fly.', zh: '鳄鱼会游泳。鸟会飞。' },
-          { en: 'Look at the giraffe! It has a long neck.', zh: '看那只长颈鹿！它有长脖子。' },
+          { en: 'Is it a crocodile? Yes, it is.', zh: '它是鳄鱼吗？是的。' },
         ] },
-      { id: 'gs2-u08', mod: 2, kind: 'unit',
-        title: 'Lesson 8 · Animal Actions', zh: '动物的本领',
-        grammar: 'can / cannot 句型',
+      { id: 'gs2-m04l2', mod: 4, kind: 'unit',
+        title: 'M4-L2 · Animals', zh: '动物（二）',
         words: [
+          { w: 'tiger', zh: '老虎', e: '🐯' }, { w: 'lion', zh: '狮子', e: '🦁' },
+          { w: 'giraffe', zh: '长颈鹿', e: '🦒' }, { w: 'zebra', zh: '斑马', e: '🦓' },
+          { w: 'shark', zh: '鲨鱼', e: '🦈' }, { w: 'whale', zh: '鲸鱼', e: '🐳' }, { w: 'cheetah', zh: '猎豹', e: '🐆' },
+        ],
+        sentences: [
+          { en: 'A cheetah can run fast.', zh: '猎豹跑得很快。' },
+          { en: 'An elephant can carry things.', zh: '大象能搬东西。' },
+        ] },
+      { id: 'gs2-m04l3', mod: 4, kind: 'unit',
+        title: 'M4-L3 · Body & Actions', zh: '身体与本领（一）',
+        words: [
+          { w: 'head', zh: '头', e: '👤' }, { w: 'wings', zh: '翅膀', e: '🪽' },
+          { w: 'leg', zh: '腿', e: '🦵' }, { w: 'tail', zh: '尾巴', e: '🦨' },
           { w: 'swim', zh: '游泳', e: '🏊' }, { w: 'jump', zh: '跳', e: '🤸' }, { w: 'run', zh: '跑', e: '🏃' },
-          { w: 'fly', zh: '飞', e: '🕊️' }, { w: 'climb', zh: '爬', e: '🧗' }, { w: 'talk', zh: '说话', e: '💬' },
-          { w: 'see', zh: '看见', e: '👁️' }, { w: 'leg', zh: '腿', e: '🦵' }, { w: 'wings', zh: '翅膀', e: '🪽' },
-          { w: 'head', zh: '头', e: '🧠' }, { w: 'tail', zh: '尾巴', e: '🦨' },
         ],
         sentences: [
-          { en: 'A penguin cannot fly, but it can swim!', zh: '企鹅不会飞，但是它会游泳！' },
-          { en: 'The parrot can talk!', zh: '鹦鹉会说话！' },
-          { en: 'I can run and jump. Can you?', zh: '我会跑会跳。你呢？' },
+          { en: 'Its tail is long.', zh: '它的尾巴很长。' },
+          { en: 'Can you swim? Yes, I can.', zh: '你会游泳吗？会的。' },
         ] },
-      { id: 'gs2-r2', mod: 2, kind: 'review', title: '第 2 组复习课', zh: '房间 · 数字 · 五官 · 动物 混合闯关',
-        from: ['gs2-u04', 'gs2-u05', 'gs2-u06', 'gs2-u07', 'gs2-u08'], count: 12 },
-      /* 学校发的《U1-U4 词汇清单》原样 = 课本里一节复习课的强度（家长校准） */
-      { id: 'gs2-rx', mod: 2, kind: 'review', title: 'Units 1-4 词汇复习课', zh: '学校词汇清单 · 全部单词混合大闯关',
-        from: ['gs2-u01', 'gs2-u02', 'gs2-u03', 'gs2-u04', 'gs2-u05', 'gs2-u06', 'gs2-u07', 'gs2-u08'], count: 20 },
+      { id: 'gs2-m04l4', mod: 4, kind: 'unit',
+        title: 'M4-L4 · Actions', zh: '本领（二）',
+        words: [
+          { w: 'fly', zh: '飞', e: '🕊️' }, { w: 'climb', zh: '爬', e: '🧗' },
+          { w: 'talk', zh: '说话', e: '💬' }, { w: 'see', zh: '看见', e: '👁️' },
+        ],
+        sentences: [
+          { en: 'A parrot can talk.', zh: '鹦鹉会说话。' },
+          { en: "A penguin can't fly, but it can swim!", zh: '企鹅不会飞，但会游泳！' },
+        ] },
+      { id: 'gs2-m04r', mod: 4, kind: 'review', title: 'Module 4 复习闯关', zh: '动物 · 本领 混合闯关',
+        from: ['gs2-m04l1', 'gs2-m04l2', 'gs2-m04l3', 'gs2-m04l4'], count: 8 },
+
+      /* ---- Module 5 · My town（城镇 · 天气）---- */
+      { id: 'gs2-m05l1', mod: 5, modName: 'Module 5 · My town 我的城镇', modEmoji: '🏙️', modTip: 'Phonics: th · 品德: Be prepared', kind: 'unit',
+        title: 'M5-L1 · Places', zh: '城镇场所（一）',
+        words: [
+          { w: 'park', zh: '公园', e: '🌳' }, { w: 'school', zh: '学校', e: '🏫' },
+          { w: 'toy store', zh: '玩具店', e: '🧸' }, { w: 'restaurant', zh: '餐馆', e: '🍽️' },
+          { w: 'supermarket', zh: '超市', e: '🛒' },
+        ],
+        sentences: [
+          { en: 'There is a park in my town.', zh: '我的城镇里有一个公园。' },
+        ] },
+      { id: 'gs2-m05l2', mod: 5, kind: 'unit',
+        title: 'M5-L2 · Places', zh: '城镇场所（二）',
+        words: [
+          { w: 'museum', zh: '博物馆', e: '🏛️' }, { w: 'swimming pool', zh: '游泳池', e: '🏊' },
+          { w: 'playground', zh: '游乐场', e: '🛝' }, { w: 'hospital', zh: '医院', e: '🏥' },
+        ],
+        sentences: [
+          { en: "Where is the hospital? It's across from the supermarket.", zh: '医院在哪里？在超市对面。' },
+        ] },
+      { id: 'gs2-m05l3', mod: 5, kind: 'unit',
+        title: 'M5-L3 · Weather', zh: '天气',
+        words: [
+          { w: 'sunny', zh: '晴朗', e: '☀️' }, { w: 'raining', zh: '下雨', e: '🌧️' },
+          { w: 'snowy', zh: '下雪', e: '❄️' }, { w: 'windy', zh: '刮风', e: '🌬️' },
+          { w: 'cloudy', zh: '多云', e: '☁️' }, { w: 'hot', zh: '热', e: '🥵' }, { w: 'cold', zh: '冷', e: '🥶' },
+        ],
+        sentences: [
+          { en: "What's the weather like? It's sunny.", zh: '天气怎么样？是晴天。' },
+          { en: 'It is cold today.', zh: '今天很冷。' },
+        ] },
+      { id: 'gs2-m05r', mod: 5, kind: 'review', title: 'Module 5 复习闯关', zh: '场所 · 天气 混合闯关',
+        from: ['gs2-m05l1', 'gs2-m05l2', 'gs2-m05l3'], count: 8 },
+
+      /* ---- Module 6 · My favorite food（食物）---- */
+      { id: 'gs2-m06l1', mod: 6, modName: 'Module 6 · My favorite food 我的最爱', modEmoji: '🍎', modTip: 'Phonics: a_e/o_e · 品德: Eat healthy', kind: 'unit',
+        title: 'M6-L1 · Food', zh: '食物（一）',
+        words: [
+          { w: 'rice', zh: '米饭', e: '🍚' }, { w: 'meat', zh: '肉', e: '🥩' },
+          { w: 'chicken', zh: '鸡肉', e: '🍗' }, { w: 'cheese', zh: '奶酪', e: '🧀' },
+          { w: 'tomatoes', zh: '西红柿', e: '🍅' }, { w: 'sandwiches', zh: '三明治', e: '🥪' },
+        ],
+        sentences: [
+          { en: 'I like sandwiches.', zh: '我喜欢三明治。' },
+          { en: "I don't like meat.", zh: '我不喜欢肉。' },
+        ] },
+      { id: 'gs2-m06l2', mod: 6, kind: 'unit',
+        title: 'M6-L2 · Vegetables', zh: '蔬菜',
+        words: [
+          { w: 'chips', zh: '薯条', e: '🍟' }, { w: 'carrots', zh: '胡萝卜', e: '🥕' },
+          { w: 'peas', zh: '豌豆', e: '🫛' }, { w: 'spaghetti', zh: '意大利面', e: '🍝' },
+          { w: 'celery', zh: '芹菜', e: '🥬' }, { w: 'salad', zh: '沙拉', e: '🥗' },
+        ],
+        sentences: [
+          { en: 'Do you like carrots? Yes, I do.', zh: '你喜欢胡萝卜吗？喜欢。' },
+        ] },
+      { id: 'gs2-m06l3', mod: 6, kind: 'unit',
+        title: 'M6-L3 · Snacks', zh: '零食甜点',
+        words: [
+          { w: 'candy', zh: '糖果', e: '🍬' }, { w: 'cake', zh: '蛋糕', e: '🍰' },
+          { w: 'fruit', zh: '水果', e: '🍎' }, { w: 'cereal', zh: '麦片', e: '🥣' },
+          { w: 'sausages', zh: '香肠', e: '🌭' }, { w: 'biscuits', zh: '饼干', e: '🍪' },
+        ],
+        sentences: [
+          { en: "It's good for you.", zh: '它对你有好处。' },
+        ] },
+      { id: 'gs2-m06l4', mod: 6, kind: 'unit',
+        title: 'M6-L4 · Fruit & Meals', zh: '水果与三餐',
+        words: [
+          { w: 'oranges', zh: '橙子', e: '🍊' }, { w: 'pears', zh: '梨', e: '🍐' },
+          { w: 'watermelon', zh: '西瓜', e: '🍉' }, { w: 'cherries', zh: '樱桃', e: '🍒' },
+          { w: 'breakfast', zh: '早餐', e: '🥣' }, { w: 'lunch', zh: '午餐', e: '🍱' }, { w: 'dinner', zh: '晚餐', e: '🍛' },
+        ],
+        sentences: [
+          { en: "What's your favorite food?", zh: '你最喜欢的食物是什么？' },
+        ] },
+      { id: 'gs2-m06r', mod: 6, kind: 'review', title: 'Module 6 复习闯关', zh: '食物词汇 混合闯关',
+        from: ['gs2-m06l1', 'gs2-m06l2', 'gs2-m06l3', 'gs2-m06l4'], count: 10 },
+
+      /* ---- Module 7 · On time（星期 · 时间 · 月份）---- */
+      { id: 'gs2-m07l1', mod: 7, modName: 'Module 7 · On time 守时', modEmoji: '⏰', modTip: 'Phonics: ai/ay · 品德: Make friends from other countries', kind: 'unit',
+        title: 'M7-L1 · Days of the Week', zh: '星期',
+        words: [
+          { w: 'Monday', zh: '星期一', e: '📅' }, { w: 'Tuesday', zh: '星期二', e: '📅' },
+          { w: 'Wednesday', zh: '星期三', e: '📅' }, { w: 'Thursday', zh: '星期四', e: '📅' },
+          { w: 'Friday', zh: '星期五', e: '📅' }, { w: 'Saturday', zh: '星期六', e: '📅' }, { w: 'Sunday', zh: '星期日', e: '📅' },
+        ],
+        sentences: [
+          { en: "What day is it? It's Monday.", zh: '今天星期几？星期一。' },
+        ] },
+      { id: 'gs2-m07l2', mod: 7, kind: 'unit',
+        title: 'M7-L2 · Time of Day', zh: '一天中的时间',
+        words: [
+          { w: 'morning', zh: '早上', e: '🌅' }, { w: 'afternoon', zh: '下午', e: '☀️' },
+          { w: 'evening', zh: '傍晚', e: '🌆' }, { w: 'night', zh: '夜晚', e: '🌙' },
+        ],
+        sentences: [
+          { en: "It's nine o'clock.", zh: '九点了。' },
+        ] },
+      { id: 'gs2-m07l3', mod: 7, kind: 'unit',
+        title: 'M7-L3 · My Day', zh: '我的一天',
+        words: [
+          { w: 'get up', zh: '起床', e: '🛌' }, { w: 'go to school', zh: '去上学', e: '🎒' },
+          { w: 'do homework', zh: '做作业', e: '📝' }, { w: 'go to bed', zh: '上床睡觉', e: '🛏️' },
+        ],
+        sentences: [
+          { en: 'What time do you get up? I get up at seven o\'clock.', zh: '你几点起床？我七点起床。' },
+        ] },
+      { id: 'gs2-m07l4', mod: 7, kind: 'unit',
+        title: 'M7-L4 · Months (1-6)', zh: '月份（1-6月）',
+        words: [
+          { w: 'January', zh: '一月', e: '🗓️' }, { w: 'February', zh: '二月', e: '🗓️' },
+          { w: 'March', zh: '三月', e: '🗓️' }, { w: 'April', zh: '四月', e: '🗓️' },
+          { w: 'May', zh: '五月', e: '🗓️' }, { w: 'June', zh: '六月', e: '🗓️' },
+        ],
+        sentences: [
+          { en: 'February is before March.', zh: '二月在三月之前。' },
+        ] },
+      { id: 'gs2-m07l5', mod: 7, kind: 'unit',
+        title: 'M7-L5 · Months (7-12)', zh: '月份（7-12月）',
+        words: [
+          { w: 'July', zh: '七月', e: '🗓️' }, { w: 'August', zh: '八月', e: '🗓️' },
+          { w: 'September', zh: '九月', e: '🗓️' }, { w: 'October', zh: '十月', e: '🗓️' },
+          { w: 'November', zh: '十一月', e: '🗓️' }, { w: 'December', zh: '十二月', e: '🗓️' },
+        ],
+        sentences: [
+          { en: 'June is after May.', zh: '六月在五月之后。' },
+        ] },
+      { id: 'gs2-m07r', mod: 7, kind: 'review', title: 'Module 7 复习闯关', zh: '星期 · 时间 · 月份 混合闯关',
+        from: ['gs2-m07l1', 'gs2-m07l2', 'gs2-m07l3', 'gs2-m07l4', 'gs2-m07l5'], count: 10 },
+
+      /* ---- Module 8 · At work（职业）---- */
+      { id: 'gs2-m08l1', mod: 8, modName: 'Module 8 · At work 职业体验', modEmoji: '👷', modTip: 'Phonics: i_e · 品德: Everybody has a special name', kind: 'unit',
+        title: 'M8-L1 · Jobs', zh: '职业（一）',
+        words: [
+          { w: 'police officer', zh: '警察', e: '👮' }, { w: 'teacher', zh: '老师', e: '👩‍🏫' },
+          { w: 'doctor', zh: '医生', e: '🩺' }, { w: 'singer', zh: '歌手', e: '🎤' },
+          { w: 'dancer', zh: '舞者', e: '💃' }, { w: 'chef', zh: '厨师', e: '👨‍🍳' },
+        ],
+        sentences: [
+          { en: 'She is a dancer.', zh: '她是一名舞者。' },
+        ] },
+      { id: 'gs2-m08l2', mod: 8, kind: 'unit',
+        title: 'M8-L2 · Jobs', zh: '职业（二）',
+        words: [
+          { w: 'artist', zh: '画家', e: '🎨' }, { w: 'clown', zh: '小丑', e: '🤡' },
+          { w: 'fisherman', zh: '渔夫', e: '🎣' }, { w: 'waiter', zh: '服务员', e: '🍽️' },
+          { w: 'nurse', zh: '护士', e: '💉' }, { w: 'pilot', zh: '飞行员', e: '👨‍✈️' },
+        ],
+        sentences: [
+          { en: 'Do you work in a restaurant? Yes, I do.', zh: '你在餐馆工作吗？是的。' },
+        ] },
+      { id: 'gs2-m08l3', mod: 8, kind: 'unit',
+        title: 'M8-L3 · At Work', zh: '工作做什么',
+        words: [
+          { w: 'work', zh: '工作', e: '💼' }, { w: 'sing', zh: '唱歌', e: '🎤' },
+          { w: 'play the piano', zh: '弹钢琴', e: '🎹' }, { w: 'fly a helicopter', zh: '开直升机', e: '🚁' },
+          { w: 'Mr.', zh: '先生', e: '🕴️' }, { w: 'Mrs.', zh: '夫人', e: '👩' },
+        ],
+        sentences: [
+          { en: 'What time does the movie start?', zh: '电影几点开始？' },
+        ] },
+      { id: 'gs2-m08r', mod: 8, kind: 'review', title: 'Module 8 复习闯关', zh: '职业词汇 混合闯关',
+        from: ['gs2-m08l1', 'gs2-m08l2', 'gs2-m08l3'], count: 8 },
+
+      /* ---- Module 9 · Clothes（衣服）---- */
+      { id: 'gs2-m09l1', mod: 9, modName: 'Module 9 · Clothes 衣服', modEmoji: '👕', modTip: 'Phonics: a_e/br/pr · 品德: Look after your belongings', kind: 'unit',
+        title: 'M9-L1 · Clothes', zh: '衣服（一）',
+        words: [
+          { w: 'jeans', zh: '牛仔裤', e: '👖' }, { w: 'shorts', zh: '短裤', e: '🩳' },
+          { w: 'coat', zh: '外套', e: '🧥' }, { w: 'jacket', zh: '夹克', e: '🥼' },
+          { w: 'skirt', zh: '短裙', e: '👗' }, { w: 'dress', zh: '连衣裙', e: '👚' },
+        ],
+        sentences: [
+          { en: "I'm wearing a skirt.", zh: '我穿着短裙。' },
+        ] },
+      { id: 'gs2-m09l2', mod: 9, kind: 'unit',
+        title: 'M9-L2 · Clothes', zh: '衣服（二）',
+        words: [
+          { w: 'socks', zh: '袜子', e: '🧦' }, { w: 'sneakers', zh: '运动鞋', e: '👟' },
+          { w: 'glasses', zh: '眼镜', e: '👓' }, { w: 'T-shirt', zh: 'T恤', e: '👕' },
+          { w: 'gloves', zh: '手套', e: '🧤' }, { w: 'scarf', zh: '围巾', e: '🧣' },
+        ],
+        sentences: [
+          { en: "I'm wearing a blue coat.", zh: '我穿着蓝色外套。' },
+        ] },
+      { id: 'gs2-m09l3', mod: 9, kind: 'unit',
+        title: 'M9-L3 · Whose is it?', zh: '这是谁的？',
+        words: [
+          { w: 'shirt', zh: '衬衫', e: '👔' }, { w: 'sweater', zh: '毛衣', e: '🧶' },
+          { w: 'shoes', zh: '鞋子', e: '👞' }, { w: 'pants', zh: '长裤', e: '👖' },
+        ],
+        sentences: [
+          { en: "Whose shirt is this? It's Pat's.", zh: '这是谁的衬衫？是帕特的。' },
+          { en: 'Is she wearing glasses? Yes, she is.', zh: '她戴着眼镜吗？是的。' },
+        ] },
+      { id: 'gs2-m09r', mod: 9, kind: 'review', title: 'Module 9 复习闯关', zh: '衣服词汇 混合闯关',
+        from: ['gs2-m09l1', 'gs2-m09l2', 'gs2-m09l3'], count: 8 },
+
+      /* ---- Module 10 · Having fun（运动与游戏）---- */
+      { id: 'gs2-m10l1', mod: 10, modName: 'Module 10 · Having fun 玩得开心', modEmoji: '🎡', modTip: 'Phonics: ea/oa · 品德: Play fair', kind: 'unit',
+        title: 'M10-L1 · Sports & Games', zh: '运动与游戏（一）',
+        words: [
+          { w: 'basketball', zh: '篮球', e: '🏀' }, { w: 'soccer', zh: '足球', e: '⚽' },
+          { w: 'hide and seek', zh: '捉迷藏', e: '🙈' }, { w: 'tag', zh: '贴人游戏', e: '🏃' },
+          { w: 'riding a bike', zh: '骑自行车', e: '🚴' }, { w: 'jumping rope', zh: '跳绳', e: '🪢' },
+        ],
+        sentences: [
+          { en: "He's riding a bike.", zh: '他在骑自行车。' },
+        ] },
+      { id: 'gs2-m10l2', mod: 10, kind: 'unit',
+        title: 'M10-L2 · Sports', zh: '运动（二）',
+        words: [
+          { w: 'playing soccer', zh: '踢足球', e: '⚽' }, { w: 'ice skating', zh: '滑冰', e: '⛸️' },
+          { w: 'skiing', zh: '滑雪', e: '🎿' }, { w: 'dancing', zh: '跳舞', e: '💃' },
+          { w: 'playing volleyball', zh: '打排球', e: '🏐' }, { w: 'playing tennis', zh: '打网球', e: '🎾' },
+        ],
+        sentences: [
+          { en: 'I like skating.', zh: '我喜欢滑冰。' },
+        ] },
+      { id: 'gs2-m10l3', mod: 10, kind: 'unit',
+        title: 'M10-L3 · More Fun', zh: '更多乐趣',
+        words: [
+          { w: 'sailing', zh: '帆船', e: '⛵' }, { w: 'chasing', zh: '追逐', e: '🏃' },
+          { w: 'listening to music', zh: '听音乐', e: '🎧' }, { w: 'playing computer games', zh: '玩电脑游戏', e: '🖥️' },
+          { w: 'sleeping', zh: '睡觉', e: '😴' }, { w: 'tennis racket', zh: '网球拍', e: '🎾' },
+        ],
+        sentences: [
+          { en: 'Are they playing hide and seek? Yes, they are.', zh: '他们在捉迷藏吗？是的。' },
+        ] },
+      { id: 'gs2-m10r', mod: 10, kind: 'review', title: 'Module 10 复习闯关', zh: '运动游戏 混合闯关',
+        from: ['gs2-m10l1', 'gs2-m10l2', 'gs2-m10l3'], count: 8 },
+
+      /* ---- 学校发的《U1-U4 词汇清单》原样 = 一节复习课的强度（家长校准） ---- */
+      { id: 'gs2-rx', mod: 4, kind: 'review', title: 'U1-U4 词汇复习课', zh: '学校词汇清单 · 全部单词混合大闯关',
+        from: ['gs2-m01l1', 'gs2-m01l2', 'gs2-m01l3', 'gs2-m01l4', 'gs2-m02l1', 'gs2-m02l2', 'gs2-m02l3', 'gs2-m02l4', 'gs2-m03l1', 'gs2-m03l2', 'gs2-m03l3', 'gs2-m04l1', 'gs2-m04l2', 'gs2-m04l3', 'gs2-m04l4'], count: 20 },
     ]
   },
 
