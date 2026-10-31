@@ -241,6 +241,7 @@ function renderBrowse() {
         <button class="btn mint" onclick="startPractice()">✏️ 练一练（得星星）</button>
         <button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button>
         <button class="btn orange" onclick="startSpeak()">🎤 跟读打分</button>
+        <button class="btn" style="background:#6366F1;color:#fff" onclick="startDictation()">📝 听写</button>
         <button class="btn" onclick="listenAll()">🔊 全部听一遍</button>
       </div>
       <div class="word-grid">
@@ -750,6 +751,89 @@ function chunkWord(w0) {
 
 const SP_STEPS = [['read','读'],['look','看'],['pick','选'],['split','拆'],['build','拼'],['write','写']];
 let spell = null;
+
+/* ---- 听写模式：播发音 → 打字 → 即时判 ---- */
+let dict = null;
+function startDictation() {
+  Flow.reset();
+  let pool;
+  if (poolMode === 'plan') pool = planWords();
+  else if (poolMode === 'wrong') pool = wrongWords();
+  else pool = themeById(curTheme).words;
+  const ok = pool.filter(w => /^[a-zA-Z]{2,12}$/.test(w.w));
+  if (!ok.length) { toast('这批词不适合听写，换一批试试～'); return; }
+  dict = { words: shuffle(ok).slice(0, 10), idx: 0, score: 0, wrongList: [] };
+  renderDict();
+}
+function renderDict() {
+  const w = dict.words[dict.idx];
+  prewarmWord(w.w);
+  $('#app').innerHTML = `
+    <div class="card" style="max-width:520px;margin:0 auto;text-align:center">
+      <div class="score-bar"><b>📝 听写</b><span>第 ${dict.idx + 1} / ${dict.words.length} 词 · ✅ ${dict.score}</span></div>
+      <div style="padding:20px 0 8px">
+        <div style="font-size:.85rem;color:#6B7280;margin-bottom:12px">听发音，拼出这个单词</div>
+        <button class="btn coral big" style="font-size:1.5rem;margin:0 0 16px;padding:14px 36px" onclick="playDictAudio('${jsq(w.w)}')">🔊 点我听</button>
+        <div style="margin-bottom:4px;color:#9CA3AF;font-size:.8rem">${w.zh}</div>
+        <input id="dictInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+          placeholder="在这里拼单词…"
+          style="width:80%;max-width:300px;padding:14px 18px;border:3px solid var(--lake);border-radius:16px;font-size:1.3rem;font-family:monospace;text-align:center;letter-spacing:2px"
+          onkeydown="if(event.key==='Enter')dictCheck()">
+        <div id="dictFb" style="margin-top:12px;min-height:32px"></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:8px">
+        <button class="btn ghost" onclick="renderBrowse()">← 退出</button>
+        <button class="btn grape big" onclick="dictCheck()">✅ 检查</button>
+      </div>
+    </div>`;
+  setTimeout(() => { const el = document.getElementById('dictInput'); if (el) el.focus(); }, 200);
+  setTimeout(() => playDictAudio(w.w), 500);
+}
+function dictCheck() {
+  const w = dict.words[dict.idx];
+  const el = document.getElementById('dictInput');
+  const val = (el.value || '').trim().toLowerCase();
+  if (!val) return;
+  const correct = val === w.w.toLowerCase();
+  const fb = document.getElementById('dictFb');
+  el.disabled = true;
+  if (correct) {
+    dict.score++; sfx.correct(); touchWord(w.w, true);
+    fb.innerHTML = `<span style="color:#4E9E59;font-weight:800;font-size:1.1rem">✅ ${w.w}</span>`;
+  } else {
+    sfx.wrong(); touchWord(w.w, false);
+    dict.wrongList.push(w.w);
+    fb.innerHTML = `<span style="color:#E05656;font-weight:800">❌ 正确拼写：<b>${w.w}</b></span><span style="color:#6B7280;font-size:.85rem">（${w.zh}）</span>`;
+  }
+  setTimeout(() => {
+    dict.idx++;
+    if (dict.idx >= dict.words.length) return dictEnd();
+    renderDict();
+  }, correct ? 800 : 1600);
+}
+function dictEnd() {
+  completeDailyTask('words');
+  const total = dict.words.length;
+  const pct = dict.score / total;
+  if (pct >= 0.8) confetti();
+  sfx.win();
+  addStars(Math.max(2, Math.round(dict.score / 2)));
+  let gradeTxt = pct >= 0.9 ? '🏅 优' : pct >= 0.7 ? '🎖️ 良' : pct >= 0.5 ? '✅ 合格' : '💪 再练';
+  const wrongWords = dict.wrongList.length ? `<p style="color:#E05656;font-size:.88rem;margin:8px 0">错的词已自动放进复习计划：${dict.wrongList.join('、')}</p>` : '';
+  $('#app').innerHTML = `
+    <div class="card bounce-in" style="max-width:520px;margin:0 auto;text-align:center;padding:34px 24px">
+      <div style="font-size:70px">${pct >= 0.9 ? '🏆' : pct >= 0.7 ? '🎖️' : pct >= 0.5 ? '👍' : '🌱'}</div>
+      <h2 style="justify-content:center">听写成绩：${gradeTxt}</h2>
+      <p style="font-size:1.05rem">拼对 <b style="color:#FF6B6B;font-size:1.5rem">${dict.score}</b> / ${total} 词</p>
+      ${wrongWords}
+      <p style="color:#5C6273;font-size:.85rem">错的词已排入复习计划，明天再来一遍就记住了。</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+        <button class="btn grape big" onclick="startDictation()">📝 再听写一轮</button>
+        <button class="btn ghost big" onclick="renderBrowse()">返回</button>
+      </div>
+    </div>`;
+  dict = null;
+}
 
 function startSpell() {
   Flow.reset();      // 切到拼写工坊：作废答题页可能还挂着的推进/朗读
