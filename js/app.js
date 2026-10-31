@@ -92,7 +92,6 @@ const Store = {
       letters: {},                   // {A: {t}}
       words: {},                     // {cat: {box, due}}  box:0-5 记忆盒子
       grammar: {},                   // {g1: {t, stars}}
-      books: {},                     // {b1: {t}} 读过的绘本
       streak: { count: 0, last: '' },
       daily: { date: '', tasks: { letter: false, words: false, game: false }, bonus: false, studySec: 0, break15: false, break30: false },
       unlocked: {},                  // {emoji: true} 星星解锁的限定头像
@@ -218,7 +217,6 @@ function checkBadges() {
   const s1Ids = GRAMMAR_LEVELS.filter(l => l.stage === 's1').map(l => l.id);
   if (s1Ids.every(id => d.grammar[id])) awardBadge('grammar8');
   if (grammarDoneCount() >= GRAMMAR_LEVELS.length) awardBadge('grammar1');
-  if (Object.keys(d.books || {}).length >= BOOKS_TOTAL) awardBadge('reader6');
   if (d.streak.count >= 3) awardBadge('streak3');
   if (d.streak.count >= 7) awardBadge('streak7');
   if (d.stars >= 100) awardBadge('star100');
@@ -291,7 +289,7 @@ function markAllLettersKnown() {
   Store.d.lettersSkip = true;
   addStars(5); markActivity('letters'); completeDailyTask('letter'); Store.save(); checkBadges();
   sfx.win(); confetti();
-  toast('✅ 好嘞！以后直接从单词开始吧！');
+  toast('OK! Now we start from words!');
 }
 
 /* ---------------- 年级体系（全站主线，与档案联动） ---------------- */
@@ -324,54 +322,110 @@ function renderGradePicker(sel) {
    决策：浏览器内置合成语音（speechSynthesis）音色与词典音混杂、质量参差，
    已全部移除——全站只有一种声音：词典真人女声。
    网络不可用或接口失败时保持安静（绝不出现机器音），用户重试即可。 */
-/* ================= 词典真人发音 引擎 v4 =================
+/* ================= 词典真人发音 引擎 v6（媒体元素直出 + SW 缓存） =================
    唯一声源保证：全局 epoch——每一次新的播放请求（点击/重试/链式下一词）
    都会让之前所有待播/在播音频作废，任何情况下最多只有一个声音出喇叭。
-   系统性修复：
-   1) 慢网络下"超时重试"与"迟到的加载"互相叠加导致的重复出声（乱糟糟的根源）：
-      重试前彻底解除旧 Audio 的全部回调，迟到的数据永远不会再发声
-   2) 用户点击时掐掉所有在途预热/排队音频——防止点击排在下载队列尾部被超时误杀
-   3) 失败自动重试一次（换全新 Audio），重试仍失败才提示；双重超时计时器不再泄漏
-   4) 超时：首次 10s、后续 7s（移动网络）；成功的音频由 Service Worker 缓存，二次播放零延迟 */
+
+   ★ 为什么不再做音量归一化（v5 的教训，2026-10-25 线上失声事故）：
+   有道不返回 Access-Control-Allow-Origin，浏览器只会给 opaque 响应——
+   opaque 的 body 读不到（arrayBuffer 直接抛错），也加不了响应头。
+   所以「SW 注入 CORS → 页面拿字节 → decodeAudioData 归一化」这条路
+   在浏览器安全模型下根本走不通；v5 硬做，结果是每个发音请求都被 SW
+   判成"坏音频"返回 502，全站静音。
+   能做音量的只有媒体元素：volume 上限 1.0（只能压不能抬），
+   稳定性靠缓存与预热，不靠增益。
+   真要逐条归一化，唯一可行路线是把音频预处理成**同源静态文件**（另立项）。
+
+   v7 链路（本地优先）：
+   ① 词库里 1000 个词都有**同源离线音频** audio/<slug>.mp3?v=1 ——
+      这批文件是离线烘焙好的：裁掉首尾静音、静态压限 + RMS 归一到 -12.5 dBFS，
+      所以既不用 CORS、也不用在浏览器里算，音量还整齐（原生极差 5.3 dB → 0.2 dB）。
+   ② 取不到本地文件（短语/生僻词/文件缺失）才算回有道在线合成。
+   ③ SW 用**独立缓存** birdie-audio-v1 存音频：发版不清，6.6MB 只下一次。
+   失败重试一次；仍失败给一次网络提示，绝不切机器音。 */
 const DICT_AUDIO_URL = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
+
+/* ===== 本地离线音频包 =====
+   文件名规则必须与生成脚本（_gen_audio.py 的 slug）逐字一致：
+   小写、非字母数字压成一个下划线、去首尾下划线。1000 个词无撞名。
+   AUDIO_VER 与 SW 的 AUDIO_CACHE 一起改：重做音频时两个都 +1，
+   否则 SW 会拿旧文件（URL 没变就等于没换）。 */
+const AUDIO_VER = 1;
+const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+const __LOCAL_AUDIO = (() => {
+  const set = new Set();
+  try {
+    THEMES.forEach(t => t.words.forEach(w => { const k = audioSlug(w.w); if (k) set.add(k); }));
+    /* 造词实验室的扩展词（js/build-data.js 只在游戏页加载，没加载时跳过） */
+    if (typeof BUILD_LEX !== 'undefined') BUILD_LEX.forEach(w => { const k = audioSlug(w); if (k) set.add(k); });
+  } catch (e) {}
+  return set;
+})();
+const localAudioURL = t => {
+  const k = audioSlug(t);
+  return k && __LOCAL_AUDIO.has(k) ? `audio/${k}.mp3?v=${AUDIO_VER}` : '';
+};
+/* 音源优先级：有本地就用本地，本地失败自动换有道（绝不因此变哑）。
+   短语（句子连读的两词一组）一般没有本地文件，直接走有道。 */
+const __audioSources = t => {
+  const l = localAudioURL(t);
+  return l ? [l, DICT_AUDIO_URL(t)] : [DICT_AUDIO_URL(t)];
+};
 let __curAudio = null;
 let __inflight = new Set();   // 所有在途 Audio（含预热），统一管理
 let __firstPlayDone = false;
 let __dictFailNotified = 0;
+let __audioEpoch = 0;              // 唯一声源令牌：任何新请求令旧的全部作废
+const __guards = new Set();        // 所有加载/播放超时计时器，stopAllSpeech 时统一拆
 
-function stopAllSpeech() {
-  __inflight.forEach(a => { try { a.onended = a.onerror = a.oncanplay = a.onplaying = null; a.pause(); } catch (e) {} });
-  __inflight.clear();
-  __curAudio = null;
-}
-/* 预热：只下载不播放；登记在途，用户一点击即被让路；onFail 用于感知坏词组（如含生僻词的短语） */
+/* 预热：把音频提前拉进 SW 缓存（用户一点击零等待）。
+   opaque 响应看不到状态码，能不能用交给播放时判断；这里只负责暖链路。 */
 function prewarmWord(text, onFail) {
   if (!text) return;
   try {
-    const a = new Audio(DICT_AUDIO_URL(text));
+    const a = new Audio(__audioSources(text)[0]);   // 有本地就预热本地，第二次点开零等待
     a.preload = 'auto';
     __inflight.add(a);
     a.oncanplay = () => { __inflight.delete(a); };
     a.onerror = () => { __inflight.delete(a); if (onFail) onFail(); };
-  } catch (e) {}
+  } catch (e) { if (onFail) onFail(); }
 }
-/* 核心播放：全新 Audio + 唯一声源保证（epoch）+ 重试一次；timeoutMs 可选（连读链传短超时保持节奏） */
-let __audioEpoch = 0;
-function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs) {
-  const epoch = ++__audioEpoch; // 新请求让之前所有待播/在播音频作废
+/* 播放入口：直接走媒体元素。epoch 在这里统一递增；
+   timeoutMs 可选（连读链传短超时保持节奏）。 */
+function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs, startIdx) {
+  const epoch = ++__audioEpoch;
+  const t = String(text).trim();
+  if (!t) { if (onFail) onFail(); return; }
+  __playMediaElement(t, rate, epoch, onEnd, onFail, isRetry, timeoutMs, startIdx);
+}
+/* 媒体元素兜底（v4 链路，原封不动）：全新 Audio + 唯一声源保证 + 重试一次。
+   epoch 由调用方传入并负责递增——重试时也走同一令牌，不会和归一化路径抢令牌。 */
+function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, srcIdx) {
   rate = 1; // mobile compat: always normal speed
-  const a = new Audio(DICT_AUDIO_URL(text));
+  const srcs = __audioSources(text);
+  const si = Math.min(srcIdx || 0, srcs.length - 1);
+  const a = new Audio(srcs[si]);
   a.preload = 'auto';
   __curAudio = a;
   __inflight.add(a);
   let done = false, guard = null;
-  const clearG = () => { if (guard) { clearTimeout(guard); guard = null; } };
+  /* 计时器统一登记：stopAllSpeech 时一次性拆干净。
+     否则翻页/切题后，9 秒前的旧 guard 到点会把旧词又播一遍。 */
+  const clearG = () => { if (guard) { clearTimeout(guard); __guards.delete(guard); guard = null; } };
+  const setG = ms => { guard = setTimeout(fail, ms); __guards.add(guard); };
   const disarm = () => { try { a.onended = a.onerror = a.oncanplay = a.onplaying = null; a.pause(); } catch (e) {} };
   const end = () => { if (!done) { done = true; clearG(); __inflight.delete(a); if (onEnd) onEnd(); } };
   const fail = () => {
     if (done) return;
     done = true; clearG(); disarm(); __inflight.delete(a); // 解除全部回调：迟到的加载绝不再出声
-    if (!isRetry) { playDictAudio(text, rate, onEnd, onFail, true, timeoutMs); return; } // 自动重试一次
+    /* 已被更新的一次点击取代：绝不重试、绝不回头抢声源
+       （重试会 ++epoch，把用户正在听的新词掐掉再播回旧词）。 */
+    if (epoch !== __audioEpoch) return;
+    /* 本地文件取不到（删除/损坏/部署不全）→ 立刻换下一个音源。
+       这不算"失败重试"：孩子不该为一个仓库问题多等两秒。 */
+    if (si + 1 < srcs.length) { __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, si + 1); return; }
+    /* 自动重试一次：从"最后试过的那个音源"再来，不回头再撞 404 的本地文件 */
+    if (!isRetry) { playDictAudio(text, rate, onEnd, onFail, true, timeoutMs, si); return; }
     const now = Date.now();
     if (now - __dictFailNotified > 30000) { __dictFailNotified = now; toast('📶 发音加载失败，请检查网络后重试'); }
     if (onFail) onFail();
@@ -384,15 +438,14 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs) {
     if (done || epoch !== __audioEpoch) { disarm(); return; } // 已被更新的一次点击取代：绝不出声
     try { a.currentTime = 0; } catch (e) {}
     clearG(); // 清掉还在等待的加载超时，避免播放中被误杀重播
-    guard = setTimeout(fail, timeoutMs || (__firstPlayDone ? 9000 : 12000));
+    setG(timeoutMs || (__firstPlayDone ? 9000 : 12000));
     const p = a.play();
-    __firstPlayDone = true;
     if (p && p.catch) p.catch(() => { if (epoch === __audioEpoch) fail(); });
   };
   if (a.readyState >= 1) { stopAllSpeechExcept(a); go(); }
   else {
     a.oncanplay = () => { a.oncanplay = null; stopAllSpeechExcept(a); go(); };
-    guard = setTimeout(fail, timeoutMs || (__firstPlayDone ? 9000 : 12000));
+    setG(timeoutMs || (__firstPlayDone ? 9000 : 12000));
   }
 }
 /* 让路：暂停除 a 以外的所有在途音频（预热队列立刻腾出连接） */
@@ -400,19 +453,362 @@ function stopAllSpeechExcept(keep) {
   __inflight.forEach(x => { if (x !== keep) { try { x.onended = x.onerror = x.oncanplay = x.onplaying = null; x.pause(); } catch (e) {} __inflight.delete(x); } });
 }
 
+/* 音标：ipa.js 只在单词页加载，别的页面没有这个全局变量 */
+function ipaOf(w) {
+  return (typeof IPA !== 'undefined' && IPA[w]) || '';
+}
+
+/* 颜色词的图：emoji 里根本没有"灰色圆点"这类符号，硬凑就会出现 grey=🐈 这种错。
+   颜色一律用**色块**——这正是课本教颜色的方式，也不会和别的词撞图。 */
+const WORD_COLOR = {
+  red: '#EF4444', yellow: '#FACC15', blue: '#3B82F6', green: '#22C55E',
+  white: '#FFFFFF', black: '#1F2937', orange: '#F97316', pink: '#F472B6',
+  purple: '#A855F7', brown: '#92400E', grey: '#9CA3AF',
+};
+
+/* 词图三级：色块（颜色词）→ emoji（有合适图形的）→ 首字母牌（配不上的）
+   代词/介词/连词/抽象动词这类词根本没有形象，硬塞一个 emoji 是错的——
+   it=🐱 会让孩子以为 it 就是"猫"，believe=🙏 会以为"相信"就是祈祷。
+   宁可给字母牌，也不给假图。 */
+function wordIcon(w) {
+  const name = String((w && w.w) || '').toLowerCase();
+  const emo = String((w && w.e) || '').trim();
+  /* 内置 SVG 优先：不依赖系统 emoji 字体，任何电脑画出来都一样彩色
+     （emoji 靠字体渲染，会变黑白或吐方块，见下面 emojiClusters 的说明） */
+  if (emo && hasEmojiSvg(emo)) {
+    return `<span class="wsvg" role="img" aria-label="${esc(w.zh || name)}">${emoSvg(emo)}</span>`;
+  }
+  /* SVG 卡通插画（svg/word-svg.js） */
+  if (typeof WORD_SVG !== 'undefined' && WORD_SVG[name]) {
+    return `<span class="wsvg" role="img" aria-label="${esc(w.zh || name)}">${WORD_SVG[name]}</span>`;
+  }
+  if (WORD_COLOR[name]) {
+    return `<span class="cchip" style="background:${WORD_COLOR[name]}" role="img" aria-label="${esc(w.zh || name)}"></span>`;
+  }
+  /* 没内置图才退回系统 emoji，并强制走彩色 emoji 字体（.emj） */
+  if (emo) return `<span class="emj" role="img" aria-label="${esc(w.zh || name)}">${esc(emo)}</span>`;
+  const ch = String((w && w.w) || '?').trim().charAt(0).toUpperCase();
+  return `<span class="wtile" aria-hidden="true">${esc(ch)}</span>`;
+}
+
+/* ---------------- 词图的统一取用口 ----------------
+   ★ 血泪教训（2026-10-26）：wordIcon 修好之后，页面上仍有一大半地方直接写
+     `${w.e}` 渲染 emoji 字符 —— 等于把「靠系统字体画图」的老毛病原样留着，
+     老 Windows 上照样黑白/方块。凡是「给孩子看的词图」一律走下面两个函数：
+       iconOf(w)  拿渲染好的 HTML（带缓存，1000 词批量出题也不卡）
+       hasIcon(w) 判断有没有真图（字母牌不算图，不能拿去做「看图选」的选项）
+   例外：站点导航图标（岛屿、按钮、标题前缀）是界面装饰，不是词图，不在此列。 */
+const __iconCache = new Map();
+function iconOf(w) {
+  if (!w) return '';
+  const key = String(w.w || '') + '\u0001' + String(w.e || '') + '\u0001' + String(w.zh || '');
+  let hit = __iconCache.get(key);
+  if (hit === undefined) { hit = wordIcon(w); __iconCache.set(key, hit); }
+  return hit;
+}
+/* 字母牌 = 没有真图。这类词不能进「看图选」的选项，否则孩子看到四个字母牌没得选。 */
+function hasIcon(w) {
+  return !/class="wtile"/.test(iconOf(w));
+}
+
+/* ================= emoji → 内置矢量图 =================
+   ★ 2026-10-26：这是「整页显示黑白」的根因修复。
+
+   emoji 在网页上是「字体字形」，不是图片。浏览器挑字体的规则是：
+   用字体栈里第一个**含这个字形**的字体。
+   我们原来的字体栈是
+     "Microsoft YaHei", "Segoe UI Symbol", "Segoe UI Emoji", sans-serif
+   而微软雅黑自带 🎡🔎🔒 这类符号的**单色字形** —— 它排在彩色 emoji 字体前面，
+   浏览器就近取用，画出来就是黑白线条。
+   实测（Win11 + Edge，不是老电脑）：🎡🔎🔒 全黑白。
+   更老的机器（Win7/8）根本没有彩色 emoji 字体，只有黑白轮廓；
+   精简系统 / Linux 没有对应字形，直接吐空白方块。
+
+   只调字体栈救不了 Win7，所以把 emoji 全部换成内置 SVG
+   （svg/emoji-svg.js，Twemoji 15.0.0，CC-BY 4.0）。 */
+
+/* 判断一个码位是否属于 emoji / 符号区。
+   刻意**不用** \p{Extended_Pictographic}：那是 ES2018 的 Unicode 属性转义，
+   微信 X5 内核和老 Android 不支持 —— 正则字面量会在**解析阶段**抛 SyntaxError，
+   整个脚本挂掉，比黑白严重得多。所以用码位区间手写。 */
+function isEmojiCp(cp) {
+  return (cp >= 0x1F000 && cp <= 0x1FAFF) || (cp >= 0x2600 && cp <= 0x27BF) ||
+         (cp >= 0x2B00 && cp <= 0x2BFF) || (cp >= 0x2190 && cp <= 0x21FF) ||
+         (cp >= 0x2300 && cp <= 0x23FF) || (cp >= 0x25A0 && cp <= 0x25FF) ||
+         cp === 0x2934 || cp === 0x2935 || cp === 0x203C || cp === 0x2049 ||
+         cp === 0x3030 || cp === 0x303D || cp === 0x3297 || cp === 0x3299 ||
+         cp === 0x20E3;
+}
+
+/* 把字符串切成 emoji 视觉单元（cluster）。
+   ⚠️ 切分规则必须与 _audit/gen_emoji_svg2.py 的 clusters() 逐字一致，
+   否则图库 key 对不上，等于没图。
+   返回 [{ text, emoji }]，非 emoji 字符逐字返回。 */
+function emojiClusters(str) {
+  const s = String(str == null ? '' : str);
+  const out = [];
+  const n = s.length;
+  let i = 0;
+  while (i < n) {
+    const ch = s.charAt(i);
+    const cp = s.codePointAt(i);
+    /* 键帽：数字 / # / *  + 可选 FE0F + U+20E3（如 1️⃣） */
+    if ('#*0123456789'.indexOf(ch) >= 0) {
+      let j = i + 1;
+      if (j < n && s.charCodeAt(j) === 0xFE0F) j++;
+      if (j < n && s.charCodeAt(j) === 0x20E3) {
+        out.push({ text: s.slice(i, j + 1), emoji: true });
+        i = j + 1;
+        continue;
+      }
+    }
+    if (!isEmojiCp(cp)) {
+      out.push({ text: ch, emoji: false });
+      i += 1;
+      continue;
+    }
+    let j = i + (cp > 0xFFFF ? 2 : 1);
+    while (j < n) {
+      const c2 = s.charCodeAt(j);
+      if (c2 === 0xFE0F || c2 === 0x20E3) { j++; continue; }   // 变体选择符 / 键帽组合
+      if (c2 === 0x200D) {                                      // ZWJ：把下一个 emoji 也并入
+        j++;
+        if (j < n) {
+          const c3 = s.codePointAt(j);
+          if (isEmojiCp(c3)) j += (c3 > 0xFFFF ? 2 : 1);
+        }
+        continue;
+      }
+      break;
+    }
+    out.push({ text: s.slice(i, j), emoji: true });
+    i = j;
+  }
+  return out;
+}
+
+/* key 规范化：去掉 U+FE0F。这样 🏘 和 🏘️ 查到同一张图，
+   不会再出现「带不带变体选择符决定有没有图」这种随机 bug。 */
+function normEmoji(cl) { return String(cl).replace(/\uFE0F/g, ''); }
+
+const __emojiSvgCache = new Map();
+function emojiSvgFor(cl) {
+  const k = normEmoji(cl);
+  if (__emojiSvgCache.has(k)) return __emojiSvgCache.get(k);
+  const v = (typeof WORD_EMOJI !== 'undefined' && WORD_EMOJI[k]) ? WORD_EMOJI[k] : '';
+  __emojiSvgCache.set(k, v);
+  return v;
+}
+
+/* 这个 emoji 串里只要有一个字符能画出来，就返回 true */
+function hasEmojiSvg(emo) {
+  const s = String(emo || '').trim();
+  if (!s) return false;
+  const segs = emojiClusters(s);
+  for (let i = 0; i < segs.length; i++) {
+    if (segs[i].emoji && emojiSvgFor(segs[i].text)) return true;
+  }
+  return false;
+}
+
+/* emoji 串 → 内置 SVG 的 HTML。
+   图库里没有的（← → ★ ✓ 这类纯符号，Twemoji 15 已移除它们的彩色版本）
+   原样保留：它们在所有系统上本来就是黑白符号字符，不是 bug。 */
+function emoSvg(emo, size) {
+  const e = String(emo == null ? '' : emo).trim();
+  if (!e) return '';
+  const box = size ? ` style="width:${size}px;height:${size}px"` : '';
+  let out = '';
+  const segs = emojiClusters(e);
+  for (let i = 0; i < segs.length; i++) {
+    const g = segs[i];
+    if (!g.emoji) { out += esc(g.text); continue; }
+    const svg = emojiSvgFor(g.text);
+    out += svg
+      ? `<span class="emj-img"${box} aria-hidden="true">${svg}</span>`
+      : `<span class="emj"${box} aria-hidden="true">${esc(g.text)}</span>`;
+  }
+  return out;
+}
+
+/* ---------------- DOM 级兜底：把页面上残留的 emoji 全换成内置图 ----------------
+   为什么要扫 DOM，而不是只改渲染代码：
+   全站有 150+ 处直接写 emoji 字符（首页 6 个岛屿、各页标题、按钮、
+   解析符号、底部导航、声音开关、云朵装饰…）。逐个改既容易漏，
+   以后新加内容还会再漏。这里一处兜底，静态 HTML 和 innerHTML 重绘都覆盖。 */
+
+const __noPaintTag = {
+  SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, CODE: 1, PRE: 1, SVG: 1, TITLE: 1, OPTION: 1
+};
+
+/* 快速判断：这段文字里有没有 emoji 码位（纯中文/英文直接跳过，不建 TreeWalker） */
+function __hasEmojiChar(s) {
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charCodeAt(i);
+    if (c >= 0xD800 && c <= 0xDBFF) {
+      if (isEmojiCp(s.codePointAt(i))) return true;
+      i++;                                   // 跳过代理对低位
+    } else if (isEmojiCp(c)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/* 处理一个文本节点：把里面的 emoji 换成 <span class="emj-img"><svg/></span> */
+function __paintTextNode(node) {
+  const s = node.nodeValue;
+  if (!s || !__hasEmojiChar(s)) return;
+  const segs = emojiClusters(s);
+  let any = false;
+  for (let i = 0; i < segs.length; i++) {
+    if (segs[i].emoji && emojiSvgFor(segs[i].text)) { any = true; break; }
+  }
+  if (!any) return;                          // 全是画不出来的符号，别动 DOM
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < segs.length; i++) {
+    const g = segs[i];
+    const svg = g.emoji ? emojiSvgFor(g.text) : '';
+    if (svg) {
+      const sp = document.createElement('span');
+      sp.className = 'emj-img';
+      sp.setAttribute('aria-hidden', 'true');
+      sp.innerHTML = svg;                    // Twemoji 是我们自己的常量，无注入风险
+      frag.appendChild(sp);
+    } else {
+      frag.appendChild(document.createTextNode(g.text));
+    }
+  }
+  if (node.parentNode) node.parentNode.replaceChild(frag, node);
+}
+
+function paintEmoji(root) {
+  if (typeof document === 'undefined') return;
+  root = root || document.body;
+  if (!root) return;
+  if (root.nodeType === 3) { __paintTextNode(root); return; }
+  if (root.nodeType !== 1) return;
+  if (__noPaintTag[root.nodeName]) return;
+  if (typeof WORD_EMOJI === 'undefined') return;   // 图库没加载，别折腾
+  if (!__hasEmojiChar(root.textContent || '')) return;
+  if (typeof document.createTreeWalker !== 'function') return;
+  /* 先收集再改：TreeWalker 边走边改会漏节点 */
+  const walker = document.createTreeWalker(root, 4 /* SHOW_TEXT */, null, false);
+  const list = [];
+  let n;
+  while ((n = walker.nextNode())) {
+    const p = n.parentNode;
+    if (!p || __noPaintTag[p.nodeName]) continue;
+    if (p.classList && p.classList.contains('emj-img')) continue;
+    if (__hasEmojiChar(n.nodeValue || '')) list.push(n);
+  }
+  for (let i = 0; i < list.length; i++) __paintTextNode(list[i]);
+}
+
+/* 观察器：innerHTML 重绘出来的新节点也要补上 */
+let __emojiPending = [];
+let __emojiTimer = 0;
+function __emojiFlush() {
+  __emojiTimer = 0;
+  const list = __emojiPending;
+  __emojiPending = [];
+  for (let i = 0; i < list.length; i++) {
+    const t = list[i];
+    if (!t || !t.parentNode) continue;
+    try { paintEmoji(t.nodeType === 3 ? t.parentNode : t); } catch (e) { /* 不能因为画图挂掉整页 */ }
+  }
+}
+function __emojiQueue(n) {
+  __emojiPending.push(n);
+  if (__emojiTimer) return;
+  __emojiTimer = (typeof requestAnimationFrame === 'function')
+    ? requestAnimationFrame(__emojiFlush)
+    : setTimeout(__emojiFlush, 16);
+}
+let __emojiMO = null;
+function __bootEmojiPaint() {
+  if (typeof document === 'undefined' || !document.body) return;
+  if (typeof WORD_EMOJI === 'undefined') return;
+  paintEmoji(document.body);
+  if (typeof MutationObserver !== 'function' || __emojiMO) return;
+  __emojiMO = new MutationObserver(function (muts) {
+    let got = false;
+    for (let i = 0; i < muts.length; i++) {
+      const m = muts[i];
+      if (m.type === 'characterData') { __emojiQueue(m.target); got = true; continue; }
+      const add = m.addedNodes;
+      for (let k = 0; k < add.length; k++) {
+        const nd = add[k];
+        if (nd.nodeType !== 1 && nd.nodeType !== 3) continue;
+        /* 跳过自己刚插进去的 .emj-img，否则会自己触发自己 */
+        if (nd.nodeType === 1 && nd.classList && nd.classList.contains('emj-img')) continue;
+        __emojiQueue(nd);
+        got = true;
+      }
+    }
+    return got;
+  });
+  try {
+    __emojiMO.observe(document.body, { childList: true, subtree: true, characterData: true });
+  } catch (e) { /* 老内核不支持就只做首屏那一次 */ }
+}
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', __bootEmojiPaint);
+  else __bootEmojiPaint();
+}
+
+/* 立刻闭嘴：所有在途音频解除回调并暂停（翻页/切题/点新词时用） */
+function stopAllSpeech() {
+  __audioEpoch++;                          // 作废所有迟到的加载/失败回调
+  __guards.forEach(g => clearTimeout(g));  // 拆掉加载超时，否则 9 秒后会把旧词又播一遍
+  __guards.clear();
+  __inflight.forEach(a => { try { a.onended = a.onerror = a.oncanplay = a.onplaying = null; a.pause(); } catch (e) {} });
+  __inflight.clear();
+  __curAudio = null;
+  /* 句子朗读的"读完了"回调也要作废：否则被打断的旧句子会在新页面上触发自动跳题 */
+  if (typeof window.__cancelSpeak === 'function') window.__cancelSpeak();
+}
+
 /* 统一朗读入口：只走词典真人发音。失败保持安静（绝不出现机器音）。 */
+/* ★ 2026-10-26：删掉所有「猜你没听到声音」的自动提示。
+
+   原来有三处会主动弹 toast：
+     ① 声音关闭时每次点发音都弹（节流 2.5 秒）—— 反复点词就反复弹
+     ② 会话首次点读 → 700ms 后弹「设备可能静音了」
+     ③ 同一个词 5 秒内连点 3 次 → 弹「听不到？按一下音量键」
+   这三个都是在**猜**：用户明明听得见，①②照样弹。
+   用户反馈「光出现太烦人」，全部去掉，一个都不留。
+
+   声音状态本来就写在右上角喇叭上（🔊 / 🔇），想自查有「我的 → 测试声音」，
+   都是用户主动看的，不需要任何自动弹窗。 */
+
 function speak(text, lang = 'en-US', rate = 0.85) {
-  if (!Store.d.soundOn) return;
+  if (!Store.d.soundOn) return;                    // 静默：一个字都不弹
   const t = String(text).trim(); if (!t) return;
   if (lang.startsWith('zh')) return; // 词典不支持中文句：中文不朗读
   stopAllSpeech();
   playDictAudio(t, rate, null, null);
 }
 
+/* 测试声音：播放一段欢快音效 + 一个单词，让孩子/家长确认设备有没有声。
+   网站内的声音开关关着时自动打开（不然测了也是静音，毫无意义）。 */
+function testSound() {
+  if (!Store.d.soundOn) {
+    Store.d.soundOn = true; Store.save();
+    const sb = document.getElementById('soundBtn'); if (sb) sb.textContent = '🔊';
+    toast('🔊 已打开网站声音，正在测试…');
+  }
+  sfx.good();
+  setTimeout(() => {
+    speak('hello', 'en-US', 1);
+    setTimeout(() => toast('❓ 能听到我说话吗？如果听不到，请检查设备的音量键 🔊'), 1200);
+  }, 350);
+}
+
 /* 链式朗读：读完一句自动读下一句；单段失败（已自动重试过）跳过继续，
    连续失败 3 次才整链停止——不因个别词失败打断整段朗读（绝不切机器音） */
 function speakChain(items) {
-  if (!Store.d.soundOn) return;
+  if (!Store.d.soundOn) return;                    // 静默：不弹提示
   stopAllSpeech();
   let stopped = false, fails = 0;
   const next = i => {
@@ -446,6 +842,9 @@ let __audioUnlockDone = false;
 function unlockAudioChannels() {
   if (__audioUnlockDone) return;
   __audioUnlockDone = true;
+  /* v5：Web Audio 通道也要在手指事件内解锁——归一化播放走 AudioContext，
+     iOS 上非手势内创建会一直 suspended，首次单词点击就没声 */
+  try { ac(); } catch (e) {}
   try {
     prewarmWord('hi');
     const a = new Audio(DICT_AUDIO_URL('hi'));
@@ -461,7 +860,7 @@ document.addEventListener('keydown', unlockAudioChannels, { capture: true });
 /* 语音环境检测（家长中心诊断用） */
 function speechEnv() {
   return {
-    engine: '词典标准发音（真人录音，单一音源）',
+    engine: '词典真人发音（真人录音 MP3，浏览器缓存加速）',
     wechat: /MicroMessenger/i.test(navigator.userAgent),
     online: navigator.onLine
   };
@@ -515,6 +914,62 @@ function tone(freq, delay, dur, type = 'sine', vol = 0.18) {
   o.connect(g); g.connect(ctx.destination);
   o.start(t0); o.stop(t0 + dur + 0.05);
 }
+/* ---------------- 答题推进器 Flow：全站唯一的「下一题」出口 ----------------
+
+   以前「自动跳题」和「下一题按钮」是两套各自独立的逻辑：
+   练一练答对 1.9 秒自己跳走（字还没看清），句子工厂必须手点（节奏又太慢）；
+   更糟的是自动计时器不随换页取消 —— 孩子答对后点「返回」，
+   一秒多之后会被自己拽回答题页。这是真实存在的 bug，不是理论风险。
+
+   现在只有一种推进动作 next()，两个触发器：
+     ① 孩子点「下一个」按钮 —— 永远都在，想走就走
+     ② 纯游戏回合的自动计时 —— 只是按钮的超时兜底，不让孩子干等
+
+   三条铁律（改这里之前先读完）：
+     1) 幂等：一次答题只推进一次。连点、按钮与自动撞车，都不会跳两题。
+     2) 可取消：换页/退出必须 Flow.reset()，旧计时器一律作废。
+     3) 不抢时间：凡是有解析 / 单词 / 记忆法要读的题，autoMs 必须传 0。
+        自动跳只允许出现在「答对后除了庆祝没有别的信息」的纯游戏回合。 */
+const Flow = (() => {
+  let seq = 0;                 // 题号令牌：reset 一次 +1，旧闭包全部失效
+  let adv = null;              // 自动推进计时器
+  const timers = new Set();    // 与本题同生命周期的普通计时器（朗读、音效）
+  const clearAdv = () => { if (adv) { clearTimeout(adv); adv = null; } };
+  return {
+    /* 换题/换页：作废本题所有挂起动作 */
+    reset() {
+      seq++; clearAdv();
+      timers.forEach(t => clearTimeout(t)); timers.clear();
+    },
+    /* 造一个一次性推进器。autoMs > 0 才会到点自动触发；返回的函数给按钮用 */
+    make(next, autoMs) {
+      clearAdv();
+      const my = seq;
+      let used = false;
+      const fire = () => {
+        if (used || my !== seq) return false;   // 已推进过 / 已换页 → 静默忽略
+        used = true; clearAdv(); next(); return true;
+      };
+      /* 之后再挂自动推进：给"等这句话读完再走"的场景用（句子火车员） */
+      fire.arm = ms => {
+        if (used || my !== seq) return;
+        clearAdv();
+        adv = setTimeout(fire, ms);
+      };
+      if (autoMs > 0) adv = setTimeout(fire, autoMs);
+      return fire;
+    },
+    /* 朗读、音效这类"只是效果"的延时：换页就哑掉，不会串到下一个页面 */
+    after(ms, fn) {
+      const my = seq;
+      const t = setTimeout(() => { timers.delete(t); if (my === seq) fn(); }, ms);
+      timers.add(t);
+    },
+    /* 只停自动推进（手动按钮仍可用） */
+    stop: clearAdv,
+  };
+})();
+
 const sfx = {
   pop()      { tone(520, 0, 0.08, 'triangle', 0.12); },
   correct()  { tone(523, 0, 0.12); tone(659, 0.09, 0.12); tone(784, 0.18, 0.22); },
@@ -523,12 +978,45 @@ const sfx = {
   win()      { [523, 587, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.11, 0.18, 'triangle', 0.16)); }
 };
 
+/* ---------------- 手机端「添加到主屏幕」引导 ----------------
+   孩子几乎每天都要用：装到主屏幕后全屏打开、无地址栏，和 App 一样。
+   只在手机浏览器里出现；第 2 次访问起展示；关掉后不再打扰。 */
+function maybeShowInstallHint() {
+  try {
+    const ua = navigator.userAgent;
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(ua) || (/Mobile/i.test(ua) && window.innerWidth < 820);
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (!isMobile || standalone) return;
+    if (localStorage.getItem('birdie_install_hint') === 'off') return;
+    const n = (+localStorage.getItem('birdie_visits') || 0) + 1;
+    localStorage.setItem('birdie_visits', String(n));
+    if (n < 2 || document.getElementById('installHint')) return;
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const steps = isIOS
+      ? '点 Safari 底部中间的「<b>分享</b>」按钮，往上滑，选「<b>添加到主屏幕</b>」'
+      : '点浏览器右上角「<b>⋮ / ···</b>」菜单，选「<b>添加到主屏幕</b>」或「<b>安装应用</b>」';
+    document.body.insertAdjacentHTML('beforeend', `
+      <div class="install-hint" id="installHint">
+        <div class="ih-emoji">🐣</div>
+        <div class="ih-txt">
+          <b>把小鸟英语乐园放到手机桌面</b>
+          <span>像 App 一样全屏打开，孩子一点就开学：${steps}</span>
+        </div>
+        <button class="ih-close" onclick="dismissInstallHint()" title="知道了，不再提示">✕</button>
+      </div>`);
+  } catch (e) {}
+}
+function dismissInstallHint() {
+  try { localStorage.setItem('birdie_install_hint', 'off'); } catch (e) {}
+  const el = document.getElementById('installHint');
+  if (el) { el.classList.add('ih-out'); setTimeout(() => el.remove(), 320); }
+}
+
 /* ---------------- 界面组件 ---------------- */
 const NAV_ITEMS = [
   { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
   { id: 'letters', href: 'letters.html', emoji: '🏝️', label: '字母岛' },
   { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词镇' },
-  { id: 'books',   href: 'books.html',   emoji: '📚', label: '绘本馆' },
   { id: 'grammar', href: 'grammar.html', emoji: '🏭', label: '句子工厂' },
   { id: 'games',   href: 'games.html',   emoji: '🎡', label: '游戏乐园' },
   { id: 'parents', href: 'parents.html', emoji: '👨‍👩‍👧', label: '家长中心' },
@@ -565,7 +1053,6 @@ function renderNav(activeId) {
     { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
     { id: 'letters', href: 'letters.html', emoji: '🏝️', label: '字母' },
     { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词' },
-    { id: 'books',   href: 'books.html',   emoji: '📚', label: '绘本' },
     { id: 'games',   href: 'games.html',   emoji: '🎡', label: '游戏' },
   ];
   document.body.insertAdjacentHTML('beforeend', `
@@ -608,9 +1095,6 @@ function renderDecor() {
 function toast(msg) {
   const el = document.createElement('div');
   el.className = 'toast'; el.innerHTML = msg;
-  // 多条提示同时弹出时纵向错开，不互相遮挡（如 徽章 + 星星 + 任务奖励 一起触发）
-  const n = document.querySelectorAll('.toast').length;
-  el.style.bottom = (34 + n * 62) + 'px';
   document.body.appendChild(el);
   setTimeout(() => el.classList.add('show'), 20);
   setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 400); }, 2600);
@@ -652,6 +1136,17 @@ function feedback(el, ok) {
   setTimeout(() => el.classList.remove('good', 'bad'), 700);
 }
 
+/* 结题后锁住选项：正确的保持绿底，其余变淡且不可点。
+   以前不锁 —— 孩子答对后再点一下别的，解析会被"再想想"覆盖；
+   点回正确项还会再计一次分、再挂一个跳题计时器，一下就跳两题。 */
+function lockChoices(keep) {
+  document.querySelectorAll('.opt').forEach(b => {
+    b.classList.add('locked');
+    if (b === keep) b.classList.add('good-keep');
+    else b.classList.add('dim');
+  });
+}
+
 /* ---------------- 小伙伴档案管理弹窗 ---------------- */
 let __pickedAvatar = null;
 function openProfileModal() {
@@ -675,7 +1170,11 @@ function openProfileModal() {
         <h2>👤 小伙伴档案</h2>
         <p style="font-size:.8rem;color:#5C6273;margin:4px 0 10px">一台电脑可以有多个小朋友，每人一份独立进度，互不打扰！</p>
         <div class="profile-list">${rows}</div>
-        <button class="btn ghost" style="margin-top:12px;width:100%" onclick="toggleSoundQuick();this.textContent=Store.d.soundOn?'🔊 声音：开':'🔇 声音：关'">🔊 声音：${Store.d.soundOn ? '开' : '关'}</button>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn ghost" style="flex:1" onclick="toggleSoundQuick();this.textContent=Store.d.soundOn?'🔊 声音：开':'🔇 声音：关'">🔊 声音：${Store.d.soundOn ? '开' : '关'}</button>
+          <button class="btn mint" style="flex:1" onclick="testSound()">🎵 测试声音</button>
+        </div>
+        <p style="font-size:.72rem;color:#5C6273;margin:8px 0 0;text-align:center">没听到声音？点「测试声音」检查设备音量键 🔊</p>
         <details class="profile-tool">
           <summary>🔧 修改当前档案的年级</summary>
           <div class="theme-tabs" style="margin-top:10px">
@@ -692,9 +1191,25 @@ function openProfileModal() {
               ${AVATARS.map(a => avatarChipHtml(a, false)).join('')}
             </div>
             <div class="theme-tabs" style="margin-top:10px">
-              ${GRADES.map(g => `<button class="theme-tab g-new" data-g="${g.id}" onclick="this.parentNode.querySelectorAll('.theme-tab').forEach(b=>b.classList.remove('on'));this.classList.add('on')"><span class="te">${g.emoji}</span>${g.name}</button>`).join('')}
+              ${GRADES.map(g => `<button class="theme-tab" data-g="${g.id}" onclick="this.parentNode.querySelectorAll('.theme-tab').forEach(b=>b.classList.remove('on'));this.classList.add('on')"><span class="te">${g.emoji}</span>${g.name}</button>`).join('')}
             </div>
             <button class="btn grape" style="margin-top:12px" onclick="createProfile()">✅ 创建并切换</button>
+          </div>
+        </details>
+        <details class="profile-tool">
+          <summary>🔄 跨设备同步（同步码）</summary>
+          <div style="margin-top:10px">
+            <p style="font-size:.78rem;color:#5C6273;margin:0 0 10px;line-height:1.6">
+              在这台电脑点「生成同步码」→ 把码发到另一台设备（微信/短信/口述都行）→
+              在那台设备点「用同步码同步」粘贴进来，进度就过来了。
+            </p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn mint" onclick="showSyncCode()">📋 生成同步码</button>
+              <button class="btn orange" onclick="copySyncCode()">📋 复制</button>
+              <button class="btn grape" onclick="importFromSyncCode()">📥 用同步码同步</button>
+            </div>
+            <textarea id="syncCodeBox" readonly placeholder="点上面的按钮，这里会出现同步码。把码发给孩子另一台设备就能同步！" style="width:100%;height:88px;border:3px dashed var(--mint,#4E9E59);border-radius:14px;padding:8px;font-size:.68rem;font-family:monospace;resize:vertical;margin-top:10px"></textarea>
+            <p style="font-size:.7rem;color:#6B7280;margin:8px 0 0">🔒 同步码只在你输入时才解密，服务器（如果有）也看不到明文。</p>
           </div>
         </details>
         <details class="profile-tool">
@@ -744,8 +1259,7 @@ function removeProfile(id) { if (Profiles.remove(id)) location.reload(); }
 function createProfile() {
   const name = (document.getElementById('newName').value || '').trim() || '小朋友';
   const avatar = __pickedAvatar || '🐤';
-  // 只读「新建档案」区里选中的年级（g-new），避免误读上面「修改年级」区的选中项
-  const gbtn = document.querySelector('.profile-tool .theme-tab.g-new.on');
+  const gbtn = document.querySelector('.profile-tool .theme-tab.on');
   Profiles.create(name, avatar, gbtn ? gbtn.dataset.g : '');
   toast('🎉 档案创建成功！'); setTimeout(() => location.reload(), 600);
 }
@@ -760,6 +1274,149 @@ function exportProfile() {
     a.click();
   } catch (e) {}
   toast('📤 备份已生成并开始下载');
+}
+/* ---------------- 跨设备同步码 ----------------
+   跨设备同步的最小可用闭环：
+   - 本机生成「同步码」= 压缩+base64 的进度 JSON，短到能发微信/口述
+   - 另一台设备粘贴同步码 → 解码 → 新建档案并载入进度
+   不依赖后端、不依赖网络、不需要登录，孩子在奶奶家电脑上也能同步。
+
+   编码：JSON → UTF-8 字节 → deflate-raw 压缩 → base64url（去 padding）
+   解码：base64url → inflate-raw → UTF-8 → JSON
+   压缩率：典型进度 JSON 2-3KB → 同步码 600-900 字符（微信能整段粘贴）。
+   进一步压缩到 6 位数字需要服务器，纯静态做不到——这是诚实的物理约束。 */
+function b64urlEncode(bytes) {
+  let s = '';
+  for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function b64urlDecode(str) {
+  let s = str.replace(/-/g, '+').replace(/_/g, '/');
+  while (s.length % 4) s += '=';
+  const bin = atob(s);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+async function compressText(text) {
+  // CompressionStream('deflate-raw') 现代浏览器都支持
+  if (typeof CompressionStream === 'undefined') return null;
+  const cs = new CompressionStream('deflate-raw');
+  const reader = cs.readable.getReader();
+  const chunks = [];
+  let failed = false;
+  const pump = (async () => {
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+      }
+    } catch (e) { failed = true; }
+  })();
+  const w = cs.writable.getWriter();
+  try {
+    await w.write(new TextEncoder().encode(text));
+    await w.close();
+  } catch (e) { failed = true; }
+  await pump;
+  if (failed || !chunks.length) return null; // 老/异常路径，回退不压缩
+  const total = chunks.reduce((n, c) => n + c.length, 0);
+  const out = new Uint8Array(total);
+  let off = 0;
+  for (const c of chunks) { out.set(c, off); off += c.length; }
+  return out;
+}
+async function decompressText(bytes) {
+  if (typeof DecompressionStream === 'undefined') return null;
+  const ds = new DecompressionStream('deflate-raw');
+  const reader = ds.readable.getReader();
+  const chunks = [];
+  // ★ 关键：zlib 解压失败在 Node 下是 unhandledRejection，会把进程打死
+  //   （浏览器里可能是 unhandledrejection）。必须手动 pump + 显式捕获。
+  //   同时明确 inflate 失败要抛错（不能默认吞掉后返回半截文本）。
+  let inflateFailed = false;
+  const pump = (async () => {
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+      }
+    } catch (e) { inflateFailed = true; }
+  })();
+  const w = ds.writable.getWriter();
+  try {
+    await w.write(bytes);
+    await w.close();
+  } catch (e) { inflateFailed = true; }
+  await pump;
+  if (inflateFailed) throw new Error('inflate-fail');
+  if (!chunks.length) throw new Error('empty-inflate');
+  const total = chunks.reduce((n, c) => n + c.length, 0);
+  const out = new Uint8Array(total);
+  let off = 0;
+  for (const c of chunks) { out.set(c, off); off += c.length; }
+  return new TextDecoder().decode(out);
+}
+async function makeSyncCode() {
+  const raw = Profiles.exportActive();
+  const packed = await compressText(raw);
+  if (!packed) return b64urlEncode(new TextEncoder().encode(raw)); // 老浏览器：不压缩
+  return b64urlEncode(packed);
+}
+async function parseSyncCode(code) {
+  const clean = String(code).trim().replace(/\s+/g, '');
+  if (!clean) throw new Error('empty');
+  const bytes = b64urlDecode(clean);
+  // 先试解压；不行就当纯 base64 的 UTF-8
+  let text = null;
+  try { text = await decompressText(bytes); } catch (e) {}
+  if (!text) {
+    try { text = new TextDecoder().decode(bytes); } catch (e) {}
+  }
+  if (!text) throw new Error('decode-fail');
+  const obj = JSON.parse(text);
+  if (!obj || obj.app !== 'birdie-abc') throw new Error('bad-format');
+  return obj;
+}
+async function showSyncCode() {
+  try {
+    const code = await makeSyncCode();
+    const box = document.getElementById('syncCodeBox');
+    if (box) { box.value = code; box.select(); }
+    toast('📋 同步码已生成，发给孩子另一台设备就行');
+  } catch (e) {
+    toast('❌ 生成同步码失败，请重试');
+  }
+}
+function copySyncCode() {
+  const box = document.getElementById('syncCodeBox');
+  if (!box || !box.value) { toast('先点「生成同步码」'); return; }
+  box.select();
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(box.value).then(() => toast('📋 已复制到剪贴板'));
+    } else {
+      document.execCommand('copy');
+      toast('📋 已复制到剪贴板');
+    }
+  } catch (e) {
+    toast('📋 复制失败，请手动选中复制');
+  }
+}
+function importFromSyncCode() {
+  const box = document.getElementById('syncCodeBox');
+  const code = (box && box.value && box.value.trim().length > 20) ? box.value : (prompt('把同步码粘贴到这里：') || '');
+  if (!code.trim()) return;
+  parseSyncCode(code).then(obj => {
+    // 走 Profiles 的标准导入：新建档案，不覆盖现有进度
+    const p = Profiles.importActive(JSON.stringify(obj));
+    toast('📥 同步成功！欢迎回来，' + p.name);
+    setTimeout(() => location.reload(), 800);
+  }).catch(() => {
+    toast('❌ 同步码不对，请检查后重试（注意不要漏字符）');
+  });
 }
 function importProfileFile(input) {
   const f = input.files && input.files[0]; if (!f) return;

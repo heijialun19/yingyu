@@ -3,11 +3,11 @@
    - 页面导航：网络优先（在线永远拿到最新版页面，发版即生效；断网回退缓存）
    - 带版本号的静态资源：缓存优先（版本号变更即新 URL，天然绕开旧缓存）
    - 有道发音：边播边缓存（听过一次，离线还能再听） */
-const CACHE = 'birdie-abc-v41';
+const CACHE = 'birdie-abc-v40';
 const CORE = [
   './', './index.html', './letters.html', './words.html', './books.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html',
-  './css/style.css?v=27', './js/words-data.js?v=25', './js/data.js?v=26', './js/app.js?v=37', './js/sentence.js?v=38',
+  './css/style.css?v=27', './js/words-data.js?v=25', './js/data.js?v=26', './js/app.js?v=36', './js/sentence.js?v=38',
   './manifest.json', './icon.svg'
 ];
 self.addEventListener('install', e => {

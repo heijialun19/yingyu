@@ -62,7 +62,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=26"></script>
-<script src="js/app.js?v=37"></script>
+<script src="js/app.js?v=36"></script>
 <script src="js/sentence.js?v=38"></script>
 <script>
 renderNav('words'); renderDecor();
@@ -130,12 +130,6 @@ function renderSearch() {
   }));
   $('#app').innerHTML = `
     <div class="card">
-      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
-        <input id="searchBox" type="text" placeholder="🔍 搜索单词或中文，如 apple / 猫 / 颜色" value="${esc(searchQ)}"
-          style="flex:1;min-width:220px;padding:13px 18px;border:3px solid var(--lemon);border-radius:999px;font-size:1rem;font-family:inherit;background:#fff;box-shadow:0 4px 0 rgba(45,49,66,.08)"
-          oninput="doSearch(this.value, event)" onkeydown="if(event.key==='Enter')doSearch(this.value, event)">
-        <button class="btn ghost" onclick="searchQ='';renderBrowse()">清空</button>
-      </div>
       <h2>🔍 搜索「${esc(searchQ)}」<small style="font-weight:400;color:#5C6273">找到 ${hits.length} 个单词</small></h2>
       ${hits.length === 0 ? `<p style="color:#5C6273;margin:10px 0">没有找到，换个词试试？比如 apple、猫、颜色……</p>` : `
       <div class="word-grid" style="margin-top:10px">
@@ -177,7 +171,7 @@ function renderBrowse() {
     <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
       <input id="searchBox" type="text" placeholder="🔍 搜索单词或中文，如 apple / 猫 / 颜色" value="${esc(searchQ)}"
         style="flex:1;min-width:220px;padding:13px 18px;border:3px solid var(--lemon);border-radius:999px;font-size:1rem;font-family:inherit;background:#fff;box-shadow:0 4px 0 rgba(45,49,66,.08)"
-        oninput="doSearch(this.value, event)" onkeydown="if(event.key==='Enter')doSearch(this.value, event)">
+        oninput="doSearch(this.value)" onkeydown="if(event.key==='Enter')doSearch(this.value)">
       <button class="btn ghost" onclick="searchQ='';renderBrowse()">清空</button>
     </div>
 
@@ -236,37 +230,24 @@ function switchGrade(id) {
   renderBrowse();
 }
 function switchTheme(id) { curTheme = id; searchQ = ''; poolMode = ''; renderBrowse(); }
-function doSearch(v, ev) {
-  if (ev && ev.isComposing) return; // 中文输入法组词过程中不打断（不重渲染）
+function doSearch(v) {
   searchQ = v; poolMode = '';
-  if (v.trim().length > 0) {
-    renderSearch();
-    // 搜索页顶部也有输入框：渲染后把焦点和光标还回去，连续输入不中断
-    const nb = document.getElementById('searchBox');
-    if (nb) { try { nb.focus({ preventScroll: true }); const L = nb.value.length; nb.setSelectionRange(L, L); } catch (e) {} }
-  } else { mode = 'browse'; renderBrowse(); }
+  if (v.trim().length > 0) renderSearch();
+  else { mode = 'browse'; renderBrowse(); }
 }
 
-/* 全部听一遍：页面离开（重新渲染/切主题/进测验）后立即自停，可重复点击重开 */
-let __listenTimer = null;
-function stopListenAll() {
-  if (__listenTimer) { clearInterval(__listenTimer); __listenTimer = null; }
-  $$('.word-card').forEach(c => c.style.outline = '');
-}
 function listenAll() {
-  stopListenAll();
   const t = themeById(curTheme); let i = 0;
   const cards = $$('.word-card');
-  if (!cards.length) return;
+  const stop = () => { clearInterval(timer); cards.forEach(c => c.style.outline = ''); };
   const next = () => {
-    // 卡片被重新渲染替换（切主题/搜索/进测验）→ 立即停止，绝不在后台继续朗读
-    if (i >= t.words.length || mode !== 'browse' || !document.body.contains(cards[0])) { stopListenAll(); return; }
+    if (i >= t.words.length || mode !== 'browse') { stop(); return; }
     cards.forEach((c, j) => c.style.outline = j === i ? '4px solid #FFD93D' : '');
     speak(t.words[i].w);
     i++;
   };
   next();
-  __listenTimer = setInterval(next, 1900);
+  const timer = setInterval(next, 1900);
 }
 
 /* ---------------- 出题 ---------------- */
@@ -322,7 +303,6 @@ function renderQuiz() {
   if (s.idx >= s.qs.length) return renderQuizEnd();
   const q = s.qs[s.idx];
   s.firstTry = true;
-  s.lock = false; // 新题解锁点击（防过渡动画期内连点跳题）
 
   $('#app').innerHTML = `
     <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
@@ -343,9 +323,7 @@ function renderQuiz() {
 
 function answer(btn, key) {
   const s = session, q = s.qs[s.idx];
-  if (s.lock) return; // 已答对进入过渡动画，忽略连点（防止跳题与重复加星）
   const ok = key === q.word.w;
-  if (ok) s.lock = true;
   feedback(btn, ok);
   if (ok) {
     if (s.firstTry) { s.score++; addStars(1); flyStar(btn); }
@@ -572,11 +550,7 @@ function spTapTile(id) {
   b.slots[empty] = id; t.used = true; sfx.pop();
   if (b.slots.indexOf(null) < 0) {
     const word = b.slots.map(sid => b.bank.find(x => x.id === sid).ch).join('');
-    if (word === b.word) {
-      b.solved = true; sfx.correct();
-      // 选/拼两步摆对后自动进入下一步（原来没有下一步按钮，孩子会卡在这一屏）
-      setTimeout(() => { if (spell && !spell._advancing && (spell.step === 2 || spell.step === 4)) { spell._advancing = true; setTimeout(() => { if (spell) spell._advancing = false; }, 1200); spGo(); } }, 900);
-    }
+    if (word === b.word) { b.solved = true; sfx.correct(); }
     else setTimeout(() => { toast('顺序不太对，点一格退回去换换看～'); $$('.sp-slot.fill').forEach(el => { el.classList.add('bad'); setTimeout(() => el.classList.remove('bad'), 500); }); }, 150);
   }
   renderSpell();

@@ -18,7 +18,7 @@
 
 <script src="js/words-data.js?v=25"></script>
 <script src="js/data.js?v=26"></script>
-<script src="js/app.js?v=37"></script>
+<script src="js/app.js?v=36"></script>
 <script src="js/sentence.js?v=38"></script>
 <script>
 renderNav('grammar'); renderDecor();
@@ -196,7 +196,7 @@ function renderLevels() {
           ${lvs.map(({ lv, i }) => {
             const st2 = Store.d.grammar[lv.id];
             return `<div class="level-card ${st2 ? 'done' : ''} ${unlocked(i) ? '' : 'locked'}" onclick="${unlocked(i) ? `startLevel(${i})` : `lockTip(${i})`}">
-              <span class="stars3">${st2 ? '⭐'.repeat(Math.min(st2.stars, lv.stars)) : unlocked(i) ? '' : '🔒'}</span>
+              <span class="stars3">${st2 ? '⭐'.repeat(Math.min(st2.stars, 7)) : unlocked(i) ? '' : '🔒'}</span>
               <div class="le">${lv.emoji}</div>
               <b>第 ${i + 1} 关 · ${lv.title}</b>
               <span class="formula">${lv.formula}</span>
@@ -224,7 +224,6 @@ function renderItem() {
   if (sess.idx >= sess.items.length) return renderLevelEnd();
   const it = sess.items[sess.idx];
   sess.firstTry = true;
-  sess.lock = false; // 新题解锁点击（防上一题 1.7 秒动画期内连点跳题）
 
   const head = `
     <div class="card" style="max-width:720px;margin:0 auto">
@@ -296,11 +295,9 @@ function updateTrainPreview() {
 function checkBuild() {
   const lv = GRAMMAR_LEVELS[curLevel];
   const it = sess.items[sess.idx];
-  if (sess.lock) return; // 已答对进入过渡动画，忽略连点
   const ok = sess.sels.join(' ') === it.answer.join(' ');
   const slots = $('#slots');
   if (ok) {
-    sess.lock = true;
     if (sess.firstTry) { sess.score++; addStars(1); }
     sfx.correct(); confetti();
     if (it.word) touchWord(it.word, true); // 造句用到的单词也进入复习计划
@@ -319,9 +316,7 @@ function checkBuild() {
 function chooseAns(btn, j, total) {
   const lv = GRAMMAR_LEVELS[curLevel];
   const it = sess.items[sess.idx];
-  if (sess.lock) return; // 已答对进入过渡动画，忽略连点（防止跳题与重复加星）
   const ok = j === it.answer;
-  if (ok) sess.lock = true;
   feedback(btn, ok);
   if (ok) {
     if (sess.firstTry) { sess.score++; addStars(1); flyStar(btn); }
@@ -343,7 +338,7 @@ function renderLevelEnd() {
   const perfect = sess.score === total;
   if (perfect) { addStars(2); confetti(); }
   const first = !Store.d.grammar[lv.id];
-  grammarLevelDone(lv.id, Math.min(sess.score, lv.stars)); // 卡片星星按关卡设计上限存（3/5），不把答题数当星星
+  grammarLevelDone(lv.id, sess.score);
   sfx.win();
   const nextIdx = curLevel + 1;
   const hasNext = nextIdx < GRAMMAR_LEVELS.length;
