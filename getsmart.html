@@ -44,6 +44,7 @@
 .gs-sentcard{background:#fff;border-radius:18px;border:3px solid var(--sky2);padding:14px 16px;margin-bottom:12px}
 .gs-sentcard .se{font-size:1.25rem;font-weight:800;line-height:1.6}
 .gs-sentcard .sz{color:#6B7280;font-size:.9rem;margin-top:4px}
+.gs-num{display:inline-flex;align-items:center;justify-content:center;min-width:62px;height:62px;padding:0 10px;border-radius:14px;background:#FFF7DA;border:3px solid var(--lemon);font-size:1.45rem;font-weight:900;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -61,7 +62,7 @@
 <script src="js/data.js?v=32"></script>
 <script src="js/app.js?v=54"></script>
 <script src="js/sentence.js?v=44"></script>
-<script src="js/getsmart-data.js?v=3"></script>
+<script src="js/getsmart-data.js?v=4"></script>
 <script>
 renderNav('getsmart'); renderDecor();
 
@@ -241,7 +242,7 @@ function renderLearn() {
     <div class="card" style="max-width:560px;margin:0 auto">
       <div class="score-bar"><b>📘 学单词</b><span>第 ${L.wIdx + 1} / ${u.words.length} 个</span></div>
       <div class="gs-bigword">
-        <span class="gw-ic">${iconOf(w)}</span>
+        <span class="gw-ic">${gsIcon(w)}</span>
         <button class="btn coral" style="font-size:1.5rem;margin:8px 0;padding:10px 26px" onclick="speakWord('${jsq(w.w)}')">🔊 ${esc(w.w)}</button>
         <div class="gw-ipa">${ipa ? '/' + esc(ipa) + '/' : ''}</div>
         <div class="gw-zh">${esc(w.zh)}</div>
@@ -265,16 +266,30 @@ function gsNextWord() {
 }
 
 /* ---- 出题器 ---- */
+/* 数字词用真数字块显示（eleven→11），避免所有数字共用一个 emoji 图 */
+const GS_NUM = { eleven:'11', twelve:'12', thirteen:'13', fourteen:'14', fifteen:'15', sixteen:'16', seventeen:'17', eighteen:'18', nineteen:'19', twenty:'20', thirty:'30', forty:'40', fifty:'50', sixty:'60', seventy:'70', eighty:'80', ninety:'90', hundred:'100' };
+function gsIcon(w) {
+  const n = GS_NUM[String(w.w).toLowerCase()];
+  if (n) return '<span class="gs-num">' + n + '</span>';
+  return iconOf(w);
+}
+/* 图选项必须互不相同：有任何重复就整体退回文字选项（孩子永远能选） */
+function imgOpts(list) {
+  const htmls = list.map(gsIcon);
+  if (!list.every(hasIcon) || new Set(htmls).size !== list.length) return null;
+  return htmls;
+}
 function buildUnitQs(u) {
   const ws = u.words || [];
   const qs = [];
-  /* 听音辨词 6 题：有真图的用图选项，否则用单词文字 */
+  /* 听音辨词 6 题：图选项需 4 图互异，否则单词文字 */
   shuffle(ws).slice(0, 6).forEach(w => {
     const distract = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 3);
     if (distract.length < 3) return;
-    const useImg = distract.concat(w).every(hasIcon);
+    const list = shuffle([w, ...distract]);
+    const imgs = imgOpts(list);
     qs.push({ type: 'listen', word: w, ok: w.w,
-      opts: shuffle([w, ...distract]).map(x => ({ key: x.w, html: useImg ? iconOf(x) : `<b lang="en">${esc(x.w)}</b>` })) });
+      opts: list.map((x, i) => ({ key: x.w, html: imgs ? imgs[i] : `<b lang="en">${esc(x.w)}</b>` })) });
   });
   /* 认词选义 6 题 */
   shuffle(ws).slice(0, 6).forEach(w => {
@@ -291,10 +306,11 @@ function buildReviewQs(words, sents, count) {
   shuffle(pool).forEach(w => {
     const distract = shuffle(words.filter(x => x.w !== w.w)).slice(0, 3);
     if (distract.length < 3 || qs.length >= count - Math.min(2, sents.length)) return;
-    const useImg = distract.concat(w).every(hasIcon);
+    const list = shuffle([w, ...distract]);
+    const imgs = imgOpts(list);
     const qType = Math.random() < 0.5 ? 'listen' : 'look';
     qs.push({ type: qType, word: w, ok: w.w,
-      opts: shuffle([w, ...distract]).map(x => ({ key: x.w, html: useImg ? iconOf(x) : `<b lang="en">${esc(x.w)}</b>` })) });
+      opts: list.map((x, i) => ({ key: x.w, html: imgs ? imgs[i] : `<b lang="en">${esc(x.w)}</b>` })) });
   });
   /* 句型填空 1-2 题 */
   shuffle(sents).slice(0, 2).forEach(s => {
