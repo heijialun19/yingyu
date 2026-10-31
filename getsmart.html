@@ -64,7 +64,7 @@
 <script src="js/data.js?v=32"></script>
 <script src="js/app.js?v=54"></script>
 <script src="js/sentence.js?v=44"></script>
-<script src="js/getsmart-data.js?v=7"></script>
+<script src="js/getsmart-data.js?v=8"></script>
 <script>
 renderNav('getsmart'); renderDecor();
 
@@ -101,6 +101,7 @@ function renderLevels() {
         和学校的 <b>Get Smart 课本</b> 一课一课对应：每个格子就是课本里的一个单元（或复习课）。
         点开就能学——不用怕请假落下，<b>落下的课会排在最前面等你补上</b>。
         <b>「正在学」跟着每个小伙伴的档案走</b>，兄妹俩各学各的互不打扰。</p>
+      <div style="margin-top:12px"><button class="btn grape big" onclick="renderTodayFlow()">🚀 今天学什么？一键任务 ▶</button></div>
     </div>
     <div class="gs-levels" style="margin-top:14px">
       ${GS_LEVELS.map(lv => {
@@ -177,7 +178,8 @@ function renderLevelHome() {
             </div>
             <span class="gu-st ${dn2 ? '' : 'todo'}">${dn2 ? '⭐' + (Store.d.getsmart[u.id].stars || 0) + ' ✅' : '未学 ▶'}</span>
           </div>`;
-        }).join('')}` : '').join('')}
+        }).join('')}
+        ${moduleTestCardHtml(lv, us)}` : '').join('')}
     </div>`;
 }
 
@@ -211,6 +213,8 @@ function startUnit(uid) {
 
 const STEP_NAMES = ['学单词', '听音辨词', '认词选义', '句型闯关', '完成'];
 function stepBar() {
+  if (L.kind === 'test') return '<div class="gs-steps"><span class="gs-step on">📝 单元小测</span></div>';
+  if (L.kind === 'flowreview') return '<div class="gs-steps"><span class="gs-step on">🔔 今日复习</span></div>';
   const n = L.kind === 'review' ? 2 : 5;
   let items = '';
   for (let i = 1; i <= n; i++) {
@@ -384,7 +388,7 @@ function sentBlank(en) {
 function renderQuiz() {
   const u = curUnit;
   if (L.qIdx >= L.qs.length) {
-    if (L.kind === 'review') { L.step = 2; return renderFinish(); }
+    if (L.kind === 'review' || L.kind === 'test' || L.kind === 'flowreview') { L.step = 4; return renderFinish(); }
     L.step = 3; L.sIdx = 0; return renderStep();
   }
   const q = L.qs[L.qIdx];
@@ -457,6 +461,8 @@ function gsNextSent() {
 
 /* ---- Step 完成 ---- */
 function renderFinish() {
+  if (L.kind === 'test') return renderTestFinish();
+  if (L.kind === 'flowreview') return renderFlowDone();
   const u = curUnit, lv = curLevel;
   const total = L.qs.length || 1;
   const perfect = L.score >= total;
@@ -483,8 +489,202 @@ function nextUnitOf(lv, u) {
   return i >= 0 && i + 1 < lv.units.length ? lv.units[i + 1] : null;
 }
 
-/* 启动：默认打开"正在学"的那一册 */
+/* ================= 单元小测（模拟学校考试） =================
+   每个 Module 自动生成一张卷子：听力 4 + 词汇 4 + 句型 3 = 11 题，
+   按学校习惯评级：优(≥90%) / 良(≥75%) / 达标(≥60%)。学完本模块解锁。 */
+function testGradeOf(pct) {
+  if (pct >= 0.9) return { g: '优', emoji: '🏅', msg: '全班最棒！课本内容掌握得扎扎实实！' };
+  if (pct >= 0.75) return { g: '良', emoji: '🎖️', msg: '很棒！再巩固几个词就是优！' };
+  if (pct >= 0.6) return { g: '达标', emoji: '✅', msg: '及格啦！把错的词再练一练，下次冲良！' };
+  return { g: '继续加油', emoji: '💪', msg: '把这一模块的单词回去再学一遍，随时回来重测！' };
+}
+function moduleTestId(lid, mod) { return lid + '-m' + mod + '-test'; }
+function moduleLessons(lv, mod) { return lv.units.filter(u => u.mod === mod && u.kind === 'unit'); }
+function startModuleTest(lid, mod) {
+  const lv = GS_LEVELS.find(l => l.id === lid); if (!lv) return;
+  const lessons = moduleLessons(lv, mod);
+  const words = []; const sents = [];
+  lessons.forEach(u => {
+    (u.words || []).forEach(w => { if (!words.some(x => x.w === w.w)) words.push(w); });
+    (u.sentences || []).forEach(s => { if (!sents.some(x => x.en === s.en)) sents.push(s); });
+  });
+  if (words.length < 4) { toast('这一模块的词还不够出卷，先学完各课哦'); return; }
+  const qs = [];
+  shuffle(words).slice(0, 4).forEach(w => {
+    const d = shuffle(words.filter(x => x.w !== w.w)).slice(0, 3);
+    if (d.length < 3) return;
+    const list = shuffle([w, ...d]);
+    const imgs = imgOpts(list);
+    qs.push({ type: 'listen', word: w, ok: w.w, opts: list.map((x, i) => ({ key: x.w, html: imgs ? imgs[i] : `<b lang="en">${esc(x.w)}</b>` })) });
+  });
+  shuffle(words).slice(0, 4).forEach(w => {
+    const d = shuffle(words.filter(x => x.w !== w.w)).slice(0, 3);
+    if (d.length < 3) return;
+    qs.push({ type: 'look', word: w, ok: w.zh, opts: shuffle([w, ...d]).map(x => ({ key: x.zh, html: esc(x.zh) })) });
+  });
+  shuffle(sents).slice(0, 3).forEach(s => {
+    const qb = sentBlank(s.en);
+    if (qb) qs.push({ type: 'sent', sent: s, ok: qb.answer, opts: shuffle([qb.answer, ...qb.distract]).map(x => ({ key: x, html: `<b lang="en">${esc(x)}</b>` })), blankText: qb.text });
+  });
+  if (qs.length < 4) { toast('题目还没凑齐，先去把各课学完吧'); return; }
+  curLevel = lv;
+  curUnit = { id: moduleTestId(lid, mod), kind: 'test', title: 'Module ' + mod + ' 单元小测', zh: '听力 + 词汇 + 句型', words };
+  L = { kind: 'test', step: 2, qs, qIdx: 0, score: 0, firstTry: true, lock: false, lid, mod, maxStep: 2 };
+  view = 'unit'; stopAllSpeech(); __lessonToken++;
+  renderStep();
+}
+function renderTestFinish() {
+  const total = L.qs.length || 1;
+  const pct = L.score / total;
+  const gr = testGradeOf(pct);
+  const bonus = gr.g === '优' ? 3 : gr.g === '良' ? 2 : 1;
+  addStars(bonus);
+  gsEnsure();
+  const tid = curUnit.id;
+  const old = Store.d.getsmart[tid];
+  const bestPct = Math.max(pct, old && old.pct !== undefined ? old.pct : 0);
+  Store.d.getsmart[tid] = { t: Date.now(), stars: Math.max(bonus, old ? old.stars || 0 : 0), pct: bestPct };
+  markActivity('getsmart'); Store.save();
+  if (pct >= 0.6) confetti();
+  sfx.win(); __lessonToken++;
+  $('#app').innerHTML = `
+    <div class="card bounce-in" style="max-width:560px;margin:0 auto;text-align:center;padding:34px 24px">
+      <div style="font-size:70px">${gr.emoji}</div>
+      <h2 style="justify-content:center">单元小测成绩：${gr.g}</h2>
+      <p style="font-size:1.05rem">答对 <b style="color:#FF6B6B;font-size:1.5rem">${L.score}</b> / ${total} 题 · 奖励 +${bonus} ⭐</p>
+      <p style="color:#5C6273;font-size:.92rem">${gr.msg}</p>
+      <p style="color:#9CA3AF;font-size:.78rem">历史最好成绩：${Math.round(bestPct * 100)} 分（满分 100）</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+        <button class="btn grape big" onclick="startModuleTest('${L.lid}',${L.mod})">🔁 再测一次</button>
+        <button class="btn ghost big" onclick="renderLevelHome()">📖 回课程表</button>
+      </div>
+    </div>`;
+}
+function moduleTestCardHtml(lv, us) {
+  const mod = us[0].mod;
+  if (!us.some(u => u.kind === 'unit')) return '';
+  const tid = moduleTestId(lv.id, mod);
+  const allDone = us.filter(u => u.kind === 'unit').every(u => gsDone(u.id));
+  if (!allDone) {
+    return `<div class="gs-unit" style="opacity:.55;cursor:default" onclick="toast('学完本模块的课程，小测就会解锁哦')">
+      <span class="gu-ic">📝</span>
+      <div class="gu-main"><b>Module ${mod} 单元小测</b><small>模拟学校考试 · 学完本模块后解锁</small></div>
+      <span class="gu-st todo">🔒</span>
+    </div>`;
+  }
+  const rec = Store.d.getsmart[tid];
+  const gr = rec && rec.pct !== undefined ? testGradeOf(rec.pct) : null;
+  return `<div class="gs-unit ${rec ? 'done' : ''}" onclick="startModuleTest('${lv.id}',${mod})">
+    <span class="gu-ic">📝</span>
+    <div class="gu-main"><b>Module ${mod} 单元小测</b><small>模拟学校考试 · 听力 + 词汇 + 句型</small></div>
+    <span class="gu-st ${rec ? '' : 'todo'}">${rec && gr ? gr.emoji + ' ' + gr.g : '开考 ▶'}</span>
+  </div>`;
+}
+
+/* ================= 一键今日任务流 =================
+   ① 补上落下的 GS 课 → ② 复习到期单词 → ③ 玩一局游戏。
+   三步全完成当日 +5 ⭐（每天一次）。 */
+function gsFlowState() {
+  try {
+    const d = new Date(); const p = n => String(n).padStart(2, '0');
+    const today = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+    const due = (typeof dueWords === 'function') ? dueWords().length : 0;
+    const act = (Store.d.activity || {})[today] || {};
+    let gap = null;
+    const lv = GS_LEVELS.find(l => l.id === gsActiveLevelId());
+    if (lv) { const g = lv.units.find(u => u.kind === 'unit' && !gsDone(u.id)); gap = g ? { id: g.id, title: g.title } : null; }
+    return { today, due, games: act.games || 0, gap };
+  } catch (e) { return { today: '', due: 0, games: 0, gap: null }; }
+}
+function renderTodayFlow() {
+  view = 'flow'; stopAllSpeech(); __lessonToken++; gsEnsure();
+  const st = gsFlowState();
+  const bonusGot = Store.d.flowBonus === st.today;
+  const steps = [
+    { n: 1, icon: '📖', title: '补上落下的课', desc: st.gap ? st.gap.title : '没有落下的课，太棒了！', done: !st.gap, act: st.gap ? `startUnitFlow('${st.gap.id}')` : null },
+    { n: 2, icon: '🔔', title: '复习到期单词', desc: st.due > 0 ? st.due + ' 个单词到复习时间了' : '今天没有到期复习', done: st.due === 0, act: st.due > 0 ? 'startFlowReview()' : null },
+    { n: 3, icon: '🎮', title: '玩一局游戏巩固', desc: st.games > 0 ? '今天已经玩过啦' : '去游戏乐园玩一局', done: st.games > 0, act: st.games > 0 ? null : `location.href='games.html'` },
+  ];
+  const doneN = steps.filter(s => s.done).length;
+  const allDone = doneN === 3 && !bonusGot;
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevels()">← 换一册</button>
+    <div class="card" style="border-color:var(--mint)">
+      <h2>🚀 今天学什么？<small style="font-weight:400;color:#5C6273">已完成 ${doneN}/3</small></h2>
+      <p style="margin:6px 0 0;color:#5C6273;font-size:.88rem;line-height:1.8">三步走完约 15 分钟：补课 → 复习 → 巩固。全部完成 <b>奖励 5 颗星星</b>！</p>
+    </div>
+    <div style="margin-top:14px">
+      ${steps.map(s => `
+        <div class="gs-unit ${s.done ? 'done' : ''}" onclick="${s.act ? s.act : `toast('这一步已经完成啦 ✅')`}">
+          <span class="gu-ic">${s.icon}</span>
+          <div class="gu-main"><b>${s.n}️⃣ ${s.title}</b><small>${s.desc}</small></div>
+          <span class="gu-st ${s.done ? '' : 'todo'}">${s.done ? '✅' : '开始 ▶'}</span>
+        </div>`).join('')}
+    </div>
+    ${bonusGot ? `<p style="text-align:center;color:#4E9E59;font-weight:800;margin-top:14px">🎉 今日任务奖励已领取！</p>` : (allDone ? '' : `<p style="text-align:center;color:#9CA3AF;font-size:.8rem;margin-top:14px">三步全部完成可领 5 ⭐ 哦</p>`)}`;
+  if (allDone) {
+    Store.d.flowBonus = st.today; addStars(5); Store.save();
+    confetti(); sfx.win();
+    toast('🎉 今日任务全部完成！奖励 5 颗星星！');
+  }
+}
+function startUnitFlow(uid) {
+  L = null; startUnit(uid);
+  L.returnFlow = true;
+}
+function startFlowReview() {
+  gsEnsure();
+  let due = (typeof dueWords === 'function') ? dueWords().slice(0, 10) : [];
+  const ALLB = {};
+  THEMES.forEach(t => t.words.forEach(w => { if (!ALLB[w.w]) ALLB[w.w] = w; }));
+  const ws = due.map(w => ALLB[w]).filter(Boolean).filter(w => hasIcon(w));
+  if (!ws.length) { toast('今天没有到期复习'); return; }
+  const qs = [];
+  shuffle(ws).forEach(w => {
+    const d = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 3);
+    if (d.length < 3 || qs.length >= 10) return;
+    if (Math.random() < 0.5) {
+      const list = shuffle([w, ...d]);
+      const imgs = imgOpts(list);
+      qs.push({ type: 'listen', word: w, ok: w.w, opts: list.map((x, i) => ({ key: x.w, html: imgs ? imgs[i] : `<b lang="en">${esc(x.w)}</b>` })) });
+    } else {
+      qs.push({ type: 'look', word: w, ok: w.zh, opts: shuffle([w, ...d]).map(x => ({ key: x.zh, html: esc(x.zh) })) });
+    }
+  });
+  if (!qs.length) { toast('今天没有到期复习'); return; }
+  curLevel = GS_LEVELS.find(l => l.id === gsActiveLevelId()) || curLevel;
+  curUnit = { id: 'flow-review', kind: 'flowreview', title: '今日复习', zh: '到期单词大复习', words: ws };
+  L = { kind: 'flowreview', step: 2, qs, qIdx: 0, score: 0, firstTry: true, lock: false };
+  view = 'unit'; stopAllSpeech(); __lessonToken++;
+  renderStep();
+}
+function renderFlowDone() {
+  sfx.win(); if (L.score >= L.qs.length * 0.8) confetti();
+  const st = gsFlowState();
+  const allDone = !st.gap && st.games > 0;
+  let bonusMsg = '';
+  if (allDone && Store.d.flowBonus !== st.today) {
+    Store.d.flowBonus = st.today; addStars(5); Store.save();
+    bonusMsg = '<p style="color:#4E9E59;font-weight:800">🎉 今日三步全部完成！奖励 5 颗星星！</p>';
+    confetti();
+  }
+  $('#app').innerHTML = `
+    <div class="card bounce-in" style="max-width:560px;margin:0 auto;text-align:center;padding:34px 24px">
+      <div style="font-size:70px">🔔</div>
+      <h2 style="justify-content:center">复习完成！</h2>
+      <p style="font-size:1.05rem">答对 <b style="color:#FF6B6B;font-size:1.5rem">${L.score}</b> / ${L.qs.length} 题</p>
+      ${bonusMsg}
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
+        <button class="btn grape big" onclick="renderTodayFlow()">回到今日任务 ▶</button>
+        <button class="btn ghost big" onclick="renderLevelHome()">课程表</button>
+      </div>
+    </div>`;
+}
+
+/* 启动：默认打开"正在学"的那一册；带 flow=1 参数则直接进今日任务流 */
 (function init() {
+  const params = new URLSearchParams(location.search);
+  if (params.get('flow') === '1') { renderTodayFlow(); return; }
   const now = GS_LEVELS.find(l => l.id === gsActiveLevelId());
   if (now) { curLevel = now; view = 'level'; renderLevelHome(); }
   else renderLevels();

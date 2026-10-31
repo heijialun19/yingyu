@@ -38,6 +38,25 @@ function gsLevelProgress() {
   } catch (e) { return '课本同步'; }
 }
 
+/* 今日任务流状态（首页卡片 + getsmart 任务页共用）：
+   ① GS 落下的课 ② 到期复习词数 ③ 今天玩过游戏没有 */
+function gsFlowState() {
+  try {
+    const d = new Date(); const p = n => String(n).padStart(2, '0');
+    const today = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+    const due = (typeof dueWords === 'function') ? dueWords().length : 0;
+    const act = (Store.d.activity || {})[today] || {};
+    let gap = null;
+    const lv = GS_LEVELS.find(l => l.id === gsActiveLevelId());
+    if (lv) {
+      const gm = Store.d.getsmart || {};
+      const g = lv.units.find(u => u.kind === 'unit' && !gm[u.id]);
+      gap = g ? { id: g.id, title: g.title } : null;
+    }
+    return { today, due, games: act.games || 0, gap };
+  } catch (e) { return { today: '', due: 0, games: 0, gap: null }; }
+}
+
 const GS_LEVELS = [
   /* ============ Get Smart 1（官方 New Get Smart 1 Contents 逐字对齐） ============ */
   {

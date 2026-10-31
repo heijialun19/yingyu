@@ -80,6 +80,7 @@
       <button class="btn coral big" id="mcBtn">▶ 点这里开始</button>
     </div>
     <div class="task-strip" id="taskStrip"></div>
+    <div id="gsFlowCard" style="display:none;margin-top:14px"></div>
     <div class="review-banner" id="reviewBanner" style="display:none">
       <div style="font-size:34px">🔔</div>
       <div style="flex:1;min-width:180px"><b>有单词到复习时间啦</b><div style="font-size:.8rem;color:#5C6273" id="revText"></div></div>
@@ -99,7 +100,7 @@
 <script src="js/data.js?v=32"></script>
 <script src="js/app.js?v=54"></script>
 <script src="js/sentence.js?v=44"></script>
-<script src="js/getsmart-data.js?v=7"></script>
+<script src="js/getsmart-data.js?v=8"></script>
 <script>
 renderNav('index'); renderDecor();
 
@@ -167,6 +168,22 @@ function showHome() {
   mcEl.setAttribute('tabindex', '0');
   mcEl.setAttribute('aria-label', step.t + '——' + step.s);
   mcEl.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.href = step.href; } };
+
+  /* 今日任务流卡片：补课 / 复习 / 游戏三步，跟着档案走 */
+  const fc = document.getElementById('gsFlowCard');
+  if (fc && typeof gsFlowState === 'function') {
+    try {
+      const st = gsFlowState();
+      const parts = [st.gap ? '📖 补课：' + st.gap.title : '📖 补课 ✅', st.due > 0 ? '🔔 复习 ' + st.due + ' 词' : '🔔 复习 ✅', st.games > 0 ? '🎮 游戏 ✅' : '🎮 玩一局'];
+      const doneN = [!st.gap, st.due === 0, st.games > 0].filter(Boolean).length;
+      fc.style.display = '';
+      fc.innerHTML = `<div class="gs-catch" style="cursor:pointer" onclick="location.href='getsmart.html?flow=1'">
+        <span style="font-size:30px">🚀</span>
+        <div style="flex:1"><b>今天学什么？${doneN}/3 已完成</b>
+        <div style="font-size:.8rem;color:#5C6273">${parts.join(' · ')}</div></div>
+        <button class="btn grape">开始 ▶</button></div>`;
+    } catch (e) {}
+  }
 
   const due = dueWords();
   if (due.length) {
