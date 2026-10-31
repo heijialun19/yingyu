@@ -2095,3 +2095,16 @@ const GS_LEVELS = [
     ]
   },
 ];
+
+/* 把专栏单词注册进本地发音包索引（app.js 的 __LOCAL_AUDIO）：
+   每个词的 audio/<词>.mp3 都已生成，本地离线直接响，不用等有道。
+   ★ 注意：本块必须始终是文件最后一段——之前 GS6 拼接时被误删，
+   导致 681 个词退回在线源（微信/弱网全哑），务必保留。 */
+try {
+  if (typeof __LOCAL_AUDIO !== 'undefined') {
+    GS_LEVELS.forEach(l => l.units.forEach(u => (u.words || []).forEach(w => {
+      const k = String(w.w).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+      if (k) __LOCAL_AUDIO.add(k);
+    })));
+  }
+} catch (e) {}
