@@ -680,8 +680,10 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   .word-card .we { font-size: 44px; }
   .word-card b { font-size: 1.02rem; }
   .word-card .zh { font-size: .8rem; }
-  .word-card .dec { font-size: .62rem; padding: 5px 7px; line-height: 1.5;
+  .word-card .dec { font-size: .62rem; padding: 5px 7px; line-height: 1.5; cursor: pointer;
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  /* 记忆解释被截断时点一下展开全文（家长反馈显示不完全） */
+  .word-card .dec.dec-open { display: block; -webkit-line-clamp: unset; overflow: visible; }
   .word-card .pos-chip { font-size: .6rem; padding: 1px 8px; }
 
   /* 字母岛 */

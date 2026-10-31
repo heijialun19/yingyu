@@ -16,7 +16,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=43">
+<link rel="stylesheet" href="css/style.css?v=44">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -170,7 +170,7 @@ function renderSearch() {
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
             ${famLine(w.w)}
-            ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : '<div class="dec" style="background:transparent"></div>'}
+            ${w.dec ? `<div class="dec dec-x" title="点一下展开/收起解释" onclick="event.stopPropagation();this.classList.toggle('dec-open')">🔎 ${esc(w.dec)}</div>` : '<div class="dec" style="background:transparent"></div>'}
           </div>`).join('')}
       </div>
       ${hits.length > 120 ? `<p style="color:#5C6273;font-size:.8rem">只显示前 120 个，输入更长的词缩小范围～</p>` : ''}`}
@@ -250,7 +250,7 @@ function renderBrowse() {
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
             ${famLine(w.w)}
-            ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : '<div class="dec" style="background:transparent"></div>'}
+            ${w.dec ? `<div class="dec dec-x" title="点一下展开/收起解释" onclick="event.stopPropagation();this.classList.toggle('dec-open')">🔎 ${esc(w.dec)}</div>` : '<div class="dec" style="background:transparent"></div>'}
           </div>`).join('')}
       </div>
     </div>
