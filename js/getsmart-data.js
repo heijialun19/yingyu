@@ -331,13 +331,13 @@ const GS_LEVELS = [
     ]
   },
 
-  /* ============ Get Smart 2（儿子在学 · 官方目录逐字对齐） ============
+  /* ============ Get Smart 2（官方目录逐字对齐） ============
      结构与内容全部来自 MM 官方 New Get Smart 2 Contents（10 个 Module），
-     交叉核对旧版官方 Syllabus 与学校发的 U1-U4 词汇清单。
+     交叉核对旧版官方 Syllabus 与教材前四模块词汇。
      每 Module 4-5 节小课：词课一节 ≤8 词，末节复习闯关。 */
   {
-    id: 'gs2', name: 'Get Smart 2', zh: '第二册 · 儿子在学', emoji: '🐥', color: '#FF6B6B',
-    desc: '与课本逐字对齐：10 个 Module × 4-5 节小课（官方目录 We are back! → Having fun），词课一节 5-8 个词，末节复习闯关；「U1-U4 词汇复习课」= 学校清单原样。',
+    id: 'gs2', name: 'Get Smart 2', zh: '第二册', emoji: '🐥', color: '#FF6B6B',
+    desc: '与课本逐字对齐：10 个 Module × 4-5 节小课（官方目录 We are back! → Having fun），词课一节 5-8 个词，末节复习闯关；「U1-U4 词汇复习课」= 教材前四模块综合复习。',
     units: [
       /* ---- Module 1 · We're back!（文具 · 颜色 · 数字1-20）---- */
       { id: 'gs2-m01l1', mod: 1, modName: 'Module 1 · We are back! 开学啦', modEmoji: '🎒', modTip: 'Phonics: short a/e · 品德: Be responsible for your pet', kind: 'unit',
@@ -747,8 +747,8 @@ const GS_LEVELS = [
       { id: 'gs2-m10r', mod: 10, kind: 'review', title: 'Module 10 复习闯关', zh: '运动游戏 混合闯关',
         from: ['gs2-m10l1', 'gs2-m10l2', 'gs2-m10l3'], count: 8 },
 
-      /* ---- 学校发的《U1-U4 词汇清单》原样 = 一节复习课的强度（家长校准） ---- */
-      { id: 'gs2-rx', mod: 4, kind: 'review', title: 'U1-U4 词汇复习课', zh: '学校词汇清单 · 全部单词混合大闯关',
+      /* ---- 教材前四模块综合复习（U1-U4 词汇全量混合） ---- */
+      { id: 'gs2-rx', mod: 4, kind: 'review', title: 'U1-U4 词汇复习课', zh: '前四模块全部单词混合大闯关',
         from: ['gs2-m01l1', 'gs2-m01l2', 'gs2-m01l3', 'gs2-m01l4', 'gs2-m02l1', 'gs2-m02l2', 'gs2-m02l3', 'gs2-m02l4', 'gs2-m03l1', 'gs2-m03l2', 'gs2-m03l3', 'gs2-m04l1', 'gs2-m04l2', 'gs2-m04l3', 'gs2-m04l4'], count: 20 },
     ]
   },
