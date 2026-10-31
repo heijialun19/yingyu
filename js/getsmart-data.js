@@ -114,7 +114,7 @@ const GS_LEVELS = [
   /* ============ Get Smart 2（当前在学） ============ */
   {
     id: 'gs2', name: 'Get Smart 2', zh: '第二册 · 正在学', emoji: '🐥', color: '#FF6B6B',
-    desc: '第 1-8 课覆盖学校发的《Units 1-4 词汇清单》全部单词，按主题分成一小课一小课——请假落下的课，从这里一节一节补回来。',
+    desc: '第 1-8 课把学校发的《Units 1-4 词汇清单》按主题分成小课补课用；「Units 1-4 词汇复习课」= 清单原样强度。正课粒度以课本为准：把课本单元页拍照发来，逐课严格对齐后上架。',
     units: [
       /* ---- 第 1 组 ---- */
       { id: 'gs2-u01', mod: 1, modName: '第 1 组 · 校园与家人（教材 U1-U4 前半）', modEmoji: '🎒', modTip: 'What 提问 · This is... · How many', kind: 'unit',
@@ -244,6 +244,9 @@ const GS_LEVELS = [
         ] },
       { id: 'gs2-r2', mod: 2, kind: 'review', title: '第 2 组复习课', zh: '房间 · 数字 · 五官 · 动物 混合闯关',
         from: ['gs2-u04', 'gs2-u05', 'gs2-u06', 'gs2-u07', 'gs2-u08'], count: 12 },
+      /* 学校发的《U1-U4 词汇清单》原样 = 课本里一节复习课的强度（家长校准） */
+      { id: 'gs2-rx', mod: 2, kind: 'review', title: 'Units 1-4 词汇复习课', zh: '学校词汇清单 · 全部单词混合大闯关',
+        from: ['gs2-u01', 'gs2-u02', 'gs2-u03', 'gs2-u04', 'gs2-u05', 'gs2-u06', 'gs2-u07', 'gs2-u08'], count: 20 },
     ]
   },
 
@@ -604,3 +607,14 @@ const GS_LEVELS = [
     ]
   },
 ];
+
+/* 把专栏单词注册进本地发音包索引（app.js 的 __LOCAL_AUDIO）：
+   上面每个词的 audio/<词>.mp3 都已生成，本地离线直接响，不用等有道。 */
+try {
+  if (typeof __LOCAL_AUDIO !== 'undefined') {
+    GS_LEVELS.forEach(l => l.units.forEach(u => (u.words || []).forEach(w => {
+      const k = String(w.w).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+      if (k) __LOCAL_AUDIO.add(k);
+    })));
+  }
+} catch (e) {}
