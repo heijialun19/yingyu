@@ -453,14 +453,22 @@ function gxThirdItem(verb, zh, subj) {
    fish 只是复数同形（走 IRREG_PLURAL），chicken 正常加 s。 */
 const UNCOUNTABLE = new Set(['bread','milk','water','juice','rice','meat','soup','tea',
   'coffee','butter','cheese','food','ice','grass','snow','rain','paper','money',
-  'music','homework','sugar','salt','fruit','news']);
+  'music','homework','sugar','salt','fruit','news',
+  /* ★ 2026-11-01 补：词库里 pos='n' 但实际不可数的词。原来它们被当普通可数名词，
+     模板一生成就出错句：This is a work. / a weather. / I like natures. /
+     There is a traffic over there. 下面这些既没有复数，也不能加 a/an。 */
+  'work','housework','magic','nature','pollution','peace','space','air','smoke',
+  'sand','wood','land','health','pain','sweat','rest','weather','traffic','luggage',
+  'glue','porridge','chocolate','pork','beef','information','advice','fun']);
 /* 只有复数形式的名词：英语里从不单用，所以既不能加 a/an，也不能当单数主语。
    ★ 2026-10-26 修的 bug：这些词原来被 countable() 判成可数，生成了
      "There is a scissors on the desk" / "This is a pants" 这种错句。
      scissors 一套两片、trousers/pants/shorts 两条腿、clothes 衣件总称 ——
-     只能用 a pair of ... 或者直接复数主语。 */
+     只能用 a pair of ... 或者直接复数主语。
+   ★ 2026-11-01 补 people / police：它们本身就是复数形式，
+     "This is a people." / "There is a police over there." 都是错的。 */
 const PLURAL_ONLY = new Set(['scissors','trousers','pants','shorts','clothes',
-  'jeans','pyjamas','pajamas','chopsticks','french fries']);
+  'jeans','pyjamas','pajamas','chopsticks','french fries','people','police']);
 const IRREG_PLURAL = { fish:'fish', goose:'geese', mouse:'mice', sheep:'sheep', deer:'deer',
   ox:'oxen', person:'people', man:'men', woman:'women', child:'children', foot:'feet',
   tooth:'teeth', knife:'knives', leaf:'leaves', tomato:'tomatoes', potato:'potatoes',
@@ -470,8 +478,39 @@ const countable = w => {
   const x = wordOf(w).toLowerCase();
   return !UNCOUNTABLE.has(x) && !PLURAL_ONLY.has(x);
 };
-/* 能不能用「a/an + 词」：可数单数才行 */
-const takesArticle = w => countable(w);
+/* ---------------- 不能加 a / an 的名词 ----------------
+   ★ 2026-11-01 修的 bug：「可数」不等于「能加冠词」。
+     countable() 只排了不可数表和"只有复数"，于是专有名词、方位、学科都被当成
+     普通可数名词塞进了 "This is a __." 模板，生成：
+       This is a south.      ← 方位词
+       This is an America.   ← 专有名词
+       This is a music.      ← 学科
+     这些词本身没有单数形式，也没有复数（*souths / *Americas 都不说），
+     所以两个判断都要单独处理：
+       canTakeArticle() = 能加 a/an（配 "This is a X." 这类模板）
+       pluralSafe()     = 能加 s（配 "I like Xs." 这类模板，另见那里的白名单）
+     下面这张表只放"确实不能加 a/an"的：专有名词（国名/星期/月份/节日/语言）、
+     方位（north/south/east/west）、学科（music/art/science/math/PE）。
+     TV 和 T-shirt 是普通可数名词（a TV / a T-shirt），故意不放进来。 */
+const NO_ARTICLE = new Set([
+  // 专有名词：国家 / 语言 / 星期 / 月份 / 节日
+  'china','america','england','australia','canada','japan','france','chinese','english','french',
+  'monday','tuesday','wednesday','thursday','friday','saturday','sunday',
+  'january','february','march','april','may','june','july','august',
+  'september','october','november','december','christmas','new year',
+  // 方位
+  'north','south','east','west',
+  // 学科 / 抽象
+  'music','art','science','math','maths','pe','chinese','english',
+  /* 时间副词被标成了名词：This is a today. / a tomorrow. / a late. 都是错句。
+     它们也没有复数（*todays / *tomorrows），所以一并挡在复数池外。 */
+  'today','tomorrow','yesterday','tonight','late','abroad',
+  // 称呼与符号（I / OK / Mr / Miss 在句首或作称呼，不加冠词）
+  'i','ok','mr','miss',
+]);
+/* 能不能用「a/an + 词」：可数单数、且不是上面那类词 */
+const takesArticle = w => countable(w) && !NO_ARTICLE.has(wordOf(w).toLowerCase());
+const canTakeArticle = takesArticle;   // 语义别名，模板里读起来更清楚
 
 /* ---------------- a / an 的判定 ----------------
    ★ 2026-10-26 修的 bug：原来用首字母判断（/^[aeiou]/ → an），
@@ -498,7 +537,9 @@ function artOf(w) {
    其余才放行（giraffe 这种 -ffe 结尾是安全的，单独放行）。 */
 const pluralSafe = w => {
   const x = wordOf(w).toLowerCase();
-  if (!countable(w) || IRREG_PLURAL[x]) return false;
+  /* NO_ARTICLE 那批（国名 / 星期 / 月份 / 方位 / 学科）既不能加 a/an，也不能加 s：
+     I don't like Canadas. ✗ —— 2026-11-01 实测确实生成过这句。 */
+  if (!countable(w) || IRREG_PLURAL[x] || NO_ARTICLE.has(x)) return false;
   if (!/^[a-z]+$/.test(x)) return false;
   if (/ffe$/.test(x)) return true;
   if (/(s|x|z|sh|ch|o|f|fe|man|ouse|oose)$/.test(x)) return false;

@@ -59,7 +59,7 @@
 <script src="js/data.js?v=32"></script>
 <script src="js/app.js?v=57"></script>
 <script src="js/sentence.js?v=44"></script>
-<script src="js/grammar-engine.js?v=4"></script>
+<script src="js/grammar-engine.js?v=5"></script>
 <script>
 renderNav('grammar'); renderDecor();
 
@@ -111,6 +111,11 @@ const themeEmoji = ids => { const t = THEMES.find(x => ids.includes(x.id)); retu
    共用同一套，避免各写一份又写错」—— 移了名词规则但漏了冠词，
    结果句子工厂仍然出 "This is a hour." / "This is an useful book."。 */
 const art = w => (typeof artOf === 'function' ? artOf(w) : (/^[aeiou]/i.test(w) ? 'an' : 'a'));
+/* ★ 2026-11-01：能加 a/an 的才进 "This is a X." 这类模板。
+   countable 只排了不可数表和"只有复数"，专有名词 / 方位 / 学科还能混进来，
+   会生成 "This is an America." / "This is a south."。
+   规则在 grammar-engine.js 的 takesArticle。 */
+const okArt = w => (typeof takesArticle === 'function' ? takesArticle(w) : countable(w));
 
 /* ---- 名词/动词形态规则：出题引擎的底线是"生成出来的英文必须是对的" ----
    宁可少出一道题，也不能教孩子 I like breads. / two mouses. / The cat is danceing.
@@ -169,7 +174,7 @@ const GEN = {
   thisIs(ws) {
     /* 先过词性闸门：sweet / round 这些形容词混在 fruit / food 主题里，
        不筛就会出 "This is a sweet." */
-    const safe = gxNouns(ws).filter(countable);
+    const safe = gxNouns(ws).filter(okArt);
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w);
     return { type:'choice', word: w.w,
@@ -200,7 +205,7 @@ const GEN = {
       zh: `The ${w.w} is on the ${p.w}.`, explain: '谁 + is + on + the + 地点，顺序固定。' };
   },
   isQuestion(ws) {
-    const safe = gxNouns(ws).filter(countable);
+    const safe = gxNouns(ws).filter(okArt);
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w);
     return { type:'choice', word: w.w,
@@ -209,7 +214,7 @@ const GEN = {
       zh: `Is this ${a} ${w.w}?`, explain: 'is 提到最前面，句号变问号 ?。' };
   },
   thereBe(ws) {
-    const safe = gxNouns(ws).filter(countable);
+    const safe = gxNouns(ws).filter(okArt);
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     return { type:'choice', word: w.w,
@@ -239,7 +244,7 @@ const GEN = {
   },
   /* ---- 造句（build）类 ---- */
   seeBuild(ws) {
-    const safe = gxNouns(ws).filter(countable);
+    const safe = gxNouns(ws).filter(okArt);
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     const others = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 2);

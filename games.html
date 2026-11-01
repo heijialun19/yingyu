@@ -39,7 +39,7 @@
 <script src="js/build-data.js?v=1"></script>
 <script src="js/app.js?v=57"></script>
 <script src="js/sentence.js?v=44"></script>
-<script src="js/grammar-engine.js?v=4"></script>
+<script src="js/grammar-engine.js?v=5"></script>
 <script src="js/ipa.js?v=2"></script>
 <script>
 renderNav('games'); renderDecor();
@@ -366,11 +366,11 @@ function gPicSentPick() {
   poolPicker('🖼️ 听句选图', '🖼️', m => gPicSent(getPlayPool(m, w => !w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w))));
 }
 function gPicSent(pool) {
-  /* 只用「有图 + 可数单数」的具体名词：
+  /* 只用「有图 + 能加 a/an」的具体名词：
      · hasIcon —— 避免出现 it=🐱 这种错图
-     · isCountable —— 否则会说出 "I have a bread." / "I have a scissors."
-       （bread 不可数、scissors 只有复数，都不能加 a） */
-  const nouns = gxNouns(pool).filter(w => hasIcon(w) && w.w.length <= 8 && isCountable(w));
+     · canArt  —— 否则会说出 "I have a bread."（不可数）、"I have a scissors."（只有复数）、
+                  "I have an America."（专有名词）。规则统一在 grammar-engine.js 的 takesArticle。 */
+  const nouns = gxNouns(pool).filter(w => hasIcon(w) && w.w.length <= 8 && canArt(w));
   const foods = pool.filter(w => ['egg','rice','bread','cake','chicken','beef','pork','soup','noodle','dumpling','biscuit'].includes(w.w));
   const drinks = pool.filter(w => ['water','juice','milk','tea'].includes(w.w));
   const animals = pool.filter(w => ['cat','dog','pig','duck','cow','horse','sheep','tiger','lion','monkey','elephant','rabbit','mouse','bird','fish'].includes(w.w));
@@ -678,8 +678,13 @@ function gSentence(pool, level) {
   const actions = gxVerbs(pool).filter(w => w.w.length <= 6);
   const nouns = gxNouns(pool).filter(w => plurSafe(w) && w.w.length <= 8);
   const countableNouns = nouns.filter(w => isCountable(w));
-  const anyFoods = themeWordsById(['food']).filter(w => gxPosCode(w) === 'n');
-  const anyDrinks = themeWordsById(['food']).filter(w => ['water','juice','milk','tea'].includes(w.w));
+  /* ★ 2026-11-01：「我吃 X」的词池必须排掉饮品 —— 食物主题里有 milk/water/juice/tea，
+     原来会被塞进"I __ milk."（答案 eat）生成 **I eat milk.** 这种错句。
+     饮品由独立的 drinks 池负责「我喝 X」，两边不重叠。 */
+  const DRINKS = ['water', 'juice', 'milk', 'tea', 'coffee'];
+  const anyFoods = themeWordsById(['food'])
+    .filter(w => gxPosCode(w) === 'n' && !DRINKS.includes(String(w.w).toLowerCase()));
+  const anyDrinks = themeWordsById(['food']).filter(w => DRINKS.includes(String(w.w).toLowerCase()));
   const anyActions = actions.length ? actions : gxVerbs(themeWordsById(['action1']));
   const anyNouns = nouns.length ? nouns : gxNouns(themeWordsById(['animal1'])).filter(plurSafe);
   const anyCountable = countableNouns.length ? countableNouns : gxNouns(themeWordsById(['animal1'])).filter(w => isCountable(w));
@@ -693,12 +698,25 @@ function gSentence(pool, level) {
   const s3Fallback = [{ w: 'jump', zh: '跳', e: '🐰' }, { w: 'read', zh: '读', e: '📖' }, { w: 'play', zh: '玩', e: '🎮' }];
   /* 空池兜底：每个池都要非空，否则 pick 返回 undefined，w.zh 直接抛错 */
   const nonEmpty = (a, fallback) => (a && a.length) ? a : fallback;
+  /* ★ 2026-11-01：「动词后面不带宾语」的句式要单独挑词。
+     I can __. / He can't __. / Do you want to __? / She __ every day.
+     这些模板的动词后面什么都没有，塞进及物动词就成了半截话：
+       I can put.    ✗    I can take.  ✗    Do you want to give?  ✗
+     白名单比黑名单可靠（和 ING_FORM 一个口径）：只放行单独说也成立的动词。 */
+  const BARE_VERBS = new Set(['run','jump','swim','sing','dance','read','write','draw','fly','walk',
+    'sleep','cry','laugh','listen','look','play','talk','skate','ski','climb','hike','smile',
+    'exercise','travel','sail','think','guess','hope','wish','dream','try','begin','start',
+    'finish','stop','continue','practice','arrive','leave','stay','live','wait','come','cheer',
+    'greet','study','review','eat','drink','cook','fish','work','rest','hurry','camp','shop']);
   const foods = nonEmpty(anyFoods, anyCountable);
   const drinks = nonEmpty(anyDrinks, foods);
   const acts = nonEmpty(anyActions, []);
+  const bareActs = nonEmpty(acts.filter(w => BARE_VERBS.has(String(w.w).toLowerCase())), acts);
   const nnn = nonEmpty(anyNouns, anyCountable);
-  const cnt = nonEmpty(anyCountable, nnn);
-  const s3Pool = nonEmpty(acts.filter(w => s3Safe(w.w)), s3Fallback);
+  /* 「This is a X.」「There is a X.」「Is this a X?」都要 a/an —— 专有名词/方位/学科
+     不能加冠词（This is a south. / an America. 都是错句），所以再过一道 canArt。 */
+  const cnt = nonEmpty(anyCountable.filter(canArt), anyCountable);
+  const s3Pool = nonEmpty(bareActs.filter(w => s3Safe(w.w)), s3Fallback);
   const ingPool = (() => {
     const has = acts.filter(w => ingOf(w.w));
     return has.length ? has : ['eat','sing','jump','read','sleep','play','fly','draw','cry','laugh','drink','dance']
@@ -714,7 +732,7 @@ function gSentence(pool, level) {
   const M_BASIC = [
     () => { const w = pickSafe(foods); return { q: `我吃${w.zh}`, sent: `I __ ${w.w}.`, opts: ['eat','drink','look'], ans: 'eat', zh: `I eat ${w.w}. 我吃${w.zh}。`, e: w.e }; },
     () => { const w = pickSafe(drinks); return { q: `我喝${w.zh}`, sent: `I __ ${w.w}.`, opts: ['drink','eat','read'], ans: 'drink', zh: `I drink ${w.w}. 我喝${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(acts); return { q: `我会${w.zh}`, sent: `I can __.`, opts: [w.w, w.w + 's', 'am'], ans: w.w, zh: `I can ${w.w}. 我会${w.zh}。`, e: w.e }; },
+    () => { const w = pickSafe(bareActs); return { q: `我会${w.zh}`, sent: `I can __.`, opts: [w.w, w.w + 's', 'am'], ans: w.w, zh: `I can ${w.w}. 我会${w.zh}。`, e: w.e }; },
     () => { const w = pickSafe(nnn); const pl = plurOf(w); return { q: `我喜欢${w.zh}（复数）`, sent: `I like __.`, opts: [pl, w.w, w.w + 'es'], ans: pl, zh: `I like ${pl}. 我喜欢${w.zh}。`, e: w.e }; },
     () => ({ q: '我是一个男孩', sent: `I __ a boy.`, opts: ['am','is','are'], ans: 'am', zh: 'I am a boy. 我是一个男孩。', e: '👦' }),
     () => ({ q: '她是一个女孩', sent: `She __ a girl.`, opts: ['is','am','are'], ans: 'is', zh: 'She is a girl. 她是一个女孩。', e: '👧' }),
@@ -732,9 +750,15 @@ function gSentence(pool, level) {
         zh: `He likes ${pl}. 他喜欢${w.zh}。`, e: w.e }; },
     () => { const w = pickSafe(s3Pool); return { q: `她每天${w.zh}`, sent: `She __ every day.`, opts: [w.w + 's', w.w, 'am'], ans: w.w + 's',
         zh: `She ${w.w}s every day. 她每天${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(nnn); return { q: `我不喜欢${w.zh}`, sent: `I __ like ${w.w}.`, opts: ["don't", "can't", "am not"], ans: "don't",
-        zh: `I don't like ${w.w}. 我不喜欢${w.zh}。`, e: w.e }; },
-    () => { const w = pickSafe(acts); return { q: `他不会${w.zh}`, sent: `He __ ${w.w}.`, opts: ["can't", "don't", "doesn't"], ans: "can't",
+    () => {
+      const w = pickSafe(nnn);
+      /* ★ 2026-11-01 修的 bug：可数名词不能光秃秃放在 like 后面
+         （I don't like sweater. ✗）→ 一律用复数：I don't like sweaters. ✓ */
+      const pl = plurSafe(w) ? plurOf(w) : w.w;
+      return { q: `我不喜欢${w.zh}`, sent: `I __ like ${pl}.`, opts: ["don't", "can't", "am not"], ans: "don't",
+        zh: `I don't like ${pl}. 我不喜欢${w.zh}。`, e: w.e };
+    },
+    () => { const w = pickSafe(bareActs); return { q: `他不会${w.zh}`, sent: `He __ ${w.w}.`, opts: ["can't", "don't", "doesn't"], ans: "can't",
         zh: `He can't ${w.w}. 他不会${w.zh}。`, e: w.e }; },
     () => { const w = pickSafe(nnn, 'box'); const pl = plurOf(w);
       return { q: `你有几个${w.zh}？`, sent: `How many __ do you have?`, opts: [pl, w.w, 'a ' + w.w], ans: pl,
@@ -767,10 +791,16 @@ function gSentence(pool, level) {
       return { q: `她没在${w.zh}`, sent: `She is not __.`, opts: [ing, w.w, w.w + 's'], ans: ing,
         zh: `She is not ${ing}. 她没在${w.zh}。`, e: w.e };
     },
-    () => { const w = pickSafe(acts); return { q: `你想要${w.zh}吗？`, sent: `Do you want to __?`, opts: [w.w, w.w + 's', 'am'], ans: w.w,
+    () => { const w = pickSafe(bareActs); return { q: `你想要${w.zh}吗？`, sent: `Do you want to __?`, opts: [w.w, w.w + 's', 'am'], ans: w.w,
         zh: `Do you want to ${w.w}? 你想要${w.zh}吗？`, e: w.e }; },
-    () => { const w = pickSafe(cnt); return { q: `这是谁的${w.zh}？`, sent: `Whose ${w.w} is this?`, opts: [w.w, plurOf(w.w), 'a'], ans: w.w,
-        zh: `Whose ${w.w} is this? 这是谁的${w.zh}？`, e: w.e }; },
+    () => {
+      const w = pickSafe(cnt);
+      /* ★ 2026-11-01 修的 bug：原来写成 `Whose ${w.w} is this?` —— 句子是完整的、
+         没有空格可补，而且答案单词就印在题干里，孩子照抄就能选对。
+         改成 `Whose __ is this?`（空出来的是"谁的东西"）。 */
+      return { q: `这是谁的${w.zh}？`, sent: `Whose __ is this?`, opts: [w.w, plurOf(w.w), 'a'], ans: w.w,
+        zh: `Whose ${w.w} is this? 这是谁的${w.zh}？`, e: w.e };
+    },
     () => {
       const w = pickSafe(ingPool);
       const ing = ingOf(w.w);
@@ -867,6 +897,8 @@ window._sentLevel = function (lv) {
 function plurSafe(w) { return typeof pluralSafe === 'function' ? pluralSafe(w) : !/(s|x|z|sh|ch)$/.test(w.w); }
 function plurOf(w) { return typeof pluralOf === 'function' ? pluralOf(w) : w.w + 's'; }
 function isCountable(w) { return typeof countable === 'function' ? countable(w) : true; }
+/* 能不能加 a/an（专有名词 / 方位 / 学科不能）—— 规则在 grammar-engine.js 的 takesArticle */
+function canArt(w) { return typeof canTakeArticle === 'function' ? canTakeArticle(w) : isCountable(w); }
 function themeWordsById(ids) {
   const out = [];
   ids.forEach(id => { const t = THEMES.find(x => x.id === id); if (t) t.words.forEach(w => { if (!w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w)) out.push(w); }); });

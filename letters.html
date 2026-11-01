@@ -140,7 +140,7 @@ function renderStage(speakIt) {
 
       <div class="word-mini-row">
         ${l.words.map(w => `
-          <div class="word-mini" onclick="sayWord(this,'${w.w}')" title="点一下，读一遍">
+          <div class="word-mini" onclick="sayWord(this,'${String(w.w).replace(/'/g, "\\'")}')" title="点一下，读一遍">
             <div class="we">${wordIcon(w)}</div>
             <b>${w.w}</b><span>${w.zh}</span>
             ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : ''}

@@ -19,14 +19,14 @@
 | js/data.js | v32 | 字母岛 / 句子工厂等数据 |
 | js/sentence.js | v44 | 句子朗读引擎（两词一组连读 + 词组高亮，句子工厂/游戏/Get Smart 共用） |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
-| js/grammar-engine.js | v4 | 语法引擎（词性、复数、冠词、句型转换） |
+| js/grammar-engine.js | v5 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v2 | 音标 |
 | js/build-data.js | v1 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | css/style.css | v46 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v3 | 内置 emoji SVG（617 条）。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
-| sw.js | birdie-abc-v98 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
+| sw.js | birdie-abc-v99 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -108,3 +108,35 @@
 - Get Smart 课程数据里有 **约 200 个 emoji 不在内置图库里**（🐓🦅🦖🟡🩷🪑 等），
   老 Windows 上会是黑白/空白。补进图库会让文件再涨约 130KB(gzip)，
   和「首屏要快」直接冲突，所以先留着，等确认要不要为老机器付这个带宽。
+
+## 2026-11-01 第二批：出题语义修复（把"能出题"变成"出的题是对的"）
+
+上一批修的是"题面会不会泄题"，这一批把生成出来的**英文本身**拿去逐句验，
+发现 6 类真错句（都是模板 + 词池没对齐导致的）：
+
+1. **I eat milk. / I eat water.** —— 「我吃 X」的词池直接用整个 food 主题，
+   而里面含 milk/water/juice/tea。修：食物池排掉饮品，饮品走「我喝 X」。
+2. **Whose book is this?（没有空格）** —— 句型题应该挖空，原来句子是完整的，
+   答案单词直接印在题干里，孩子照抄就能选。修：改成 `Whose __ is this?`。
+3. **I don't like sweater.** —— like 后面光秃秃放可数名词单数。修：可数名词用复数。
+4. **I can put. / He can't take. / Do you want to give?** —— 这些模板动词后面没有宾语，
+   及物动词填进去就是半截话。修：加 `BARE_VERBS` 白名单（和 ING_FORM 一个口径）。
+5. **This is a south. / an America. / a music. / I don't like Canadas.**
+   —— 「可数」不等于「能加 a/an」，专有名词/方位/学科既不能加冠词也不能加 s。
+   修：grammar-engine 新增 `NO_ARTICLE` 与 `takesArticle/canTakeArticle`，
+   句子工厂（4 处）、句子火车员、听句选图都改用它。
+6. **This is a work. / a weather. / I like natures.** —— 词库里 pos='n' 但实际不可数的词
+   （work/weather/traffic/space/health…）被当普通名词。修：补进 `UNCOUNTABLE`；
+   people / police 补进 `PLURAL_ONLY`（"This is a people." 是错的）。
+
+顺带：letters.html 的 `sayWord(this,'${w.w}')` 补上撇号转义（当前数据没有撇号词，
+属潜在隐患，按项目铁律"任何可能含撇号的文本都不许裸拼进 onclick"先堵上）。
+
+### 验证（这一轮全是真浏览器 + 沙箱批量出题）
+- 单词镇四种题型 × 6000 题：0 问题
+- 句子火车员三档 × 7200 题：0 问题（修前平均每 7200 题约 230 个错句）
+- 句子工厂 19 关 × 6480 题：0 问题
+- 造词实验室 312 条 × 9360 次选项生成：0 问题
+- 字母岛 26 字母 × 40 轮 = 1040 次：0 问题
+- 同步码往返（3524B 进度 → 1195 字符）：字段零丢失，导入可用，带换行也能解析，坏码会报错
+- 8 个页面 + 7 个游戏的入口冒烟（含 19 个语法关卡、拼写/听写/跟读）：0 未捕获异常
