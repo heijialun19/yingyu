@@ -203,14 +203,31 @@
   <footer style="text-align:center;color:#5C6273;font-size:.72rem;line-height:1.9;margin-top:30px">
     小鸟英语乐园 Birdie ABC · 本站为学习方法演示原型，内容供家庭学习参考
   </footer>
+
+  <!-- 版本 + 朗读诊断：排障用，孩子不会点进来 -->
+  <section class="card" id="diagBox" style="margin-top:18px;padding:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <b style="font-size:.95rem">🔧 版本与朗读诊断</b>
+      <span id="verLine" style="font-size:.78rem;color:#5C6273">…</span>
+    </div>
+    <p style="font-size:.76rem;color:#5C6273;margin:8px 0">
+      句子朗读是「几段音频接龙」。如果出现「念到一半停了」，把下面这段发给开发者，
+      里面记着每一段是播完、失败还是没出声。
+    </p>
+    <pre id="audLog" style="max-height:220px;overflow:auto;background:#F7F9FC;border:1px solid #E3E8F0;border-radius:10px;padding:10px;font-size:.72rem;line-height:1.6;white-space:pre-wrap"></pre>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn ghost" type="button" id="audCopy">📋 复制诊断</button>
+      <button class="btn ghost" type="button" id="audClear">🧽 清空</button>
+    </div>
+  </section>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=32"></script>
 <script src="svg/word-svg.js?v=3"></script>
-<script async src="svg/emoji-svg.js?v=4"></script>
+<script async src="svg/emoji-svg.js?v=5"></script>
 <script src="js/data.js?v=33"></script>
-<script src="js/app.js?v=59"></script>
-<script src="js/sentence.js?v=45"></script>
+<script src="js/app.js?v=60"></script>
+<script src="js/sentence.js?v=46"></script>
 <script>
 renderNav('parents'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -294,11 +311,45 @@ renderSpeechDiag();
 
 /* 重置当前档案 */
 $('#resetBtn').addEventListener('click', function () {
-  if (confirm(`确定要清空当前档案（${Profiles.active().name}）的全部学习进度吗？此操作无法恢复。`)) {
+  if (confirm(`确定要清空当前档案（Profiles.active().name）的全部学习进度吗？此操作无法恢复。`)) {
     Store.resetActive();
     location.reload();
   }
 });
+
+/* ---- 版本 + 朗读诊断 ----
+   放在家长中心（孩子不会点进来），排障时一眼就能看到「手上是哪一版、
+   刚才那句话到底播了几段、第几段失败」。 */
+(function () {
+  const box = document.getElementById('diagBox');
+  if (!box) return;
+  const appSrc = (document.querySelector('script[src*="js/app.js"]') || {}).src || '';
+  const m = appSrc.match(/app\.js\?v=(\d+)/);
+  const ver = (typeof BUILD !== 'undefined' ? BUILD : '?') + ' · app.js v' + (m ? m[1] : '?');
+  document.getElementById('verLine').textContent = ver;
+
+  function render() {
+    const log = (typeof window.auditLog === 'function' ? window.auditLog() : []) || [];
+    document.getElementById('audLog').textContent = log.length
+      ? log.slice(-40).map(r => `${String(r[0]).padStart(7)}s  ${String(r[1]).padEnd(4)} ${r[2]} ${r[3]}`).join('\n')
+      : '（还没有朗读记录）';
+  }
+  render();
+
+  document.getElementById('audCopy').addEventListener('click', function () {
+    const log = (typeof window.auditLog === 'function' ? window.auditLog() : []) || [];
+    const text = ver + '\n' + log.map(r => `${r[0]}s ${r[1]} ${r[2]} ${r[3]}`).join('\n');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => toast('已复制'), () => toast('复制失败，长按文本框手动复制'));
+    } else {
+      toast('长按下面的文本手动复制');
+    }
+  });
+  document.getElementById('audClear').addEventListener('click', function () {
+    if (typeof window.auditClear === 'function') window.auditClear();
+    render();
+  });
+})();
 </script>
 </body>
 </html>

@@ -14,10 +14,10 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v59 | 全站共享运行时：发音系统（本地音频优先 + 坏音频自愈）、词图、星星、档案、导航 |
+| js/app.js | v60 | 全站共享运行时：发音系统（本地音频优先 + 坏音频自愈）、词图、星星、档案、导航 |
 | js/words-data.js | v32 | 1000 词词库 |
 | js/data.js | v33 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
-| js/sentence.js | v45 | 句子朗读引擎（两词一组连读 + 词组高亮，句子工厂/游戏/Get Smart 共用） |
+| js/sentence.js | v46 | 句子朗读引擎（两词一组连读 + 词组高亮，句子工厂/游戏/Get Smart 共用） |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v5 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v2 | 音标 |
@@ -25,9 +25,9 @@
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | css/style.css | v46 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
-| svg/emoji-svg.js | v4 | 内置 emoji SVG **基础库 617 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
-| svg/emoji-svg2.js | v1 | 内置 emoji SVG **课程扩展 195 条**（🐓🦅🦖🟡🩷🪑…）。只有 getsmart.html 加载，async |
-| sw.js | birdie-abc-v101 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
+| svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
+| svg/emoji-svg2.js | v2 | 内置 emoji SVG **课程扩展 186 条**（🐓🦅🦖🟡🩷🪑…）。只有 getsmart.html 加载，async |
+| sw.js | birdie-abc-v102 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -108,6 +108,21 @@
    改成只预热「下一课」前 8 个词，等 `requestIdleCallback` 空闲再开始。
 3. **加载层 6 秒兜底**：纯 CSS `#bootLoader { animation: bootAutoHide 0s linear 6s forwards }`，
    万一脚本报错也不会永久转圈。
+
+## 2026-11-01 第六批：给「句子念一半」装上黑匣子
+
+第五批上线后用户复测仍然停在 pencil。开发机（桌面 Chrome，限速 120KB/s + 400ms）
+复现不出来：真实点击 + 严格自动播放策略下整句都能念完，所以只能让真机自己说话。
+
+1. **家长中心底部新增「版本与朗读诊断」**（`parents.html`）：
+   - 显示 `BUILD`（`js/app.js` 顶部的 `2026-11-01.x`）+ 实际加载的 `app.js?v=N`
+     —— 用户说"还是不行"时，第一件事就是确认他手上是哪一版（版本混用已经踩过两次）
+   - 下面是最近 40 条朗读事件：`play / end / fail / 看门狗`，带第几个音源、共用还是新建元素
+   - 「📋 复制诊断」一键复制，`localStorage.birdie_audit_v1` 存最近 80 条
+2. **`__speakFrom` 全段 try/catch**：任何异常都只跳过当前段，绝不把整句卡死在半路
+3. 顺带：家长中心的 🔧 是新加的 emoji，重新生成图库时发现
+   **生成器会把「非课程页也用到」的新 emoji 全塞进扩展库** → 那些页面没加载扩展库就没图。
+   改成：只有「仅出现在课程数据/课程页」的进扩展库，其余进基础库。基础库 617 → 626。
 
 ## 2026-11-01 第五批：句子「念完 pencil 就停」的真正原因
 

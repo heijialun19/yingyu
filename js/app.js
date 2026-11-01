@@ -4,6 +4,11 @@
    ============================================================ */
 'use strict';
 
+/* 构建标识：家长中心底部会显示它。
+   用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
+   Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
+const BUILD = '2026-11-01.6';
+
 const $  = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -446,6 +451,37 @@ function __purgeAudioCache(url) {
     }).catch(() => {});
   } catch (e) { /* 删不掉就算了，绝不影响播放 */ }
 }
+/* ===== 朗读诊断（只给家长中心看，孩子看不到） =====
+   为什么要有：句子朗读是「多段音频接龙」，真机上出问题时用户只能描述
+   「念到一半停了」，没有别的线索；而这台开发机又复现不出来（桌面浏览器
+   的自动播放策略和手机不一样）。
+   记最近 80 条：播放哪一段、共用还是新建元素、结束还是失败、用第几个音源。
+   存 localStorage，家长中心底部可一键复制。 */
+const __AUD_LOG_KEY = 'birdie_audit_v1';
+const __audLog = (() => {
+  try {
+    const raw = localStorage.getItem(__AUD_LOG_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr.slice(-80) : [];
+  } catch (e) { return []; }
+})();
+let __audTimer = 0;
+function __alog(kind, text, extra) {
+  try {
+    const t = (typeof performance !== 'undefined' ? performance.now() : Date.now()) / 1000;
+    __audLog.push([Math.round(t * 10) / 10, kind, String(text == null ? '' : text).slice(0, 28), extra || '']);
+    if (__audLog.length > 80) __audLog.shift();
+    if (!__audTimer) {
+      __audTimer = setTimeout(() => {
+        __audTimer = 0;
+        try { localStorage.setItem(__AUD_LOG_KEY, JSON.stringify(__audLog)); } catch (e) {}
+      }, 800);
+    }
+  } catch (e) {}
+}
+window.auditLog = () => __audLog;
+window.auditClear = () => { __audLog.length = 0; try { localStorage.removeItem(__AUD_LOG_KEY); } catch (e) {} };
+
 /* 媒体元素兜底（v4 链路 + 句子复用同一个元素）：唯一声源保证 + 重试一次。
    epoch 由调用方传入并负责递增——重试时也走同一令牌，不会和归一化路径抢令牌。
 
@@ -477,16 +513,18 @@ function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs
   a.preload = 'auto';
   __curAudio = a;
   __inflight.add(a);
+  __alog('play', text, (reuseEl ? '共用' : '新建') + '#' + si + (isRetry ? '·重试' : ''));
   let done = false, guard = null, played = false;
   /* 计时器统一登记：stopAllSpeech 时一次性拆干净。
      否则翻页/切题后，9 秒前的旧 guard 到点会把旧词又播一遍。 */
   const clearG = () => { if (guard) { clearTimeout(guard); __guards.delete(guard); guard = null; } };
   const setG = ms => { guard = setTimeout(fail, ms); __guards.add(guard); };
   const disarm = () => { try { a.onended = a.onerror = a.oncanplay = a.onplaying = null; a.pause(); } catch (e) {} };
-  const end = () => { if (!done) { done = true; clearG(); __inflight.delete(a); if (onEnd) onEnd(); } };
+  const end = () => { if (!done) { done = true; clearG(); __inflight.delete(a); __alog('end', text); if (onEnd) onEnd(); } };
   const fail = () => {
     if (done) return;
     done = true; clearG(); disarm(); __inflight.delete(a); // 解除全部回调：迟到的加载绝不再出声
+    __alog('fail', text, 'src' + si + (isRetry ? '·已重试' : ''));
     /* 已被更新的一次点击取代：绝不重试、绝不回头抢声源
        （重试会 ++epoch，把用户正在听的新词掐掉再播回旧词）。 */
     if (epoch !== __audioEpoch) return;
@@ -512,7 +550,8 @@ function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs
     if (done) return;
     if (a.ended) return end();
     const t = a.currentTime || 0;
-    if (t > 0.15) return end();
+    if (t > 0.15) { __alog('看门狗', text, '已出声' + t.toFixed(2) + 's'); return end(); }
+    __alog('看门狗', text, '没出声');
     fail();
   };
   a.onended = end;

@@ -61,17 +61,23 @@ function __hiChunk(spans, i, n) { __clearHi(spans); if (spans) for (let k = i; k
 function __speakFrom(tokens, spans, i, fails, voice) {
   if (i >= tokens.length) { __finishSpeak(spans); return; }
   const n = Math.min(__CHUNK_MAX, tokens.length - i);
-  const text = tokens.slice(i, i + n).map(__spokenToken).join(' ');
-  if (__brokenChunks.has(text)) { __speakOne(tokens, spans, i, i + n, fails, voice); return; }
+  try {
+    const text = tokens.slice(i, i + n).map(__spokenToken).join(' ');
+    if (__brokenChunks.has(text)) { __speakOne(tokens, spans, i, i + n, fails, voice); return; }
 
-  __hiChunk(spans, i, n);
-  playDictAudio(text, 1,
-    () => __speakFrom(tokens, spans, i + n, 0, voice),
-    () => {                              // 词组合成失败：多半含生僻词 → 降级为逐词
-      __brokenChunks.add(text);
-      __speakOne(tokens, spans, i, i + n, fails, voice);
-    }, false, 6000, 0, voice);
-  __prewarmChunk(tokens, i + n);         // 播放当前组的同时预热下一组
+    __hiChunk(spans, i, n);
+    playDictAudio(text, 1,
+      () => __speakFrom(tokens, spans, i + n, 0, voice),
+      () => {                              // 词组合成失败：多半含生僻词 → 降级为逐词
+        __brokenChunks.add(text);
+        __speakOne(tokens, spans, i, i + n, fails, voice);
+      }, false, 6000, 0, voice);
+    __prewarmChunk(tokens, i + n);         // 播放当前组的同时预热下一组
+  } catch (e) {
+    /* 任何意外都不许把整句卡死在半路：跳过这一段，接着念下一段 */
+    try { if (window.console) console.warn('[speak] 跳过第', i, '段:', e && e.message); } catch (x) {}
+    setTimeout(() => __speakFrom(tokens, spans, i + n, 0, voice), 30);
+  }
 }
 
 /* 降级链：组内逐词读（单词查询必稳）；连续失败 3 次才放弃 */
