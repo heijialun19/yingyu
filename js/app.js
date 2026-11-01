@@ -389,10 +389,14 @@ const localAudioURL = t => {
   return __LOCAL_AUDIO.has(k) ? `audio/${k}.mp3?v=${AUDIO_VER}` : '';
 };
 /* 音源优先级：有本地就用本地，本地失败自动换有道（绝不因此变哑）。
-   短语（句子连读的两词一组）一般没有本地文件，直接走有道。 */
-const __audioSources = t => {
+   短语（句子连读的两词一组）一般没有本地文件，直接走有道。
+   ★ bust：重试时必须换个 URL。有道是 opaque 响应，SW 分不清好坏，失败的那条
+     （比如 500）已经进了缓存；不换 URL 的话「重试」拿到的是缓存里那份坏响应，
+     等于把同一个错误再听一遍。加个一次性参数就绕开了。 */
+const __audioSources = (t, bust) => {
   const l = localAudioURL(t);
-  return l ? [l, DICT_AUDIO_URL(t)] : [DICT_AUDIO_URL(t)];
+  const dict = DICT_AUDIO_URL(t) + (bust ? '&_r=' + bust : '');
+  return l ? [l, dict] : [dict];
 };
 let __curAudio = null;
 let __inflight = new Set();   // 所有在途 Audio（含预热），统一管理
@@ -421,11 +425,32 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs, startIdx) 
   if (!t) { if (onFail) onFail(); return; }
   __playMediaElement(t, rate, epoch, onEnd, onFail, isRetry, timeoutMs, startIdx);
 }
+/* ===== 坏音频自愈：把这条 URL 从缓存里踢掉 =====
+   ★ 2026-11-01「读的不全」的根因之一：
+     有道的响应不带 CORS 头，落在页面上是 opaque 响应 —— SW 那边 status 恒为 0、
+     ok 恒为 false，**分不清「200 的音频」和「500 的错误 JSON」**，只能原样缓存
+     （见 sw.js：res.ok || res.type === 'opaque'）。
+     于是一次偶发的 500 会把这个词永久钉死在缓存里：往后每次播都拿到那条错误响应，
+     这台设备上这个词就再也不出声了 —— 换台电脑又是好的，极难复现。
+     句子连读是两词一组，坏掉哪个片段，听起来就是「这句话没读全」。
+   修法：播放最终失败时主动删缓存条目，让下次（含这次的重试）拿到真实响应。
+   不依赖 SW 消息通道：页面和 SW 共用同一个 CacheStorage，直接删就行，
+   也就不需要知道 CACHE 叫什么名字。 */
+function __purgeAudioCache(url) {
+  try {
+    const u = String(url || '');
+    if (!u || !/dict\.youdao\.com/.test(u)) return;      // 本地 mp3 不在此列
+    if (!window.caches || !caches.keys) return;
+    caches.keys().then(ks => {
+      ks.forEach(k => { caches.open(k).then(c => c.delete(u)).catch(() => {}); });
+    }).catch(() => {});
+  } catch (e) { /* 删不掉就算了，绝不影响播放 */ }
+}
 /* 媒体元素兜底（v4 链路，原封不动）：全新 Audio + 唯一声源保证 + 重试一次。
    epoch 由调用方传入并负责递增——重试时也走同一令牌，不会和归一化路径抢令牌。 */
 function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, srcIdx) {
   rate = 1; // mobile compat: always normal speed
-  const srcs = __audioSources(text);
+  const srcs = __audioSources(text, isRetry ? Date.now() : 0);
   const si = Math.min(srcIdx || 0, srcs.length - 1);
   const a = new Audio(srcs[si]);
   a.preload = 'auto';
@@ -447,8 +472,11 @@ function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs
     /* 本地文件取不到（删除/损坏/部署不全）→ 立刻换下一个音源。
        这不算"失败重试"：孩子不该为一个仓库问题多等两秒。 */
     if (si + 1 < srcs.length) { __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, si + 1); return; }
-    /* 自动重试一次：从"最后试过的那个音源"再来，不回头再撞 404 的本地文件 */
-    if (!isRetry) { playDictAudio(text, rate, onEnd, onFail, true, timeoutMs, si); return; }
+    /* 自动重试一次：从"最后试过的那个音源"再来，不回头再撞 404 的本地文件。
+       重试前先把这条 URL 从缓存里删掉 —— 否则缓存里就是那条坏响应，
+       重试等于把同一份错误再听一遍（见 __purgeAudioCache 的说明）。 */
+    if (!isRetry) { __purgeAudioCache(srcs[si]); playDictAudio(text, rate, onEnd, onFail, true, timeoutMs, si); return; }
+    __purgeAudioCache(srcs[si]);
     const now = Date.now();
     if (now - __dictFailNotified > 30000) { __dictFailNotified = now; toast('📶 发音加载失败，请检查网络后重试'); }
     if (onFail) onFail();

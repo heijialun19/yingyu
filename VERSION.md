@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v57 | 全站共享运行时：发音系统（本地音频优先）、词图、星星、档案、导航 |
+| js/app.js | v58 | 全站共享运行时：发音系统（本地音频优先 + 坏音频自愈）、词图、星星、档案、导航 |
 | js/words-data.js | v32 | 1000 词词库 |
 | js/data.js | v33 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v44 | 句子朗读引擎（两词一组连读 + 词组高亮，句子工厂/游戏/Get Smart 共用） |
@@ -27,7 +27,7 @@
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v4 | 内置 emoji SVG **基础库 617 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v1 | 内置 emoji SVG **课程扩展 195 条**（🐓🦅🦖🟡🩷🪑…）。只有 getsmart.html 加载，async |
-| sw.js | birdie-abc-v100 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
+| sw.js | birdie-abc-v101 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -108,6 +108,55 @@
    改成只预热「下一课」前 8 个词，等 `requestIdleCallback` 空闲再开始。
 3. **加载层 6 秒兜底**：纯 CSS `#bootLoader { animation: bootAutoHide 0s linear 6s forwards }`，
    万一脚本报错也不会永久转圈。
+
+## 2026-11-01 第四批：句子「读不全」（用户截图反馈句型闯关）
+
+用户报「读的不全」，截图是 Get Smart 句型闯关的一句 `Is this a pencil? Yes, it is.`。
+用真实 `js/sentence.js` + 真实网络跑了一遍，链路上**没有写错逻辑**——7 个词每个都被念到。
+真正的问题是音频本身，两条：
+
+### 1. 一次偶发 500 会把这个词永久钉死在这台设备上（主因）
+
+有道的响应不带 CORS 头，落到页面上是 **opaque 响应**：`status` 恒为 0、`ok` 恒为 false，
+SW 那边**分不清「200 的音频」和「500 的错误 JSON」**，只能原样缓存
+（sw.js 的判断是 `res.ok || res.type === 'opaque'`）。
+于是一个词只要失败过一次，缓存里就永远躺着那条错误响应 → 以后每次播都拿它 →
+**这个设备上这个词再也不出声**。句子是两词一组，坏掉哪一组、或者组内降级后坏掉哪个词，
+听起来就是「这句话没读全」。换台电脑/无痕窗口又是好的，所以极难复现。
+
+修法（js/app.js）：
+- 新增 `__purgeAudioCache(url)`：播放最终失败时，直接把这个 URL 从**所有** CacheStorage
+  里删掉（页面和 SW 共用同一个存储，不需要知道 CACHE 叫什么，也不用走消息通道）。
+- 重试必须换 URL：`__audioSources(text, bust)` 在重试时加 `&_r=<时间戳>`，
+  否则「重试」拿到的还是缓存里那份坏响应，等于把同一个错误再听一遍。
+- `CACHE` 升到 v101：老用户缓存里的历史毒条目一次性清空（代价是 youdao 音频缓存重下一次）。
+
+### 2. 两词一组的成功率已经掉到 57%，中途撞 500 就是「卡一下」
+
+2026-10-25 的记录是「2 词 88% 成功」，**2026-11-01 实测 40 个真实词组样本只有 23 个成功
+（17 个 500）**；整句一次合成的成功率更低，29 个样本只有 1 个成功。
+失败要在播放中途白等一次往返才降级成逐词，听感就是断断续续。
+
+修法：`renderSentences()` 渲染时就 `prewarmSentence(s.en)` 把整句的词组先探一遍
+——ⓘ 这个函数在 sentence.js 里定义了、注释也写了「翻页时预热」，**但全站从来没有调用过**，
+是死代码。接上之后：坏词组在播放前就被标记，点「再听一遍」直接走单词，中间不再有空档。
+
+### 3. 顺带修：点句子卡片会把中文那一行吞掉
+
+`<div id="sentBox" onclick="speakSentence(text,this)">` 里 `this` 是整张卡，
+而 `speakSentence` 会 `el.innerHTML = ...` 把内容换成单词 span —— 中文释义和样式一起没了。
+改成传 `this.querySelector('.se')`，只把英文那一行拆成单词。
+（实测：点完之后 `.sz` 仍在，`.se` 里 3 个 `.w`。）
+
+### 验证
+
+- 真实网络 + 真实 sentence.js 跑 `Is this a pencil? Yes, it is.`：请求序列
+  `Is this(200) → a pencil(200) → Yes it(500) → Yes(200) → it(200) → is(200)`，7 词全覆盖
+- 单词失败率 0/39（所以降级路径是可靠的）；两词词组失败率 17/40；整句 28/29 失败
+- `__purgeAudioCache` 用源码原文跑单测：两个缓存都删、本地 mp3 不误删
+- 重试 URL：`...&audio=cat` → `...&audio=cat&_r=12345`（普通播放不带）
+- 预热生效：预热阶段标掉 `Yes it` 后，播放序列里不再出现它
+- 7 页真实浏览器冒烟：0 异常、0 残留字体 emoji、getsmart 812 keys / 其余 617
 
 ## 2026-11-01 第三批：补齐课程 emoji + 老内核兜底
 

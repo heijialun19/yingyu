@@ -71,7 +71,7 @@
      合并，谁先到都不影响对方。 -->
 <script async src="svg/emoji-svg2.js?v=1"></script>
 <script src="js/data.js?v=33"></script>
-<script src="js/app.js?v=57"></script>
+<script src="js/app.js?v=58"></script>
 <script src="js/sentence.js?v=44"></script>
 <script src="js/getsmart-data.js?v=10"></script>
 <script>
@@ -487,7 +487,7 @@ function renderSentences() {
     ${stepBar()}
     <div class="card" style="max-width:620px;margin:0 auto">
       <div class="score-bar"><b>💬 句型闯关</b><span>第 ${L.sIdx + 1} / ${sents.length} 句</span></div>
-      <div class="gs-sentcard" id="sentBox" onclick="speakSentence('${jsq(s.en)}',this)" title="点一下，跟着读">
+      <div class="gs-sentcard" id="sentBox" onclick="speakSentence('${jsq(s.en)}',this.querySelector('.se'))" title="点一下，跟着读">
         <div class="se" lang="en">${esc(s.en)}</div>
         <div class="sz">${esc(s.zh)}</div>
       </div>
@@ -500,6 +500,13 @@ function renderSentences() {
         <button class="btn grape big" onclick="gsNextSent()">${L.sIdx === sents.length - 1 ? '都会议论啦 ▶' : '会了 ▶'}</button>
       </div>
     </div>`;
+  /* 渲染时就把这句的「两词一组」逐个预热：
+       · 有道对任意词组的成功率只有约 57%（2026-11-01 实测 40 个样本 17 个 500），
+         播放中途撞上 500 会先白等一次往返、再降级成逐词 —— 听起来就是「这句没读全」
+       · 预热阶段就能把坏词组标记出来、并把组内单词先暖好，
+         真正点「再听一遍」时坏片段直接走单词，中间不再有空档
+     注意：prewarmSentence 原来定义了却从来没被调用过（死代码），这里接上。 */
+  try { prewarmSentence(s.en); } catch (e) {}
   setTimeout(() => speakSentence(s.en), 500);
 }
 function gsNextSent() {
