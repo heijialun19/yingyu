@@ -497,7 +497,7 @@ function renderSentences() {
       <p style="text-align:center;color:#6B7280;font-size:.85rem">大声跟着读两遍，再点「会了」👇</p>
       <div class="gs-navrow">
         ${L.sIdx > 0 ? '<button class="btn ghost big" onclick="L.sIdx--;renderStep()">◀ 上一句</button>' : ''}
-        <button class="btn grape big" onclick="gsNextSent()">${L.sIdx === sents.length - 1 ? '都会议论啦 ▶' : '会了 ▶'}</button>
+        <button class="btn grape big" onclick="gsNextSent()">${L.sIdx === sents.length - 1 ? '都会读啦 ▶' : '会了 ▶'}</button>
       </div>
     </div>`;
   /* 渲染时就把这句的「两词一组」逐个预热：
