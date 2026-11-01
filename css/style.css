@@ -802,3 +802,10 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 #sexp .wsvg,
 #sexp2 .wsvg,
 #pexp .wsvg { width: 1.15em; height: 1.15em; vertical-align: -0.18em; }
+
+/* ---------- 首屏加载层的兜底 ----------
+   各页的 #bootLoader 由 app.js 末尾移除；万一某个脚本报错/超时，
+   用户会永久看到转圈。这里给一条纯 CSS 的兜底：最多挡 6 秒就自动淡出，
+   最坏情况是"没样式的内容"，也好过永远转圈。 */
+#bootLoader { animation: bootAutoHide 0s linear 6s forwards; }
+@keyframes bootAutoHide { to { opacity: 0; visibility: hidden; } }

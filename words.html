@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=45">
+<link rel="stylesheet" href="css/style.css?v=46">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -81,9 +81,9 @@
 
 <script src="js/words-data.js?v=32"></script>
 <script src="svg/word-svg.js?v=3"></script>
-<script src="svg/emoji-svg.js?v=2"></script>
+<script async src="svg/emoji-svg.js?v=3"></script>
 <script src="js/data.js?v=32"></script>
-<script src="js/app.js?v=56"></script>
+<script src="js/app.js?v=57"></script>
 <script src="js/sentence.js?v=44"></script>
 <script src="js/speech.js?v=1"></script>
 <script src="js/ipa.js?v=2"></script>
@@ -565,7 +565,11 @@ function startSpeak() {
   });
   if (!qs.length) { toast('这些词太长了，换一批试试～'); return; }
 
-  const supported = speechRecognitionAvailable();
+  /* ★ 2026-11-01：speech.js 万一没加载成功（离线且没进 SW 预缓存、
+     或者被网络截断），这里直接调用会抛 ReferenceError，
+     整个跟读入口崩掉、连「点音节跟读」的降级都走不到。
+     所以先用 typeof 判一下，缺了就当成「设备不支持」走降级。 */
+  const supported = (typeof speechRecognitionAvailable === 'function') ? speechRecognitionAvailable() : false;
   session = { kind: 'speak', qs, idx: 0, score: 0, label, supported, tries: 0, best: [] };
   mode = 'speak'; renderSpeak();
 }

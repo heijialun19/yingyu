@@ -361,9 +361,32 @@ const __LOCAL_AUDIO = (() => {
   } catch (e) {}
   return set;
 })();
+/* ===== Get Smart 词库的音频补登记 =====
+   ★ 2026-11-01 修的 bug：audio/ 里有 1896 个 mp3，其中 644 个属于
+     Get Smart 独有的词（insect / stand up / bicycle / crocodile …），
+     但 __LOCAL_AUDIO 只按「1000 词词库 + 造词实验室」建，
+     而 getsmart-data.js 比 app.js **晚加载**（脚本顺序），
+     于是这 644 个词一律查不到本地文件 → 全部回退有道：
+       · 在线要多绕一圈外网（getsmart 的 prewarmBatch 一次发几百个请求）
+       · 断网直接没声音 —— 6 册 237 课的单词点读全哑
+     文件明明已经在包里，只是没人登记。这里改成「第一次查不到就补登记一次」，
+     不依赖脚本加载顺序，任何页面都能受益。 */
+let __gsAudioRegistered = false;
+function __registerGSAudio() {
+  if (__gsAudioRegistered) return;
+  if (typeof GS_LEVELS === 'undefined' || !GS_LEVELS) return;   // 该页没加载课程数据
+  __gsAudioRegistered = true;
+  try {
+    GS_LEVELS.forEach(lv => (lv.units || []).forEach(u => {
+      (u.words || []).forEach(w => { const k = audioSlug(w.w); if (k) __LOCAL_AUDIO.add(k); });
+    }));
+  } catch (e) {}
+}
 const localAudioURL = t => {
   const k = audioSlug(t);
-  return k && __LOCAL_AUDIO.has(k) ? `audio/${k}.mp3?v=${AUDIO_VER}` : '';
+  if (!k) return '';
+  if (!__LOCAL_AUDIO.has(k)) __registerGSAudio();
+  return __LOCAL_AUDIO.has(k) ? `audio/${k}.mp3?v=${AUDIO_VER}` : '';
 };
 /* 音源优先级：有本地就用本地，本地失败自动换有道（绝不因此变哑）。
    短语（句子连读的两词一组）一般没有本地文件，直接走有道。 */
@@ -602,7 +625,9 @@ const __emojiSvgCache = new Map();
 function emojiSvgFor(cl) {
   const k = normEmoji(cl);
   if (__emojiSvgCache.has(k)) return __emojiSvgCache.get(k);
-  const v = (typeof WORD_EMOJI !== 'undefined' && WORD_EMOJI[k]) ? WORD_EMOJI[k] : '';
+  /* 图库（svg/emoji-svg.js，gzip 290KB）是 async 加载的，可能比这里晚到。
+     所以读 window.WORD_EMOJI —— 读到空就先用字体字形顶上，图库到了再升级。 */
+  const v = (window.WORD_EMOJI && window.WORD_EMOJI[k]) ? window.WORD_EMOJI[k] : '';
   __emojiSvgCache.set(k, v);
   return v;
 }
@@ -696,7 +721,7 @@ function paintEmoji(root) {
   if (root.nodeType === 3) { __paintTextNode(root); return; }
   if (root.nodeType !== 1) return;
   if (__noPaintTag[root.nodeName]) return;
-  if (typeof WORD_EMOJI === 'undefined') return;   // 图库没加载，别折腾
+  if (!window.WORD_EMOJI) return;                 // 图库还没到，等 __emojiSvgReady 再来
   if (!__hasEmojiChar(root.textContent || '')) return;
   if (typeof document.createTreeWalker !== 'function') return;
   /* 先收集再改：TreeWalker 边走边改会漏节点 */
@@ -735,7 +760,7 @@ function __emojiQueue(n) {
 let __emojiMO = null;
 function __bootEmojiPaint() {
   if (typeof document === 'undefined' || !document.body) return;
-  if (typeof WORD_EMOJI === 'undefined') return;
+  if (!window.WORD_EMOJI) return;
   paintEmoji(document.body);
   if (typeof MutationObserver !== 'function' || __emojiMO) return;
   __emojiMO = new MutationObserver(function (muts) {
@@ -763,6 +788,34 @@ if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', __bootEmojiPaint);
   else __bootEmojiPaint();
 }
+
+/* ---------------- 图库到货后的「升级」 ----------------
+   ★ 2026-11-01 首屏提速：svg/emoji-svg.js 原始 857KB、gzip 290KB，
+     占了首页传输量的 66%，而且原来排在 app.js 前面 —— 全屏加载层要等它下完才消失，
+     手机上就是「一直转圈加载不完」。
+     现在它改成 async（浏览器并行下载、不挡解析），页面先用系统 emoji 字形顶上，
+     图库一到就把图标逐个换成矢量图：
+       · 现代手机/电脑：字形本来就是彩色的，用户几乎看不出差别
+       · 老 Windows / 无彩色 emoji 字体的机器：先看到黑白轮廓，图库到了自动变彩色
+     两种情况都不影响功能，只是"先能玩，后变漂亮"。 */
+window.__emojiSvgReady = function () {
+  try {
+    if (!window.WORD_EMOJI) return;
+    __emojiSvgCache.clear();                       // 清掉「查不到」的负缓存
+    const spans = document.querySelectorAll('span.emj');
+    for (let i = 0; i < spans.length; i++) {
+      const el = spans[i];
+      const t = (el.textContent || '').trim();
+      const svg = t ? emojiSvgFor(t) : '';
+      if (!svg) continue;
+      el.classList.remove('emj');                  // 就地换掉，不嵌套 span
+      el.classList.add('emj-img');
+      el.innerHTML = svg;                          // 自己的常量，无注入风险
+    }
+    __bootEmojiPaint();                            // 剩下的裸字符 + 装上观察器
+  } catch (e) { /* 升级失败就保持字体字形，绝不影响功能 */ }
+};
+if (window.WORD_EMOJI) window.__emojiSvgReady();    // 图库比 app.js 先到的情形
 
 /* 立刻闭嘴：所有在途音频解除回调并暂停（翻页/切题/点新词时用） */
 function stopAllSpeech() {
