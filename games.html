@@ -34,8 +34,8 @@
 
 <script src="js/words-data.js?v=32"></script>
 <script src="svg/word-svg.js?v=3"></script>
-<script async src="svg/emoji-svg.js?v=3"></script>
-<script src="js/data.js?v=32"></script>
+<script async src="svg/emoji-svg.js?v=4"></script>
+<script src="js/data.js?v=33"></script>
 <script src="js/build-data.js?v=1"></script>
 <script src="js/app.js?v=57"></script>
 <script src="js/sentence.js?v=44"></script>
@@ -226,10 +226,14 @@ function gMemory(pool) {
     /* 单词卡按长度缩字号：最长 11 个字母（watermelon / pencil-box），
        原来一律 2rem，在 4 列网格里会被裁掉。 */
     const sizeCls = n => n >= 10 ? ' w-xxl' : n >= 8 ? ' w-xl' : n >= 6 ? ' w-l' : '';
-    const cards = shuffle(picks.flatMap(w => ([
-      { key: w.w, html: `<span class="mem-pic">${iconOf(w)}</span>` },
-      { key: w.w, html: `<span class="mem-word${sizeCls(w.w.length)}">${esc(w.w)}</span>` }
-    ])));
+    /* 一个词变两张卡（图 / 词）。用 forEach 收集而不是 flatMap：
+       flatMap 要 Chromium 69 / Safari 12，比本页其余语法要求都高。 */
+    const pairs = [];
+    picks.forEach(w => {
+      pairs.push({ key: w.w, html: `<span class="mem-pic">${iconOf(w)}</span>` });
+      pairs.push({ key: w.w, html: `<span class="mem-word${sizeCls(w.w.length)}">${esc(w.w)}</span>` });
+    });
+    const cards = shuffle(pairs);
 
     const st = { open: [], done: 0, misses: 0, lock: false };
     $('#app').innerHTML = `

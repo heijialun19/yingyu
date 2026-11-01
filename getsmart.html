@@ -65,8 +65,12 @@
 
 <script src="js/words-data.js?v=32"></script>
 <script src="svg/word-svg.js?v=3"></script>
-<script async src="svg/emoji-svg.js?v=3"></script>
-<script src="js/data.js?v=32"></script>
+<script async src="svg/emoji-svg.js?v=4"></script>
+<!-- 课程专用的 195 个 emoji（🐓🦅🦖🟡🩷🪑…）单独一个文件，只有这一页加载：
+     并进基础库会让首页/单词镇白白多传 119KB(gzip)。两个图库都用 Object.assign
+     合并，谁先到都不影响对方。 -->
+<script async src="svg/emoji-svg2.js?v=1"></script>
+<script src="js/data.js?v=33"></script>
 <script src="js/app.js?v=57"></script>
 <script src="js/sentence.js?v=44"></script>
 <script src="js/getsmart-data.js?v=10"></script>
@@ -323,10 +327,11 @@ function imgOpts(list) {
 }
 function buildUnitQs(u) {
   const ws = u.words || [];
-  /* 词少的课从同模块相邻课借干扰项，保证每课都有听辨/认义练习 */
+  /* 词少的课从同模块相邻课借干扰项，保证每课都有听辨/认义练习。
+     用 reduce 展开而不是 flatMap：flatMap 要 Chromium 69 / Safari 12。 */
   const siblings = curLevel.units
     .filter(x => x.kind === 'unit' && x.id !== u.id)
-    .flatMap(x => (x.words || []))
+    .reduce((acc, x) => acc.concat(x.words || []), [])
     .filter(x => !ws.some(w => w.w === x.w));
   const distractFor = w => shuffle(ws.filter(x => x.w !== w.w)).concat(shuffle(siblings)).slice(0, 3);
   /* 认义题专用：干扰项的中文释义不能和答案或彼此相同，否则会出现两个「正确」选项 */

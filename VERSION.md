@@ -16,7 +16,7 @@
 |---|---|---|
 | js/app.js | v57 | 全站共享运行时：发音系统（本地音频优先）、词图、星星、档案、导航 |
 | js/words-data.js | v32 | 1000 词词库 |
-| js/data.js | v32 | 字母岛 / 句子工厂等数据 |
+| js/data.js | v33 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v44 | 句子朗读引擎（两词一组连读 + 词组高亮，句子工厂/游戏/Get Smart 共用） |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v5 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
@@ -25,8 +25,9 @@
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | css/style.css | v46 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
-| svg/emoji-svg.js | v3 | 内置 emoji SVG（617 条）。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
-| sw.js | birdie-abc-v99 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
+| svg/emoji-svg.js | v4 | 内置 emoji SVG **基础库 617 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
+| svg/emoji-svg2.js | v1 | 内置 emoji SVG **课程扩展 195 条**（🐓🦅🦖🟡🩷🪑…）。只有 getsmart.html 加载，async |
+| sw.js | birdie-abc-v100 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -79,19 +80,24 @@
 
 ## 已知限制（不是 bug，但要知道）
 
-- **Get Smart 的 225 个句子没有离线音频**（只有 1 句中奖）。它们靠 sentence.js 两词一组
+- **Get Smart 的 227 个句子没有离线音频**（只有 1 句中奖）。它们靠 sentence.js 两词一组
   调有道接口朗读，**断网时句子朗读无声**。单词点读不受影响（本地音频已修好）。
-- `svg/` 目录里混着 19 个绘图文稿（batch*.js / memo_*.js / merge.js / colors.js，共约 228KB），
-  没有任何页面引用。保留是因为它们是重画用的源文件；要清理请先确认不需要重画。
+  ⚠️ 2026-11-01 评估过「把 643 个两词词组全烘成本地 mp3」，结论是**不做**，理由三条，
+  别再来一遍：① 有道 dictvoice 对任意短语是**看心情 500**（实测 "Hi I am" / "a red ball"
+  连续 3 次都 500，"she likes apples" 却 200），批量 643 个必然掺一堆空文件；
+  ② 本机没有 ffmpeg，做不了与现有词音一致的响度归一（现有 1000 词已归一到 -12.5 dBFS），
+  音量忽大忽小比没声音更糟；③ SW 已经把播放过的有道响应缓存下来了，
+  「听过的句子」本来就能离线，真正的缺口只剩「第一次就断网」。
 - `robots.txt` / `sitemap.xml` 放在项目站点根目录下，搜索引擎只读**域名根**的 robots.txt，
   所以这个 robots.txt 实际不生效；sitemap 需要去 Google Search Console 手动提交。
+  GitHub Pages 项目站点没法把文件放到域名根，这一条**修不了**，不是待办。
 
 ## 2026-11-01 首屏提速（用户反馈「加载太慢，太久加载不完」）
 
 实测首页要传 440KB（gzip），其中 **`svg/emoji-svg.js` 一家 290KB，占 66%**，
 而且它排在 `app.js` 前面 —— 全屏加载层必须等它下完才消失。手机上就是一直转圈。
 
-1. **图库改 async**：`<script async src="svg/emoji-svg.js?v=3">`，不再挡解析。
+1. **图库改 async**：`<script async src="svg/emoji-svg.js?v=4">`，不再挡解析。
    页面先用系统 emoji 字形顶上（现代手机本来就是彩色），图库到了由
    `window.__emojiSvgReady()` 把图标就地换成矢量图（不嵌套 span）。
    关键路径从 440KB 降到约 156KB。
@@ -103,11 +109,55 @@
 3. **加载层 6 秒兜底**：纯 CSS `#bootLoader { animation: bootAutoHide 0s linear 6s forwards }`，
    万一脚本报错也不会永久转圈。
 
-## 待定（还没做，需要拍板）
+## 2026-11-01 第三批：补齐课程 emoji + 老内核兜底
 
-- Get Smart 课程数据里有 **约 200 个 emoji 不在内置图库里**（🐓🦅🦖🟡🩷🪑 等），
-  老 Windows 上会是黑白/空白。补进图库会让文件再涨约 130KB(gzip)，
-  和「首屏要快」直接冲突，所以先留着，等确认要不要为老机器付这个带宽。
+### 1. 课程 emoji 补齐（原「待定」项，已做）
+
+**问题**：Get Smart 数据里有 **195 个 emoji 不在内置图库**（🐓🦅🦖🟡🩷🪑🧹🪳…），
+老 Windows / 精简系统上是黑白或空白方块。全站 1102 个带图课程词里，
+这 195 个是唯一还依赖系统字体的那一批。
+
+**为什么之前没做**：怕给首屏加 130KB。现在图库本来就是 async 的，
+「首屏」不受影响，只剩带宽竞争问题 —— 所以拆成两个文件：
+
+- `svg/emoji-svg.js` v4 —— 基础库 617 条，**每个页面都加载**（gzip 290KB，和以前一样）
+- `svg/emoji-svg2.js` v1 —— 课程扩展 195 条，**只有 getsmart.html 加载**（gzip 119KB）
+
+两个文件都写成 `Object.assign(window.WORD_EMOJI || {}, {...})` —— async 脚本到达
+顺序不确定，**谁后到谁合并**；直接赋值会让先到的被覆盖（这是唯一的技术坑）。
+验证：getsmart 页面 `Object.keys(WORD_EMOJI).length === 812`，其余页面 617。
+
+剩下 13 个符号（→ ← ★ ✗ ✓ ↑ ♪ ♫ ⇄ ↻ ❙ ✕）Twemoji 15 没有彩色版，
+它们本来就是黑白符号字符，不算缺陷。
+
+### 2. 老内核兜底：去掉 flatMap
+
+`GRADES.flatMap()`（js/data.js 的 THEMES）+ games.html 翻翻乐 + getsmart.html 干扰项，
+三处都改成 `reduce`/`forEach`。原因是 **flatMap 要 Chromium 69 / Safari 12**，
+比本项目其余语法要求（对象展开 + async/await，Chromium 60 / Safari 11.1）**高出一档**。
+落后一档的老平板会在 `const THEMES = ...` 这里抛 TypeError —— 而 THEMES 一挂，
+data.js 后面所有声明（POS_INFO / LETTERS / 19 个语法关）全部不执行，整站数据层报废。
+这是预防性修复，没有线上投诉对应。
+
+静态审计结论（扫全部线上 js/html）：
+- ✅ 没有 `\p{...}`（ES2018 属性转义，微信 X5 解析阶段抛错）、没有 lookbehind、
+  没有 `?.` / `??` / `??=`、没有 `replaceAll` / `.at()` / `replaceChildren` / `globalThis`
+- ✅ `requestIdleCallback` 有 typeof 守卫；`scrollIntoView` 有存在性判断 + try/catch
+- ⚠️ 仍未实测：iOS Safari、微信内置浏览器、老 Android、真机音频听感
+
+### 3. svg/ 里的 19 个绘图文稿已移出仓库
+
+batch2-11.js / colors.js / memo_1-5.js / merge.js（228KB）没有任何页面引用，
+且 `_audit/build_svg.py` 重新生成 word-svg.js 时读的是 **`git show HEAD:svg/word-svg.js`**，
+不是这些批次文件 —— 它们已经彻底不再是构建源。
+已移到仓库外的 `_audit/svg_src/`（保留源文件），`svg/` 现在只有 3 个上线文件。
+
+### 验证（这一轮）
+- 8 个页面真实浏览器探针（Edge headless + virtual-time）：**0 JS 异常、0 残留字体 emoji、0 未替换字符**
+- getsmart 全 176 个单元批量出题：1119 题，每题 4 个互不相同的选项、正确答案必在选项内：0 问题
+- 翻翻乐强行开局 4 对牌：4 图 + 4 词，0 异常
+- THEMES 61 主题 / 1000 词 / grade+gradeName 字段完好（reduce 改写未破坏数据）
+- 课程 1102 个带图词：仅剩 `information ℹ️` 一个符号级字符没有彩色版（可接受）
 
 ## 2026-11-01 第二批：出题语义修复（把"能出题"变成"出的题是对的"）
 

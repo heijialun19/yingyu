@@ -3,8 +3,14 @@
    词库见 words-data.js（小学 1000 词，按年级分主题）
    ============================================================ */
 
-/* 主题列表（供单词镇/游戏/首页使用），由词库按年级展开 */
-const THEMES = GRADES.flatMap(g => g.themes.map(t => Object.assign({ grade: g.id, gradeName: g.name }, t)));
+/* 主题列表（供单词镇/游戏/首页使用），由词库按年级展开。
+   ⚠️ 这里刻意不用 GRADES.flatMap()：flat/flatMap 要 Chromium 69 / Safari 12
+   才支持，比本项目其余语法要求（对象展开 + async，Chromium 60 / Safari 11.1）都高。
+   落后一档的老平板会在这里抛 TypeError —— 而 THEMES 一挂，data.js 后面
+   所有 declare（POS_INFO / LETTERS / 语法关）全都不执行，整站数据层报废。
+   用 reduce 手写，把门槛拉回统一的那一档。 */
+const THEMES = GRADES.reduce((acc, g) =>
+  acc.concat(g.themes.map(t => Object.assign({ grade: g.id, gradeName: g.name }, t))), []);
 const TOTAL_WORDS = THEMES.reduce((s, t) => s + t.words.length, 0);
 
 
