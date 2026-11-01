@@ -7,7 +7,7 @@
 - 线上地址：https://heijialun19.github.io/yingyu/
 - 仓库：heijialun19/yingyu（main 分支，GitHub Pages）
 - 快照日期：2026-11-01
-- 快照对应线上 commit：d13769f9（此后若无新 commit，本包与线上完全一致）
+- 本包 = 线上 main 分支 2026-11-01 当天的完整快照；核验是否最新，以 GitHub 仓库 main 分支与「最近提交」为准
 - 技术栈：纯 HTML/CSS/原生 JS，零依赖、零构建，进度存 localStorage（多档案 birdie_abc_profiles_v2）
 
 ## 各文件版本号（改了哪个文件，就把它的 ?v= 加 1）
