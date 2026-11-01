@@ -419,11 +419,11 @@ function prewarmWord(text, onFail) {
 }
 /* 播放入口：直接走媒体元素。epoch 在这里统一递增；
    timeoutMs 可选（连读链传短超时保持节奏）。 */
-function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs, startIdx) {
+function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs, startIdx, reuseEl) {
   const epoch = ++__audioEpoch;
   const t = String(text).trim();
   if (!t) { if (onFail) onFail(); return; }
-  __playMediaElement(t, rate, epoch, onEnd, onFail, isRetry, timeoutMs, startIdx);
+  __playMediaElement(t, rate, epoch, onEnd, onFail, isRetry, timeoutMs, startIdx, reuseEl);
 }
 /* ===== 坏音频自愈：把这条 URL 从缓存里踢掉 =====
    ★ 2026-11-01「读的不全」的根因之一：
@@ -446,17 +446,38 @@ function __purgeAudioCache(url) {
     }).catch(() => {});
   } catch (e) { /* 删不掉就算了，绝不影响播放 */ }
 }
-/* 媒体元素兜底（v4 链路，原封不动）：全新 Audio + 唯一声源保证 + 重试一次。
-   epoch 由调用方传入并负责递增——重试时也走同一令牌，不会和归一化路径抢令牌。 */
-function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, srcIdx) {
+/* 媒体元素兜底（v4 链路 + 句子复用同一个元素）：唯一声源保证 + 重试一次。
+   epoch 由调用方传入并负责递增——重试时也走同一令牌，不会和归一化路径抢令牌。
+
+   ★ reuseEl（2026-11-01「念完 pencil 就停」的修法）：
+     移动端/安卓 WebView 的自动播放策略是「按元素授权」——只有**被点击那一刻
+     play 过的那个 <audio>** 才拿到许可，之后新建的元素 play() 直接被拒
+     （NotAllowedError），链条就走不下去了。桌面浏览器有 5 秒的「粘性用户激活」，
+     所以两三个片段以内是好的，慢网络上第 3 段就超过 5 秒 → 从那里开始全哑。
+     症状恰好是「念完前两句就停」，而且每次都在同一处。
+     解法：整句连读共用一个 <audio>，只换 src —— 已授权的元素换源不会被重新拦截。 */
+function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, srcIdx, reuseEl) {
   rate = 1; // mobile compat: always normal speed
   const srcs = __audioSources(text, isRetry ? Date.now() : 0);
   const si = Math.min(srcIdx || 0, srcs.length - 1);
-  const a = new Audio(srcs[si]);
+  let a = reuseEl || null;
+  if (a) {
+    /* 复用元素：换源之前先把上一段的回调解干净，避免上一段的 error/ended 串到这一句上 */
+    try {
+      a.onended = a.onerror = a.oncanplay = a.onplaying = null;
+      a.pause();
+    } catch (e) {}
+    if (a.__src !== srcs[si]) {
+      a.__src = srcs[si];
+      try { a.src = srcs[si]; a.load(); } catch (e) {}
+    }
+  } else {
+    a = new Audio(srcs[si]);
+  }
   a.preload = 'auto';
   __curAudio = a;
   __inflight.add(a);
-  let done = false, guard = null;
+  let done = false, guard = null, played = false;
   /* 计时器统一登记：stopAllSpeech 时一次性拆干净。
      否则翻页/切题后，9 秒前的旧 guard 到点会把旧词又播一遍。 */
   const clearG = () => { if (guard) { clearTimeout(guard); __guards.delete(guard); guard = null; } };
@@ -471,19 +492,39 @@ function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs
     if (epoch !== __audioEpoch) return;
     /* 本地文件取不到（删除/损坏/部署不全）→ 立刻换下一个音源。
        这不算"失败重试"：孩子不该为一个仓库问题多等两秒。 */
-    if (si + 1 < srcs.length) { __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, si + 1); return; }
+    if (si + 1 < srcs.length) { __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, si + 1, reuseEl); return; }
     /* 自动重试一次：从"最后试过的那个音源"再来，不回头再撞 404 的本地文件。
        重试前先把这条 URL 从缓存里删掉 —— 否则缓存里就是那条坏响应，
        重试等于把同一份错误再听一遍（见 __purgeAudioCache 的说明）。 */
-    if (!isRetry) { __purgeAudioCache(srcs[si]); playDictAudio(text, rate, onEnd, onFail, true, timeoutMs, si); return; }
+    if (!isRetry) { __purgeAudioCache(srcs[si]); playDictAudio(text, rate, onEnd, onFail, true, timeoutMs, si, reuseEl); return; }
     __purgeAudioCache(srcs[si]);
     const now = Date.now();
     if (now - __dictFailNotified > 30000) { __dictFailNotified = now; toast('📶 发音加载失败，请检查网络后重试'); }
     if (onFail) onFail();
   };
+  /* ★ 看门狗：真正出声后不能把超时全拆掉。
+     坏流（比如缓存里那条 120 字节的 500 JSON）可能 fire 过 playing 之后
+     就再也不 fire ended / error —— 链条会永久停在这一段，
+     用户听到的就是「念完前两句就停」。所以按真实时长挂一个兜底：
+       · 播到过有声（currentTime > 0.15）→ 当作这一段读完了，链条继续
+       · 一秒都没出声 → 判定坏流，走 fail()（清缓存 + 重试 + 降级） */
+  const watchdog = () => {
+    if (done) return;
+    if (a.ended) return end();
+    const t = a.currentTime || 0;
+    if (t > 0.15) return end();
+    fail();
+  };
   a.onended = end;
   a.onerror = fail;
-  a.onplaying = () => { if (epoch === __audioEpoch) clearG(); }; // 真正出声后取消超时
+  a.onplaying = () => {
+    if (epoch !== __audioEpoch) return;
+    played = true;
+    clearG();
+    const d = (isFinite(a.duration) && a.duration > 0) ? a.duration * 1000 : 0;
+    guard = setTimeout(watchdog, Math.min(Math.max(d + 1500, 2500), 15000));
+    __guards.add(guard);
+  };
   // mobile compat: no playbackRate (slow rate breaks some phone browsers)
   const go = () => {
     if (done || epoch !== __audioEpoch) { disarm(); return; } // 已被更新的一次点击取代：绝不出声

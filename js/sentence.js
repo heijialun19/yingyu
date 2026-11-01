@@ -53,33 +53,37 @@ function __clearHi(spans) { if (spans) spans.forEach(s => s.classList.remove('hi
 function __hiWord(spans, i) { __clearHi(spans); if (spans && spans[i]) spans[i].classList.add('hi'); }
 function __hiChunk(spans, i, n) { __clearHi(spans); if (spans) for (let k = i; k < i + n && k < spans.length; k++) spans[k].classList.add('hi'); }
 
-/* 主链：i 从第几个词开始；fails = 连续单词级失败次数；链内 6 秒超时保持节奏 */
-function __speakFrom(tokens, spans, i, fails) {
+/* 主链：i 从第几个词开始；fails = 连续单词级失败次数；链内 6 秒超时保持节奏
+   ★ voice：整句共用的一个 <audio> 元素。
+     移动端的自动播放许可是**按元素**发的 —— 只有点击那一刻 play 过的那个元素有效，
+     之后新建的元素 play() 会被直接拒掉（桌面有 5 秒粘性激活，所以前两段能放、第三段开始哑）。
+     整句复用同一个元素只换 src，就不会被重新拦截。见 app.js __playMediaElement 的说明。 */
+function __speakFrom(tokens, spans, i, fails, voice) {
   if (i >= tokens.length) { __finishSpeak(spans); return; }
   const n = Math.min(__CHUNK_MAX, tokens.length - i);
   const text = tokens.slice(i, i + n).map(__spokenToken).join(' ');
-  if (__brokenChunks.has(text)) { __speakOne(tokens, spans, i, i + n, fails); return; }
+  if (__brokenChunks.has(text)) { __speakOne(tokens, spans, i, i + n, fails, voice); return; }
 
   __hiChunk(spans, i, n);
   playDictAudio(text, 1,
-    () => __speakFrom(tokens, spans, i + n, 0),
+    () => __speakFrom(tokens, spans, i + n, 0, voice),
     () => {                              // 词组合成失败：多半含生僻词 → 降级为逐词
       __brokenChunks.add(text);
-      __speakOne(tokens, spans, i, i + n, fails);
-    }, false, 6000);
+      __speakOne(tokens, spans, i, i + n, fails, voice);
+    }, false, 6000, 0, voice);
   __prewarmChunk(tokens, i + n);         // 播放当前组的同时预热下一组
 }
 
 /* 降级链：组内逐词读（单词查询必稳）；连续失败 3 次才放弃 */
-function __speakOne(tokens, spans, i, end, fails) {
-  if (i >= end) { __speakFrom(tokens, spans, end, 0); return; }
+function __speakOne(tokens, spans, i, end, fails, voice) {
+  if (i >= end) { __speakFrom(tokens, spans, end, 0, voice); return; }
   __hiWord(spans, i);
   playDictAudio(__spokenToken(tokens[i]), 1,
-    () => __speakOne(tokens, spans, i + 1, end, 0),
+    () => __speakOne(tokens, spans, i + 1, end, 0, voice),
     () => {
       if (fails + 1 >= 3) { __finishSpeak(spans); return; }
-      __speakOne(tokens, spans, i + 1, end, fails + 1);
-    }, false, 6000);
+      __speakOne(tokens, spans, i + 1, end, fails + 1, voice);
+    }, false, 6000, 0, voice);
 }
 
 function __prewarmChunk(tokens, i) {
@@ -106,7 +110,19 @@ function speakSentence(text, el, onDone) {
   __speakDone = typeof onDone === 'function'
     ? () => { if (my === __speakSeq) onDone(); }
     : null;
-  __speakFrom(tokens, spans, 0, 0);
+  /* 整句共用一个 <audio>（全局只造一个）：第一次在点击的同一个调用栈里创建并 play，
+     这个元素就算「被授权」了，之后换 src 不再受自动播放策略限制。
+     拿不到 Audio（Node 测试/极端老内核）就退回每段新建元素的老路径。 */
+  __speakFrom(tokens, spans, 0, 0, __voice());
+}
+
+/* 全局唯一的朗读元素。懒创建：第一次用到时才 new，避免脚本一加载就占一个媒体槽 */
+let __voiceEl = null;
+function __voice() {
+  try {
+    if (!__voiceEl && typeof Audio === 'function') __voiceEl = new Audio();
+  } catch (e) { __voiceEl = null; }
+  return __voiceEl;
 }
 
 let __speakSeq = 0;
