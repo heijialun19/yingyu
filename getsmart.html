@@ -58,7 +58,7 @@
 <main>
   <div class="page-title">
     <h1>🎓 Get Smart 学堂</h1>
-    <p>课本同步专栏 · <b>Get Smart 1 - 6 全系列</b> · 每一课 = 教材一个单元，按「学单词 → 听音辨词 → 认词选义 → 句型闯关」四步学懂一课</p>
+    <p>课本同步专栏 · <b>Get Smart 1 - 6 全系列</b> · 每一课 = 教材一个单元，按「学单词 → 闯关 → 句型」三步学懂一课</p>
   </div>
   <div id="app"></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
@@ -206,31 +206,29 @@ function startUnit(uid) {
   renderStep();
 }
 
-const STEP_NAMES = ['学单词', '听音辨词', '认词选义', '句型闯关', '完成'];
+const STEP_NAMES = ['学单词', '闯关', '句型', '完成'];
 function stepBar() {
   if (L.kind === 'test') return '<div class="gs-steps"><span class="gs-step on">📝 单元小测</span></div>';
   if (L.kind === 'flowreview') return '<div class="gs-steps"><span class="gs-step on">🔔 今日复习</span></div>';
-  const n = L.kind === 'review' ? 2 : 5;
+  const n = L.kind === 'review' ? 2 : 4;
   let items = '';
   for (let i = 1; i <= n; i++) {
     const label = L.kind === 'review' ? (i === 1 ? '混合闯关' : '完成') : STEP_NAMES[i - 1];
     const cls = i < L.step ? 'ok' : i === L.step ? 'on' : '';
-    const clickable = L.kind !== 'review' && i >= 1 && i <= 3;
+    const clickable = L.kind !== 'review' && i >= 1 && i <= 2;
     items += `<span class="gs-step ${cls} ${clickable ? 'lk' : ''}" ${clickable ? `onclick="gsJump(${i})" title="点这里切换步骤"` : ''}>${label}</span>`;
   }
   return `<div class="gs-steps">${items}</div>`;
 }
 /* 步骤条可点击：已到过的步骤随意跳，往回重练；没到的会提示先完成当前步骤 */
 function gsJump(i) {
-  if (!L || L.kind === 'review') return;
-  if (i === 4) { toast('完成页在闯关结束后自动打开 🏁'); return; }
+  if (!L || L.kind === 'review' || L.kind === 'test' || L.kind === 'flowreview') return;
   if (i > (L.maxStep || L.step)) { toast('先完成当前步骤，后面会自动解锁哦'); return; }
   __lessonToken++;
   stopAllSpeech();
   const u = curUnit;
   if (i === 1) { L.step = 1; const n = (u.words || []).length; L.wIdx = Math.max(0, Math.min(L.wIdx || 0, n - 1)); if (!n) { L.step = 2; } }
   if (i === 2) { if (!L.qs || !L.qs.length) { L.qs = buildUnitQs(u); L.score = L.score || 0; } L.qIdx = 0; L.step = 2; }
-  if (i === 3) { L.step = 3; L.sIdx = 0; }
   renderStep();
 }
 
@@ -332,21 +330,19 @@ function buildUnitQs(u) {
     .filter(x => !ws.some(w => w.w === x.w));
   const distractFor = w => shuffle(ws.filter(x => x.w !== w.w)).concat(shuffle(siblings)).slice(0, 3);
   const qs = [];
-  /* 听音辨词 6 题：图选项需 4 图互异，否则单词文字 */
-  shuffle(ws).slice(0, 6).forEach(w => {
+  /* 每个词随机考一种题型（听音或认义），总题数 = 词数（不是 2 倍） */
+  shuffle(ws).forEach(w => {
     const distract = distractFor(w);
     if (distract.length < 3) return;
-    const list = shuffle([w, ...distract]);
-    const imgs = imgOpts(list);
-    qs.push({ type: 'listen', word: w, ok: w.w,
-      opts: list.map((x, i) => ({ key: x.w, html: imgs ? imgs[i] : `<b lang="en">${esc(x.w)}</b>` })) });
-  });
-  /* 认词选义 6 题 */
-  shuffle(ws).slice(0, 6).forEach(w => {
-    const distract = distractFor(w);
-    if (distract.length < 3) return;
-    qs.push({ type: 'look', word: w, ok: w.zh,
-      opts: shuffle([w, ...distract]).map(x => ({ key: x.zh, html: esc(x.zh) })) });
+    if (Math.random() < 0.5) {
+      const list = shuffle([w, ...distract]);
+      const imgs = imgOpts(list);
+      qs.push({ type: 'listen', word: w, ok: w.w,
+        opts: list.map((x, i) => ({ key: x.w, html: imgs ? imgs[i] : `<b lang="en">${esc(x.w)}</b>` })) });
+    } else {
+      qs.push({ type: 'look', word: w, ok: w.zh,
+        opts: shuffle([w, ...distract]).map(x => ({ key: x.zh, html: esc(x.zh) })) });
+    }
   });
   return shuffle(qs);
 }
