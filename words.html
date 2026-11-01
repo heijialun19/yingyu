@@ -448,6 +448,11 @@ function renderQuiz() {
       <div class="explain" id="qexp"></div>
     </div>`;
   prewarmWord(q.word.w); // 提前拉取本题单词音频，答对回显零延迟
+  /* 预载后 3 题的词：答到哪都有缓存，不等网络 */
+  for (let nxt = 1; nxt <= 3; nxt++) {
+    const ni = s.idx + nxt;
+    if (ni < s.qs.length && s.qs[ni].word) { try { prewarmWord(s.qs[ni].word.w); } catch(e) {} }
+  }
   if (q.autoSpeak && q.speakText) Flow.after(350, () => speak(q.speakText, q.lang || 'en-US'));
 }
 
