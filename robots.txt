@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://heijialun19.github.io/yingyu/sitemap.xml
