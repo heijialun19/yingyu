@@ -7,7 +7,62 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-01.6';
+const BUILD = '2026-11-01.7';
+
+/* ===== 新版本提醒 =====
+   ★ 为什么必须有：这是一个 PWA。页面一旦打开就一直留着，Service Worker 又把
+     HTML/JS 缓存着，用户在旧页面里怎么点都看不到新代码 —— 于是「改了他说还是老样子」
+     反复发生（本项目已经三次）。靠「请刷新一下」是治不好的，得让页面自己发现。
+   做法：每 5 分钟 / 每次切回前台，拉一次 version.json（带唯一查询串，绕过 SW 缓存），
+        和当前 BUILD 不一样就在底部浮一条「有新版本 · 点这里刷新」。
+   ⚠️ 发版时**必须同时改 version.json 里的 build**，只改 BUILD 不会提示。 */
+const UPDATE_CHECK_MS = 5 * 60 * 1000;
+let __updChecked = 0;
+let __updShown = false;
+function __showUpdateBar(v) {
+  if (__updShown) return;
+  __updShown = true;
+  try {
+    const bar = document.createElement('div');
+    bar.id = 'updateBar';
+    bar.setAttribute('role', 'button');
+    bar.setAttribute('tabindex', '0');
+    bar.style.cssText = 'position:fixed;left:10px;right:10px;bottom:12px;z-index:99999;' +
+      'background:#FF8A3D;color:#fff;border-radius:14px;padding:12px 16px;' +
+      'font:600 15px/1.3 system-ui,-apple-system,"Microsoft YaHei",sans-serif;' +
+      'box-shadow:0 8px 24px rgba(255,110,20,.35);display:flex;align-items:center;gap:10px;cursor:pointer';
+    bar.innerHTML = '<span style="font-size:1.2em">🔄</span><span style="flex:1">有新版本（' +
+      String(v || '').replace(/[<>&"]/g, '') + '），点这里刷新</span><span>▶</span>';
+    const go = () => {
+      try {
+        if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+          navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => { try { r.update(); } catch (e) {} }));
+        }
+      } catch (e) {}
+      setTimeout(() => location.reload(), 120);
+    };
+    bar.addEventListener('click', go);
+    bar.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    (document.body || document.documentElement).appendChild(bar);
+  } catch (e) {}
+}
+function __checkUpdate(force) {
+  const now = Date.now();
+  if (!force && now - __updChecked < 60000) return;
+  __updChecked = now;
+  try {
+    if (!window.fetch) return;
+    fetch('version.json?t=' + now, { cache: 'no-store' })
+      .then(r => (r && r.ok ? r.json() : null))
+      .then(j => { if (j && j.build && j.build !== BUILD) __showUpdateBar(j.build); })
+      .catch(() => {});
+  } catch (e) {}
+}
+if (typeof document !== 'undefined') {
+  setTimeout(() => __checkUpdate(true), 4000);
+  setInterval(() => __checkUpdate(false), UPDATE_CHECK_MS);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) __checkUpdate(false); });
+}
 
 const $  = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));

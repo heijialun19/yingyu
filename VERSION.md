@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v60 | 全站共享运行时：发音系统（本地音频优先 + 坏音频自愈）、词图、星星、档案、导航 |
+| js/app.js | v61 | 全站共享运行时：发音系统（本地音频优先 + 坏音频自愈）、词图、星星、档案、导航 |
 | js/words-data.js | v32 | 1000 词词库 |
 | js/data.js | v33 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v46 | 句子朗读引擎（两词一组连读 + 词组高亮，句子工厂/游戏/Get Smart 共用） |
@@ -27,7 +27,7 @@
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v2 | 内置 emoji SVG **课程扩展 186 条**（🐓🦅🦖🟡🩷🪑…）。只有 getsmart.html 加载，async |
-| sw.js | birdie-abc-v102 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
+| sw.js | birdie-abc-v103 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -108,6 +108,21 @@
    改成只预热「下一课」前 8 个词，等 `requestIdleCallback` 空闲再开始。
 3. **加载层 6 秒兜底**：纯 CSS `#bootLoader { animation: bootAutoHide 0s linear 6s forwards }`，
    万一脚本报错也不会永久转圈。
+
+## 2026-11-01 第七批：新版本浮条（治「改了他说还是老样子」）
+
+这是本项目**第三次**栽在同一个坑上：PWA 一旦打开就一直留着，Service Worker 又缓存着
+HTML/JS，用户在旧页面里怎么点都看不到新代码，于是「都改了吗？还是老样子」。
+
+`js/app.js` 新增 `__checkUpdate()`：
+- 每 5 分钟 + 每次切回前台，拉 `version.json?t=<时间戳>`（唯一串绕过 SW 缓存）
+- 和当前 `BUILD` 不一致 → 底部浮一条橙色「🔄 有新版本（xxx），点这里刷新」
+- 点它：`registration.update()` + reload
+
+配套：
+- 新增 `version.json`（`build` 字段）。**发版必须同时改它和 `js/app.js` 的 `BUILD`**，
+  只改一个不会提示 / 会误报。
+- `sw.js` 里把 `version.json` 排除出缓存（永远走网络）—— 它被缓存住就等于永远说"你最新"。
 
 ## 2026-11-01 第六批：给「句子念一半」装上黑匣子
 
