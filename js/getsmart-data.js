@@ -2039,7 +2039,7 @@ const GS_LEVELS = [
       { id: 'gs6-m09l1', mod: 9, modName: 'Module 9 · Go green! 环保行动', modEmoji: '♻️', modTip: 'Phonics: /ʌ/ /uː/ /ɜːr/ · 品德: 公平游戏', kind: 'unit',
         title: 'M9-L1 · Pollution', zh: '污染',
         words: [
-          { w: 'destroy', zh: '破坏', e: '💥' }, { w: 'pollute', zh: '污染', e: '🏭' },
+          { w: 'destroy', zh: '破坏', e: '💥' }, { w: 'pollute', zh: '污染（动词）', e: '🏭' },
           { w: 'pollution', zh: '污染', e: '🌫️' }, { w: 'fumes', zh: '废气', e: '🚛' },
           { w: 'acid rain', zh: '酸雨', e: '🌧️' }, { w: 'protect', zh: '保护', e: '🛡️' },
           { w: 'breathe', zh: '呼吸', e: '🫁' },

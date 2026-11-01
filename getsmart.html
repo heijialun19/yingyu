@@ -69,7 +69,7 @@
 <script src="js/data.js?v=32"></script>
 <script src="js/app.js?v=56"></script>
 <script src="js/sentence.js?v=44"></script>
-<script src="js/getsmart-data.js?v=9"></script>
+<script src="js/getsmart-data.js?v=10"></script>
 <script>
 renderNav('getsmart'); renderDecor();
 
@@ -228,7 +228,7 @@ function gsJump(i) {
   stopAllSpeech();
   const u = curUnit;
   if (i === 1) { L.step = 1; const n = (u.words || []).length; L.wIdx = Math.max(0, Math.min(L.wIdx || 0, n - 1)); if (!n) { L.step = 2; } }
-  if (i === 2) { if (!L.qs || !L.qs.length) { L.qs = buildUnitQs(u); L.score = L.score || 0; } L.qIdx = 0; L.step = 2; }
+  if (i === 2) { if (!L.qs || !L.qs.length) { L.qs = buildUnitQs(u); } L.qIdx = 0; L.score = 0; L.firstTry = true; L.lock = false; L.step = 2; }
   renderStep();
 }
 
@@ -329,19 +329,33 @@ function buildUnitQs(u) {
     .flatMap(x => (x.words || []))
     .filter(x => !ws.some(w => w.w === x.w));
   const distractFor = w => shuffle(ws.filter(x => x.w !== w.w)).concat(shuffle(siblings)).slice(0, 3);
+  /* 认义题专用：干扰项的中文释义不能和答案或彼此相同，否则会出现两个「正确」选项 */
+  const distractForZh = w => {
+    const pool = shuffle(ws.filter(x => x.w !== w.w && x.zh !== w.zh))
+      .concat(shuffle(siblings.filter(x => x.zh !== w.zh)));
+    const picked = [];
+    for (const x of pool) {
+      if (picked.length >= 3) break;
+      if (picked.some(p => p.zh === x.zh)) continue;
+      picked.push(x);
+    }
+    return picked;
+  };
   const qs = [];
   /* 每个词随机考一种题型（听音或认义），总题数 = 词数（不是 2 倍） */
   shuffle(ws).forEach(w => {
-    const distract = distractFor(w);
-    if (distract.length < 3) return;
+    const lookDistract = distractForZh(w);
+    if (lookDistract.length < 3) return;
     if (Math.random() < 0.5) {
+      const distract = distractFor(w);
+      if (distract.length < 3) return;
       const list = shuffle([w, ...distract]);
       const imgs = imgOpts(list);
       qs.push({ type: 'listen', word: w, ok: w.w,
         opts: list.map((x, i) => ({ key: x.w, html: imgs ? imgs[i] : `<b lang="en">${esc(x.w)}</b>` })) });
     } else {
       qs.push({ type: 'look', word: w, ok: w.zh,
-        opts: shuffle([w, ...distract]).map(x => ({ key: x.zh, html: esc(x.zh) })) });
+        opts: shuffle([w, ...lookDistract]).map(x => ({ key: x.zh, html: esc(x.zh) })) });
     }
   });
   return shuffle(qs);
@@ -397,7 +411,7 @@ function renderQuiz() {
       </div>
       <div class="explain" id="qexp"></div>
     </div>`;
-  if (q.type === 'listen') setTimeout(() => playDictAudio(q.word.w), 400);
+  if (q.type === 'listen') { const tk = __lessonToken; setTimeout(() => { if (tk === __lessonToken) playDictAudio(q.word.w); }, 400); }
 }
 function gsAns(btn, key) {
   if (L.lock) return;
@@ -409,8 +423,9 @@ function gsAns(btn, key) {
     if (L.firstTry) { L.score++; addStars(1); flyStar(btn); }
     sfx.correct();
     if (q.word) touchWord(q.word.w, true);
-    $('#qexp').innerHTML = q.word ? `✅ <b>${esc(q.word.w)}</b> ${esc(q.word.zh)}` : `✅ <b>${esc(q.ok)}</b>`;
-    setTimeout(() => { L.qIdx++; L.firstTry = true; L.lock = false; renderQuiz(); }, 1400);
+    $('#qexp').innerHTML = q.word ? `? <b>${esc(q.word.w)}</b> ${esc(q.word.zh)}` : `? <b>${esc(q.ok)}</b>`;
+    const tk = __lessonToken; // 反馈期间若用户跳步/换课，定时器作废，不把页面拽回来
+    setTimeout(() => { if (tk !== __lessonToken) return; L.qIdx++; L.firstTry = true; L.lock = false; renderQuiz(); }, 1400);
   } else {
     L.firstTry = false; sfx.wrong();
     if (q.word) touchWord(q.word.w, false);
