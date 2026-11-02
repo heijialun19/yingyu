@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v61 | 全站共享运行时：发音系统（本地音频优先 + 坏音频自愈）、词图、星星、档案、导航 |
+| js/app.js | v62 | 全站共享运行时：发音系统（本地音频优先 + 坏音频自愈）、词图、星星、档案、导航 |
 | js/words-data.js | v32 | 1000 词词库 |
 | js/data.js | v33 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v46 | 句子朗读引擎（两词一组连读 + 词组高亮，句子工厂/游戏/Get Smart 共用） |
@@ -23,11 +23,11 @@
 | js/ipa.js | v2 | 音标 |
 | js/build-data.js | v1 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
-| css/style.css | v46 | 全站样式（含首屏加载层 6 秒兜底） |
+| css/style.css | v47 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v2 | 内置 emoji SVG **课程扩展 186 条**（🐓🦅🦖🟡🩷🪑…）。只有 getsmart.html 加载，async |
-| sw.js | birdie-abc-v103 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
+| sw.js | birdie-abc-v104 | Service Worker（音频缓存 birdie-audio-v1 不随发版清） |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -108,6 +108,19 @@
    改成只预热「下一课」前 8 个词，等 `requestIdleCallback` 空闲再开始。
 3. **加载层 6 秒兜底**：纯 CSS `#bootLoader { animation: bootAutoHide 0s linear 6s forwards }`，
    万一脚本报错也不会永久转圈。
+
+## 2026-11-02 第八批：桌面端「选择年级 / 选择主题」被胶囊盖住
+
+用户截图（电脑宽屏）：单词镇的两个小标题只露出左边一截，被下面那行胶囊按钮压住了。
+
+根因：`css/style.css` 的 `.tab-label { margin: 0 2px -12px; }` —— **负的下边距**
+把下面那行 `.theme-tabs` 拉上来 12px，正好压住标题自己。
+手机端媒体查询里写了 `.tab-label { margin-bottom: 10px }` 覆盖掉了，所以只有宽屏中招。
+
+修法：`margin: 0 2px 8px;`，间距交给 `.theme-tabs` 自己的 margin 管，不再用负值。
+（全表扫过一遍，CSS 里另一处负 margin 是 `.sr-only` 的标准做法，无此问题。）
+
+验证：1280×900 与 390×844 两档截图对比，标题与胶囊行彻底分开、间距正常。
 
 ## 2026-11-01 第七批：新版本浮条（治「改了他说还是老样子」）
 

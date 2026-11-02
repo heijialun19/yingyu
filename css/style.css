@@ -607,8 +607,12 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .bottom-nav { display: none; }
 .tab-label {
   font-size: .72rem; font-weight: 700; color: #8B93A7;
-  letter-spacing: 1px; margin: 0 2px -12px;
+  letter-spacing: 1px; margin: 0 2px 8px;
 }
+/* ⚠️ 这里原来写的是 margin: 0 2px -12px —— 负的下边距把下面那行胶囊「拉上来」
+   压住了标题本身，桌面上「选择年级 / 选择主题」直接被 chip 盖掉一半（手机端
+   媒体查询里覆盖成 +10px，所以手机看不出问题，只有宽屏中招）。
+   标题和下面那行的间距交给 .theme-tabs 自己的 margin 管，不要再用负值。 */
 
 /* ---------- 移动端：像 App 一样简单好看 ---------- */
 @media (max-width: 720px) {
