@@ -285,10 +285,16 @@ function renderLevelHome() {
     </div>
     ${units}
     <div style="text-align:center;margin-top:14px"><a href="getsmart.html" style="color:#78909C;font-size:.8rem">去 Get Smart 学堂 →</a></div>`;
-  /* 后台预载本册全部发音 */
-  const ws = new Set();
-  lv.units.forEach(u => (u.words || []).forEach(w => w.w && ws.add(w.w)));
-  prewarmBatch(Array.from(ws), 150);
+  /* 只预载「下一课」前 10 个词，等页面空闲再开始（跟 GS 学堂同一策略）——
+     全册 107 词 × 150ms 的预热队列会占满手机带宽 16 秒，点什么都慢。
+     其余的词点到时再取：都是本地文件，SW 缓存过就永久离线。 */
+  const nextUnit = lv.units.find(u => u.kind !== 'appendix' && !pepUnitDone(u.id))
+    || lv.units.find(u => u.kind !== 'appendix');
+  const ws = ((nextUnit && nextUnit.words) || []).map(w => w.w).filter(Boolean).slice(0, 10);
+  if (!ws.length) return;
+  const startPre = () => prewarmBatch(ws, 320);
+  if (typeof requestIdleCallback === 'function') requestIdleCallback(startPre, { timeout: 3000 });
+  else setTimeout(startPre, 1500);
 }
 
 /* ---------- 知识点讲解 ---------- */

@@ -1194,10 +1194,16 @@ function spEnd() {
 /* ---------------- 启动 ---------------- */
 renderBrowse();
 
-/* 进入页面即后台预载当前主题全部发音 */
+/* 后台预载当前主题发音：等页面空闲再开始，只预热前 12 个词——
+   全主题几十词 × 180ms 的队列会占满手机带宽十几秒，把用户点的语音挤到后面。
+   其余的词点到时再取：都是本地文件，SW 缓存过就永久离线。 */
 (function () {
   const t = themeById(curTheme);
-  if (t && t.words) prewarmBatch(t.words.map(w => w.w), 180);
+  if (!t || !t.words) return;
+  const words = t.words.map(w => w.w).filter(Boolean).slice(0, 12);
+  const start = () => prewarmBatch(words, 320);
+  if (typeof requestIdleCallback === 'function') requestIdleCallback(start, { timeout: 3000 });
+  else setTimeout(start, 1500);
 })();
 const __m = new URLSearchParams(location.search).get('mode');
 if (__m === 'review') startReview();
