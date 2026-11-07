@@ -41,6 +41,9 @@
 .gs-bigword .gw-ic{font-size:88px;line-height:1.15;display:block}
 .gs-bigword .gw-word{font-size:2.1rem;font-weight:900;letter-spacing:.5px;margin:6px 0 0}
 .gs-bigword .gw-ipa{color:#6B7280;font-size:1rem;min-height:1.4em}
+.gw-spl{color:#7C5CFF;font-size:.95rem;font-weight:800;letter-spacing:.5px;margin-top:4px}
+.gw-mem{background:#F2FBF5;border:2px solid var(--mint);border-radius:12px;padding:8px 12px;margin-top:10px;font-size:.85rem;color:#2C6E49;text-align:left;line-height:1.8}
+.gw-mem b{color:#1B5E3A}
 .gs-bigword .gw-zh{font-size:1.15rem;font-weight:800;color:var(--ink);margin:2px 0 8px}
 .gs-sent{background:#FAFDFF;border:3px dashed var(--lake);border-radius:16px;padding:10px 14px;margin-top:10px;text-align:left;font-size:.95rem;line-height:1.7}
 .gs-navrow{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
@@ -75,6 +78,7 @@
 <script src="js/app.js?v=63"></script>
 <script src="js/sentence.js?v=46"></script>
 <script src="js/getsmart-data.js?v=10"></script>
+<script src="js/pep-points.js?v=2"></script>
 <script>
 renderNav('getsmart'); renderDecor();
 
@@ -280,7 +284,9 @@ function renderLearn() {
         <span class="gw-ic">${gsIcon(w)}</span>
         <button class="btn coral" style="font-size:1.5rem;margin:8px 0;padding:10px 26px" onclick="speakWord('${jsq(w.w)}')">🔊 ${esc(w.w)}</button>
         <div class="gw-ipa">${ipa ? esc(ipa) : ''}</div>
+        <div class="gw-spl">🔤 ${phonicsLine(w.w)}</div>
         <div class="gw-zh">${esc(w.zh)}</div>
+        ${pepMemOf(w) ? `<div class="gw-mem"><b>🧠 记一记：</b>${esc(pepMemOf(w))}</div>` : ''}
         ${w.sent ? `<div class="gs-sent">💬 <b lang="en">${esc(w.sent)}</b>　<button class="mini-speaker" onclick="speakSentence('${jsq(w.sent)}')">🔊</button><br><span style="color:#6B7280">${esc(w.sentZh || '')}</span></div>` : ''}
       </div>
       <div class="gs-navrow">

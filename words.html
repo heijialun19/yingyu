@@ -711,8 +711,8 @@ function renderSpeak() {
   s.tries = 0;
 
   if (!s.supported) {
-    // 降级：点击音节跟读
-    const syllables = q.word.w.toLowerCase().match(/[aeiouy]+|[bcdfghjklmnpqrstvwxz]+/g) || [q.word.w];
+    // 降级：点击拼读块跟读（与词卡/拼词同一套自然拼读拆块，口径全站统一）
+    const syllables = splitBlocks(q.word.w);
     $('#app').innerHTML = `
       <div class="card" style="max-width:620px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🎤 跟读 · ${esc(s.label)}</b><span>第 ${s.idx + 1} / ${s.qs.length} 个 · ✅ ${s.score}</span></div>
@@ -851,41 +851,10 @@ const SP_VG = ['igh','air','ear','eer','ea','ee','oo','ou','ow','oi','oy','ai','
 const SP_CG = ['tch','dge','sh','ch','th','ph','wh','ck','ng','qu'];
 const spIsV = ch => 'aeiou'.includes(ch);
 function chunkWord(w0) {
-  let s = String(w0).toLowerCase().replace(/[^a-z]/g, '');
-  if (!s) return [String(w0)];
-  if (s.length <= 3) return [s];
-  let suf = '';
-  if (s.length > 5 && /ing$/.test(s)) { suf = 'ing'; s = s.slice(0, -3); }
-  else if (/[bcdfghjklmnpqrstvwxz]le$/.test(s) && s.length > 4) { suf = 'le'; s = s.slice(0, -2); }
-  else if (s.length > 4 && /(es|ed|er)$/.test(s)) { suf = s.slice(-2); s = s.slice(0, -2); }
-  let magic = false; // magic-e：结尾 e，前面是 元音+辅音 → e 并进前面辅音块
-  if (!suf && /e$/.test(s) && s.length > 3 && !spIsV(s[s.length - 2]) && spIsV(s[s.length - 3])) { magic = true; s = s.slice(0, -1); }
-  const parts = []; let i = 0;
-  while (i < s.length) {
-    let cons = '';
-    while (i < s.length && !spIsV(s[i])) {
-      const rest = s.slice(i);
-      const cg = SP_CG.find(g => rest.startsWith(g) && (i + g.length >= s.length || spIsV(s[i + g.length])));
-      if (cg && cons) { break; } // 成组字母留给下一个块的开头
-      if (cg) { cons = cg; i += cg.length; break; }
-      cons += s[i]; i++;
-    }
-    if (cons) parts.push(cons);
-    let v = '';
-    if (i < s.length && spIsV(s[i])) {
-      const rest = s.slice(i);
-      const vg = SP_VG.find(g => rest.startsWith(g));
-      if (vg) { v = vg; i += vg.length; } else { v = s[i]; i++; }
-    }
-    if (v) parts.push(v);
-    if (!cons && !v) { parts.push(s[i]); i++; }
-  }
-  if (magic) { if (parts.length) parts[parts.length - 1] += 'e'; else parts.push('e'); }
-  if (suf) {
-    if (suf === 'le' && parts.length && !spIsV(parts[parts.length - 1][0])) parts[parts.length - 1] += suf;
-    else parts.push(suf);
-  }
-  return parts;
+  /* 统一口诀：拼写工坊的拆块与词卡「🔤 拼读」行、拼词小火车、拼读地图
+     用同一套自然拼读组合表（pep-points.js 的 splitBlocks）——
+     词卡上教 oo，工坊就拆 oo，绝不再出现两套切法。 */
+  return splitBlocks(w0);
 }
 
 const SP_STEPS = [['read','读'],['look','看'],['pick','选'],['split','拆'],['build','拼'],['write','写']];
