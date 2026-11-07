@@ -6,7 +6,7 @@
      （6.6MB 只下一次；重建音频时把 AUDIO_VER 与这里同时 +1）
    - 有道发音：原样转发 + 原样缓存。opaque 响应的 body 读不到、头也改不了，
      所以这里绝不读 body、绝不 new Response 重建（那样会全站失声） */
-const CACHE = 'birdie-abc-v120';
+const CACHE = 'birdie-abc-v121';
 const AUDIO_CACHE = 'birdie-audio-v2';   // 与 js/app.js 的 AUDIO_VER 同步
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
@@ -14,13 +14,31 @@ const CORE = [
   './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=33', './js/app.js?v=64', './js/sentence.js?v=46', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=10',
   './manifest.json', './audio/manifest.json', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
+/* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
+   原 addAll(CORE) 是原子的：32 个文件约 700KB 全下完才激活，跨境慢网要等几十秒；
+   而且任一文件 404 就让整个 SW 装不上（曾因 CORE 里一个多余逗号全站失效）。
+   其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
+const BOOT = [
+  './', './index.html', './css/style.css?v=48',
+  './js/app.js?v=64', './js/data.js?v=33', './audio/manifest.json'
+];
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    await Promise.all(BOOT.map(u => c.add(u).catch(() => {})));
+    await self.skipWaiting();
+  })());
 });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys()
-    .then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== AUDIO_CACHE).map(k => caches.delete(k))))
-    .then(() => self.clients.claim()));
+  e.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => k !== CACHE && k !== AUDIO_CACHE).map(k => caches.delete(k)));
+    await self.clients.claim();
+    /* 后台补齐，不 await：不拖慢激活。页面随后请求的静态资源本来也会被
+       fetch 策略自动缓存，两道保险保证离线可用。 */
+    const c = await caches.open(CACHE);
+    CORE.filter(u => BOOT.indexOf(u) < 0).forEach(u => { c.add(u).catch(() => {}); });
+  })());
 });
 /* 收到新版本激活指令 */
 self.addEventListener('message', e => { if (e.data === 'SKIP_WAITING') self.skipWaiting(); });
