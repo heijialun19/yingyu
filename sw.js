@@ -6,13 +6,13 @@
      （6.6MB 只下一次；重建音频时把 AUDIO_VER 与这里同时 +1）
    - 有道发音：原样转发 + 原样缓存。opaque 响应的 body 读不到、头也改不了，
      所以这里绝不读 body、绝不 new Response 重建（那样会全站失声） */
-const CACHE = 'birdie-abc-v115';
-const AUDIO_CACHE = 'birdie-audio-v1';   // 与 js/app.js 的 AUDIO_VER 同步
+const CACHE = 'birdie-abc-v117';
+const AUDIO_CACHE = 'birdie-audio-v2';   // 与 js/app.js 的 AUDIO_VER 同步
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
   './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=33', './js/app.js?v=63', './js/sentence.js?v=46', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=8',
-  './manifest.json', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
+  './manifest.json', './audio/manifest.json',, './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));

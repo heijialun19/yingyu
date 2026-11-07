@@ -442,6 +442,16 @@ function __registerGSAudio() {
     }));
   } catch (e) {}
 }
+/* 鍏ㄩ噺闊抽娓呭崟锛歛udio/manifest.json 鐧昏鍖呭唴鍏ㄩ儴闊抽 slug锛屽惎鍔ㄦ椂涓€娆℃敞鍐屻€?   PEP 绛夋櫄鍔犺浇鏁版嵁婧愮殑璇嶄粠姝ょ洿鎺ュ懡涓湰鍦版枃浠讹紝涓嶅啀琚帹鍒版湁閬撳洖閫€銆?   娓呭崟鏈埌鏃朵粛璧?GS 娉ㄥ唽鍏滃簳锛屾竻鍗曞埌杈惧悗鑷姩鐢熸晥銆?*/
+let __manifestDone = false;
+function __registerManifestAudio() {
+  if (__manifestDone) return;
+  __manifestDone = true;
+  fetch('audio/manifest.json', { cache: 'no-cache' }).then(r => r.json()).then(m => {
+    (m.audio || []).forEach(k => __LOCAL_AUDIO.add(k));
+  }).catch(() => {});
+}
+__registerManifestAudio();
 const localAudioURL = t => {
   const k = audioSlug(t);
   if (!k) return '';
