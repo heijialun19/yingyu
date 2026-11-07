@@ -6,12 +6,12 @@
      （6.6MB 只下一次；重建音频时把 AUDIO_VER 与这里同时 +1）
    - 有道发音：原样转发 + 原样缓存。opaque 响应的 body 读不到、头也改不了，
      所以这里绝不读 body、绝不 new Response 重建（那样会全站失声） */
-const CACHE = 'birdie-abc-v122';
+const CACHE = 'birdie-abc-v123';
 const AUDIO_CACHE = 'birdie-audio-v2';   // 与 js/app.js 的 AUDIO_VER 同步
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=33', './js/app.js?v=65', './js/sentence.js?v=46', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=10',
+  './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=33', './js/app.js?v=66', './js/sentence.js?v=46', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=10',
   './manifest.json', './audio/manifest.json', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
@@ -20,7 +20,7 @@ const CORE = [
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
   './', './index.html', './css/style.css?v=48',
-  './js/app.js?v=65', './js/data.js?v=33', './audio/manifest.json'
+  './js/app.js?v=66', './js/data.js?v=33', './audio/manifest.json'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -32,12 +32,39 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
     const keys = await caches.keys();
-    await Promise.all(keys.filter(k => k !== CACHE && k !== AUDIO_CACHE).map(k => caches.delete(k)));
-    await self.clients.claim();
-    /* 后台补齐，不 await：不拖慢激活。页面随后请求的静态资源本来也会被
-       fetch 策略自动缓存，两道保险保证离线可用。 */
+    const nc = await caches.open(CACHE);
+    /* ★ 2026-11-07 白屏事故：发版把旧缓存整个删掉，新缓存只预装了 BOOT 6 个文件，
+       老用户刷新时 26 个静态资源 + 2 个大图库要全部重下（原始约 2.5MB）。
+       带 ?v= 的 URL 内容不可变，旧缓存里的字节就是新版本要用的字节，
+       所以先把旧版本缓存搬过来、再删——发版不再等于「清空重下」。 */
+    for (const k of keys) {
+      if (k === CACHE || k === AUDIO_CACHE || !/^birdie-abc-v/.test(k)) continue;
+      try {
+        const oc = await caches.open(k);
+        const reqs = await oc.keys();
+        await Promise.all(reqs.map(async req => {
+          const u = new URL(req.url);
+          if (u.origin !== location.origin) return;        // 有道 opaque 不迁
+          if (/\.html?$|\/$/.test(u.pathname)) return;      // 导航页用新版本
+          if (await nc.match(req)) return;                  // 已有不覆盖
+          const res = await oc.match(req);
+          if (res && (res.ok || res.type === 'opaque')) await nc.put(req, res).catch(() => {});
+        }));
+      } catch (err) {}
+      await caches.delete(k).catch(() => {});
+    }
+    await Promise.all(keys.filter(k => k !== CACHE && k !== AUDIO_CACHE && !/^birdie-abc-v/.test(k))
+      .map(k => caches.delete(k).catch(() => {})));
+    await self.clients.claim();      // 先接管：页面立刻能用上搬过来的缓存
+    /* 后台补齐只补真正缺的（版本号变了的），低并发 + 宽限期，
+       绝不和首屏的同步脚本抢浏览器仅有的 6 个连接。 */
+    await new Promise(r => setTimeout(r, 1200));
     const c = await caches.open(CACHE);
-    CORE.filter(u => BOOT.indexOf(u) < 0).forEach(u => { c.add(u).catch(() => {}); });
+    const todo = [];
+    for (const u of CORE) { if (!(await c.match(u))) todo.push(u); }
+    for (let i = 0; i < todo.length; i += 2) {
+      await Promise.all(todo.slice(i, i + 2).map(u => c.add(u).catch(() => {})));
+    }
   })());
 });
 /* 收到新版本激活指令 */

@@ -1734,8 +1734,45 @@ function prewarmBatch(list, gap) {
   const interval = gap || 200;
   list.forEach((w, i) => setTimeout(() => { try { prewarmWord(w); } catch (e) {} }, i * interval));
 }
-/* 移除首屏加载指示器（app.js 是各页面最后一个共享脚本，执行到这里说明页面已可交互） */
+/* ================= 首屏加载指示：等页面真正渲染完再撤 =================
+   ★ 2026-11-07 白屏事故：app.js 并不是各页最后一个脚本，后面还有 sentence.js /
+     pep-data.js / pep-points.js 等同步脚本和页面自己的 init。原来 app.js 一执行完
+     就把全屏「加载中」撤掉，慢网下后续脚本还在下载时，用户看到的是
+     「标题在上面、下面一大片空白」，以为卡死了。
+   现在：① 占位直接写死在各页 HTML 里（HTML 一解析出来就有，不依赖任何脚本）
+        ② 等 DOMContentLoaded（所有同步脚本 + 页面 init 跑完）再撤加载层和占位
+        ③ 只有「资源确实加载失败」或「load 后内容区仍为空」才给重试，不按秒数猜 */
 (function () {
   const bl = document.getElementById('bootLoader');
-  if (bl) { bl.style.opacity = '0'; bl.style.transition = 'opacity .3s'; setTimeout(() => { try { bl.remove(); } catch (e) {} }, 300); }
+  const hide = () => {
+    const ph = document.getElementById('bootPlaceholder');
+    if (ph) { try { ph.remove(); } catch (e) {} }
+    if (!bl) return;
+    bl.style.opacity = '0'; bl.style.transition = 'opacity .3s';
+    setTimeout(() => { try { bl.remove(); } catch (e) {} }, 300);
+  };
+  const showRetry = () => {
+    let ph = document.getElementById('bootPlaceholder');
+    if (!ph) {
+      const app = document.getElementById('app');
+      const host = app || document.querySelector('main');
+      if (!host || (app && app.innerHTML.trim())) return;
+      ph = document.createElement('div');
+      ph.id = 'bootPlaceholder'; ph.className = 'card';
+      ph.style.cssText = 'max-width:560px;margin:22px auto;text-align:center;padding:26px 18px';
+      host.appendChild(ph);
+    }
+    ph.innerHTML = '<p style="color:#6B7280;font-size:.9rem">内容没能加载出来，检查网络后重试一下～</p>'
+      + '<button class="btn" style="margin-top:10px" onclick="location.reload()">🔄 点这里重试</button>';
+  };
+  window.addEventListener('error', e => {
+    const t = e.target;
+    if (t && (t.tagName === 'SCRIPT' || t.tagName === 'LINK')) showRetry();
+  }, true);
+  window.addEventListener('load', () => {
+    const app = document.getElementById('app');
+    if (app && !app.innerHTML.trim()) showRetry();
+  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hide, { once: true });
+  else hide();
 })();
