@@ -412,8 +412,17 @@ const DICT_AUDIO_URL = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + 
    否则 SW 会拿旧文件（URL 没变就等于没换）。 */
 const AUDIO_VER = 1;
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+/* ===== 例句逐词朗读的补充音频（2026-11-07）=====
+   有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
+   （120 字节的 JSON），浏览器等 12 秒超时 + 自动重试 12 秒才报失败，
+   孩子看到的就是「点一下半天没声音」。改成把例句按词拆开、用本地真人
+   音频接龙之后，例句里原本不在词库音频包里的 108 个词（the / an / be /
+   books / didn't …）会漏音，所以这批文件补进了 audio/ 并登记 manifest。
+   这里再内联一份清单：离线包走 file:// 时 fetch 不到 manifest，
+   有了它照样全本地、断网也能读。 */
+const AUDIO_EXTRA = ["ali","an","animals","answers","be","began","beijing","birds","books","break","by","cakes","came","can_t","cards","cats","chairs","cheaper","cheered","children_s","clears","climbed","counted","days","desks","did","didn_t","dogs","don_t","drinks","drives","dumplings","eiffel","en","enjoyed","example","fair","fifty_five","fishing","flowers","foods","foxes","friends","games","goes","going","grandparents","grows","helps","horses","hospitals","hurry","hurts","i_m","isn_t","it_s","kilometres","learned","leaves","let_s","lights","living","looks","lot","made","makes","mike","more","mustn_t","newspapers","officer","ones","pencils","photos","pictures","playing","plays","pocket","potatoes","pyramids","questions","roots","runny","runs","schoolbags","shouldn_t","smoking","staying","stories","students","sweeps","telling","the","things","tips","turn","twenty_three","us","vegetables","visits","waited","walking","who_s","workbooks","works","would","years","zongzi"];
 const __LOCAL_AUDIO = (() => {
-  const set = new Set();
+  const set = new Set(AUDIO_EXTRA);
   try {
     THEMES.forEach(t => t.words.forEach(w => { const k = audioSlug(w.w); if (k) set.add(k); }));
     /* 造词实验室的扩展词（js/build-data.js 只在游戏页加载，没加载时跳过） */
@@ -511,8 +520,13 @@ function __purgeAudioCache(url) {
     const u = String(url || '');
     if (!u || !/dict\.youdao\.com/.test(u)) return;      // 本地 mp3 不在此列
     if (!window.caches || !caches.keys) return;
+    /* 重试会加 &_r= 换 URL，但**第一次那条原始 URL** 也存着同一份坏响应。
+       只删带 _r 的那条，下次点又命中原始坏缓存，等于每次都要白等一轮。 */
+    const urls = [u, u.replace(/&_r=\d+/, '')];
     caches.keys().then(ks => {
-      ks.forEach(k => { caches.open(k).then(c => c.delete(u)).catch(() => {}); });
+      ks.forEach(k => {
+        caches.open(k).then(c => { urls.forEach(x => { c.delete(x).catch(() => {}); }); }).catch(() => {});
+      });
     }).catch(() => {});
   } catch (e) { /* 删不掉就算了，绝不影响播放 */ }
 }
@@ -1020,7 +1034,36 @@ function speak(text, lang = 'en-US', rate = 0.85) {
   const t = String(text).trim(); if (!t) return;
   if (lang.startsWith('zh')) return; // 词典不支持中文句：中文不朗读
   stopAllSpeech();
+  /* 句子（含空格）：整句丢给有道必 500，改成按词用本地真人音频接龙。
+     将来若给某句烘焙了整句离线音频，localAudioURL 命中就照旧一次播完。 */
+  if (/\s/.test(t) && !localAudioURL(t)) { speakSentenceWords(t); return; }
   playDictAudio(t, rate, null, null);
+}
+
+/* ===== 例句朗读：按词接龙（2026-11-07）=====
+   为什么不是"再等等"：有道 dictvoice 只查词典里收录的词/短语，
+   整句 She is hard-working and clever. 实测返回 500 + 120 字节 JSON，
+   媒体元素永远等不到 canplay，12 秒超时 + 自动重试 12 秒才报失败。
+   改法：把句子按词拆开，每个词都有本地真人 mp3（含本次补的 108 个），
+   点一下第一个词立刻出声，全句零网络、断网也能读。
+
+   ★ 整句共用同一个 <audio>：移动端自动播放许可是「按元素」发放的，
+     每段新建一个元素的话，第 2 段起 play() 会被拒（症状＝念一个词就停）。
+     只换 src 不换元素，已授权的元素不会被重新拦截。
+   ★ 某个词万一失败/超时，onEnd 与 onFail 都推进下一段，绝不卡住整句。 */
+function speakSentenceWords(text) {
+  const words = String(text).match(/[A-Za-z]+(?:['\u2019\-][A-Za-z]+)*/g) || [];
+  if (!words.length) { playDictAudio(text, 1, null, null); return; }
+  const el = new Audio();
+  el.preload = 'auto';
+  __inflight.add(el);                 // 登记后 stopAllSpeech() 能整链掐断
+  let i = 0;
+  const next = () => {
+    if (i >= words.length) { __inflight.delete(el); return; }
+    const w = words[i++];
+    playDictAudio(w, 1, next, next, false, 9000, 0, el);
+  };
+  next();
 }
 
 /* 测试声音：播放一段欢快音效 + 一个单词，让孩子/家长确认设备有没有声。

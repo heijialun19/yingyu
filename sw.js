@@ -6,12 +6,12 @@
      （6.6MB 只下一次；重建音频时把 AUDIO_VER 与这里同时 +1）
    - 有道发音：原样转发 + 原样缓存。opaque 响应的 body 读不到、头也改不了，
      所以这里绝不读 body、绝不 new Response 重建（那样会全站失声） */
-const CACHE = 'birdie-abc-v121';
+const CACHE = 'birdie-abc-v122';
 const AUDIO_CACHE = 'birdie-audio-v2';   // 与 js/app.js 的 AUDIO_VER 同步
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=33', './js/app.js?v=64', './js/sentence.js?v=46', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=10',
+  './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=33', './js/app.js?v=65', './js/sentence.js?v=46', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=10',
   './manifest.json', './audio/manifest.json', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
@@ -20,7 +20,7 @@ const CORE = [
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
   './', './index.html', './css/style.css?v=48',
-  './js/app.js?v=64', './js/data.js?v=33', './audio/manifest.json'
+  './js/app.js?v=65', './js/data.js?v=33', './audio/manifest.json'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -54,6 +54,20 @@ self.addEventListener('fetch', e => {
         if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {}); }
         return res;
       }).catch(() => caches.match(e.request).then(hit => good(hit) ? hit : caches.match('./index.html')))
+    );
+    return;
+  }
+  /* 音频清单：网络优先、断网回退缓存。
+     ★ 2026-11-07：补进 108 个例句用词的音频后，如果这里仍是「缓存优先」，
+       老用户永远拿到旧清单 → 新词查不到本地文件 → 又绕回外网/断网没声。
+       发版时不能改 AUDIO_VER（一改，已缓存的 2136 个 mp3 全部失效、要重下 32MB），
+       所以让清单本身走网络，add 新文件即刻生效，旧音频缓存原样保留。 */
+  if (url.origin === location.origin && /\/audio\/manifest\.json$/.test(url.pathname)) {
+    e.respondWith(
+      fetch(e.request, { cache: 'no-store' }).then(res => {
+        if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {}); }
+        return res;
+      }).catch(() => caches.match(e.request).then(hit => hit || new Response('{"audio":[]}', { headers: { 'Content-Type': 'application/json' } })))
     );
     return;
   }
@@ -105,11 +119,18 @@ self.addEventListener('fetch', e => {
      只能原样返回、原样入缓存。
      opaque 的 res.ok 恒为 false，判断要不要缓存要看 res.type === 'opaque'。 */
   if (url.hostname === 'dict.youdao.com') {
+    /* 只给「单词 / 两词短语」做缓存。三词以上的整句请求有道一律返回
+       500 的 120 字节 JSON，但响应是 opaque、SW 分不出好坏——曾经把这条
+       错误响应钉死在缓存里，同一句每次点都白等 24 秒。现在长句纯转发
+       不入缓存，并顺手清掉历史遗留的坏条目（老用户自愈）。 */
+    const phrase = decodeURIComponent(url.searchParams.get('audio') || '');
+    const cacheable = phrase.trim().split(/\s+/).filter(Boolean).length <= 2;
     e.respondWith(
       caches.match(e.request).then(hit => {
-        if (hit) return hit;
+        if (hit && cacheable) return hit;
+        if (hit) caches.open(CACHE).then(c => c.delete(e.request)).catch(() => {});
         return fetch(e.request).then(res => {
-          if (res && (res.ok || res.type === 'opaque')) {
+          if (cacheable && res && (res.ok || res.type === 'opaque')) {
             const copy = res.clone();
             caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
           }
