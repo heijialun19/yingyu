@@ -1275,12 +1275,12 @@ function renderNav(activeId) {
   /* 底部栏（手机端 App 风格，桌面端由 CSS 隐藏）：5 个常用页面 + 「我的」，
      档案/星星/声音都收在底部，顶部完全让给内容 */
 const TABS = [
-    { id: 'index',   href: 'index.html',   emoji: '??', label: '首页' },
-    { id: 'letters', href: 'letters.html', emoji: '???', label: '字母' },
-    { id: 'words',   href: 'words.html',   emoji: '???', label: '单词' },
-    { id: 'pep',     href: 'pep.html',     emoji: '??', label: '课本' },
-    { id: 'getsmart', href: 'getsmart.html', emoji: '??', label: '学堂' },
-    { id: 'games',   href: 'games.html',   emoji: '??', label: '游戏' },
+    { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
+    { id: 'letters', href: 'letters.html', emoji: '🏝️', label: '字母' },
+    { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词' },
+    { id: 'pep',     href: 'pep.html',     emoji: '🏫', label: '课本' },
+    { id: 'getsmart', href: 'getsmart.html', emoji: '🎓', label: '学堂' },
+    { id: 'games',   href: 'games.html',   emoji: '🎡', label: '游戏' },
   ];
   document.body.insertAdjacentHTML('beforeend', `
     <nav class="bottom-nav" aria-label="底部导航">
