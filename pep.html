@@ -408,7 +408,7 @@ function startSpell(uid) {
   SP = { parts: splitPhrase(S.list[0].w), partIdx: 0, filled: [], tiles: [], used: [], blocks: [] };
   renderSpell();
 }
-let SP = { filled: [], tiles: [], used: [], blocks: [], parts: [], partIdx: 0 };
+let SP = { filled: [], tiles: [], used: [], blocks: [], parts: [], partIdx: 0, curWord: '' };
 /* 拼词防泄底：有些内置图把单词印在图上（如名牌上写着 NAME），
    数字词的图也直接是数字 —— 这些都不能当拼词提示，改用神秘问号纯靠听力 */
 function spellSafeIcon(w) {
@@ -422,6 +422,14 @@ function spellSafeIcon(w) {
 function renderSpell() {
   stopAllSpeech(); __token++;
   const cur = S.list[S.qIdx];
+  /* ★ 词切换哨兵：只要当前词变了（下一词/跳过/重拼/深链），
+     段与字母块必须全部重置——否则会渲染上一个词的块（严重错位） */
+  if (SP.curWord !== cur.w) {
+    SP.curWord = cur.w;
+    SP.parts = splitPhrase(cur.w);
+    SP.partIdx = 0;
+    SP.filled = []; SP.used = []; SP.blocks = [];
+  }
   const part = SP.parts[SP.partIdx] || cur.w;
   const blocks = splitBlocks(part);
   const safeIc = spellSafeIcon(cur);
