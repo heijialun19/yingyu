@@ -13,9 +13,11 @@ const PEP_POINTS = {
       { t: 'This is... 万能介绍法', kid: '介绍家里人，英语一律 This is...（这是……），不用管他是谁。This 就是"往这一指"，指到谁介绍谁。', tip: '伸手一指 This is', en: 'This is my mother.', zh: '这是我妈妈。' },
       { t: 'grand = 跳一代', kid: 'grandfather = grand（隔一代的）+ father（爸爸）= 爷爷或外公。grand 就像"跳了一级"，grandma、grandpa 都是这样变出来的。', tip: 'grand = 跳一代', en: 'This is my grandfather.', zh: '这是我爷爷。' },
       { t: 'family 藏着一句情话', kid: 'f-a-m-i-l-y = Father And Mother I Love You（爸爸妈妈我爱你们）——这是最有名的单词记忆法，把全家装进一个词里。', tip: 'family 藏着一句情话', en: 'I have a big family.', zh: '我有一个大家庭。' },
+      { t: '一般疑问句：把 is 提到句首', kid: '想问"这是你的妈妈吗？"，英语把 is 提到最前面：Is this your mother? 回答只说 Yes, it is. / No, it isn\'t.——问句 is 开路，答句 it 接招。', tip: '疑问 is 开路，回答 Yes/No', en: 'Is this your father? Yes, it is.', zh: '这是你爸爸吗？是的。' },
     ],
     u3: [
       { t: '一个用 is，一群用 are', kid: '一只猫 It is a cat. 一群猫 They are cats.——英语管"几个"管得很严：一个 is，两个以上 are，而且名字后面要加 s 变复数。', tip: '单数 is，复数 are 加 s', en: 'They are cute animals.', zh: '它们是可爱的动物。' },
+      { t: '否定就是 not', kid: '说"不是"，在 be 后面加 not：It is not a cat. = It isn\'t a cat.——is not 缩写成 isn\'t，are not 缩写成 aren\'t。not 就像一块小橡皮，把意思擦成反面。', tip: 'be 后加 not，缩写 isn\'t/aren\'t', en: 'It is not a dog. It is a cat.', zh: '它不是狗。它是猫。' },
       { t: 'like 是个小钩子', kid: '我喜欢狗：I like dogs.——like 后面直接挂喜欢的东西，不需要加"是"。喜欢一类东西时，狗要变成 dogs（复数）。', tip: 'like 一勾，挂上名词', en: 'I like dogs and cats.', zh: '我喜欢狗和猫。' },
       { t: '形容词是名词的标签', kid: 'giraffe is tall（长颈鹿高），rabbit is fast（兔子快）——这类词叫形容词，专门给名词"贴标签"，告诉你它长什么样。', tip: '形容词 = 名词的标签', en: 'The giraffe is tall.', zh: '长颈鹿很高。' },
     ],
@@ -69,7 +71,7 @@ const PEP_POINTS = {
   },
   pep4a: {
     u1: [
-      { t: '职业必戴 a/an', kid: 'She is a doctor.——英语说职业必须戴 a 或 an 的"帽子"：a doctor、an office worker。中文可以不戴，英语必须戴！', tip: '职业必戴 a/an', en: 'My mother is a nurse.', zh: '我妈妈是护士。' },
+      { t: '职业必戴 a/an，元音音前用 an', kid: '英语说职业必须戴"帽子"：a doctor、a nurse。什么时候用 an？下一个词的**读音**以元音开头就用 an：an office worker、an elephant。听声音，不看字母！', tip: '辅音音 a，元音音 an', en: 'She is an office worker.', zh: '她是公司职员。' },
       { t: '忙完就 tired', kid: 'busy 忙碌的、tired 累的——忙碌之后就是累。be busy（很忙）、be tired（累了），中间的 be 是"是"。', tip: '忙完就 tired', en: 'Dad is busy today.', zh: '爸爸今天很忙。' },
       { t: '看在后面 = 照顾', kid: 'look after my grandmother（照顾我奶奶）——look 是看，after 是在后面，"看在后面" = 照看、照顾。', tip: '看在后面 = 照顾', en: 'I look after my sister.', zh: '我照顾妹妹。' },
     ],
@@ -235,7 +237,7 @@ const PEP_POINTS = {
     u1: [
       { t: 'er + than 比一比', kid: 'taller than 更高——比较两个东西，形容词加 er，再用 than（比）引出对象。big 要双写 g：bigger。', tip: 'er + than 比一比', en: 'I am taller than my brother.', zh: '我比哥哥高。' },
       { t: 'y 变 i 加 er', kid: 'heavy→heavier、happy→happier——辅音字母 + y 结尾的，变 y 为 i 再加 er。', tip: 'y 变 i 加 er', en: 'The elephant is heavier.', zh: '大象更重。' },
-      { t: 'than 后接宾格', kid: 'I am taller than him.——than 后面的人用宾格 him。比较是"我"和"他"的公平对决！', tip: 'than 后接宾格', en: 'She is smarter than him.', zh: '她比他聪明。' },
+      { t: 'than 后接比较对象', kid: 'I am taller than him.——than 后面跟比较对象，课本句型 You are older than me.（你比我大）用的就是 me/him 这样的宾格。比较是"我"和"他"的公平对决！', tip: 'than 后接宾格（课本也是这么用）', en: 'You are older than me.', zh: '你比我大。' },
     ],
     u2: [
       { t: '上周的事加 ed', kid: 'clean→cleaned、wash→washed、watch→watched——上周末做的事，动词全部加 ed。last weekend 是过去时的信号灯。', tip: '上周的事加 ed', en: 'I cleaned my room last weekend.', zh: '上周末我打扫了房间。' },
