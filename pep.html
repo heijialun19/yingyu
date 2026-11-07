@@ -22,13 +22,13 @@
 .pep-book small{color:#6B7280;font-size:.72rem}
 .pep-tag{position:absolute;top:-8px;right:8px;background:var(--grape);color:#fff;font-size:.62rem;font-weight:800;border-radius:999px;padding:2px 8px}
 .pep-tag.old{background:#9CA3AF}
-.pep-unit{background:#fff;border:3px solid #E8EAF0;border-radius:22px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-top:10px;box-shadow:0 4px 0 rgba(45,49,66,.06)}
+.pep-unit{background:#fff;border:3px solid #E8EAF0;border-radius:22px;padding:14px 16px;margin-top:10px;box-shadow:0 4px 0 rgba(45,49,66,.06)}
 .pep-unit.done{border-color:var(--mint);background:#F2FBF5}
-.pep-unit .pu-main{flex:1;min-width:0}
-.pep-unit .pu-main b{display:block;font-size:.98rem}
-.pep-unit .pu-main small{color:#6B7280;font-size:.78rem;display:block;margin-top:2px}
-.pep-btnrow{display:flex;gap:8px;flex-shrink:0}
-.pep-btnrow .btn{padding:9px 14px;font-size:.85rem;white-space:nowrap}
+.pep-unit .pu-main{width:100%}
+.pep-unit .pu-main b{display:block;font-size:1rem;line-height:1.4}
+.pep-unit .pu-main small{color:#6B7280;font-size:.78rem;display:block;margin-top:3px;line-height:1.5}
+.pep-btnrow{display:flex;gap:8px;margin-top:10px}
+.pep-btnrow .btn{flex:1;padding:10px 6px;font-size:.88rem;white-space:nowrap;min-width:0}
 .btn.spell{background:linear-gradient(135deg,#FF8A5C,#FF6B6B);color:#fff;border:none;box-shadow:0 4px 0 rgba(255,107,107,.35);font-weight:800}
 .btn.spell:hover{filter:brightness(1.05)}
 /* 学习卡 */
@@ -75,6 +75,13 @@
 .mem-box b{color:#1B5E3A}
 /* 词性徽章 */
 .pos-badge{display:inline-block;background:#F4F9FF;border:2px solid #D5E5F5;color:#2C6FBB;border-radius:999px;padding:1px 10px;font-size:.78rem;font-weight:800;vertical-align:middle}
+/* 拼读拆分行：与拼词小火车同一套拆块，全链路一致 */
+.spell-line{background:#F6F1FF;border:2px solid #E4DAFB;border-radius:12px;padding:8px 12px;margin-top:10px;font-size:.95rem;font-weight:800;color:#5B3FBF;text-align:left;letter-spacing:.5px}
+.spell-line small{font-weight:700;color:#9B8FD0;font-size:.72rem;margin-right:6px}
+/* 拼读地图 */
+.phon-map{background:#fff;border:3px solid #E4DAFB;border-radius:20px;padding:14px 16px;margin-top:12px}
+.phon-map .ph-chip{display:inline-flex;align-items:center;gap:6px;background:#F6F1FF;border:2px solid #E4DAFB;border-radius:999px;padding:5px 12px;margin:4px 4px 0 0;font-weight:800;color:#5B3FBF}
+.phon-map .ph-chip small{color:#9B8FD0;font-weight:700}
 /* 成绩单 */
 .res-nums{display:flex;justify-content:center;gap:26px;text-align:center;margin:10px 0 4px}
 .res-nums b{display:block;font-size:2.1rem;line-height:1.1}
@@ -258,6 +265,18 @@ function renderPoints(uid) {
   curUnit = u; view = 'points'; stopAllSpeech(); __token++;
   const pts = pepPointsOf(uid);
   if (!pts.length) { startLearn(uid); return; }
+  /* 本单元拼读地图：统计单元词表里的高频字母组合（数据驱动，与拼词拆块同一套） */
+  const freq = {};
+  u.words.forEach(w => splitPhrase(w.w).forEach(part => splitBlocks(part).forEach(b => {
+    if (b.length >= 2) freq[b] = (freq[b] || 0) + 1;
+  })));
+  const phon = Object.entries(freq).filter(e => e[1] >= 2).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const phonCard = phon.length ? `
+    <div class="phon-map">
+      <b>🔤 本单元拼读地图</b>
+      <div style="color:#6B7280;font-size:.78rem;margin-top:2px">出现 2 次以上的字母组合（拼词时就会按这样拆）</div>
+      <div style="margin-top:6px">${phon.map(e => `<span class="ph-chip">${esc(e[0])}<small>×${e[1]}</small></span>`).join('')}</div>
+    </div>` : '';
   const cards = pts.map((p, i) => `
     <div class="point-card">
       <span class="pc-num">知识点 ${i + 1}/${pts.length}</span>
@@ -273,6 +292,7 @@ function renderPoints(uid) {
       <b style="font-size:1.05rem">💡 ${esc(u.title)} · 课本知识点</b>
       <div style="color:#6B7280;font-size:.82rem;margin-top:2px">${esc(u.zh)} · ${pts.length} 个知识点 · 用最简单的话讲透课本</div>
     </div>
+    ${phonCard}
     ${cards}
     <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">
       <button class="btn grape big" onclick="startLearn('${u.id}')">📖 学会了，去学单词</button>
@@ -310,7 +330,8 @@ function renderLearnCard() {
         <button class="pw-word" onclick="speakWord('${jsq(w.w)}')" title="点我发音">${esc(w.w)}</button>
         <div class="pw-ipa">${pos ? `<span class="pos-badge">${pos.emoji} ${pos.zh}</span>` : ''} ${ipa ? '/' + esc(ipa) + '/' : ''}</div>
         <div class="pw-zh">${esc(w.zh)}</div>
-        ${dec ? `<div class="mem-box"><b>🧠 记一记：</b>${esc(dec)}</div>` : ''}
+        <div class="spell-line"><small>🔤 拼读</small>${splitPhrase(w.w).map(p => splitBlocks(p).join(' · ')).join(' ／ ')}</div>
+        ${dec ? `<div class="mem-box"><b>🧠 趣味记：</b>${esc(dec)}</div>` : ''}
       </div>
       <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap">
         ${L2.i > 0 ? '<button class="btn ghost big" onclick="L2.i--;renderLearnCard()">← 上一个</button>' : ''}
@@ -555,6 +576,15 @@ function startSpellWrong() {
 
 /* ---------- 启动 ---------- */
 (function init() {
+  const params = new URLSearchParams(location.search);
+  /* 深链：?points=pep3a-u1 直达某单元知识点（单词镇课本区块跳过来用） */
+  const pid = params.get('points');
+  if (pid && findUnit(pid)) {
+    const un = findUnit(pid);
+    pepSetActiveLevel(un.lv.id);
+    renderPoints(pid);
+    return;
+  }
   const lv = PEP_LEVELS.find(l => l.id === pepActiveLevelId());
   if (lv) { curLevel = lv; renderLevelHome(); } else renderLevels();
 })();

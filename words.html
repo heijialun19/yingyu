@@ -314,7 +314,7 @@ function pepBlockHtml(gid) {
       return `<div class="pep-u">
         <div class="pu-h"><b>${esc(u.title)}</b><small>${esc(u.zh)} · 掌握 ${mastered}/${u.words.length}</small></div>
         <div class="pu-w">${u.words.map(w => `<button class="pu-chip" onclick="speakWord('${jsq(w.w)}')" title="${esc(w.zh)}">${esc(w.w)}</button>`).join('')}</div>
-        <div class="pu-btns"><button class="btn mint" onclick="practiceUnit('${u.id}')">✏️ 练这单元</button><button class="btn spell" onclick="location.href='pep.html'">🚂 去拼词</button></div>
+        <div class="pu-btns"><button class="btn mint" onclick="practiceUnit('${u.id}')">✏️ 练这单元</button><button class="btn" style="background:#7C5CFF;color:#fff" onclick="location.href='pep.html?points=${u.id}'">💡 知识点</button><button class="btn spell" onclick="location.href='pep.html'">🚂 去拼词</button></div>
       </div>`;
     }).join('');
     return `<div class="card" style="border-color:#F59E0B;margin-top:10px">
