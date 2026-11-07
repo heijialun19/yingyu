@@ -128,7 +128,7 @@
 <script src="js/data.js?v=33"></script>
 <script src="js/app.js?v=63"></script>
 <script src="js/pep-data.js?v=1"></script>
-<script src="js/pep-points.js?v=9"></script>
+<script src="js/pep-points.js?v=10"></script>
 <script>
 renderNav('pep'); renderDecor();
 
@@ -323,7 +323,7 @@ function renderPoints(uid) {
       <span class="pc-num">知识点 ${i + 1}/${pts.length}</span>
       <h3>${esc(p.t)}</h3>
       <p class="pc-kid">${esc(p.kid)}</p>
-      ${p.tip && !similar(p.t, p.tip) ? `<div class="pc-tip">💡 口诀：${esc(p.tip)}</div>` : ''}
+      ${p.tip && !similar(p.t, p.tip) ? `<div class="pc-tip">💡 想通这一句：${esc(p.tip)}</div>` : ''}
       <div class="pc-en" lang="en" onclick="speakWord('${jsq(p.en)}')" title="点一下，读例句">🔊 ${esc(p.en)}</div>
       <div class="pc-zh">${esc(p.zh)}</div>
     </div>`).join('');
