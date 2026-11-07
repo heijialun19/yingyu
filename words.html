@@ -91,6 +91,17 @@
 .pf-item.open .pf-body{display:block}
 .pf-body .pu-w{display:flex;flex-wrap:wrap;gap:6px}
 .pf-body .pu-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+/* ---- 卡片学（乱序卡片流） ---- */
+.cf-progress{height:10px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:6px 0 4px}
+.cf-progress i{display:block;height:100%;background:linear-gradient(90deg,#7C5CFF,#B9A5F5);border-radius:999px;transition:.3s}
+.cf-pic{font-size:20px;margin:6px 0 2px}
+.cf-pic .wsvg{width:110px;height:110px;font-size:50px}
+.cf-word{display:block;margin:4px auto 2px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:2rem;font-weight:800;color:var(--ink)}
+.cf-meta{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:2px}
+.cf-ipa{color:#6B7280;font-size:.98rem}
+.cf-zh{font-size:1.08rem;color:#374151;margin-top:6px;font-weight:700}
+.mem-box{background:#F2FBF5;border:2px solid var(--mint);border-radius:12px;padding:8px 12px;margin-top:10px;font-size:.84rem;color:#2C6E49;text-align:left;line-height:1.8}
+.mem-box b{color:#1B5E3A}
 </style>
 </head>
 <body>
@@ -264,13 +275,7 @@ function renderBrowse() {
         <span class="te">${gr.emoji}</span>${gr.id === (Store.d.grade || '') ? '🏠' : ''}${gr.name}</button>`).join('')}
     </div>
 
-    <div class="zone-tabs">
-      <button class="zone-tab ${pepZone === 'sync' ? 'on' : ''}" onclick="switchZone('sync')">🏫 课本同步</button>
-      <button class="zone-tab ${pepZone === 'extend' ? 'on' : ''}" onclick="switchZone('extend')">🎒 拓展词库</button>
-    </div>
-
-    ${pepZone === 'sync' ? syncZoneHtml(g.id) : `
-    <div class="tab-label">🎒 拓展主题（课外加油站，${g.name}词库）</div>
+    <div class="tab-label">📚 ${g.name}词库 · 选主题（兴趣拓展）</div>
     <div class="theme-tabs">
       ${g.themes.map(t2 => {
         /* 全掌握的主题打个 ✅：家长扫一眼就知道哪块还没碰过 */
@@ -286,10 +291,11 @@ function renderBrowse() {
       </h2>
       ${t.tip ? `<div class="tip">${t.tip}</div>` : ''}
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px">
+        <button class="btn grape" onclick="startCardFlow()">🃏 卡片学（乱序 10 词）</button>
         <button class="btn mint" onclick="startPractice()">✏️ 练一练（得星星）</button>
-        <button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button>
-        <button class="btn orange" onclick="startSpeak()">🎤 跟读打分</button>
         <button class="btn" style="background:#6366F1;color:#fff" onclick="startDictation()">📝 听写</button>
+        <button class="btn orange" onclick="startSpeak()">🎤 跟读打分</button>
+        <button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button>
         <button class="btn" onclick="listenAll()">🔊 全部听一遍</button>
       </div>
       <div class="word-grid">
@@ -307,7 +313,7 @@ function renderBrowse() {
             ${w.dec ? `<div class="dec">🔎 ${esc(w.dec)}</div>` : '<div class="dec" style="background:transparent"></div>'}
           </div>`).join('')}
       </div>
-    </div>`}
+    </div>
     <details class="card pos-lesson">
       <summary>🏷️ 词性小课堂 —— 单词旁的小标签是什么意思？</summary>
       <div class="pos-grid">
@@ -324,62 +330,70 @@ function switchGrade(id) {
 }
 function switchTheme(id) { curTheme = id; searchQ = ''; poolMode = ''; renderBrowse(); }
 
-/* ---------------- 人教课本同步区块（百词斩式折叠列表） ----------------
-   年级 = 人教版年级：三~六年级显示对应册的单元词表（与课本附录一致）。
-   每个单元默认收起成一行，点开才看词表和操作按钮——一屏只见一层信息。 */
-const PEP_BOOKS_OF = { g3: ['pep3a', 'pep3b'], g4: ['pep4a', 'pep4b'], g5: ['pep5a', 'pep5b'], g6: ['pep6a', 'pep6b'] };
-let openUnit = '';
-function toggleUnit(uid) { openUnit = openUnit === uid ? '' : uid; renderBrowse(); }
-function syncZoneHtml(gid) {
-  if (typeof PEP_LEVELS === 'undefined') return '';
-  const books = (PEP_BOOKS_OF[gid] || []).map(id => PEP_LEVELS.find(l => l.id === id)).filter(Boolean);
-  if (!books.length) {
-    return `<div class="card" style="padding:20px;text-align:center;color:#6B7280;font-size:.9rem;margin-top:12px">
-      🌱 人教版英语从三年级起步。<br>一、二年级的小朋友先在 🎒 拓展词库打基础吧！</div>`;
-  }
-  const items = books.map(lv => {
-    const total = lv.units.reduce((s, u) => s + u.words.length, 0);
-    const units = lv.units.map(u => {
-      const mastered = u.words.filter(w => ((Store.d.words[w.w] || {}).box || 0) >= 2).length;
-      const open = openUnit === u.id;
-      const nPts = pepPointsOf(u.id).length;
-      return `<div class="pf-item ${open ? 'open' : ''}" onclick="toggleUnit('${u.id}')">
-        <div class="pf-head">
-          <div class="pf-t"><b>${mastered === u.words.length ? '✅ ' : ''}${esc(u.title)}</b>
-            <small>${esc(u.zh)} · 掌握 ${mastered}/${u.words.length}${nPts ? ' · 💡 ' + nPts + ' 个知识点' : ''}</small></div>
-          <span class="pf-arrow">▶</span>
-        </div>
-        <div class="pf-body" onclick="event.stopPropagation()">
-          <div class="pu-w">${u.words.map(w => `<button class="pu-chip" onclick="speakWord('${jsq(w.w)}')" title="${esc(w.zh)}">${esc(w.w)}</button>`).join('')}</div>
-          <div class="pu-btns">
-            ${nPts ? `<button class="btn" style="background:#7C5CFF;color:#fff" onclick="location.href='pep.html?points=${u.id}'">💡 知识点</button>` : ''}
-            <button class="btn mint" onclick="practiceUnit('${u.id}')">✏️ 练这单元</button>
-            <button class="btn spell" onclick="location.href='pep.html'">🚂 去拼词</button>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-    return `<div style="margin-top:12px"><b style="font-size:.9rem;color:#B45309">${lv.emoji} 人教版${esc(lv.name)}</b>
-      <small style="color:#8B93A7;font-size:.76rem;margin-left:6px">${lv.units.length} 个单元 · ${total} 词 · 与课本附录一致</small>${units}</div>`;
-  }).join('');
-  return `<div style="margin-top:8px">${items}</div>
-    <div style="text-align:center;margin-top:14px"><button class="btn" style="background:#6366F1;color:#fff" onclick="location.href='pep.html'">🏫 进「人教课本」专栏系统学</button></div>`;
+/* ---------------- 卡片学（百词斩式乱序卡片流） ----------------
+   单词镇的灵魂是兴趣驱动：像抽卡片一样乱序学当前主题的词，
+   一屏一卡（图 + 发音 + 音标 + 拼读拆分 + 词性 + 中文 + 记忆法），
+   学完一组顺势进入练一练巩固。 */
+let cardFlow = null;
+let __cardToken = 0;
+function startCardFlow() {
+  const t = themeById(curTheme);
+  if (!t || !t.words.length) { toast('这个主题还没有词哦'); return; }
+  const list = shuffle(t.words).slice(0, Math.min(10, t.words.length));
+  cardFlow = { themeId: t.id, themeLabel: t.emoji + ' ' + t.name, list, idx: 0 };
+  mode = 'cards';
+  Flow.reset();
+  renderCardFlow();
 }
-/* 自定义练习池：课本单元 → 练一练（用完即清，不影响词单/错题本逻辑） */
-let customPool = null;
-/* 浏览分区：sync = 课本同步（默认），extend = 拓展词库 */
-let pepZone = 'sync';
-function switchZone(z) { pepZone = z; searchQ = ''; poolMode = ''; renderBrowse(); }
-function practiceUnit(uid) {
-  for (const lv of PEP_LEVELS) {
-    const u = lv.units.find(x => x.id === uid);
-    if (u) {
-      customPool = { words: u.words.map(w => ({ w: w.w, zh: w.zh, e: w.e })), label: '🏫 ' + u.title };
-      poolMode = '';
-      startPractice();
-      return;
-    }
-  }
+function renderCardFlow() {
+  const c = cardFlow, w = c.list[c.idx];
+  stopAllSpeech();
+  const last = c.idx >= c.list.length - 1;
+  $('#app').innerHTML = `
+    <div class="card" style="max-width:520px;margin:0 auto;text-align:center">
+      <div class="score-bar"><b>🃏 卡片学 · ${esc(c.themeLabel)}</b><span>${c.idx + 1} / ${c.list.length}</span></div>
+      <div class="cf-progress"><i style="width:${Math.round(c.idx / c.list.length * 100)}%"></i></div>
+      <div style="padding:10px 0 4px">
+        <div class="cf-pic">${iconOf(w)}</div>
+        <button class="cf-word" onclick="speakWord('${jsq(w.w)}')" title="点我发音">${esc(w.w)}</button>
+        <div class="cf-meta">
+          <span class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</span>
+          <span class="cf-ipa">${ipaOf(w.w)}</span>
+        </div>
+        <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
+        <div class="cf-zh">${w.zh}</div>
+        ${w.dec ? `<div class="mem-box"><b>🧠 记一记：</b>${esc(w.dec)}</div>` : ''}
+        ${famLine(w.w)}
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:14px">
+        ${c.idx > 0 ? '<button class="btn ghost big" onclick="cardFlow.idx--;renderCardFlow()">← 上一个</button>' : ''}
+        <button class="btn coral big" onclick="speakWord('${jsq(w.w)}')">🔊 听</button>
+        ${last
+          ? '<button class="btn grape big" onclick="cardFlowDone()">🏁 学完了，去练一练</button>'
+          : '<button class="btn grape big" onclick="cardFlow.idx++;renderCardFlow()">认识了 →</button>'}
+      </div>
+      <div style="margin-top:10px"><button class="btn ghost" onclick="renderBrowse()">← 退出卡片</button></div>
+    </div>`;
+  const tk = __cardToken;
+  setTimeout(() => { if (tk === __cardToken) speakWord(w.w); }, 350);
+  if (c.list[c.idx + 1]) prewarmWord(c.list[c.idx + 1].w);
+}
+function cardFlowDone() {
+  const c = cardFlow;
+  completeDailyTask('words');
+  addStars(2); confetti(); sfx.win();
+  $('#app').innerHTML = `
+    <div class="card bounce-in" style="max-width:520px;margin:0 auto;text-align:center;padding:26px 20px">
+      <div style="font-size:56px">🃏</div>
+      <h2 style="justify-content:center">卡片学完啦！</h2>
+      <p style="color:#5C6273;font-size:.9rem">${esc(c.themeLabel)} · 乱序学了 ${c.list.length} 个词</p>
+      <p style="color:#9CA3AF;font-size:.82rem">${c.list.map(w => w.w).join('、')}</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+        <button class="btn mint big" onclick="startPractice()">✏️ 马上练一练（得星星）</button>
+        <button class="btn grape big" onclick="startCardFlow()">🔄 再抽一组</button>
+        <button class="btn ghost big" onclick="renderBrowse()">← 回主题</button>
+      </div>
+    </div>`;
 }
 function doSearch(v, ev) {
   if (ev && ev.isComposing) return; // 中文输入法组词过程中不重渲染，不打断输入
@@ -513,8 +527,7 @@ function makeQuestion(word, pool) {
 
 function startPractice() {
   let pool, label;
-  if (customPool) { pool = customPool.words; label = customPool.label; customPool = null; }
-  else if (poolMode === 'plan') { pool = shuffle(planWords()).slice(0, 12); label = '🎯 我的词单'; }
+  if (poolMode === 'plan') { pool = shuffle(planWords()).slice(0, 12); label = '🎯 我的词单'; }
   else if (poolMode === 'wrong') { pool = shuffle(wrongWords()).slice(0, 12); label = '📓 错题本'; }
   else { const t = themeById(curTheme); pool = t.words; label = t.emoji + ' ' + t.name; }
   const qs = shuffle(pool).slice(0, 6).map(w => makeQuestion(w, pool));
