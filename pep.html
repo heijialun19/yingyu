@@ -75,6 +75,8 @@
 .mem-box b{color:#1B5E3A}
 /* 词性徽章 */
 .pos-badge{display:inline-block;background:#F4F9FF;border:2px solid #D5E5F5;color:#2C6FBB;border-radius:999px;padding:1px 10px;font-size:.78rem;font-weight:800;vertical-align:middle}
+/* 拼词防泄底：图里印着单词（名牌 NAME）或数字词时，改用神秘问号，纯靠听力 */
+.sp-mystery{display:inline-flex;align-items:center;justify-content:center;width:2.2em;height:2.2em;background:#F6F1FF;border-radius:26%;font-size:1em}
 /* 拼读拆分行：与拼词小火车同一套拆块，全链路一致 */
 .spell-line{background:#F6F1FF;border:2px solid #E4DAFB;border-radius:12px;padding:8px 12px;margin-top:10px;font-size:.95rem;font-weight:800;color:#5B3FBF;text-align:left;letter-spacing:.5px}
 .spell-line small{font-weight:700;color:#9B8FD0;font-size:.72rem;margin-right:6px}
@@ -373,11 +375,23 @@ function startSpell(uid) {
   renderSpell();
 }
 let SP = { filled: [], tiles: [], used: [], blocks: [], parts: [], partIdx: 0 };
+/* 拼词防泄底：有些内置图把单词印在图上（如名牌上写着 NAME），
+   数字词的图也直接是数字 —— 这些都不能当拼词提示，改用神秘问号纯靠听力 */
+function spellSafeIcon(w) {
+  const icon = pepIconOf(w);
+  const word = String(w.w || '').toLowerCase().replace(/[^a-z]/g, '');
+  if (pepPosKey(w) === 'num' || (word.length >= 3 && icon.toLowerCase().includes(word))) {
+    return '<span class="wsvg sp-mystery" role="img" aria-label="听一听，拼出来">❓</span>';
+  }
+  return icon;
+}
 function renderSpell() {
   stopAllSpeech(); __token++;
   const cur = S.list[S.qIdx];
   const part = SP.parts[SP.partIdx] || cur.w;
   const blocks = splitBlocks(part);
+  const safeIc = spellSafeIcon(cur);
+  const isMystery = safeIc.includes('sp-mystery');
   /* 干扰块：从本组其他词 + 本词其他段借，不与当前块重复 */
   const pool = new Set();
   S.list.forEach(x => { if (x.w !== cur.w) splitPhrase(x.w).forEach(p => splitBlocks(p).forEach(b => pool.add(b))); });
@@ -402,12 +416,12 @@ function renderSpell() {
       <div class="score-bar"><b>🚂 拼词小火车 · ${esc(curUnit.title)}</b><span>第 ${S.qIdx + 1} / ${S.list.length} 词</span></div>
       <div class="spell-progress"><i style="width:${Math.round(S.qIdx / S.list.length * 100)}%"></i></div>
       <div class="spell-stage">
-        <div class="sp-ic">${pepIconOf(cur)}</div>
+        <div class="sp-ic">${safeIc}</div>
         <div class="sp-zh">${esc(cur.zh)}</div>
         <div style="color:#6B7280;font-size:.95rem;min-height:1.3em">${ipa ? '/' + esc(ipa) + '/' : ''}</div>
         <button class="btn ghost sp-speaker" onclick="speakWord('${jsq(cur.w)}')">🔊 再听一遍</button>
       </div>
-      <p style="text-align:center;color:#6B7280;font-size:.82rem;margin:2px 0 0">看图听音，点字母块拼出${SP.parts.length > 1 ? '每个词' : '单词'}</p>
+      <p style="text-align:center;color:#6B7280;font-size:.82rem;margin:2px 0 0">${isMystery ? '听发音' : '看图听音'}，点字母块拼出${SP.parts.length > 1 ? '每个词' : '单词'}</p>
       ${partTip}
       <div class="spell-slots" id="slots">${blocks.map(() => '<div class="slot"><span class="hint"></span></div>').join('')}</div>
       <div class="spell-tiles" id="tiles">${SP.tiles.map((b, i) => `<button class="tile" id="tile${i}" onclick="pickTile(${i})">${esc(b)}</button>`).join('')}</div>

@@ -420,6 +420,16 @@ function famLine(word) {
   return `<div class="fam" title="${f.zh}">👪 ${f.base} <span class="op">+</span> ${f.suf} <span class="op">=</span> ${f.d}</div>`;
 }
 
+/* 图里印着单词本身的不算可用图（如名牌上写着 NAME、字母牌只给首字母）——
+   看图选词题用它当选项等于把答案贴在选项上。人教课本的词有不少这类图。 */
+const __baseHasIcon = hasIcon;
+hasIcon = function (w) {
+  if (!__baseHasIcon(w)) return false;
+  const word = String(w.w || '').toLowerCase().replace(/[^a-z]/g, '');
+  if (word.length >= 3 && iconOf(w).toLowerCase().includes(word)) return false;
+  return true;
+};
+
 function makeQuestion(word, pool) {
   /* 同义词组：中文写法不同但指同一件事，不能互相当干扰项。
      ★ 2026-10-26 修的 bug：原来只比 w.zh === word.zh，但同义词的中文写法本来就不一样
