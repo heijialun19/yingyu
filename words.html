@@ -75,7 +75,7 @@
 .pep-u .pu-btns .btn{padding:7px 13px;font-size:.82rem}
 /* ---- 词卡拼读拆分行（与教材、拼词同一套拆块） ---- */
 .spl{color:#7C5CFF;font-size:.78rem;font-weight:800;letter-spacing:.4px;margin-top:2px}
-/* ---- 浏览分区 tab + 单元折叠列表（百词斩式简洁） ---- */
+/* ---- 浏览分区 tab + 单元折叠列表（简洁分层） ---- */
 .zone-tabs{display:flex;gap:8px;margin:12px 0 4px}
 .zone-tab{flex:1;padding:11px 6px;border-radius:16px;border:3px solid #E8EAF0;background:#fff;font-family:inherit;font-weight:800;font-size:.9rem;color:#6B7280;cursor:pointer;transition:.15s}
 .zone-tab.on{border-color:var(--grape);background:#F6F1FF;color:#7C5CFF}
@@ -138,7 +138,7 @@
 <script src="js/speech.js?v=1"></script>
 <script src="js/ipa.js?v=2"></script>
 <script src="js/pep-data.js?v=1"></script>
-<script src="js/pep-points.js?v=7"></script>
+<script src="js/pep-points.js?v=8"></script>
 <script>
 renderNav('words'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -347,7 +347,7 @@ function switchGrade(id) {
 }
 function switchTheme(id) { curTheme = id; searchQ = ''; poolMode = ''; renderBrowse(); }
 
-/* ---------------- 卡片学（百词斩式乱序卡片流） ----------------
+/* ---------------- 卡片学（乱序卡片流） ----------------
    单词镇的灵魂是兴趣驱动：像抽卡片一样乱序学当前主题的词，
    一屏一卡（图 + 发音 + 音标 + 拼读拆分 + 词性 + 中文 + 记忆法），
    学完一组顺势进入练一练巩固。 */
