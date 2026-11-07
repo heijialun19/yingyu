@@ -261,19 +261,36 @@ const PEP_POINTS = {
    ear 的发音分两派：ear/hear/year 读 /ɪə/（整块科学），
    bear/wear/pear 读 /eə/、learn/early/earth 读 /ɜː/ —— 这些词整块 ear 会教错，
    例外表让它们退回 ea+r 切分（ea 在这些词里恰好读对应音）。 */
-const PEP_TRIGRAPHS = ['old', 'air', 'ear', 'all', 'ell', 'ill', 'ing', 'ang', 'ong', 'ung', 'tion'];
-const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu', 'oo', 'ee', 'ea', 'ai', 'ay', 'oa', 'ow', 'ou', 'oi', 'oy', 'ar', 'or', 'er', 'ir', 'ur', 'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd', 'st', 'sp', 'sk', 'tr', 'dr', 'cr', 'fr', 'gr', 'pr', 'br', 'pl', 'bl', 'cl', 'fl', 'gl', 'sl', 'sw', 'tw', 'sm', 'sn', 'nd', 'nk', 'nt', 'mp', 'ld', 'lt', 'ft', 'pt', 'lk', 'ei', 'eo'];
+const PEP_TRIGRAPHS = ['old', 'air', 'ear', 'all', 'ell', 'ill', 'ing', 'ang', 'ong', 'ung', 'tion', 'igh', 'ire', 'str', 'spr', 'thr', 'eau'];
+const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu', 'oo', 'ee', 'ea', 'ai', 'ay', 'oa', 'ow', 'ou', 'oi', 'oy', 'ar', 'or', 'er', 'ir', 'ur', 'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd', 'st', 'sp', 'sk', 'tr', 'dr', 'cr', 'fr', 'gr', 'pr', 'br', 'pl', 'bl', 'cl', 'fl', 'gl', 'sl', 'sw', 'tw', 'sm', 'sn', 'nd', 'nk', 'nt', 'mp', 'ld', 'lt', 'ft', 'pt', 'lk', 'ei', 'eo', 'ie', 'ui', 'ew', 'au', 'kn'];
 const EAR_NOT_IER = { bear: 1, wear: 1, pear: 1, learn: 1, early: 1, earth: 1, search: 1, heart: 1, swear: 1 };
+/* 组合例外表：这些词在特定位置组合并不成立，命中也要跳过（回到逐字母诚实拆分）。
+   - homework/bathroom：复合词边界（home|work、bath|room）上的 ew/thr 是假组合
+   - laugh/laughed/because：au 在这些词读 /ɑː/、/ɒ/，不教 /ɔː/ 主音
+   - science/scientist/worried/heavier/view/alien：ie 不是标准组合（拉丁前缀 / y→i 变形词）
+   - direct：ire 分属两个音节；building：ui 特读 /ɪ/ */
+const COMBO_EXC = {
+  homework: ['ew'], bathroom: ['thr'],
+  laugh: ['au'], laughed: ['au'], because: ['au'],
+  science: ['ie'], scientist: ['ie'], worried: ['ie'], heavier: ['ie'], view: ['ie'], alien: ['ie'],
+  direct: ['ire'], building: ['ui'],
+};
 function splitBlocks(w) {
   const s = String(w).toLowerCase().replace(/[^a-z]/g, '');
-  const trigs = EAR_NOT_IER[s] ? PEP_TRIGRAPHS.filter(d => d !== 'ear') : PEP_TRIGRAPHS;
+  const exc = COMBO_EXC[s];
+  let trigs = EAR_NOT_IER[s] ? PEP_TRIGRAPHS.filter(d => d !== 'ear') : PEP_TRIGRAPHS;
+  let digs = PEP_DIGRAPHS;
+  if (exc) {
+    trigs = trigs.filter(d => !exc.includes(d));
+    digs = digs.filter(d => !exc.includes(d));
+  }
   const parts = [];
   let i = 0;
   while (i < s.length) {
     let hit = null;
     if (i + 4 <= s.length && s.startsWith('tion', i)) hit = 'tion';
     if (!hit && i + 3 <= s.length) hit = trigs.find(d => d !== 'tion' && s.startsWith(d, i)) || null;
-    if (!hit) hit = PEP_DIGRAPHS.find(d => s.startsWith(d, i)) || null;
+    if (!hit) hit = digs.find(d => s.startsWith(d, i)) || null;
     parts.push(hit || s[i]);
     i += (hit || s[i]).length;
   }
