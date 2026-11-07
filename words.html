@@ -102,6 +102,17 @@
 .cf-zh{font-size:1.08rem;color:#374151;margin-top:6px;font-weight:700}
 .mem-box{background:#F2FBF5;border:2px solid var(--mint);border-radius:12px;padding:8px 12px;margin-top:10px;font-size:.84rem;color:#2C6E49;text-align:left;line-height:1.8}
 .mem-box b{color:#1B5E3A}
+/* 年级 tab 六个一行（不换行） */
+#gradeTabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+#gradeTabs .theme-tab{padding:9px 2px;font-size:.85rem;text-align:center}
+/* 今日计划主卡 */
+.today-card{border:3px solid var(--grape);background:linear-gradient(160deg,#FDFBFF,#F6F1FF)}
+.today-card .tc-bar{height:14px;background:#EDE7FA;border-radius:999px;overflow:hidden;margin:10px 0 4px}
+.today-card .tc-bar i{display:block;height:100%;background:linear-gradient(90deg,#7C5CFF,#B9A5F5);border-radius:999px;transition:.4s}
+.today-card .tc-big{width:100%;padding:15px 10px;font-size:1.15rem;border:none;border-radius:18px;background:linear-gradient(135deg,#7C5CFF,#9B72FF);color:#fff;font-family:inherit;font-weight:800;cursor:pointer;box-shadow:0 5px 0 rgba(124,92,255,.3);transition:.15s}
+.today-card .tc-big:hover{transform:translateY(-2px)}
+.today-card .tc-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.today-card .tc-row .btn{flex:1;min-width:86px;padding:9px 4px;font-size:.85rem}
 </style>
 </head>
 <body>
@@ -285,20 +296,26 @@ function renderBrowse() {
       }).join('')}
     </div>
 
-    <div class="card" style="border-color:${t.color}">
+    <div class="card today-card" style="border-color:${t.color}">
       <h2 style="color:${t.color}">${t.emoji} ${t.name}
-        <small style="font-weight:400;color:#5C6273">掌握 ${mastered}/${t.words.length} · ${g.name}共掌握 ${gMastered}/${gTotal}</small>
+        <small style="font-weight:400;color:#5C6273">${g.name}词库共掌握 ${gMastered}/${gTotal}</small>
       </h2>
       ${t.tip ? `<div class="tip">${t.tip}</div>` : ''}
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px">
-        <button class="btn grape" onclick="startCardFlow()">🃏 卡片学（乱序 10 词）</button>
-        <button class="btn mint" onclick="startPractice()">✏️ 练一练（得星星）</button>
+      <div class="tc-bar"><i style="width:${Math.round(mastered / Math.max(1, t.words.length) * 100)}%"></i></div>
+      <small style="color:#8B93A7;font-size:.78rem">本主题已掌握 ${mastered}/${t.words.length} · 每次乱序抽 10 张卡片</small>
+      <button class="tc-big" style="margin-top:10px" onclick="startCardFlow()">🃏 开始卡片学（10 张 · 学完得星星）</button>
+      <div class="tc-row">
+        <button class="btn mint" onclick="startPractice()">✏️ 练一练</button>
         <button class="btn" style="background:#6366F1;color:#fff" onclick="startDictation()">📝 听写</button>
-        <button class="btn orange" onclick="startSpeak()">🎤 跟读打分</button>
-        <button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button>
-        <button class="btn" onclick="listenAll()">🔊 全部听一遍</button>
+        <button class="btn orange" onclick="startSpeak()">🎤 跟读</button>
+        <button class="btn grape" onclick="startSpell()">🔤 拼写工坊</button>
+        <button class="btn" onclick="listenAll()">🔊 听一遍</button>
       </div>
-      <div class="word-grid">
+    </div>
+
+    <details class="card" style="border-color:${t.color};margin-top:12px">
+      <summary style="cursor:pointer;font-weight:800">📖 词表 · 全部 ${t.words.length} 个词（点开查看，不是必学清单）</summary>
+      <div class="word-grid" style="margin-top:12px">
         ${t.words.map(w => `
           <div class="word-card" onclick="speakWord('${jsq(w.w)}')" title="点一下，读一遍">
             ${(Store.d.words[w.w] || {}).box >= 2 ? '<span class="mastered-mark">✅</span>' : ''}
@@ -313,7 +330,7 @@ function renderBrowse() {
             ${w.dec ? `<div class="dec">🔎 ${esc(w.dec)}</div>` : '<div class="dec" style="background:transparent"></div>'}
           </div>`).join('')}
       </div>
-    </div>
+    </details>
     <details class="card pos-lesson">
       <summary>🏷️ 词性小课堂 —— 单词旁的小标签是什么意思？</summary>
       <div class="pos-grid">
