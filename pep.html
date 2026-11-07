@@ -10,7 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <title>人教课本 · 拼词复习 · 小鸟英语乐园</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=47">
+<link rel="stylesheet" href="css/style.css?v=48">
 <style>
 /* ---- PEP 专栏专属样式 ---- */
 .pep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
@@ -94,7 +94,7 @@
 <script async src="svg/emoji-svg2.js?v=2"></script>
 <script src="js/ipa.js?v=2"></script>
 <script src="js/data.js?v=33"></script>
-<script src="js/app.js?v=62"></script>
+<script src="js/app.js?v=63"></script>
 <script src="js/pep-data.js?v=1"></script>
 <script>
 renderNav('pep'); renderDecor();
@@ -116,7 +116,11 @@ const PEP_EMOJI = {
   cut: '✂️', eat: '😋', time: '🕐', sea: '🌊',
   teacher: '🧑‍🏫', student: '🧑‍🎓', girl: '👧', boy: '👦', woman: '👩', man: '🧔',
   UK: '🇬🇧', USA: '🇺🇸', China: '🇨🇳', Canada: '🇨🇦',
-  picture: '🖼️', card: '💌', sing: '🎤', dance: '💃', talk: '💬', song: '🎵', face: '🙂', smell: '👃',
+  picture: '🖼️', card: '💌', sing: '🎤', dance: '💃', talk: '💬', song: '🎵', face: '🙂',
+  tongue: '👅', touch: '👆', meat: '🍖', 'piggy bank': '🐖', laugh: '😆',
+  shelf: '🗄️', toilet: '🚽', 'bus stop': '🚏', newspaper: '📰', workbook: '📓',
+  trousers: '👖', jacket: '🧥', shorts: '🩳', waterfall: '💦', recycle: '♻️', train: '🚆',
+  money: '💵', Internet: '🌐',
   'office worker': '💼', 'factory worker': '👷', firefighter: '🚒', 'delivery worker': '🛵',
   'police officer': '👮', 'make the bed': '🛏️', closed: '🔒', idea: '💡',
   wear: '👕', 'get together': '🫂', maths: '➗', 'get up': '🌅', 'go to school': '🚌', 'go home': '🏠', 'go to bed': '🛌',
@@ -268,22 +272,31 @@ function renderLearnCard() {
 }
 
 /* ---------- 拼词（拼词小火车式） ---------- */
-/* 常见字母组合：3 字母 → 2 字母 → 单字母，贪心切分 */
-const PEP_TRIGRAPHS = ['old', 'air', 'ear', 'all', 'ell', 'ill', 'ing', 'ang', 'ong', 'ung'];
-const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu', 'oo', 'ee', 'ea', 'ai', 'ay', 'oa', 'ow', 'ou', 'oi', 'oy', 'ar', 'or', 'er', 'ir', 'ur', 'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd', 'st', 'sp', 'sk', 'tr', 'dr', 'cr', 'fr', 'gr', 'pr', 'br', 'pl', 'bl', 'cl', 'fl', 'gl', 'sl', 'sw', 'tw', 'sm', 'sn', 'nd', 'nk', 'nt', 'mp', 'ld', 'lt', 'ft', 'pt', 'lk'];
+/* 常见字母组合：3 字母 → 2 字母 → 单字母，贪心切分。
+   ear 的发音分两派：ear/hear/year 读 /ɪə/（整块科学），
+   bear/wear/pear 读 /eə/、learn/early/earth 读 /ɜː/ —— 这些词整块 ear 会教错，
+   下面的例外表让它们退回 ea+r 切分（ea 在这些词里恰好读对应音）。 */
+const PEP_TRIGRAPHS = ['old', 'air', 'ear', 'all', 'ell', 'ill', 'ing', 'ang', 'ong', 'ung', 'tion'];
+const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu', 'oo', 'ee', 'ea', 'ai', 'ay', 'oa', 'ow', 'ou', 'oi', 'oy', 'ar', 'or', 'er', 'ir', 'ur', 'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd', 'st', 'sp', 'sk', 'tr', 'dr', 'cr', 'fr', 'gr', 'pr', 'br', 'pl', 'bl', 'cl', 'fl', 'gl', 'sl', 'sw', 'tw', 'sm', 'sn', 'nd', 'nk', 'nt', 'mp', 'ld', 'lt', 'ft', 'pt', 'lk', 'ei', 'eo'];
+const EAR_NOT_IER = { bear: 1, wear: 1, pear: 1, learn: 1, early: 1, earth: 1, search: 1, heart: 1, swear: 1 };
 function splitBlocks(w) {
   const s = w.toLowerCase().replace(/[^a-z]/g, '');
+  const trigs = EAR_NOT_IER[s.replace(/[^a-z]/g, '')] ? PEP_TRIGRAPHS.filter(d => d !== 'ear') : PEP_TRIGRAPHS;
   const parts = [];
   let i = 0;
   while (i < s.length) {
     let hit = null;
-    if (i + 3 <= s.length) hit = PEP_TRIGRAPHS.find(d => s.startsWith(d, i)) || null;
+    if (i + 4 <= s.length && trigs.includes('tion') && s.startsWith('tion', i)) hit = 'tion';
+    if (!hit && i + 3 <= s.length) hit = trigs.find(d => d !== 'tion' && s.startsWith(d, i)) || null;
     if (!hit) hit = PEP_DIGRAPHS.find(d => s.startsWith(d, i)) || null;
     parts.push(hit || s[i]);
     i += (hit || s[i]).length;
   }
   return parts;
 }
+/* 短语/连字符词分段：'look after'→['look','after']，'o'clock'→['o','clock']，
+   每段独立拼，UI 用间隙分组，避免把空格删掉后连成一长串乱切 */
+function splitPhrase(w) { return String(w).toLowerCase().split(/[\s'’\-]+/).filter(Boolean); }
 function findUnit(uid) {
   if (uid.endsWith('-all')) {
     const lv = PEP_LEVELS.find(l => l.id === uid.slice(0, -4));
@@ -302,18 +315,19 @@ function startSpell(uid) {
   let list = u.words;
   if (list.length > 20) list = shuffle(list).slice(0, 20);
   S = { qIdx: 0, list: list.map(w => ({ w: w.w, zh: w.zh, e: w.e })), ok: [], bad: [], tries: {}, hinted: {} };
+  SP = { parts: splitPhrase(S.list[0].w), partIdx: 0, filled: [], tiles: [], used: [], blocks: [] };
   renderSpell();
 }
-function spellState() { return { filled: [], tiles: null }; }
-let SP = { filled: [], tiles: [], wrongFlash: false };
+let SP = { filled: [], tiles: [], used: [], blocks: [], parts: [], partIdx: 0 };
 function renderSpell() {
   stopAllSpeech(); __token++;
   const cur = S.list[S.qIdx];
-  const target = cur.w.toLowerCase().replace(/[^a-z]/g, '');
-  const blocks = splitBlocks(cur.w);
-  /* 干扰块：从本组其他词借 2-3 个，不与已有块重复 */
+  const part = SP.parts[SP.partIdx] || cur.w;
+  const blocks = splitBlocks(part);
+  /* 干扰块：从本组其他词 + 本词其他段借，不与当前块重复 */
   const pool = new Set();
-  S.list.forEach(x => { if (x.w !== cur.w) splitBlocks(x.w).forEach(b => pool.add(b)); });
+  S.list.forEach(x => { if (x.w !== cur.w) splitPhrase(x.w).forEach(p => splitBlocks(p).forEach(b => pool.add(b))); });
+  SP.parts.forEach(p => { if (p !== part) splitBlocks(p).forEach(b => pool.add(b)); });
   blocks.forEach(b => pool.delete(b));
   const distract = shuffle(Array.from(pool)).slice(0, Math.min(3, Math.max(1, 5 - Math.min(4, blocks.length))));
   SP.tiles = shuffle(blocks.concat(distract));
@@ -321,6 +335,13 @@ function renderSpell() {
   SP.used = new Array(SP.tiles.length).fill(false);
   SP.blocks = blocks; // 目标切分：格数 = 块数（不是字母数！）
   const ipa = ipaOf(cur.w);
+  /* 短语词的分段指示：已拼段划掉、当前段高亮 */
+  const partTip = SP.parts.length > 1
+    ? `<div style="text-align:center;margin:2px 0 0;font-size:.92rem">${SP.parts.map((p, i) =>
+        i < SP.partIdx ? `<s style="color:#4E9E59">${esc(p)}</s>` :
+        i === SP.partIdx ? `<b style="color:#FF6B6B">${esc(p)}</b>` :
+        `<span style="color:#9CA3AF">${esc(p)}</span>`).join('<span style="color:#D5DAE6;margin:0 6px">·</span>')}</div>`
+    : '';
   $('#app').innerHTML = `
     <button class="btn ghost" style="margin-bottom:12px" onclick="spellQuit()">← 退出拼词</button>
     <div class="card" style="max-width:560px;margin:0 auto">
@@ -332,7 +353,8 @@ function renderSpell() {
         <div style="color:#6B7280;font-size:.95rem;min-height:1.3em">${ipa ? '/' + esc(ipa) + '/' : ''}</div>
         <button class="btn ghost sp-speaker" onclick="speakWord('${jsq(cur.w)}')">🔊 再听一遍</button>
       </div>
-      <p style="text-align:center;color:#6B7280;font-size:.82rem;margin:2px 0 0">看图听音，点字母块拼出单词</p>
+      <p style="text-align:center;color:#6B7280;font-size:.82rem;margin:2px 0 0">看图听音，点字母块拼出${SP.parts.length > 1 ? '每个词' : '单词'}</p>
+      ${partTip}
       <div class="spell-slots" id="slots">${blocks.map(() => '<div class="slot"><span class="hint"></span></div>').join('')}</div>
       <div class="spell-tiles" id="tiles">${SP.tiles.map((b, i) => `<button class="tile" id="tile${i}" onclick="pickTile(${i})">${esc(b)}</button>`).join('')}</div>
       <div class="spell-tip" id="spellTip"></div>
@@ -341,7 +363,8 @@ function renderSpell() {
       </div>
     </div>`;
   const tk = __token;
-  setTimeout(() => { if (tk === __token) speakWord(cur.w); }, 350);
+  /* 第一段读整词，后续段只读当前段（孩子知道在拼哪个词） */
+  setTimeout(() => { if (tk === __token) speakWord(SP.partIdx === 0 ? cur.w : part); }, 350);
 }
 function pickTile(i) {
   if (SP.used[i]) return;
@@ -371,14 +394,21 @@ function drawSlots() {
 }
 function checkSpell() {
   const cur = S.list[S.qIdx];
-  const target = cur.w.toLowerCase().replace(/[^a-z]/g, '');
+  const target = SP.blocks.join('');
   const got = SP.filled.map(i => SP.tiles[i]).join('');
   if (got === target) {
-    const firstTry = !S.tries[cur.w];
-    if (firstTry) S.ok.push(cur); else if (!S.bad.includes(cur) && !S.ok.includes(cur)) S.ok.push(cur);
-    addStars(firstTry ? 1 : 0);
     sfx.correct(); flyStar(document.querySelector('.spell-stage'));
     document.querySelectorAll('#slots .slot').forEach(el => el.className = 'slot ok');
+    /* 短语词还有下一段：先拼下一段，整词全部拼完才算完成 */
+    if (SP.partIdx < SP.parts.length - 1) {
+      document.getElementById('spellTip').innerHTML = '✅ <b>' + esc(SP.parts[SP.partIdx]) + '</b> 拼对啦！继续～';
+      SP.partIdx++;
+      const tk = __token;
+      setTimeout(() => { if (tk === __token) renderSpell(); }, 1100);
+      return;
+    }
+    const firstTry = !S.tries[cur.w];
+    if (firstTry) { S.ok.push(cur); addStars(1); } else if (!S.bad.includes(cur) && !S.ok.includes(cur)) S.ok.push(cur);
     document.getElementById('spellTip').innerHTML = '✅ <b>' + esc(cur.w) + '</b> 拼对啦！';
     const tk = __token;
     setTimeout(() => { if (tk === __token) spellNext(); }, 1200);
@@ -404,11 +434,8 @@ function renderTilesReset() {
   SP.tiles.forEach((b, i) => { const t = document.getElementById('tile' + i); if (t) { t.classList.remove('used'); } });
 }
 function glintHint(target) {
-  /* 高亮：下一个该填的块（按目标串逐块推算） */
-  const cur = S.list[S.qIdx];
-  const blocks = splitBlocks(cur.w);
-  const idx = SP.filled.length; // 当前空位
-  const need = blocks[idx];
+  /* 高亮：下一个该填的块（当前段的块序列） */
+  const need = SP.blocks[SP.filled.length];
   if (!need) return;
   const tiles = document.querySelectorAll('.tile');
   tiles.forEach(t => { if (!t.classList.contains('used') && t.textContent === need) t.classList.add('glint'); });
