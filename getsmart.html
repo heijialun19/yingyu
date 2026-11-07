@@ -70,6 +70,7 @@
      并进基础库会让首页/单词镇白白多传 119KB(gzip)。两个图库都用 Object.assign
      合并，谁先到都不影响对方。 -->
 <script async src="svg/emoji-svg2.js?v=2"></script>
+<script src="js/ipa.js?v=2"></script>
 <script src="js/data.js?v=33"></script>
 <script src="js/app.js?v=63"></script>
 <script src="js/sentence.js?v=46"></script>
@@ -278,7 +279,7 @@ function renderLearn() {
       <div class="gs-bigword">
         <span class="gw-ic">${gsIcon(w)}</span>
         <button class="btn coral" style="font-size:1.5rem;margin:8px 0;padding:10px 26px" onclick="speakWord('${jsq(w.w)}')">🔊 ${esc(w.w)}</button>
-        <div class="gw-ipa">${ipa ? '/' + esc(ipa) + '/' : ''}</div>
+        <div class="gw-ipa">${ipa ? esc(ipa) : ''}</div>
         <div class="gw-zh">${esc(w.zh)}</div>
         ${w.sent ? `<div class="gs-sent">💬 <b lang="en">${esc(w.sent)}</b>　<button class="mini-speaker" onclick="speakSentence('${jsq(w.sent)}')">🔊</button><br><span style="color:#6B7280">${esc(w.sentZh || '')}</span></div>` : ''}
       </div>
