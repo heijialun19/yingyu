@@ -1108,24 +1108,30 @@ function speechEnv() {
     </div>`);
 })();
 
-/* ---------------- PWA：离线可用 + 装到主屏 ---------------- */
+/* ---------------- PWA：离线可用 + 装到主屏 ----------------
+   ★ 2026-11-07 修「发音加载慢」第二层：注册不能再等 window.load。
+     首页 async 的 emoji-svg.js 有 870KB，跨境下载会一直拖住 load 事件
+     （线上实测 26 秒后 loadEventEnd 仍为 0），挂在 load 上的 SW 就永远不注册，
+     音频缓存形同虚设 —— 每次点发音都重新跨境下载一遍。
+     SW 注册不依赖 DOM / 图片 / 字体，app.js 一执行就开始即可。
+     首次接管不自动 reload：那会打断正在下载的首屏资源，反而更慢；
+     只有「旧 SW 被新版替换」时才刷新一次。 */
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').then(reg => {
-      // 发现新版本时立即激活，确保用户拿到最新代码
-      if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
-      reg.addEventListener('updatefound', () => {
-        const nw = reg.installing;
-        if (nw) nw.addEventListener('statechange', () => { if (nw.state === 'installed' && navigator.serviceWorker.controller) nw.postMessage('SKIP_WAITING'); });
-      });
-    }).catch(() => {});
-    // 新版本接管后自动刷新一次：用户无需手动强刷即可看到最新版
-    let __swRefreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (__swRefreshing) return;
-      __swRefreshing = true;
-      location.reload();
+  const __hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    // 发现新版本时立即激活，确保用户拿到最新代码
+    if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+    reg.addEventListener('updatefound', () => {
+      const nw = reg.installing;
+      if (nw) nw.addEventListener('statechange', () => { if (nw.state === 'installed' && navigator.serviceWorker.controller) nw.postMessage('SKIP_WAITING'); });
     });
+  }).catch(() => {});
+  let __swRefreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!__hadController) return;   // 首次安装：不打断首屏
+    if (__swRefreshing) return;
+    __swRefreshing = true;
+    location.reload();
   });
 }
 
