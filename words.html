@@ -102,9 +102,9 @@
 .cf-zh{font-size:1.08rem;color:#374151;margin-top:6px;font-weight:700}
 .mem-box{background:#F2FBF5;border:2px solid var(--mint);border-radius:12px;padding:8px 12px;margin-top:10px;font-size:.84rem;color:#2C6E49;text-align:left;line-height:1.8}
 .mem-box b{color:#1B5E3A}
-/* 年级 tab 六个一行（不换行） */
-#gradeTabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
-#gradeTabs .theme-tab{padding:9px 2px;font-size:.85rem;text-align:center}
+/* 年级 tab 3+3 两行（每格 110px，文字横排舒展） */
+#gradeTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+#gradeTabs .theme-tab{padding:10px 2px;font-size:.9rem;text-align:center;white-space:nowrap}
 /* 今日计划主卡 */
 .today-card{border:3px solid var(--grape);background:linear-gradient(160deg,#FDFBFF,#F6F1FF)}
 .today-card .tc-bar{height:14px;background:#EDE7FA;border-radius:999px;overflow:hidden;margin:10px 0 4px}
