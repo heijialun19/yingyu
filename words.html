@@ -63,6 +63,16 @@
 .sp-foot .btn{min-height:44px}
 .sp-next{text-align:center;margin-top:12px}
 .sp-next .btn:disabled{opacity:.45;pointer-events:none}
+/* ---- 人教课本同步区块 ---- */
+.pep-u{border:3px solid #FDE9C8;border-radius:18px;padding:12px 14px;margin-top:10px;background:#FFFDF7}
+.pep-u .pu-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.pep-u .pu-h b{font-size:.95rem}
+.pep-u .pu-h small{color:#8B93A7;font-size:.76rem}
+.pep-u .pu-w{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.pu-chip{border:2px solid #F2E3C4;background:#fff;border-radius:999px;padding:4px 11px;font-family:inherit;font-size:.86rem;font-weight:700;color:#374151;cursor:pointer;transition:.12s}
+.pu-chip:hover{border-color:#F59E0B;background:#FFF7DA;color:#B45309}
+.pep-u .pu-btns{display:flex;gap:8px;flex-wrap:wrap}
+.pep-u .pu-btns .btn{padding:7px 13px;font-size:.82rem}
 </style>
 </head>
 <body>
@@ -87,6 +97,7 @@
 <script src="js/sentence.js?v=46"></script>
 <script src="js/speech.js?v=1"></script>
 <script src="js/ipa.js?v=2"></script>
+<script src="js/pep-data.js?v=1"></script>
 <script>
 renderNav('words'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -152,7 +163,16 @@ function renderSearch() {
   mode = 'search';
   const q = searchQ.trim().toLowerCase();
   const hits = [];
+  /* 人教课本词优先展示（带 🏫 标注），与词库重复的词不再重复出现 */
+  const seen = {};
+  if (typeof PEP_LEVELS !== 'undefined') PEP_LEVELS.forEach(lv => lv.units.forEach(u => u.words.forEach(w => {
+    seen[w.w] = true;
+    if (w.w.toLowerCase().includes(q) || w.zh.includes(searchQ.trim())) {
+      hits.push(Object.assign({ themeName: '人教课本 · ' + lv.name, themeEmoji: '🏫', themeColor: '#F59E0B' }, w));
+    }
+  })));
   THEMES.forEach(t => t.words.forEach(w => {
+    if (seen[w.w]) return;
     if (w.w.toLowerCase().includes(q) || w.zh.includes(searchQ.trim()) || (t.name).includes(searchQ.trim())) {
       hits.push(Object.assign({ themeName: t.name, themeEmoji: t.emoji, themeColor: t.color }, w));
     }
@@ -223,7 +243,9 @@ function renderBrowse() {
         <span class="te">${gr.emoji}</span>${gr.id === (Store.d.grade || '') ? '🏠' : ''}${gr.name}</button>`).join('')}
     </div>
 
-    <div class="tab-label">📚 选择主题</div>
+    ${pepBlockHtml(g.id)}
+
+    <div class="tab-label">🎒 拓展主题（课外加油站，${g.name}词库）</div>
     <div class="theme-tabs">
       ${g.themes.map(t2 => {
         /* 全掌握的主题打个 ✅：家长扫一眼就知道哪块还没碰过 */
@@ -276,6 +298,46 @@ function switchGrade(id) {
   renderBrowse();
 }
 function switchTheme(id) { curTheme = id; searchQ = ''; poolMode = ''; renderBrowse(); }
+
+/* ---------------- 人教课本同步区块 ----------------
+   年级 = 人教版年级：三~六年级显示对应册的单元词表（与课本附录一致），
+   可直接练、可跳人教课本专栏拼词。原拓展主题完整保留。 */
+const PEP_BOOKS_OF = { g3: ['pep3a', 'pep3b'], g4: ['pep4a', 'pep4b'], g5: ['pep5a', 'pep5b'], g6: ['pep6a', 'pep6b'] };
+function pepBlockHtml(gid) {
+  if (typeof PEP_LEVELS === 'undefined') return '';
+  const books = (PEP_BOOKS_OF[gid] || []).map(id => PEP_LEVELS.find(l => l.id === id)).filter(Boolean);
+  if (!books.length) return '';
+  const cards = books.map(lv => {
+    const total = lv.units.reduce((s, u) => s + u.words.length, 0);
+    const units = lv.units.map(u => {
+      const mastered = u.words.filter(w => ((Store.d.words[w.w] || {}).box || 0) >= 2).length;
+      return `<div class="pep-u">
+        <div class="pu-h"><b>${esc(u.title)}</b><small>${esc(u.zh)} · 掌握 ${mastered}/${u.words.length}</small></div>
+        <div class="pu-w">${u.words.map(w => `<button class="pu-chip" onclick="speakWord('${jsq(w.w)}')" title="${esc(w.zh)}">${esc(w.w)}</button>`).join('')}</div>
+        <div class="pu-btns"><button class="btn mint" onclick="practiceUnit('${u.id}')">✏️ 练这单元</button><button class="btn spell" onclick="location.href='pep.html'">🚂 去拼词</button></div>
+      </div>`;
+    }).join('');
+    return `<div class="card" style="border-color:#F59E0B;margin-top:10px">
+      <h2 style="color:#B45309">${lv.emoji} 人教版${esc(lv.name)}<small style="font-weight:400;color:#5C6273">${lv.units.length} 个单元 · ${total} 词 · 与课本附录词表一致</small></h2>
+      ${units}
+      <div style="margin-top:10px"><button class="btn" style="background:#6366F1;color:#fff" onclick="location.href='pep.html'">🏫 进「人教课本」专栏系统学</button></div>
+    </div>`;
+  }).join('');
+  return `<div class="tab-label" style="margin-top:14px">🏫 人教课本同步（${books.map(l => l.name).join(' · ')}）</div>${cards}`;
+}
+/* 自定义练习池：课本单元 → 练一练（用完即清，不影响词单/错题本逻辑） */
+let customPool = null;
+function practiceUnit(uid) {
+  for (const lv of PEP_LEVELS) {
+    const u = lv.units.find(x => x.id === uid);
+    if (u) {
+      customPool = { words: u.words.map(w => ({ w: w.w, zh: w.zh, e: w.e })), label: '🏫 ' + u.title };
+      poolMode = '';
+      startPractice();
+      return;
+    }
+  }
+}
 function doSearch(v, ev) {
   if (ev && ev.isComposing) return; // 中文输入法组词过程中不重渲染，不打断输入
   searchQ = v; poolMode = '';
@@ -398,7 +460,8 @@ function makeQuestion(word, pool) {
 
 function startPractice() {
   let pool, label;
-  if (poolMode === 'plan') { pool = shuffle(planWords()).slice(0, 12); label = '🎯 我的词单'; }
+  if (customPool) { pool = customPool.words; label = customPool.label; customPool = null; }
+  else if (poolMode === 'plan') { pool = shuffle(planWords()).slice(0, 12); label = '🎯 我的词单'; }
   else if (poolMode === 'wrong') { pool = shuffle(wrongWords()).slice(0, 12); label = '📓 错题本'; }
   else { const t = themeById(curTheme); pool = t.words; label = t.emoji + ' ' + t.name; }
   const qs = shuffle(pool).slice(0, 6).map(w => makeQuestion(w, pool));

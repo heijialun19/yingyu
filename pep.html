@@ -33,8 +33,10 @@
 .btn.spell:hover{filter:brightness(1.05)}
 /* 学习卡 */
 .pep-bigword{text-align:center;padding:8px 0 2px}
-.pep-bigword .pw-ic{font-size:20px}
-.pep-bigword .pw-ic svg{width:110px;height:110px}
+/* 词图统一走 wordIcon：.wsvg=2.2em 容器、.emj=字体 emoji、.wtile=字母徽章。
+   这里把基准字号给够（44px），三类图标都会等比放大且互不重叠；
+   固定最小高度，避免不同类型图标切换时布局跳动。 */
+.pep-bigword .pw-ic{font-size:44px;line-height:1.15;min-height:112px;display:flex;align-items:center;justify-content:center}
 .pep-bigword .pw-word{font-size:2rem;font-weight:800;letter-spacing:.5px;margin:4px 0 0;background:none;border:none;cursor:pointer;font-family:inherit;color:var(--ink)}
 .pep-bigword .pw-ipa{color:#6B7280;font-size:1rem;min-height:1.3em}
 .pep-bigword .pw-zh{font-size:1.05rem;color:#374151;margin-top:2px}
@@ -42,10 +44,9 @@
 .spell-progress{height:12px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:8px 0 4px}
 .spell-progress i{display:block;height:100%;background:linear-gradient(90deg,#FF8A5C,#FF6B6B);border-radius:999px;transition:.3s}
 .spell-stage{text-align:center;padding:4px 0}
-.spell-stage .sp-ic svg{width:96px;height:96px}
-.spell-stage .sp-ic{font-size:18px}
+.spell-stage .sp-ic{font-size:38px;line-height:1.15;min-height:96px;display:flex;align-items:center;justify-content:center}
 .spell-stage .sp-zh{font-size:1.15rem;font-weight:700;margin-top:2px}
-.spell-stage .sp-speaker{margin-top:4px}
+.spell-stage .sp-speaker{margin-top:6px}
 .spell-slots{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:14px 0 6px;min-height:64px}
 .slot{min-width:46px;height:56px;padding:0 10px;border:3px solid #E3E7F0;border-radius:12px;background:#FAFBFE;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:800;text-transform:lowercase;cursor:pointer;position:relative;white-space:nowrap}
 .slot .hint{position:absolute;bottom:4px;width:18px;height:3px;border-radius:2px;background:#D5DAE6}
@@ -103,6 +104,69 @@ const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { c
 const jsq = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 function pepEnsurePage() { if (!Store.d.pep) Store.d.pep = { lv: 'pep3a', done: {} }; if (!Store.d.pep.done) Store.d.pep.done = {}; }
 pepEnsurePage();
+
+/* ---- 词图统一入口 ----
+   课本词表里有大量「单词镇词库没有」的词。取图顺序：
+   1) pep-data 自带 e 字段 → 2) 单词镇 1000 词库同名词借图 → 3) 下面 PEP_EMOJI 补充图库
+   → 4) WORD_SVG 手绘/色块（wordIcon 内部）→ 5) 字母徽章兜底。
+   抽象词（can/of/if…）故意不配图：硬配会教错概念，字母徽章是正确设计。 */
+const PEP_EMOJI = {
+  mum: '👩', dad: '👨', grandfather: '👴', grandmother: '👵', cousin: '🧒', animal: '🐾',
+  farm: '🚜', school: '🏫', garden: '🏡', grass: '🌿', plant: '🪴', colour: '🌈', draw: '🖍️',
+  cut: '✂️', eat: '😋', time: '🕐', sea: '🌊',
+  teacher: '🧑‍🏫', student: '🧑‍🎓', girl: '👧', boy: '👦', woman: '👩', man: '🧔',
+  UK: '🇬🇧', USA: '🇺🇸', China: '🇨🇳', Canada: '🇨🇦',
+  picture: '🖼️', card: '💌', sing: '🎤', dance: '💃', talk: '💬', song: '🎵', face: '🙂', smell: '👃',
+  'office worker': '💼', 'factory worker': '👷', firefighter: '🚒', 'delivery worker': '🛵',
+  'police officer': '👮', 'make the bed': '🛏️', closed: '🔒', idea: '💡',
+  wear: '👕', 'get together': '🫂', maths: '➗', 'get up': '🌅', 'go to school': '🚌', 'go home': '🏠', 'go to bed': '🛌',
+  chopstick: '🥢', 'clear the table': '🧽', bottle: '🧴',
+  player: '🏃', lovely: '🥰', rope: '🪢', chess: '♟️', matter: '❓', project: '📋', centre: '📍', parent: '👪',
+  evening: '🌆', night: '🌃', rest: '😌', check: '🔍', brush: '🪥', tooth: '🦷',
+  beef: '🥩', dumpling: '🥟', tea: '🍵', hamburger: '🍔', coconut: '🥥', seed: '🌰', lotus: '🪷',
+  river: '🏞️', mountain: '⛰️', wind: '🍃', trip: '🧳', dangerous: '⚠️', heavy: '🏋️', hotel: '🏨',
+  raincoat: '🌧️', fine: '🌤️', fire: '🔥',
+  scare: '😱', password: '🔑', guard: '💂', stand: '🧍', shout: '📢', flash: '📸', open: '🔓',
+  return: '🔙', borrow: '📚', write: '✒️',
+  street: '🛣️', station: '🚉', cinema: '🎬', city: '🏙️', left: '⬅️', litter: '🗑️', traffic: '🚦',
+  artist: '🎨', scientist: '🧪', volunteer: '🙋', lost: '😵', sign: '🪧', note: '📝',
+  skate: '⛸️', holiday: '🌴', party: '🎉', celebrate: '🎊', Christmas: '🎄', turkey: '🦃', cup: '☕',
+  sunshine: '🌞', ice: '🧊', 'Dragon Boat Festival': '🐉', 'National Day': '🇨🇳',
+  desert: '🏜️', grassland: '🌾', kangaroo: '🦘', koala: '🐨', island: '🏝️', camel: '🐪',
+  'Beijing opera': '🎭', India: '🇮🇳', Italy: '🇮🇹', Hawaii: '🌺',
+  underground: '🚇', bike: '🚲', 'on foot': '🚶', hurt: '🤕',
+  internet: '🌐', seafood: '🦐', join: '🤝', culture: '🏛️', hotpot: '🍲', history: '📜', plan: '🗓️',
+  app: '📱', information: 'ℹ️', northeast: '🧭', building: '🏢', palace: '🏯', stone: '🪨',
+  climb: '🧗', send: '📮', clay: '🏺', village: '🛖', bamboo: '🎋', pumpkin: '🎃', airport: '🛫',
+  'New Zealand': '🇳🇿', Paris: '🇫🇷', 'Eiffel Tower': '🗼', 'Hong Kong-Zhuhai-Macao Bridge': '🌉',
+  view: '🌄', 'count down': '⏱️', marathon: '🏅', race: '🏁', cheer: '🙌', writer: '✍️',
+  wake: '⏰', win: '🏆', winner: '🥇',
+  cold: '🤧', flu: '🤒', fever: '🌡️', cry: '😭', call: '☎️', email: '📧', video: '📹',
+  'pocket money': '💰', goods: '🛍️', drink: '🥤', service: '🛎️', haircut: '💇', microscope: '🔬',
+  lucky: '🍀', 'save up': '🏦', sale: '🏷️', ticket: '🎫',
+  planet: '🪐', cloud: '☁️', moon: '🌙', space: '🌌', satellite: '📡', alien: '👽',
+  telescope: '🔭', astronaut: '🧑‍🚀', spaceship: '🚀',
+  power: '🔋', electricity: '🔌', solar: '☀️', energy: '⚡', light: '💡', shower: '🚿',
+  'air conditioner': '🌬️', reduce: '📉',
+  dinosaur: '🦖', kilogram: '⚖️', cleaned: '🧽', washed: '🧼', watched: '👀', slept: '😴', fixed: '🔧',
+  camp: '⛺', 'went fishing': '🎣', 'took pictures': '📷', basket: '🧺',
+  gym: '⛹️', cycling: '🚴', 'ice-skate': '⛸️', badminton: '🏸', cheetah: '🐆', dream: '💭',
+};
+/* 单词镇 1000 词库借图索引（懒建） */
+let __wordEmoMap = null;
+function wordEmoOf(w) {
+  if (__wordEmoMap) return __wordEmoMap[w];
+  __wordEmoMap = {};
+  try { GRADES.forEach(g => g.themes.forEach(t => t.words.forEach(x => { __wordEmoMap[x.w] = x.e || ''; }))); } catch (e) {}
+  return __wordEmoMap[w];
+}
+function pepIconOf(w) {
+  if (!w) return wordIcon(w);
+  if (w.e) return wordIcon(w);
+  const emo = PEP_EMOJI[w.w] || wordEmoOf(w.w);
+  if (emo) return wordIcon({ w: w.w, zh: w.zh, e: emo });
+  return wordIcon(w);
+}
 
 let view = 'level', curLevel = null, curUnit = null;
 let S = null;            // 拼词状态
@@ -184,7 +248,7 @@ function renderLearnCard() {
     <div class="card" style="max-width:560px;margin:0 auto;text-align:center;padding:22px 18px">
       <div class="score-bar"><b>📖 ${esc(u.title)}</b><span>第 ${L2.i + 1} / ${u.words.length} 词</span></div>
       <div class="pep-bigword">
-        <div class="pw-ic">${wordIcon(w)}</div>
+        <div class="pw-ic">${pepIconOf(w)}</div>
         <button class="pw-word" onclick="speakWord('${jsq(w.w)}')" title="点我发音">${esc(w.w)}</button>
         <div class="pw-ipa">${ipa ? '/' + esc(ipa) + '/' : ''}</div>
         <div class="pw-zh">${esc(w.zh)}</div>
@@ -263,10 +327,10 @@ function renderSpell() {
       <div class="score-bar"><b>🚂 拼词小火车 · ${esc(curUnit.title)}</b><span>第 ${S.qIdx + 1} / ${S.list.length} 词</span></div>
       <div class="spell-progress"><i style="width:${Math.round(S.qIdx / S.list.length * 100)}%"></i></div>
       <div class="spell-stage">
-        <div class="sp-ic">${wordIcon(cur)}</div>
+        <div class="sp-ic">${pepIconOf(cur)}</div>
         <div class="sp-zh">${esc(cur.zh)}</div>
         <div style="color:#6B7280;font-size:.95rem;min-height:1.3em">${ipa ? '/' + esc(ipa) + '/' : ''}</div>
-        <button class="btn ghost spell-stage sp-speaker" onclick="speakWord('${jsq(cur.w)}')">🔊 再听一遍</button>
+        <button class="btn ghost sp-speaker" onclick="speakWord('${jsq(cur.w)}')">🔊 再听一遍</button>
       </div>
       <p style="text-align:center;color:#6B7280;font-size:.82rem;margin:2px 0 0">看图听音，点字母块拼出单词</p>
       <div class="spell-slots" id="slots">${blocks.map(() => '<div class="slot"><span class="hint"></span></div>').join('')}</div>
@@ -374,7 +438,7 @@ function spellFinish() {
   const rows = S.list.map(w => {
     const good = S.ok.includes(w);
     return `<div class="res-row">
-      <div class="ri">${wordIcon(w)}</div><b lang="en">${esc(w.w)}</b>
+      <div class="ri">${pepIconOf(w)}</div><b lang="en">${esc(w.w)}</b>
       <span class="rw">${esc(w.zh)}</span>
       <span class="rk">${good ? '✅' : '❌'}</span>
     </div>`;
