@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4EC5F1">
+<meta name="description" content="人教版PEP英语课本同步专栏：三至六年级上下册，每单元词表与课本附录完全一致，看图听音拼单词，孩子复习背单词的好帮手。">
+<meta name="keywords" content="人教版英语,PEP英语,小学英语单词,三年级英语,四年级英语,五年级英语,六年级英语,英语拼词,单词拼写,课本单词表">
+<link rel="canonical" href="https://heijialun19.github.io/yingyu/pep.html">
+<link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
+<title>人教课本 · 拼词复习 · 小鸟英语乐园</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/style.css?v=47">
+<style>
+/* ---- PEP 专栏专属样式 ---- */
+.pep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.pep-book{background:#fff;border:3px solid var(--sky2);border-radius:20px;padding:14px 10px;text-align:center;cursor:pointer;transition:.15s;position:relative}
+.pep-book:hover{transform:translateY(-3px);border-color:var(--lemon)}
+.pep-book.on{border-color:var(--grape);background:#F6F1FF}
+.pep-book .pb-e{font-size:34px;line-height:1.2}
+.pep-book b{display:block;font-size:.95rem;margin-top:2px}
+.pep-book small{color:#6B7280;font-size:.72rem}
+.pep-tag{position:absolute;top:-8px;right:8px;background:var(--grape);color:#fff;font-size:.62rem;font-weight:800;border-radius:999px;padding:2px 8px}
+.pep-tag.old{background:#9CA3AF}
+.pep-unit{background:#fff;border:3px solid #E8EAF0;border-radius:22px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-top:10px;box-shadow:0 4px 0 rgba(45,49,66,.06)}
+.pep-unit.done{border-color:var(--mint);background:#F2FBF5}
+.pep-unit .pu-main{flex:1;min-width:0}
+.pep-unit .pu-main b{display:block;font-size:.98rem}
+.pep-unit .pu-main small{color:#6B7280;font-size:.78rem;display:block;margin-top:2px}
+.pep-btnrow{display:flex;gap:8px;flex-shrink:0}
+.pep-btnrow .btn{padding:9px 14px;font-size:.85rem;white-space:nowrap}
+.btn.spell{background:linear-gradient(135deg,#FF8A5C,#FF6B6B);color:#fff;border:none;box-shadow:0 4px 0 rgba(255,107,107,.35);font-weight:800}
+.btn.spell:hover{filter:brightness(1.05)}
+/* 学习卡 */
+.pep-bigword{text-align:center;padding:8px 0 2px}
+.pep-bigword .pw-ic{font-size:20px}
+.pep-bigword .pw-ic svg{width:110px;height:110px}
+.pep-bigword .pw-word{font-size:2rem;font-weight:800;letter-spacing:.5px;margin:4px 0 0;background:none;border:none;cursor:pointer;font-family:inherit;color:var(--ink)}
+.pep-bigword .pw-ipa{color:#6B7280;font-size:1rem;min-height:1.3em}
+.pep-bigword .pw-zh{font-size:1.05rem;color:#374151;margin-top:2px}
+/* 拼词 */
+.spell-progress{height:12px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:8px 0 4px}
+.spell-progress i{display:block;height:100%;background:linear-gradient(90deg,#FF8A5C,#FF6B6B);border-radius:999px;transition:.3s}
+.spell-stage{text-align:center;padding:4px 0}
+.spell-stage .sp-ic svg{width:96px;height:96px}
+.spell-stage .sp-ic{font-size:18px}
+.spell-stage .sp-zh{font-size:1.15rem;font-weight:700;margin-top:2px}
+.spell-stage .sp-speaker{margin-top:4px}
+.spell-slots{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:14px 0 6px;min-height:64px}
+.slot{min-width:46px;height:56px;padding:0 10px;border:3px solid #E3E7F0;border-radius:12px;background:#FAFBFE;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:800;text-transform:lowercase;cursor:pointer;position:relative;white-space:nowrap}
+.slot .hint{position:absolute;bottom:4px;width:18px;height:3px;border-radius:2px;background:#D5DAE6}
+.slot.filled{background:#FFF7DA;border-color:var(--lemon)}
+.slot.ok{background:#F2FBF5;border-color:var(--mint)}
+.slot.bad{background:#FFEDEF;border-color:var(--pink);animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.spell-tiles{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tile{min-width:52px;height:54px;padding:0 12px;border:3px solid #E3E7F0;border-radius:14px;background:#fff;font-family:inherit;font-size:1.3rem;font-weight:800;text-transform:lowercase;color:var(--ink);cursor:pointer;transition:.12s;box-shadow:0 3px 0 rgba(45,49,66,.08)}
+.tile:hover{border-color:var(--lemon);transform:translateY(-2px)}
+.tile.used{opacity:.25;pointer-events:none}
+.tile.glint{animation:glint 0.9s infinite}
+@keyframes glint{0%,100%{border-color:#E3E7F0}50%{border-color:var(--grape);background:#F6F1FF}}
+.spell-tip{text-align:center;color:#6B7280;font-size:.8rem;margin-top:8px;min-height:1.2em}
+/* 成绩单 */
+.res-nums{display:flex;justify-content:center;gap:26px;text-align:center;margin:10px 0 4px}
+.res-nums b{display:block;font-size:2.1rem;line-height:1.1}
+.res-nums b.g{color:#4E9E59}.res-nums b.o{color:#F59E0B}.res-nums b.p{color:#7C5CFF}
+.res-nums small{color:#6B7280;font-size:.78rem}
+.res-list{margin-top:10px}
+.res-row{display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px dashed #E8EAF0}
+.res-row .ri{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.res-row .ri svg{width:34px;height:34px}
+.res-row b{flex:1;font-size:1rem}
+.res-row .rw{color:#6B7280;font-size:.8rem;flex:1;text-align:right}
+.res-row .rk{width:26px;text-align:center}
+</style>
+</head>
+<body>
+  <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px">
+    <div style="font-size:52px">🐤</div>
+    <div style="font-size:.9rem;color:#5C6273;font-weight:700">加载中，请稍等…</div>
+  </div>
+<main>
+  <div class="page-title">
+    <h1>🏫 人教课本</h1>
+    <p>课本同步专栏 · <b>人教版 PEP 三 - 六年级</b> · 每单元词表与课本附录完全一致，用拼词小火车把单词拼进脑子里</p>
+  </div>
+  <div id="app"></div>
+<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
+
+<script src="js/words-data.js?v=32"></script>
+<script src="svg/word-svg.js?v=3"></script>
+<script async src="svg/emoji-svg.js?v=5"></script>
+<script async src="svg/emoji-svg2.js?v=2"></script>
+<script src="js/ipa.js?v=2"></script>
+<script src="js/data.js?v=33"></script>
+<script src="js/app.js?v=62"></script>
+<script src="js/pep-data.js?v=1"></script>
+<script>
+renderNav('pep'); renderDecor();
+
+/* 页面级工具（与 getsmart.html 同款） */
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const jsq = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+function pepEnsurePage() { if (!Store.d.pep) Store.d.pep = { lv: 'pep3a', done: {} }; if (!Store.d.pep.done) Store.d.pep.done = {}; }
+pepEnsurePage();
+
+let view = 'level', curLevel = null, curUnit = null;
+let S = null;            // 拼词状态
+let __token = 0;         // 异步作废令牌：切视图后旧定时器不再生效
+
+/* ---------- 换册 ---------- */
+function renderLevels() {
+  view = 'levels'; stopAllSpeech(); __token++;
+  const cards = PEP_LEVELS.map(lv => {
+    const on = lv.id === pepActiveLevelId();
+    return `<div class="pep-book ${on ? 'on' : ''}" onclick="pepPickLevel('${lv.id}')">
+      ${lv.tag === '新版' ? '<span class="pep-tag">新版</span>' : '<span class="pep-tag old">现行</span>'}
+      <div class="pb-e">${lv.emoji}</div><b>${esc(lv.name)}</b><small>${pepLevelProgress(lv)} 单元</small>
+    </div>`;
+  }).join('');
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="location.href='index.html'">← 回首页</button>
+    <div class="card" style="padding:16px 18px">
+      <b>选一册课本</b>
+      <div style="color:#6B7280;font-size:.82rem;margin-top:2px">三 ~ 五年级与六上为新课标版，六下为现行版。词表 = 课本附录「分单元单词表」。</div>
+      <div class="pep-grid" style="margin-top:10px">${cards}</div>
+      <div style="text-align:center;margin-top:12px"><a href="getsmart.html" style="color:#78909C;font-size:.8rem">学国际教材？去 Get Smart 学堂 →</a></div>
+    </div>`;
+}
+function pepPickLevel(id) { pepSetActiveLevel(id); sfx.pop(); renderLevelHome(); }
+
+/* ---------- 册首页：单元列表（拼词入口最显眼） ---------- */
+function renderLevelHome() {
+  view = 'level'; stopAllSpeech(); __token++;
+  const lv = PEP_LEVELS.find(l => l.id === pepActiveLevelId());
+  curLevel = lv;
+  const totalWords = lv.units.reduce((s, u) => s + (u.words || []).length, 0);
+  const units = lv.units.map(u => {
+    const done = pepUnitDone(u.id);
+    const rec = Store.d.pep.done[u.id];
+    return `<div class="pep-unit ${done ? 'done' : ''}">
+      <div class="pu-main">
+        <b>${done ? '✅ ' : ''}${esc(u.title)}</b>
+        <small>${esc(u.zh)} · ${u.words.length} 词${rec && rec.pct ? ' · 拼词最好 ' + rec.pct + '%' : ''}</small>
+      </div>
+      <div class="pep-btnrow">
+        <button class="btn ghost" onclick="startLearn('${u.id}')">📖 学习</button>
+        <button class="btn spell" onclick="startSpell('${u.id}')">🚂 拼词</button>
+      </div>
+    </div>`;
+  }).join('');
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevels()">← 换一册</button>
+    <div class="card" style="padding:16px 18px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div style="font-size:38px">${lv.emoji}</div>
+        <div style="flex:1;min-width:160px"><b style="font-size:1.1rem">人教版 ${esc(lv.name)}</b>
+          <div style="color:#6B7280;font-size:.8rem">${lv.units.length} 个单元 · ${totalWords} 词 · 已完成 ${pepLevelProgress(lv)}</div></div>
+      </div>
+      <button class="btn coral big" style="width:100%;margin-top:12px" onclick="startSpell('${lv.id}-all')">🚂 整册拼词大闯关（${totalWords} 词混合）</button>
+    </div>
+    ${units}
+    <div style="text-align:center;margin-top:14px"><a href="getsmart.html" style="color:#78909C;font-size:.8rem">去 Get Smart 学堂 →</a></div>`;
+  /* 后台预载本册全部发音 */
+  const ws = new Set();
+  lv.units.forEach(u => (u.words || []).forEach(w => w.w && ws.add(w.w)));
+  prewarmBatch(Array.from(ws), 150);
+}
+
+/* ---------- 逐词学习 ---------- */
+function startLearn(uid) {
+  const u = findUnit(uid); if (!u) return;
+  curUnit = u; view = 'learn';
+  L2 = { i: 0 };
+  renderLearnCard();
+}
+let L2 = { i: 0 };
+function renderLearnCard() {
+  const u = curUnit, w = u.words[L2.i];
+  stopAllSpeech();
+  const ipa = ipaOf(w.w);
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevelHome()">← 回单元列表</button>
+    <div class="card" style="max-width:560px;margin:0 auto;text-align:center;padding:22px 18px">
+      <div class="score-bar"><b>📖 ${esc(u.title)}</b><span>第 ${L2.i + 1} / ${u.words.length} 词</span></div>
+      <div class="pep-bigword">
+        <div class="pw-ic">${wordIcon(w)}</div>
+        <button class="pw-word" onclick="speakWord('${jsq(w.w)}')" title="点我发音">${esc(w.w)}</button>
+        <div class="pw-ipa">${ipa ? '/' + esc(ipa) + '/' : ''}</div>
+        <div class="pw-zh">${esc(w.zh)}</div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap">
+        ${L2.i > 0 ? '<button class="btn ghost big" onclick="L2.i--;renderLearnCard()">← 上一个</button>' : ''}
+        <button class="btn coral big" onclick="speakWord('${jsq(w.w)}')">🔊 再听一遍</button>
+        ${L2.i < u.words.length - 1
+          ? '<button class="btn grape big" onclick="L2.i++;renderLearnCard()">下一个 →</button>'
+          : `<button class="btn spell big" onclick="startSpell('${u.id}')">🚂 会了，去拼词！</button>`}
+      </div>
+      ${L2.i === u.words.length - 1 ? '<p style="color:#6B7280;font-size:.82rem;margin-top:10px">每个词都会拼了？点红色按钮开始拼词挑战！</p>' : ''}
+    </div>`;
+  const tk = __token;
+  setTimeout(() => { if (tk === __token) speakWord(w.w); }, 350);
+  if (u.words[L2.i + 1]) prewarmWord(u.words[L2.i + 1].w);
+}
+
+/* ---------- 拼词（拼词小火车式） ---------- */
+/* 常见字母组合：3 字母 → 2 字母 → 单字母，贪心切分 */
+const PEP_TRIGRAPHS = ['old', 'air', 'ear', 'all', 'ell', 'ill', 'ing', 'ang', 'ong', 'ung'];
+const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu', 'oo', 'ee', 'ea', 'ai', 'ay', 'oa', 'ow', 'ou', 'oi', 'oy', 'ar', 'or', 'er', 'ir', 'ur', 'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd', 'st', 'sp', 'sk', 'tr', 'dr', 'cr', 'fr', 'gr', 'pr', 'br', 'pl', 'bl', 'cl', 'fl', 'gl', 'sl', 'sw', 'tw', 'sm', 'sn', 'nd', 'nk', 'nt', 'mp', 'ld', 'lt', 'ft', 'pt', 'lk'];
+function splitBlocks(w) {
+  const s = w.toLowerCase().replace(/[^a-z]/g, '');
+  const parts = [];
+  let i = 0;
+  while (i < s.length) {
+    let hit = null;
+    if (i + 3 <= s.length) hit = PEP_TRIGRAPHS.find(d => s.startsWith(d, i)) || null;
+    if (!hit) hit = PEP_DIGRAPHS.find(d => s.startsWith(d, i)) || null;
+    parts.push(hit || s[i]);
+    i += (hit || s[i]).length;
+  }
+  return parts;
+}
+function findUnit(uid) {
+  if (uid.endsWith('-all')) {
+    const lv = PEP_LEVELS.find(l => l.id === uid.slice(0, -4));
+    if (!lv) return null;
+    const seen = {}; const words = [];
+    lv.units.forEach(u => (u.words || []).forEach(w => { if (!seen[w.w]) { seen[w.w] = 1; words.push(w); } }));
+    return { id: uid, kind: 'all', title: lv.name + ' · 整册拼词', zh: '全册单词混合', words: shuffle(words), lv };
+  }
+  for (const lv of PEP_LEVELS) { const u = lv.units.find(x => x.id === uid); if (u) return Object.assign({ kind: 'unit', lv }, u); }
+  return null;
+}
+function startSpell(uid) {
+  const u = findUnit(uid); if (!u) return;
+  curUnit = u; view = 'spell';
+  /* 词数多的整册闯关一次拼不完，取 20 词一组 */
+  let list = u.words;
+  if (list.length > 20) list = shuffle(list).slice(0, 20);
+  S = { qIdx: 0, list: list.map(w => ({ w: w.w, zh: w.zh, e: w.e })), ok: [], bad: [], tries: {}, hinted: {} };
+  renderSpell();
+}
+function spellState() { return { filled: [], tiles: null }; }
+let SP = { filled: [], tiles: [], wrongFlash: false };
+function renderSpell() {
+  stopAllSpeech(); __token++;
+  const cur = S.list[S.qIdx];
+  const target = cur.w.toLowerCase().replace(/[^a-z]/g, '');
+  const blocks = splitBlocks(cur.w);
+  /* 干扰块：从本组其他词借 2-3 个，不与已有块重复 */
+  const pool = new Set();
+  S.list.forEach(x => { if (x.w !== cur.w) splitBlocks(x.w).forEach(b => pool.add(b)); });
+  blocks.forEach(b => pool.delete(b));
+  const distract = shuffle(Array.from(pool)).slice(0, Math.min(3, Math.max(1, 5 - Math.min(4, blocks.length))));
+  SP.tiles = shuffle(blocks.concat(distract));
+  SP.filled = [];
+  SP.used = new Array(SP.tiles.length).fill(false);
+  SP.blocks = blocks; // 目标切分：格数 = 块数（不是字母数！）
+  const ipa = ipaOf(cur.w);
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="spellQuit()">← 退出拼词</button>
+    <div class="card" style="max-width:560px;margin:0 auto">
+      <div class="score-bar"><b>🚂 拼词小火车 · ${esc(curUnit.title)}</b><span>第 ${S.qIdx + 1} / ${S.list.length} 词</span></div>
+      <div class="spell-progress"><i style="width:${Math.round(S.qIdx / S.list.length * 100)}%"></i></div>
+      <div class="spell-stage">
+        <div class="sp-ic">${wordIcon(cur)}</div>
+        <div class="sp-zh">${esc(cur.zh)}</div>
+        <div style="color:#6B7280;font-size:.95rem;min-height:1.3em">${ipa ? '/' + esc(ipa) + '/' : ''}</div>
+        <button class="btn ghost spell-stage sp-speaker" onclick="speakWord('${jsq(cur.w)}')">🔊 再听一遍</button>
+      </div>
+      <p style="text-align:center;color:#6B7280;font-size:.82rem;margin:2px 0 0">看图听音，点字母块拼出单词</p>
+      <div class="spell-slots" id="slots">${blocks.map(() => '<div class="slot"><span class="hint"></span></div>').join('')}</div>
+      <div class="spell-tiles" id="tiles">${SP.tiles.map((b, i) => `<button class="tile" id="tile${i}" onclick="pickTile(${i})">${esc(b)}</button>`).join('')}</div>
+      <div class="spell-tip" id="spellTip"></div>
+      <div style="text-align:center;margin-top:10px">
+        <button class="btn ghost" onclick="spellSkip()">跳过这个词</button>
+      </div>
+    </div>`;
+  const tk = __token;
+  setTimeout(() => { if (tk === __token) speakWord(cur.w); }, 350);
+}
+function pickTile(i) {
+  if (SP.used[i]) return;
+  const cur = S.list[S.qIdx];
+  const n = SP.blocks.length; // 目标是块序列，不是字母序列
+  if (SP.filled.length >= n) return;
+  SP.filled.push(i); SP.used[i] = true;
+  document.getElementById('tile' + i).classList.add('used');
+  drawSlots();
+  if (SP.filled.length === n) setTimeout(checkSpell, 250);
+}
+function undoSlot() {
+  const i = SP.filled.pop();
+  if (i === undefined) return;
+  SP.used[i] = false;
+  const t = document.getElementById('tile' + i); if (t) t.classList.remove('used');
+  drawSlots();
+}
+function drawSlots() {
+  const cur = S.list[S.qIdx];
+  const target = cur.w.toLowerCase().replace(/[^a-z]/g, '');
+  const slots = document.querySelectorAll('#slots .slot');
+  slots.forEach((el, k) => {
+    if (k < SP.filled.length) { el.className = 'slot filled'; el.innerHTML = esc(SP.tiles[SP.filled[k]]); el.onclick = undoSlot; }
+    else { el.className = 'slot'; el.innerHTML = '<span class="hint"></span>'; el.onclick = null; }
+  });
+}
+function checkSpell() {
+  const cur = S.list[S.qIdx];
+  const target = cur.w.toLowerCase().replace(/[^a-z]/g, '');
+  const got = SP.filled.map(i => SP.tiles[i]).join('');
+  if (got === target) {
+    const firstTry = !S.tries[cur.w];
+    if (firstTry) S.ok.push(cur); else if (!S.bad.includes(cur) && !S.ok.includes(cur)) S.ok.push(cur);
+    addStars(firstTry ? 1 : 0);
+    sfx.correct(); flyStar(document.querySelector('.spell-stage'));
+    document.querySelectorAll('#slots .slot').forEach(el => el.className = 'slot ok');
+    document.getElementById('spellTip').innerHTML = '✅ <b>' + esc(cur.w) + '</b> 拼对啦！';
+    const tk = __token;
+    setTimeout(() => { if (tk === __token) spellNext(); }, 1200);
+  } else {
+    S.tries[cur.w] = (S.tries[cur.w] || 0) + 1;
+    sfx.wrong();
+    document.querySelectorAll('#slots .slot').forEach(el => { if (el.className.includes('filled')) { el.className = 'slot bad'; } });
+    const tip = document.getElementById('spellTip');
+    tip.innerHTML = S.tries[cur.w] >= 2 ? '💡 提示：下一个该选的块在闪哦' : '再试一次，慢慢想～';
+    const tk = __token;
+    setTimeout(() => {
+      if (tk !== __token) return;
+      /* 清空重来 */
+      SP.used = SP.used.map(() => false);
+      SP.filled = [];
+      renderTilesReset();
+      drawSlots();
+      if (S.tries[cur.w] >= 2) glintHint(target);
+    }, 600);
+  }
+}
+function renderTilesReset() {
+  SP.tiles.forEach((b, i) => { const t = document.getElementById('tile' + i); if (t) { t.classList.remove('used'); } });
+}
+function glintHint(target) {
+  /* 高亮：下一个该填的块（按目标串逐块推算） */
+  const cur = S.list[S.qIdx];
+  const blocks = splitBlocks(cur.w);
+  const idx = SP.filled.length; // 当前空位
+  const need = blocks[idx];
+  if (!need) return;
+  const tiles = document.querySelectorAll('.tile');
+  tiles.forEach(t => { if (!t.classList.contains('used') && t.textContent === need) t.classList.add('glint'); });
+}
+function spellNext() {
+  S.qIdx++;
+  if (S.qIdx >= S.list.length) return spellFinish();
+  renderSpell();
+}
+function spellSkip() {
+  const cur = S.list[S.qIdx];
+  if (!S.bad.includes(cur) && !S.ok.includes(cur)) S.bad.push(cur);
+  toast('没关系，这个词待会儿再练！');
+  spellNext();
+}
+function spellQuit() { stopAllSpeech(); renderLevelHome(); }
+function spellFinish() {
+  const u = curUnit;
+  const total = S.list.length;
+  const okN = S.ok.length, badN = S.bad.length;
+  const pct = Math.round(okN / total * 100);
+  const stars = pct === 100 ? 5 : pct >= 80 ? 3 : pct >= 60 ? 2 : 1;
+  addStars(stars);
+  pepMarkDone(u.id, pct, stars);
+  confetti(); sfx.win();
+  Store.d.daily && (Store.d.daily.tasks.words = true);
+  const rows = S.list.map(w => {
+    const good = S.ok.includes(w);
+    return `<div class="res-row">
+      <div class="ri">${wordIcon(w)}</div><b lang="en">${esc(w.w)}</b>
+      <span class="rw">${esc(w.zh)}</span>
+      <span class="rk">${good ? '✅' : '❌'}</span>
+    </div>`;
+  }).join('');
+  $('#app').innerHTML = `
+    <div class="card" style="max-width:560px;margin:0 auto;text-align:center;padding:24px 18px">
+      <div style="font-size:56px">${pct === 100 ? '🏆' : pct >= 60 ? '🎉' : '💪'}</div>
+      <h2 style="justify-content:center">${pct === 100 ? '全部拼对，太棒了！' : '拼词完成！'}</h2>
+      <div class="res-nums">
+        <div><b class="g">${okN}</b><small>拼写正确</small></div>
+        <div><b class="o">${badN}</b><small>还需练习</small></div>
+        <div><b class="p">${pct}%</b><small>正确率</small></div>
+      </div>
+      <p style="color:#6B7280;font-size:.85rem">奖励 +${stars} ⭐ · 每一次练习，都让单词更熟悉</p>
+    </div>
+    <div class="card res-list" style="max-width:560px;margin:10px auto">
+      <b>这次的单词</b>
+      ${rows}
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+        ${badN ? `<button class="btn coral big" onclick="startSpellWrong()">🔁 重拼错词（${badN} 个）</button>` : ''}
+        <button class="btn grape big" onclick="startSpell('${u.id}')">🔄 再拼一遍</button>
+        <button class="btn ghost big" onclick="renderLevelHome()">🏠 回单元列表</button>
+      </div>
+    </div>`;
+}
+function startSpellWrong() {
+  const wrong = S.bad.slice();
+  if (!wrong.length) return;
+  S = { qIdx: 0, list: shuffle(wrong), ok: [], bad: [], tries: {}, hinted: {} };
+  renderSpell();
+}
+
+/* ---------- 启动 ---------- */
+(function init() {
+  const lv = PEP_LEVELS.find(l => l.id === pepActiveLevelId());
+  if (lv) { curLevel = lv; renderLevelHome(); } else renderLevels();
+})();
+</script>
+</body>
+</html>
