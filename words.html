@@ -73,6 +73,24 @@
 .pu-chip:hover{border-color:#F59E0B;background:#FFF7DA;color:#B45309}
 .pep-u .pu-btns{display:flex;gap:8px;flex-wrap:wrap}
 .pep-u .pu-btns .btn{padding:7px 13px;font-size:.82rem}
+/* ---- 词卡拼读拆分行（与教材、拼词同一套拆块） ---- */
+.spl{color:#7C5CFF;font-size:.78rem;font-weight:800;letter-spacing:.4px;margin-top:2px}
+/* ---- 浏览分区 tab + 单元折叠列表（百词斩式简洁） ---- */
+.zone-tabs{display:flex;gap:8px;margin:12px 0 4px}
+.zone-tab{flex:1;padding:11px 6px;border-radius:16px;border:3px solid #E8EAF0;background:#fff;font-family:inherit;font-weight:800;font-size:.9rem;color:#6B7280;cursor:pointer;transition:.15s}
+.zone-tab.on{border-color:var(--grape);background:#F6F1FF;color:#7C5CFF}
+.pf-item{background:#fff;border:3px solid #E8EAF0;border-radius:18px;padding:12px 14px;margin-top:10px;cursor:pointer;transition:.15s}
+.pf-item.open{border-color:#F59E0B;background:#FFFDF7}
+.pf-head{display:flex;align-items:center;gap:10px}
+.pf-head .pf-t{flex:1;min-width:0}
+.pf-head b{display:block;font-size:.95rem;line-height:1.35}
+.pf-head small{color:#8B93A7;font-size:.76rem}
+.pf-head .pf-arrow{color:#C4CAD6;font-size:.8rem;transition:.2s}
+.pf-item.open .pf-arrow{transform:rotate(90deg)}
+.pf-body{display:none;margin-top:10px}
+.pf-item.open .pf-body{display:block}
+.pf-body .pu-w{display:flex;flex-wrap:wrap;gap:6px}
+.pf-body .pu-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 </style>
 </head>
 <body>
@@ -98,6 +116,7 @@
 <script src="js/speech.js?v=1"></script>
 <script src="js/ipa.js?v=2"></script>
 <script src="js/pep-data.js?v=1"></script>
+<script src="js/pep-points.js?v=2"></script>
 <script>
 renderNav('words'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -141,6 +160,7 @@ function showPool(kind) {
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
             <div class="ph" lang="en">${ipaOf(w.w)}</div>
+            <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
             ${famLine(w.w)}
@@ -192,6 +212,7 @@ function renderSearch() {
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
             <div class="ph" lang="en">${ipaOf(w.w)}</div>
+            <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
             ${famLine(w.w)}
@@ -243,8 +264,12 @@ function renderBrowse() {
         <span class="te">${gr.emoji}</span>${gr.id === (Store.d.grade || '') ? '🏠' : ''}${gr.name}</button>`).join('')}
     </div>
 
-    ${pepBlockHtml(g.id)}
+    <div class="zone-tabs">
+      <button class="zone-tab ${pepZone === 'sync' ? 'on' : ''}" onclick="switchZone('sync')">🏫 课本同步</button>
+      <button class="zone-tab ${pepZone === 'extend' ? 'on' : ''}" onclick="switchZone('extend')">🎒 拓展词库</button>
+    </div>
 
+    ${pepZone === 'sync' ? syncZoneHtml(g.id) : `
     <div class="tab-label">🎒 拓展主题（课外加油站，${g.name}词库）</div>
     <div class="theme-tabs">
       ${g.themes.map(t2 => {
@@ -275,14 +300,14 @@ function renderBrowse() {
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
             <div class="ph" lang="en">${ipaOf(w.w)}</div>
+            <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
             ${famLine(w.w)}
             ${w.dec ? `<div class="dec">🔎 ${esc(w.dec)}</div>` : '<div class="dec" style="background:transparent"></div>'}
           </div>`).join('')}
       </div>
-    </div>
-
+    </div>`}
     <details class="card pos-lesson">
       <summary>🏷️ 词性小课堂 —— 单词旁的小标签是什么意思？</summary>
       <div class="pos-grid">
@@ -299,34 +324,52 @@ function switchGrade(id) {
 }
 function switchTheme(id) { curTheme = id; searchQ = ''; poolMode = ''; renderBrowse(); }
 
-/* ---------------- 人教课本同步区块 ----------------
-   年级 = 人教版年级：三~六年级显示对应册的单元词表（与课本附录一致），
-   可直接练、可跳人教课本专栏拼词。原拓展主题完整保留。 */
+/* ---------------- 人教课本同步区块（百词斩式折叠列表） ----------------
+   年级 = 人教版年级：三~六年级显示对应册的单元词表（与课本附录一致）。
+   每个单元默认收起成一行，点开才看词表和操作按钮——一屏只见一层信息。 */
 const PEP_BOOKS_OF = { g3: ['pep3a', 'pep3b'], g4: ['pep4a', 'pep4b'], g5: ['pep5a', 'pep5b'], g6: ['pep6a', 'pep6b'] };
-function pepBlockHtml(gid) {
+let openUnit = '';
+function toggleUnit(uid) { openUnit = openUnit === uid ? '' : uid; renderBrowse(); }
+function syncZoneHtml(gid) {
   if (typeof PEP_LEVELS === 'undefined') return '';
   const books = (PEP_BOOKS_OF[gid] || []).map(id => PEP_LEVELS.find(l => l.id === id)).filter(Boolean);
-  if (!books.length) return '';
-  const cards = books.map(lv => {
+  if (!books.length) {
+    return `<div class="card" style="padding:20px;text-align:center;color:#6B7280;font-size:.9rem;margin-top:12px">
+      🌱 人教版英语从三年级起步。<br>一、二年级的小朋友先在 🎒 拓展词库打基础吧！</div>`;
+  }
+  const items = books.map(lv => {
     const total = lv.units.reduce((s, u) => s + u.words.length, 0);
     const units = lv.units.map(u => {
       const mastered = u.words.filter(w => ((Store.d.words[w.w] || {}).box || 0) >= 2).length;
-      return `<div class="pep-u">
-        <div class="pu-h"><b>${esc(u.title)}</b><small>${esc(u.zh)} · 掌握 ${mastered}/${u.words.length}</small></div>
-        <div class="pu-w">${u.words.map(w => `<button class="pu-chip" onclick="speakWord('${jsq(w.w)}')" title="${esc(w.zh)}">${esc(w.w)}</button>`).join('')}</div>
-        <div class="pu-btns"><button class="btn mint" onclick="practiceUnit('${u.id}')">✏️ 练这单元</button><button class="btn" style="background:#7C5CFF;color:#fff" onclick="location.href='pep.html?points=${u.id}'">💡 知识点</button><button class="btn spell" onclick="location.href='pep.html'">🚂 去拼词</button></div>
+      const open = openUnit === u.id;
+      const nPts = pepPointsOf(u.id).length;
+      return `<div class="pf-item ${open ? 'open' : ''}" onclick="toggleUnit('${u.id}')">
+        <div class="pf-head">
+          <div class="pf-t"><b>${mastered === u.words.length ? '✅ ' : ''}${esc(u.title)}</b>
+            <small>${esc(u.zh)} · 掌握 ${mastered}/${u.words.length}${nPts ? ' · 💡 ' + nPts + ' 个知识点' : ''}</small></div>
+          <span class="pf-arrow">▶</span>
+        </div>
+        <div class="pf-body" onclick="event.stopPropagation()">
+          <div class="pu-w">${u.words.map(w => `<button class="pu-chip" onclick="speakWord('${jsq(w.w)}')" title="${esc(w.zh)}">${esc(w.w)}</button>`).join('')}</div>
+          <div class="pu-btns">
+            ${nPts ? `<button class="btn" style="background:#7C5CFF;color:#fff" onclick="location.href='pep.html?points=${u.id}'">💡 知识点</button>` : ''}
+            <button class="btn mint" onclick="practiceUnit('${u.id}')">✏️ 练这单元</button>
+            <button class="btn spell" onclick="location.href='pep.html'">🚂 去拼词</button>
+          </div>
+        </div>
       </div>`;
     }).join('');
-    return `<div class="card" style="border-color:#F59E0B;margin-top:10px">
-      <h2 style="color:#B45309">${lv.emoji} 人教版${esc(lv.name)}<small style="font-weight:400;color:#5C6273">${lv.units.length} 个单元 · ${total} 词 · 与课本附录词表一致</small></h2>
-      ${units}
-      <div style="margin-top:10px"><button class="btn" style="background:#6366F1;color:#fff" onclick="location.href='pep.html'">🏫 进「人教课本」专栏系统学</button></div>
-    </div>`;
+    return `<div style="margin-top:12px"><b style="font-size:.9rem;color:#B45309">${lv.emoji} 人教版${esc(lv.name)}</b>
+      <small style="color:#8B93A7;font-size:.76rem;margin-left:6px">${lv.units.length} 个单元 · ${total} 词 · 与课本附录一致</small>${units}</div>`;
   }).join('');
-  return `<div class="tab-label" style="margin-top:14px">🏫 人教课本同步（${books.map(l => l.name).join(' · ')}）</div>${cards}`;
+  return `<div style="margin-top:8px">${items}</div>
+    <div style="text-align:center;margin-top:14px"><button class="btn" style="background:#6366F1;color:#fff" onclick="location.href='pep.html'">🏫 进「人教课本」专栏系统学</button></div>`;
 }
 /* 自定义练习池：课本单元 → 练一练（用完即清，不影响词单/错题本逻辑） */
 let customPool = null;
+/* 浏览分区：sync = 课本同步（默认），extend = 拓展词库 */
+let pepZone = 'sync';
+function switchZone(z) { pepZone = z; searchQ = ''; poolMode = ''; renderBrowse(); }
 function practiceUnit(uid) {
   for (const lv of PEP_LEVELS) {
     const u = lv.units.find(x => x.id === uid);

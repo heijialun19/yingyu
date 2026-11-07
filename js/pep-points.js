@@ -254,7 +254,79 @@ const PEP_POINTS = {
     ],
   },
 };
-/* 取某单元的知识点：unitId 形如 'pep3a-u1' → PEP_POINTS.pep3a.u1 */
+/* ---- 自然拼读拆块（全站统一：词卡展示、拼词游戏、单元拼读地图共用这套） ----
+   常见字母组合：3 字母 → 2 字母 → 单字母，贪心切分。
+   ear 的发音分两派：ear/hear/year 读 /ɪə/（整块科学），
+   bear/wear/pear 读 /eə/、learn/early/earth 读 /ɜː/ —— 这些词整块 ear 会教错，
+   例外表让它们退回 ea+r 切分（ea 在这些词里恰好读对应音）。 */
+const PEP_TRIGRAPHS = ['old', 'air', 'ear', 'all', 'ell', 'ill', 'ing', 'ang', 'ong', 'ung', 'tion'];
+const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu', 'oo', 'ee', 'ea', 'ai', 'ay', 'oa', 'ow', 'ou', 'oi', 'oy', 'ar', 'or', 'er', 'ir', 'ur', 'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd', 'st', 'sp', 'sk', 'tr', 'dr', 'cr', 'fr', 'gr', 'pr', 'br', 'pl', 'bl', 'cl', 'fl', 'gl', 'sl', 'sw', 'tw', 'sm', 'sn', 'nd', 'nk', 'nt', 'mp', 'ld', 'lt', 'ft', 'pt', 'lk', 'ei', 'eo'];
+const EAR_NOT_IER = { bear: 1, wear: 1, pear: 1, learn: 1, early: 1, earth: 1, search: 1, heart: 1, swear: 1 };
+function splitBlocks(w) {
+  const s = String(w).toLowerCase().replace(/[^a-z]/g, '');
+  const trigs = EAR_NOT_IER[s] ? PEP_TRIGRAPHS.filter(d => d !== 'ear') : PEP_TRIGRAPHS;
+  const parts = [];
+  let i = 0;
+  while (i < s.length) {
+    let hit = null;
+    if (i + 4 <= s.length && s.startsWith('tion', i)) hit = 'tion';
+    if (!hit && i + 3 <= s.length) hit = trigs.find(d => d !== 'tion' && s.startsWith(d, i)) || null;
+    if (!hit) hit = PEP_DIGRAPHS.find(d => s.startsWith(d, i)) || null;
+    parts.push(hit || s[i]);
+    i += (hit || s[i]).length;
+  }
+  return parts;
+}
+/* 短语/连字符词分段：'look after'→['look','after']，'o'clock'→['o','clock'] */
+function splitPhrase(w) { return String(w).toLowerCase().split(/[\s'’\-]+/).filter(Boolean); }
+/* 词 → 拼读拆分展示串：look after → l · oo · k ／ a · ft · er */
+function phonicsLine(w) { return splitPhrase(w).map(p => splitBlocks(p).join(' · ')).join(' ／ '); }
+
+/* ---- 复合词趣味记（自动拆分高置信复合词，补齐 PEP 特有词的记忆法） ---- */
+const PEP_COMPOUNDS = {
+  classmate: ['class 班级', 'mate 伙伴'], grandfather: ['grand 隔一代', 'father 爸爸'], grandmother: ['grand 隔一代', 'mother 妈妈'],
+  grandparent: ['grand 隔一代', 'parent 父母'], 'red panda': ['red 红色', 'panda 熊猫'], classroom: ['class 班级', 'room 房间'],
+  workbook: ['work 作业', 'book 本子'], homework: ['home 家', 'work 功课'], notebook: ['note 笔记', 'book 本子'],
+  newspaper: ['news 新闻', 'paper 纸'], blackboard: ['black 黑色', 'board 板子'], football: ['foot 脚', 'ball 球'],
+  basketball: ['basket 篮', 'ball 球'], 'bus stop': ['bus 公交', 'stop 站'], 'office worker': ['office 办公室', 'worker 工作者'],
+  'factory worker': ['factory 工厂', 'worker 工作者'], 'delivery worker': ['delivery 快递', 'worker 工作者'],
+  'police officer': ['police 警方', 'officer 官员'], firefighter: ['fire 火', 'fighter 战士'], snowman: ['snow 雪', 'man 人'],
+  raincoat: ['rain 雨', 'coat 外衣'], sunglasses: ['sun 太阳', 'glasses 眼镜'], 'T-shirt': ['T 字形', 'shirt 衬衫'],
+  'living room': ['living 起居', 'room 房间'], bedroom: ['bed 床', 'room 房间'], bathroom: ['bath 洗澡', 'room 房间'],
+  supermarket: ['super 超级', 'market 市场'], 'green bean': ['green 绿色', 'bean 豆'], chopstick: ['chop 戳', 'stick 棍'],
+  hamburger: ['ham 火腿', 'burger 包'], 'ice cream': ['ice 冰', 'cream 奶油'], 'pocket money': ['pocket 口袋', 'money 钱'],
+  schoolbag: ['school 学校', 'bag 包'], 'space station': ['space 太空', 'station 站'], 'outer space': ['outer 外面', 'space 太空'],
+  'air conditioner': ['air 空气', 'conditioner 调节器'], 'runny nose': ['runny 流水的', 'nose 鼻子'],
+  'dining hall': ['dining 用餐', 'hall 大厅'], 'gingerbread house': ['ginger 姜', 'bread 面包', 'house 房子'],
+  'book fair': ['book 书', 'fair 集市'], 'count down': ['count 数', 'down 向下'], 'save up': ['save 存', 'up 起来'],
+  'stay up': ['stay 待着', 'up 不躺'], 'run out': ['run 跑', 'out 光了'], 'make the bed': ['make 铺', 'bed 床'],
+  'look after': ['look 看', 'after 后面'], 'look up': ['look 查', 'up 向上'], 'turn off': ['turn 拧', 'off 关掉'],
+  'hand out': ['hand 递', 'out 出去'], 'get together': ['get 聚', 'together 在一起'],
+  'hard-working': ['hard 努力', 'working 工作'], hometown: ['home 家', 'town 镇'], sunshine: ['sun 太阳', 'shine 照耀'],
+  waterfall: ['water 水', 'fall 落下'], 'piggy bank': ['piggy 小猪', 'bank 罐'], 'go hiking': ['go 去', 'hiking 徒步'],
+  'go cycling': ['go 去', 'cycling 骑行'], 'went camping': ['went 去（过去式）', 'camping 露营'], 'went fishing': ['went 去（过去式）', 'fishing 钓鱼'],
+  'took pictures': ['took 拍（过去式）', 'pictures 照片'], 'had a cold': ['had 得了（过去式）', 'a cold 感冒'],
+  month: ['moon 月亮', 'th 名词后缀'], astronaut: ['astro 星星', 'naut 航行者'], taikonaut: ['taikong 太空', 'naut 航行者'],
+  underground: ['under 地下', 'ground 地面'], 'ping-pong': ['乒 ping', 'pong 乓'], 'ice-skate': ['ice 冰', 'skate 滑'],
+  'Eiffel Tower': ['Eiffel 埃菲尔（人名）', 'Tower 塔'], 'Beijing opera': ['Beijing 北京', 'opera 戏剧'],
+  'Mount Taishan': ['Mount 山峰', 'Taishan 泰山'], 'Dragon Boat Festival': ['Dragon 龙', 'Boat 船', 'Festival 节'],
+  'Labour Day': ['Labour 劳动', 'Day 节日'], 'National Day': ['National 国家', 'Day 节日'], maybe: ['may 可能', 'be 是'],
+  everyday: ['every 每个', 'day 天'], today: ['to = 今（古义）', 'day 天'], weekend: ['week 周', 'end 末尾'],
+  birthday: ['birth 诞生', 'day 日子'], sometimes: ['some 有些', 'times 次'], seafood: ['sea 海', 'food 食物'],
+  hotpot: ['hot 热的', 'pot 锅'], toothpaste: ['tooth 牙齿', 'paste 膏'], toothbrush: ['tooth 牙齿', 'brush 刷子'],
+  someone: ['some 某个', 'one 人'], anything: ['any 任何', 'thing 东西'], everything: ['every 每个', 'thing 东西'],
+  nothing: ['no 没有', 'thing 东西'], internet: ['inter 互相', 'net 网'],
+};
+/* 记忆法查询链：词库 dec 借用 → 复合词自动拆 → 无 */
+function pepMemOf(w) {
+  const borrowed = pepDecOf(w);
+  if (borrowed) return borrowed;
+  const parts = PEP_COMPOUNDS[String(w.w || w).toLowerCase()];
+  if (Array.isArray(parts) && parts.length >= 2) {
+    return parts.join(' + ') + ' = ' + (w.zh || '');
+  }
+  return '';
+}
 function pepPointsOf(unitId) {
   const dash = unitId.lastIndexOf('-');
   if (dash < 0) return [];
