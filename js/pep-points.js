@@ -735,7 +735,7 @@ const PEP_IPA = {
   'artist': 'ɑːtɪst', 'scientist': 'saɪəntɪst', 'volunteer': 'vɒləntɪə', 'taxi': 'tæksi',
   'train': 'treɪn', 'sign': 'saɪn', 'visitor': 'vɪzɪtə', 'January': 'dʒænjuəri',
   'February': 'februəri', 'March': 'mɑːtʃ', 'April': 'eɪprəl', 'August': 'ɔːɡəst',
-  'September': 'sepbembə', 'October': 'ɒktəʊbə', 'November': 'nəʊvembə', 'December': 'disembə',
+  'September': 'septembə', 'October': 'ɒktəʊbə', 'November': 'nəʊvembə', 'December': 'dɪsembə',
   'Christmas': 'krɪsməs', 'turkey': 'tɜːki', 'country': 'kʌntri', 'sunshine': 'sʌnʃaɪn',
   'beach': 'biːtʃ', 'desert': 'dezət', 'grassland': 'ɡrɑːslænd', 'kangaroo': 'kæŋɡəruː',
   'koala': 'kəʊɑːlə', 'island': 'aɪlənd', 'camel': 'kæml', 'pyramid': 'pɪrəmɪd',
