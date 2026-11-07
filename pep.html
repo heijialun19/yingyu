@@ -14,10 +14,17 @@
 <style>
 /* ---- PEP 专栏专属样式 ---- */
 .pep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+/* 自绘课本封面卡：书脊 + 教材标识 + 大字册名（原创设计，不复制教材封面图） */
+.pb-cover{position:relative;width:96px;height:128px;margin:0 auto 8px;border-radius:5px 12px 12px 5px;box-shadow:2px 5px 10px rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:8px 6px 8px 16px;transition:.15s}
+.pb-cover::before{content:'';position:absolute;left:5px;top:0;bottom:0;width:5px;background:rgba(0,0,0,.24);border-radius:2px}
+.pb-cover .pb-pub{font-size:.58rem;font-weight:800;letter-spacing:2px;opacity:.95;margin-bottom:4px}
+.pb-cover .pb-g{font-size:1rem;font-weight:800;line-height:1.3;text-align:center}
+.pb-cover .pb-e{font-size:24px;margin-top:5px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
 .pep-book{background:#fff;border:3px solid var(--sky2);border-radius:20px;padding:14px 10px;text-align:center;cursor:pointer;transition:.15s;position:relative}
 .pep-book:hover{transform:translateY(-3px);border-color:var(--lemon)}
 .pep-book.on{border-color:var(--grape);background:#F6F1FF}
-.pep-book .pb-e{font-size:34px;line-height:1.2}
+.pep-book:hover .pb-cover{transform:translateY(-3px) rotate(-1deg)}
+.pep-book b{display:block;font-size:.95rem;margin-top:2px}
 .pep-book b{display:block;font-size:.95rem;margin-top:2px}
 .pep-book small{color:#6B7280;font-size:.72rem}
 .pep-tag{position:absolute;top:-8px;right:8px;background:var(--grape);color:#fff;font-size:.62rem;font-weight:800;border-radius:999px;padding:2px 8px}
@@ -212,18 +219,32 @@ let __token = 0;         // 异步作废令牌：切视图后旧定时器不再�
 /* ---------- 换册 ---------- */
 function renderLevels() {
   view = 'levels'; stopAllSpeech(); __token++;
+  /* 每册一本自绘"课本封面"：原创配色区分 8 册（不复制教材封面图，避免侵权） */
+  const COVER = {
+    pep3a: ['#3FA34D', '#256B33'], pep3b: ['#2E86C1', '#1B5E8A'],
+    pep4a: ['#E67E22', '#A9540F'], pep4b: ['#8E44AD', '#5B2C86'],
+    pep5a: ['#E74C3C', '#A93226'], pep5b: ['#16A085', '#0E6655'],
+    pep6a: ['#F39C12', '#B9770E'], pep6b: ['#5D6D7E', '#34495E'],
+  };
   const cards = PEP_LEVELS.map(lv => {
     const on = lv.id === pepActiveLevelId();
+    const [c1, c2] = COVER[lv.id] || ['#7C5CFF', '#5B3FBF'];
+    const gName = lv.name.replace('年级', '年级<br>');
     return `<div class="pep-book ${on ? 'on' : ''}" onclick="pepPickLevel('${lv.id}')">
       ${lv.tag === '新版' ? '<span class="pep-tag">新版</span>' : '<span class="pep-tag old">现行</span>'}
-      <div class="pb-e">${lv.emoji}</div><b>${esc(lv.name)}</b><small>${pepLevelProgress(lv)} 单元</small>
+      <div class="pb-cover" style="background:linear-gradient(160deg,${c1},${c2})">
+        <span class="pb-pub">人教 PEP</span>
+        <span class="pb-g">${gName}</span>
+        <span class="pb-e">${lv.emoji}</span>
+      </div>
+      <b>${esc(lv.name)}</b><small>${pepLevelProgress(lv)} 单元</small>
     </div>`;
   }).join('');
   $('#app').innerHTML = `
     <button class="btn ghost" style="margin-bottom:12px" onclick="location.href='index.html'">← 回首页</button>
     <div class="card" style="padding:16px 18px">
       <b>选一册课本</b>
-      <div style="color:#6B7280;font-size:.82rem;margin-top:2px">三 ~ 五年级与六上为新课标版，六下为现行版。词表 = 课本附录「分单元单词表」。</div>
+      <div style="color:#6B7280;font-size:.82rem;margin-top:2px">配套<b>人教版 PEP 英语教材</b>使用：三 ~ 五年级与六上为新课标版，六下为现行版。词表 = 课本附录「分单元单词表」。</div>
       <div class="pep-grid" style="margin-top:10px">${cards}</div>
       <div style="text-align:center;margin-top:12px"><a href="getsmart.html" style="color:#78909C;font-size:.8rem">学国际教材？去 Get Smart 学堂 →</a></div>
     </div>`;
