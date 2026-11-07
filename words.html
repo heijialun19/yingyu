@@ -340,12 +340,13 @@ function renderBrowse() {
 }
 
 function switchGrade(id) {
-  curGrade = id; searchQ = ''; poolMode = '';
   const g = GRADES.find(x => x.id === id);
+  if (!g) return;
+  curGrade = id; searchQ = ''; poolMode = '';
   curTheme = g.themes[0].id;
   renderBrowse();
 }
-function switchTheme(id) { curTheme = id; searchQ = ''; poolMode = ''; renderBrowse(); }
+function switchTheme(id) { if (!themeById(id)) return; curTheme = id; searchQ = ''; poolMode = ''; renderBrowse(); }
 
 /* ---------------- 卡片学（乱序卡片流） ----------------
    单词镇的灵魂是兴趣驱动：像抽卡片一样乱序学当前主题的词，
