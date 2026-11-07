@@ -274,6 +274,18 @@ const COMBO_EXC = {
   laugh: ['au'], laughed: ['au'], because: ['au'],
   science: ['ie'], scientist: ['ie'], worried: ['ie'], heavier: ['ie'], view: ['ie'], alien: ['ie'],
   direct: ['ire'], building: ['ui'],
+  /* 全库扫描第二轮补录：ui 特读（biscuit /ɪ/、guide /aɪ/、guitar /ɪ/、penguin /wɪ/） */
+  biscuit: ['ui'], biscuits: ['ui'], guide: ['ui'], guitar: ['ui'], penguin: ['ui'],
+  /* all 特读（balloon /əl/、alley /æl/） */
+  balloon: ['all'], alley: ['all'],
+  /* ie 特读（y→i 变形词 cherries/strawberries/veggie 读 /i/） */
+  cherries: ['ie'], strawberries: ['ie'], veggie: ['ie'],
+  /* 复合/派生边界的假组合（pine|apple 的 ea、side|walk 的 ew、some|one 的 eo） */
+  pineapple: ['ea'], sidewalk: ['ew'], someone: ['eo'],
+  /* ire 跨音节（di-rect、di-rec-tion、di-rec-tor） */
+  direction: ['ire'], director: ['ire'],
+  /* sew 特读 /səʊ/（不教 /suː/） */
+  sew: ['ew'],
 };
 function splitBlocks(w) {
   const s = String(w).toLowerCase().replace(/[^a-z]/g, '');
