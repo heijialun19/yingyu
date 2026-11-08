@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-08.13';
+const BUILD = '2026-11-08.14';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1477,20 +1477,8 @@ function testSound() {
 
 /* 链式朗读：读完一句自动读下一句；单段失败（已自动重试过）跳过继续，
    连续失败 3 次才整链停止——不因个别词失败打断整段朗读（绝不切机器音） */
-function speakChain(items) {
-  if (!Store.d.soundOn) return;                    // 静默：不弹提示
-  stopAllSpeech();
-  let stopped = false, fails = 0;
-  const next = i => {
-    if (stopped || i >= items.length) return;
-    const it = items[i];
-    if (it.onStart) try { it.onStart(); } catch (e) {}
-    playDictAudio(it.text, it.rate,
-      () => next(i + 1),
-      () => { if (++fails >= 3) stopped = true; else next(i + 1); });
-  };
-  next(0);
-}
+/* speakChain 已删除（2026-11-08）：它被用来播「字母名 + 0.55 倍速代表词」冒充字母音，
+   也正是慢速怪声的来源。全站已无调用者；想分段播就用 playAudioChain(urls, onDone, gapMs)。 */
 
 /* 拼读文本（仅用于屏幕显示提示，不再朗读——拟音串 TTS 读出来孩子听不懂） */
 function phonicsText(word) {
@@ -1953,6 +1941,26 @@ function askConfirm(msg, onOk) {
     if (onOk) onOk();
   };
 }
+/* 输入框。同样原因：window.prompt 在手机 WebView 里常被屏蔽 = 点了没反应。 */
+function askInput(msg, placeholder, onOk) {
+  const old = document.getElementById('inputMask'); if (old) old.remove();
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="modal-mask" id="inputMask" onclick="if(event.target===this)this.remove()">
+      <div class="modal card" style="max-width:380px">
+        <p style="font-size:.92rem;line-height:1.8;margin:8px 0 12px">${msg}</p>
+        <textarea id="inputBox" placeholder="${placeholder || ''}" style="width:100%;height:110px;border:3px solid var(--lemon,#FFD93D);border-radius:14px;padding:10px;font-size:.82rem;font-family:monospace;resize:vertical"></textarea>
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <button class="btn ghost" style="flex:1" onclick="document.getElementById('inputMask').remove()">取消</button>
+          <button class="btn mint" style="flex:1" id="inputOkBtn">确定</button>
+        </div>
+      </div>
+    </div>`);
+  document.getElementById('inputOkBtn').onclick = function () {
+    const v = (document.getElementById('inputBox').value || '').trim();
+    document.getElementById('inputMask').remove();
+    if (v && onOk) onOk(v);
+  };
+}
 function avatarTap(btn) {
   const a = btn.dataset.a;
   const grid = btn.closest('[data-avatar-target]');
@@ -2152,16 +2160,19 @@ function copySyncCode() {
 }
 function importFromSyncCode() {
   const box = document.getElementById('syncCodeBox');
-  const code = (box && box.value && box.value.trim().length > 20) ? box.value : (prompt('把同步码粘贴到这里：') || '');
-  if (!code.trim()) return;
-  parseSyncCode(code).then(obj => {
-    // 走 Profiles 的标准导入：新建档案，不覆盖现有进度
-    const p = Profiles.importActive(JSON.stringify(obj));
-    toast('📥 同步成功！欢迎回来，' + p.name);
-    setTimeout(() => location.reload(), 800);
-  }).catch(() => {
-    toast('❌ 同步码不对，请检查后重试（注意不要漏字符）');
-  });
+  const go = code => {
+    if (!code || !code.trim()) return;
+    parseSyncCode(code).then(obj => {
+      // 走 Profiles 的标准导入：新建档案，不覆盖现有进度
+      const p = Profiles.importActive(JSON.stringify(obj));
+      toast('📥 同步成功！欢迎回来，' + p.name);
+      setTimeout(() => location.reload(), 800);
+    }).catch(() => {
+      toast('❌ 同步码不对，请检查后重试（注意不要漏字符）');
+    });
+  };
+  if (box && box.value && box.value.trim().length > 20) return go(box.value);
+  askInput('把同步码粘贴到这里：', '同步码是一长串字符，整段粘进来', go);   // 不用 prompt：手机 WebView 会屏蔽
 }
 function importProfileFile(input) {
   const f = input.files && input.files[0]; if (!f) return;
@@ -2170,11 +2181,9 @@ function importProfileFile(input) {
   r.readAsText(f, 'utf-8');
 }
 function importProfileText() {
-  let t = '';
   const box = document.getElementById('backupBox');
-  if (box && box.value && box.value.trim().startsWith('{')) t = box.value;
-  else t = prompt('把备份码粘贴到这里：') || '';
-  if (t.trim()) doImport(t);
+  if (box && box.value && box.value.trim().startsWith('{')) { doImport(box.value); return; }
+  askInput('把备份码粘贴到这里：', '备份码是一段 JSON 文本，整段粘进来', doImport);   // 不用 prompt：手机 WebView 会屏蔽
 }
 function doImport(text) {
   try {
