@@ -61,7 +61,7 @@
 - 整句发音：课本 273 句 + Get Smart 227 句共 497 个 slug 的自合成整句 MP3 在 audio/sentences/，
   清单 SENTENCE_AUDIO 在 app.js，命中就一次播完；不命中才走逐词连读
 - 单词发音：**只用站内 audio/{slug}.mp3，一个外网请求都不发**（v8，2026-11-08）。
-  全站发音目标共 2450 个（单词 + 拼读块 + 字母名），清单是 `js/audio-list.js`
+  全站发音目标共 2864 个（单词 + 拼读块 + 字母名 + 复数/三单/进行时派生词），清单是 `js/audio-list.js`
   （`window.__AUDIO_LIST`，defer 加载，不挡首屏、file:// 也能用）；
   清单没落地前对单个词按本地文件乐观解析，`__registerGSAudio()` 另做兜底。
   包内真没有的内容才用浏览器 speechSynthesis 兜底，且只在单独朗读时启用
