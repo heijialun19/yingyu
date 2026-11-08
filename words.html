@@ -133,7 +133,7 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script async src="svg/emoji-svg.js?v=5"></script>
 <script src="js/data.js?v=33"></script>
-<script src="js/app.js?v=67"></script>
+<script src="js/app.js?v=68"></script>
 <script src="js/sentence.js?v=47"></script>
 <script src="js/speech.js?v=1"></script>
 <script src="js/ipa.js?v=2"></script>
@@ -394,7 +394,11 @@ function renderCardFlow() {
     </div>`;
   const tk = __cardToken;
   setTimeout(() => { if (tk === __cardToken) speakWord(w.w); }, 350);
-  if (c.list[c.idx + 1]) prewarmWord(c.list[c.idx + 1].w);
+  /* 卡片流：当前 + 后 3 张，tag 相同翻页自动替换，队列不会越积越长。 */
+  try {
+    window.__audioPrefetch.queue(
+      c.list.slice(c.idx, c.idx + 4).map(x => x.w), 'words:card');
+  } catch (e) {}
 }
 function cardFlowDone() {
   const c = cardFlow;
@@ -1201,10 +1205,12 @@ renderBrowse();
 (function () {
   const t = themeById(curTheme);
   if (!t || !t.words) return;
-  const words = t.words.map(w => w.w).filter(Boolean).slice(0, 12);
-  const start = () => prewarmBatch(words, 320);
-  if (typeof requestIdleCallback === 'function') requestIdleCallback(start, { timeout: 3000 });
-  else setTimeout(start, 1500);
+  const words = t.words.map(w => w.w).filter(Boolean).slice(0, 10);
+  /* 「下几页」：当前主题前 10 词 + 下一个主题前 4 词，切换主题时那几张卡已就绪。 */
+  const ti = (typeof THEMES !== 'undefined') ? THEMES.findIndex(x => x.id === curTheme) : -1;
+  const nt = ti >= 0 ? THEMES[ti + 1] : null;
+  if (nt && nt.words) words.push(...nt.words.map(w => w.w).filter(Boolean).slice(0, 4));
+  try { window.__audioPrefetch.queue(words, 'words:home'); } catch (e) {}
 })();
 const __m = new URLSearchParams(location.search).get('mode');
 if (__m === 'review') startReview();

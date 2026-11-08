@@ -75,7 +75,7 @@
 <script async src="svg/emoji-svg2.js?v=2"></script>
 <script src="js/ipa.js?v=2"></script>
 <script src="js/data.js?v=33"></script>
-<script src="js/app.js?v=67"></script>
+<script src="js/app.js?v=68"></script>
 <script src="js/sentence.js?v=47"></script>
 <script src="js/getsmart-data.js?v=10"></script>
 <script src="js/pep-points.js?v=9"></script>
@@ -211,8 +211,25 @@ function startUnit(uid) {
     return;
   }
   L = { kind: 'unit', step: 0, wIdx: 0, sIdx: 0, qs: [], qIdx: 0, score: 0, firstTry: true, lock: false };
-  (u.words || []).forEach(w => prewarmWord(w.w));
+  /* 进课只排「当前 + 接下来几页」的声音。以前这里把整课所有词一次性
+     forEach(new Audio())，一册 134~263 个 mp3 直接占满手机带宽，点什么都慢。
+     调度器限并发 2、单批 24 条、load 后空闲才跑；翻页用同一 tag 滑窗替换。 */
+  const ws = (u.words || []).map(w => w.w).slice(0, 8);
+  const ss = (u.sentences || []).map(s => s.en).slice(0, 3);
+  const nx = gsNextUnit(u);
+  if (nx) ws.push(...(nx.words || []).map(w => w.w).slice(0, 4));
+  try { window.__audioPrefetch.queue(ws.concat(ss), 'gs:unit'); } catch (e) {}
   renderStep();
+}
+/* 本课之后最近一节有单词的正课（跳过复习/小测/附录），用来预热「下一课」。 */
+function gsNextUnit(u) {
+  if (!curLevel || !curLevel.units) return null;
+  const i = curLevel.units.findIndex(x => x.id === u.id);
+  for (let j = i + 1; j < Math.min(i + 4, curLevel.units.length); j++) {
+    const n = curLevel.units[j];
+    if (n && n.kind !== 'review' && n.kind !== 'test' && (n.words || []).length) return n;
+  }
+  return null;
 }
 
 const STEP_NAMES = ['学单词', '闯关', '句型', '完成'];
@@ -294,7 +311,11 @@ function renderLearn() {
         <button class="btn grape big" onclick="gsNextWord()">${L.wIdx === u.words.length - 1 ? '都认识啦 ▶' : '下一个 ▶'}</button>
       </div>
     </div>`;
-  prewarmWord(u.words[L.wIdx + 1] ? u.words[L.wIdx + 1].w : '');
+  /* 滑窗：当前词 + 后面 3 个词 + 词卡上的例句。tag 相同 → 翻页自动替换旧任务，
+     队列里永远不会堆着已经翻过去的页。 */
+  const ahead = (u.words || []).slice(L.wIdx, L.wIdx + 4).map(x => x.w);
+  if (w && w.sent) ahead.push(w.sent);
+  try { window.__audioPrefetch.queue(ahead, 'gs:learn'); } catch (e) {}
 }
 function gsNextWord() {
   const u = curUnit;
@@ -514,6 +535,11 @@ function renderSentences() {
          真正点「再听一遍」时坏片段直接走单词，中间不再有空档
      注意：prewarmSentence 原来定义了却从来没被调用过（死代码），这里接上。 */
   try { prewarmSentence(s.en); } catch (e) {}
+  /* 预先把本句 + 后 2 句的整句 mp3 排进缓存；已有的整句音频会跳过词组预热，
+     所以这里只会有本地文件、不会往外发请求。 */
+  try {
+    window.__audioPrefetch.queue(sents.slice(L.sIdx, L.sIdx + 3).map(x => x.en), 'gs:sent');
+  } catch (e) {}
   setTimeout(() => speakSentence(s.en), 500);
 }
 function gsNextSent() {

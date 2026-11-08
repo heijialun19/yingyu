@@ -594,12 +594,130 @@ let __dictFailNotified = 0;
 let __audioEpoch = 0;              // 唯一声源令牌：任何新请求令旧的全部作废
 const __guards = new Set();        // 所有加载/播放超时计时器，stopAllSpeech 时统一拆
 
-/* 预热：把音频提前拉进 SW 缓存（用户一点击零等待）。
-   opaque 响应看不到状态码，能不能用交给播放时判断；这里只负责暖链路。 */
+/* ================= 声音预取调度器（2026-11-08）=================
+   目标：玩当前这一页时，把「接下来几页」的声音提前拉进离线缓存，点一下就出声。
+   铁律（前几轮白屏事故的教训）：预取绝不能和首屏、更不能和用户点击抢带宽。
+     ① 用 fetch({priority:'low'}) 只下字节让 SW 入库，不 new Audio() 解码占内存；
+        媒体元素请求在浏览器里是高优先级，几十个一起灌会拖死首屏。
+     ② 全局最多 2 个在途、单批最多 24 条（约 3~5 页、300KB 上下）。
+     ③ 页面 load 之后再宽限 2.2 秒，且只在 requestIdleCallback 空闲时跑；
+        避开 SW activate 的 1.2 秒后台补齐，首屏期间一个音频请求都不发。
+     ④ 用户真点播放时暂停预取 1.5 秒，让路给「立刻出声」。
+     ⑤ 同一 tag 重复 queue = 滑窗替换：翻到下一页时上一页没跑完的任务自动作废。
+     ⑥ 离线包 file://、断网、省流量、2g/3g 一律跳过；后台标签页暂停。
+     ⑦ 只预取站内自有音频，绝不预热有道（外网请求一律不碰）。
+     ⑧ 所有异常吞掉：预取是锦上添花，永远不能拖垮页面。
+   ==================================================================== */
+const __audioPrefetch = (() => {
+  const MAXQ = 24, PAR = 2, GRACE = 2200;
+  const done = new Set(), failed = new Set();
+  let q = [], active = 0, epoch = 0, timer = 0, ready = false, pausedUntil = 0;
+
+  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+  const blocked = () => {
+    if (location.protocol === 'file:') return true;      // 离线包文件本来就在磁盘上
+    if (navigator.onLine === false) return true;         // 断网只播已缓存的
+    if (conn.saveData) return true;
+    if (/^(slow-)?2g|3g$/.test(conn.effectiveType || '')) return true;
+    if (document.hidden) return true;
+    return false;
+  };
+  const idle = fn => {
+    if (typeof requestIdleCallback === 'function') requestIdleCallback(fn, { timeout: 4000 });
+    else setTimeout(fn, 500);
+  };
+  function pump() {
+    if (!ready || blocked()) return;
+    if (Date.now() < pausedUntil) { setTimeout(pump, 500); return; }
+    while (active < PAR && q.length) {
+      const job = q.shift();
+      if (job.ep !== epoch || done.has(job.url) || failed.has(job.url)) continue;
+      active++;
+      fetch(job.url, { priority: 'low' })
+        .then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); })  // 读干净，连接及时归还
+        .then(() => { done.add(job.url); })
+        .catch(() => { if (job.ep === epoch) failed.add(job.url); })
+        .then(() => { active--; if (job.ep === epoch) idle(pump); });
+    }
+  }
+  function schedule() {
+    if (timer) return;
+    timer = setTimeout(() => { timer = 0; if (ready) idle(pump); }, 260);
+  }
+  /* texts 可以是单词也可以是整句；只有能解析成本地 mp3 的才会入队。 */
+  function queue(texts, tag) {
+    try {
+      if (blocked() || !texts || !texts.length) return 0;
+      if (tag) q = q.filter(j => j.tag !== tag);         // 翻页滑窗：旧页任务作废
+      const ep = epoch, urls = [];
+      for (let i = 0; i < texts.length && urls.length < MAXQ; i++) {
+        const t = String(texts[i] || '').trim();
+        if (!t) continue;
+        const u = localAudioURL(t);
+        if (!u || done.has(u) || failed.has(u) || urls.indexOf(u) >= 0) continue;
+        urls.push(u);
+      }
+      urls.forEach(u => q.push({ url: u, ep, tag: tag || '' }));
+      if (q.length > MAXQ) q = q.slice(-MAXQ);
+      schedule();
+      return urls.length;
+    } catch (e) { return 0; }
+  }
+  function cancel() { epoch++; q = []; }
+  function pause(ms) { pausedUntil = Date.now() + (ms || 1500); }
+  /* 从当前页 DOM 认出「能点读的文本」：onclick 里的 speakXxx('...')、
+     知识点例句 .pc-en、句型卡 .se。只收纯英文，认不出就跳过。 */
+  function scan(root) {
+    const host = root || document.getElementById('app') || document.querySelector('main');
+    if (!host) return 0;
+    const texts = [];
+    const add = t => {
+      t = String(t || '').replace(/^🔊\s*/, '').trim();
+      if (!t || t.length > 120 || !/^[A-Za-z][A-Za-z0-9 ,.'’!?\-:]*$/.test(t)) return;
+      texts.push(t);
+    };
+    try {
+      host.querySelectorAll('[onclick*="speak"]').forEach(el => {
+        const m = (el.getAttribute('onclick') || '').match(/speak\w*\(\s*'((?:\\.|[^'\\])*)'/);
+        if (m) add(m[1].replace(/\\'/g, "'").replace(/\\n/g, ' ').replace(/\\\\/g, '\\'));
+      });
+      host.querySelectorAll('.pc-en,.gs-sentcard .se').forEach(el => add(el.textContent));
+    } catch (e) {}
+    return queue(texts, '__scan');
+  }
+  function boot() {
+    const start = () => {
+      ready = true;
+      scan();
+      idle(pump);          // 页面加载阶段排进来的队列，到这里才第一次真正开跑
+      const host = document.getElementById('app') || document.querySelector('main');
+      if (host && typeof MutationObserver === 'function') {
+        let t = 0;
+        new MutationObserver(() => {
+          clearTimeout(t);
+          t = setTimeout(() => scan(host), 340);
+        }).observe(host, { childList: true, subtree: true });
+      }
+    };
+    const after = () => setTimeout(start, GRACE);
+    if (document.readyState === 'complete') after();
+    else window.addEventListener('load', after, { once: true });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) idle(pump); });
+  }
+  boot();
+  return { queue, cancel, pause, scan,
+    stats: () => ({ queued: q.length, active, cached: done.size, failed: failed.size, ready }) };
+})();
+window.__audioPrefetch = __audioPrefetch;
+
+/* 单词/整句预热：有本地音频就交给低优先级调度器；
+   没有本地文件的（有道两词词组）保留媒体元素探路语义——
+   sentence.js 靠 onFail 把坏词组标出来，改不得。 */
 function prewarmWord(text, onFail) {
   if (!text) return;
+  if (localAudioURL(String(text))) { __audioPrefetch.queue([String(text)]); return; }
   try {
-    const a = new Audio(__audioSources(text)[0]);   // 有本地就预热本地，第二次点开零等待
+    const a = new Audio(__audioSources(text)[0]);
     a.preload = 'auto';
     __inflight.add(a);
     a.oncanplay = () => { __inflight.delete(a); };
@@ -609,6 +727,8 @@ function prewarmWord(text, onFail) {
 /* 播放入口：直接走媒体元素。epoch 在这里统一递增；
    timeoutMs 可选（连读链传短超时保持节奏）。 */
 function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs, startIdx, reuseEl) {
+  /* 用户真点播放了：暂停后台预取 1.5 秒，把带宽让给「立刻出声」。 */
+  try { __audioPrefetch.pause(); } catch (e) {}
   const epoch = ++__audioEpoch;
   const t = String(text).trim();
   if (!t) { if (onFail) onFail(); return; }
@@ -1841,8 +1961,9 @@ function doImport(text) {
    手机首次进来音频要从网络下载，不等用户点就后台全部拉好，
    用户点哪个词哪个词秒出声。 */
 function prewarmBatch(list, gap) {
-  const interval = gap || 200;
-  list.forEach((w, i) => setTimeout(() => { try { prewarmWord(w); } catch (e) {} }, i * interval));
+  /* gap 参数保留兼容旧调用；节奏统一由 __audioPrefetch 管：
+     原来的 setTimeout(i*200) 队列不可取消、无并发上限，换页后还在后台偷跑。 */
+  __audioPrefetch.queue(list || [], '__batch');
 }
 /* ================= 首屏加载指示：等页面真正渲染完再撤 =================
    ★ 2026-11-07 白屏事故：app.js 并不是各页最后一个脚本，后面还有 sentence.js /

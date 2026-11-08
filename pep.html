@@ -126,7 +126,7 @@
 <script async src="svg/emoji-svg2.js?v=2"></script>
 <script src="js/ipa.js?v=2"></script>
 <script src="js/data.js?v=33"></script>
-<script src="js/app.js?v=67"></script>
+<script src="js/app.js?v=68"></script>
 <script src="js/pep-data.js?v=1"></script>
 <script src="js/pep-points.js?v=10"></script>
 <script>
@@ -290,11 +290,15 @@ function renderLevelHome() {
      其余的词点到时再取：都是本地文件，SW 缓存过就永久离线。 */
   const nextUnit = lv.units.find(u => u.kind !== 'appendix' && !pepUnitDone(u.id))
     || lv.units.find(u => u.kind !== 'appendix');
-  const ws = ((nextUnit && nextUnit.words) || []).map(w => w.w).filter(Boolean).slice(0, 10);
+  const ws = ((nextUnit && nextUnit.words) || []).map(w => w.w).filter(Boolean).slice(0, 8);
+  /* 「下几页」：下一课的单词 + 该课知识点里前 2 句例句 + 再下一课前 3 个词。
+     点进知识点页时第一句已经在缓存里，不用现等。 */
+  if (nextUnit) (pepPointsOf(nextUnit.id) || []).slice(0, 2).forEach(p => { if (p.en) ws.push(p.en); });
+  const ni = lv.units.findIndex(x => x.id === (nextUnit && nextUnit.id));
+  const after = ni >= 0 ? lv.units[ni + 1] : null;
+  if (after && after.words) ws.push(...after.words.map(w => w.w).filter(Boolean).slice(0, 3));
   if (!ws.length) return;
-  const startPre = () => prewarmBatch(ws, 320);
-  if (typeof requestIdleCallback === 'function') requestIdleCallback(startPre, { timeout: 3000 });
-  else setTimeout(startPre, 1500);
+  try { window.__audioPrefetch.queue(ws, 'pep:home'); } catch (e) {}
 }
 
 /* ---------- 知识点讲解 ---------- */
@@ -340,6 +344,13 @@ function renderPoints(uid) {
       <button class="btn spell big" onclick="startSpell('${u.id}')">🚂 直接去拼词</button>
     </div>
     <div style="margin-top:12px;text-align:center"><button class="btn ghost" onclick="location.href='games.html'">🎮 玩个游戏换换脑子</button></div>`;
+  /* 知识点卡一屏好几张，等于「下几页」：本单元例句先备好，再带上下一单元头两句。 */
+  const ahead = pts.map(p => p.en).filter(Boolean).slice(0, 6);
+  const units = (u.lv && u.lv.units) || [];
+  const ui = units.findIndex(x => x.id === u.id);
+  const nx = ui >= 0 ? units[ui + 1] : null;
+  if (nx) (pepPointsOf(nx.id) || []).slice(0, 2).forEach(p => { if (p.en) ahead.push(p.en); });
+  try { window.__audioPrefetch.queue(ahead, 'pep:points'); } catch (e) {}
 }
 
 /* ---------- 逐词学习 ---------- */
@@ -387,7 +398,11 @@ function renderLearnCard() {
     </div>`;
   const tk = __token;
   setTimeout(() => { if (tk === __token) speakWord(w.w); }, 350);
-  if (u.words[L2.i + 1]) prewarmWord(u.words[L2.i + 1].w);
+  /* 逐词卡：当前 + 后 3 个词，翻页滑窗替换。 */
+  try {
+    window.__audioPrefetch.queue(
+      u.words.slice(L2.i, L2.i + 4).map(x => x.w), 'pep:learn');
+  } catch (e) {}
 }
 
 /* ---------- 拼词（拼词小火车式） ---------- */
