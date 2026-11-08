@@ -126,7 +126,7 @@
 <script async src="svg/emoji-svg2.js?v=2"></script>
 <script src="js/ipa.js?v=2"></script>
 <script src="js/data.js?v=33"></script>
-<script src="js/app.js?v=68"></script>
+<script src="js/app.js?v=69"></script>
 <script src="js/pep-data.js?v=1"></script>
 <script src="js/pep-points.js?v=10"></script>
 <script>
@@ -216,9 +216,19 @@ let view = 'level', curLevel = null, curUnit = null;
 let S = null;            // 拼词状态
 let __token = 0;         // 异步作废令牌：切视图后旧定时器不再生效
 
+/* 位置快照（2026-11-08）：只记「哪一册 / 哪个单元」，不记题目和答案。
+   刷新后 init 按它回到原处，不再弹回换册页 / 单元列表。 */
+function __pepSnap(extra) {
+  try {
+    window.__navSave('pep', Object.assign({
+      view: view, lv: curLevel && curLevel.id, u: curUnit && curUnit.id
+    }, extra || {}));
+  } catch (e) {}
+}
+
 /* ---------- 换册 ---------- */
 function renderLevels() {
-  view = 'levels'; stopAllSpeech(); __token++;
+  view = 'levels'; stopAllSpeech(); __token++; __pepSnap({ lv: null, u: null });
   /* 每册一本自绘"课本封面"：原创配色区分 8 册（不复制教材封面图，避免侵权） */
   const COVER = {
     pep3a: ['#3FA34D', '#256B33'], pep3b: ['#2E86C1', '#1B5E8A'],
@@ -256,6 +266,7 @@ function renderLevelHome() {
   view = 'level'; stopAllSpeech(); __token++;
   const lv = PEP_LEVELS.find(l => l.id === pepActiveLevelId());
   curLevel = lv;
+  __pepSnap({ u: null });
   const totalWords = lv.units.reduce((s, u) => s + (u.words || []).length, 0);
   const units = lv.units.map(u => {
     const done = pepUnitDone(u.id);
@@ -304,7 +315,7 @@ function renderLevelHome() {
 /* ---------- 知识点讲解 ---------- */
 function renderPoints(uid) {
   const u = findUnit(uid); if (!u) return;
-  curUnit = u; view = 'points'; stopAllSpeech(); __token++;
+  curUnit = u; view = 'points'; stopAllSpeech(); __token++; __pepSnap();
   const pts = pepPointsOf(uid);
   if (!pts.length) { startLearn(uid); return; }
   /* 本单元拼读地图：统计单元词表里的高频字母组合（数据驱动，与拼词拆块同一套） */
@@ -356,7 +367,7 @@ function renderPoints(uid) {
 /* ---------- 逐词学习 ---------- */
 function startLearn(uid) {
   const u = findUnit(uid); if (!u) return;
-  curUnit = u; view = 'learn';
+  curUnit = u; view = 'learn'; __pepSnap();
   L2 = { i: 0 };
   renderLearnCard();
 }
@@ -421,7 +432,7 @@ function findUnit(uid) {
 }
 function startSpell(uid) {
   const u = findUnit(uid); if (!u) return;
-  curUnit = u; view = 'spell';
+  curUnit = u; view = 'spell'; __pepSnap();
   /* 词数多的整册闯关一次拼不完，取 20 词一组 */
   let list = u.words;
   if (list.length > 20) list = shuffle(list).slice(0, 20);
@@ -641,6 +652,25 @@ function startSpellWrong() {
     renderPoints(pid);
     return;
   }
+  /* ★ 2026-11-08：刷新后回到原来的册 / 单元，不再弹回换册页。
+     知识点页能原样恢复；逐词学习、拼词不恢复答题进度（题目和答案绝不落盘），
+     只回到同一册的单元列表。只认 reload，从首页正常点进来不受影响。 */
+  try {
+    if (window.__isReload && window.__isReload()) {
+      const snap = window.__navLoad && window.__navLoad('pep', 30 * 60 * 1000);
+      if (snap) {
+        const un = snap.u ? findUnit(snap.u) : null;
+        if (un) {
+          pepSetActiveLevel(un.lv.id);
+          if (snap.view === 'points') { renderPoints(snap.u); toast('↩️ 已回到刚才的知识点'); return; }
+          renderLevelHome(); toast('↩️ 已回到刚才那一册'); return;
+        }
+        if (snap.lv && PEP_LEVELS.some(l => l.id === snap.lv)) {
+          pepSetActiveLevel(snap.lv); renderLevelHome(); return;
+        }
+      }
+    }
+  } catch (e) {}
   const lv = PEP_LEVELS.find(l => l.id === pepActiveLevelId());
   if (lv) { curLevel = lv; renderLevelHome(); } else renderLevels();
 })();

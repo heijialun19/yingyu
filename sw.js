@@ -6,12 +6,12 @@
      （6.6MB 只下一次；重建音频时把 AUDIO_VER 与这里同时 +1）
    - 有道发音：原样转发 + 原样缓存。opaque 响应的 body 读不到、头也改不了，
      所以这里绝不读 body、绝不 new Response 重建（那样会全站失声） */
-const CACHE = 'birdie-abc-v125';
+const CACHE = 'birdie-abc-v126';
 const AUDIO_CACHE = 'birdie-audio-v2';   // 与 js/app.js 的 AUDIO_VER 同步
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=33', './js/app.js?v=68', './js/sentence.js?v=47', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=10',
+  './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=33', './js/app.js?v=69', './js/sentence.js?v=47', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=10',
   './manifest.json', './audio/manifest.json', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
@@ -20,7 +20,7 @@ const CORE = [
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
   './', './index.html', './css/style.css?v=48',
-  './js/app.js?v=68', './js/data.js?v=33', './audio/manifest.json'
+  './js/app.js?v=69', './js/data.js?v=33', './audio/manifest.json'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -80,7 +80,21 @@ self.addEventListener('fetch', e => {
       fetch(e.request).then(res => {
         if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {}); }
         return res;
-      }).catch(() => caches.match(e.request).then(hit => good(hit) ? hit : caches.match('./index.html')))
+      }).catch(async () => {
+        /* ★ 2026-11-08：断网 / 网络抖动时原来直接回退 index.html ——
+           地址栏还停在 getsmart.html?flow=1，内容却变成首页，看起来就是
+           「刚进页面被弹回上一级」。CORE 预缓存的是不带参数的 './getsmart.html'，
+           带查询串的深链精确匹配必然落空。先忽略查询串找同一个页面的缓存，
+           实在没有才回首页；连首页都没有就明确报离线，不静默装作成功。 */
+        const hit = await caches.match(e.request);
+        if (good(hit)) return hit;
+        const same = await caches.match(e.request, { ignoreSearch: true });
+        if (good(same)) return same;
+        const home = await caches.match('./index.html');
+        if (good(home)) return home;
+        return new Response('<!doctype html><meta charset="utf-8"><p style="font:16px/1.6 system-ui;padding:24px">暂时打不开，请检查网络后重试一下～</p>',
+          { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+      })
     );
     return;
   }

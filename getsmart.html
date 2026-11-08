@@ -75,7 +75,7 @@
 <script async src="svg/emoji-svg2.js?v=2"></script>
 <script src="js/ipa.js?v=2"></script>
 <script src="js/data.js?v=33"></script>
-<script src="js/app.js?v=68"></script>
+<script src="js/app.js?v=69"></script>
 <script src="js/sentence.js?v=47"></script>
 <script src="js/getsmart-data.js?v=10"></script>
 <script src="js/pep-points.js?v=9"></script>
@@ -105,9 +105,19 @@ let view = 'levels', curLevel = null, curUnit = null;
 let L = null;   /* 当前课的运行时状态 */
 let __lessonToken = 0;  /* 作废旧计时器/旧音频链 */
 
+/* 位置快照（2026-11-08）：只记「在哪一册 / 哪一单元」，不记题目和答案。
+   刷新或被系统回收后 init 会按它回到原处，不再弹回选书页。 */
+function __gsSnap(extra) {
+  try {
+    window.__navSave('getsmart', Object.assign({
+      view: view, lv: curLevel && curLevel.id, u: curUnit && curUnit.id
+    }, extra || {}));
+  } catch (e) {}
+}
+
 /* ================= 教材总览（六册选书） ================= */
 function renderLevels() {
-  view = 'levels'; stopAllSpeech(); __lessonToken++;
+  view = 'levels'; stopAllSpeech(); __lessonToken++; __gsSnap({ lv: null, u: null });
   $('#app').innerHTML = `
     <div class="card" style="border-color:var(--lemon)">
       <h2>🎒 学哪一册？</h2>
@@ -135,7 +145,7 @@ function renderLevels() {
 
 function openLevel(lid) {
   curLevel = GS_LEVELS.find(l => l.id === lid); if (!curLevel) return;
-  view = 'level'; stopAllSpeech(); __lessonToken++;
+  view = 'level'; stopAllSpeech(); __lessonToken++; __gsSnap({ u: null });
   renderLevelHome();
 }
 
@@ -151,6 +161,7 @@ function gsSetActive(lid) {
 /* ================= 一册的课程表 ================= */
 function renderLevelHome() {
   const lv = curLevel;
+  __gsSnap({ u: null });
   const dn = levelDone(lv);
   /* 补课 = 按顺序第一节没学过的正课 */
   const firstGap = lv.units.find(u => u.kind === 'unit' && !gsDone(u.id));
@@ -195,6 +206,7 @@ function unitById(uid) {
 function startUnit(uid) {
   const found = unitById(uid); if (!found) return;
   curLevel = found.lv; curUnit = found.u; view = 'unit';
+  __gsSnap({ flow: false });
   stopAllSpeech(); __lessonToken++;
   const u = curUnit;
   if (u.kind === 'review') {
@@ -687,6 +699,7 @@ function gsFlowState() {
 }
 function renderTodayFlow() {
   view = 'flow'; stopAllSpeech(); __lessonToken++; gsEnsure();
+  __gsSnap({ flow: true });
   const st = gsFlowState();
   const bonusGot = Store.d.flowBonus === st.today;
   const steps = [
@@ -774,6 +787,24 @@ function renderFlowDone() {
 (function init() {
   const params = new URLSearchParams(location.search);
   if (params.get('flow') === '1') { renderTodayFlow(); return; }
+  /* ★ 2026-11-08：刷新 / 标签页被系统回收后回到刚才那一课，
+     以前内存状态一丢就弹回选书页，用户正上着课被打断，体验很差。
+     只认 reload（从首页正常点进来不受影响）；任何异常都退回默认入口。 */
+  try {
+    if (window.__isReload && window.__isReload()) {
+      const snap = window.__navLoad && window.__navLoad('getsmart', 30 * 60 * 1000);
+      if (snap) {
+        if (snap.u && unitById(snap.u)) {
+          startUnit(snap.u); toast('↩️ 已回到刚才那一课'); return;
+        }
+        if (snap.flow) { renderTodayFlow(); return; }
+        if (snap.lv && GS_LEVELS.some(l => l.id === snap.lv)) {
+          curLevel = GS_LEVELS.find(l => l.id === snap.lv); view = 'level';
+          renderLevelHome(); return;
+        }
+      }
+    }
+  } catch (e) {}
   const now = GS_LEVELS.find(l => l.id === gsActiveLevelId());
   if (now) { curLevel = now; view = 'level'; renderLevelHome(); }
   else renderLevels();

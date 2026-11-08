@@ -27,10 +27,12 @@ function __showUpdateBar(v) {
     bar.id = 'updateBar';
     bar.setAttribute('role', 'button');
     bar.setAttribute('tabindex', '0');
-    bar.style.cssText = 'position:fixed;left:10px;right:10px;bottom:12px;z-index:99999;' +
-      'background:#FF8A3D;color:#fff;border-radius:14px;padding:12px 16px;' +
-      'font:600 15px/1.3 system-ui,-apple-system,"Microsoft YaHei",sans-serif;' +
-      'box-shadow:0 8px 24px rgba(255,110,20,.35);display:flex;align-items:center;gap:10px;cursor:pointer';
+    /* 只占右下角一小块。原来 left/right 都钉住 = 横贯屏幕底部的全宽浮条，
+       会把页面底部的「开始学习 / 下一题」按钮整排盖住，点一下就误触发刷新。 */
+    bar.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:99999;max-width:min(320px,calc(100vw - 24px));' +
+      'background:#FF8A3D;color:#fff;border-radius:14px;padding:10px 14px;' +
+      'font:600 14px/1.3 system-ui,-apple-system,"Microsoft YaHei",sans-serif;' +
+      'box-shadow:0 8px 24px rgba(255,110,20,.35);display:flex;align-items:center;gap:8px;cursor:pointer';
     bar.innerHTML = '<span style="font-size:1.2em">🔄</span><span style="flex:1">有新版本（' +
       String(v || '').replace(/[<>&"]/g, '') + '），点这里刷新</span><span>▶</span>';
     const go = () => {
@@ -67,6 +69,31 @@ if (typeof document !== 'undefined') {
 const $  = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------------- 页面位置快照（刷新后不回退层级） ----------------
+   ★ 2026-11-08 修「刚进页面、一加载就弹回上一级别」：
+     getsmart / pep 的「哪一册 → 哪个单元 → 第几步」全是内存变量，页面一刷新就丢，
+     init 又回到默认的选书页 / 课程表 —— 看起来就是被弹回上一级。
+     这里只记「导航位置」，绝不记题目和答案（题目页不得出现答案）；
+     sessionStorage 只作用于当前标签页，关掉即清，不污染长期进度。
+     只有 navigation.type === 'reload' 才恢复：从首页正常点进来仍走默认入口。 */
+window.__navSave = function (tag, data) {
+  try { sessionStorage.setItem('birdie_nav_' + tag, JSON.stringify({ d: data, t: Date.now() })); } catch (e) {}
+};
+window.__navLoad = function (tag, maxAgeMs) {
+  try {
+    const o = JSON.parse(sessionStorage.getItem('birdie_nav_' + tag) || 'null');
+    if (!o || (maxAgeMs && Date.now() - o.t > maxAgeMs)) return null;
+    return o.d;
+  } catch (e) { return null; }
+};
+window.__isReload = function () {
+  try {
+    const n = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if (n && n.type) return n.type === 'reload';
+    return (performance.navigation || {}).type === 1;   // 老浏览器兜底
+  } catch (e) { return false; }
+};
 
 /* ---------------- 日期工具 ---------------- */
 function todayStr(off = 0) {
@@ -1387,24 +1414,25 @@ function speechEnv() {
      （线上实测 26 秒后 loadEventEnd 仍为 0），挂在 load 上的 SW 就永远不注册，
      音频缓存形同虚设 —— 每次点发音都重新跨境下载一遍。
      SW 注册不依赖 DOM / 图片 / 字体，app.js 一执行就开始即可。
-     首次接管不自动 reload：那会打断正在下载的首屏资源，反而更慢；
-     只有「旧 SW 被新版替换」时才刷新一次。 */
+   ★ 2026-11-08 修「刚进页面、一加载就弹回上一级别」：
+     原来只要 controllerchange（新版 SW 接管）就 location.reload()。
+     但 getsmart / pep / grammar 的「哪一册 → 哪个单元 → 第几步」是内存变量，
+     一重载全丢，页面 init 又回到默认的选书页 / 课程表，用户正上着课就被踹回去。
+     发版后每个页面的第一次打开都会中招一次，所以感觉「经常」。
+     本站导航是网络优先、静态资源带不可变版本号：新版 SW 接管后，当前页面
+     继续用已经加载完整的代码是安全的，下一次自然导航就吃到新版本，
+     完全没必要打断用户。要立刻更新由用户自己点右下角「有新版本」提示。 */
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
-  const __hadController = !!navigator.serviceWorker.controller;
   navigator.serviceWorker.register('sw.js').then(reg => {
-    // 发现新版本时立即激活，确保用户拿到最新代码
+    // 发现新版本时立即激活，让**新打开的页面**拿到最新代码（当前页面不刷新）
     if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
     reg.addEventListener('updatefound', () => {
       const nw = reg.installing;
       if (nw) nw.addEventListener('statechange', () => { if (nw.state === 'installed' && navigator.serviceWorker.controller) nw.postMessage('SKIP_WAITING'); });
     });
   }).catch(() => {});
-  let __swRefreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!__hadController) return;   // 首次安装：不打断首屏
-    if (__swRefreshing) return;
-    __swRefreshing = true;
-    location.reload();
+    window.__swTookOver = true;   // 只留诊断标记：绝不自动刷新
   });
 }
 
