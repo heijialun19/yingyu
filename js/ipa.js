@@ -52,7 +52,7 @@ const IPA = {
   "bread":"/bred/", "cake":"/keɪk/", "milk":"/mɪlk/", "water":"/ˈwɔtər/", "juice":"/dʒus/",
   "tea":"/ti/", "hamburger":"/ˈhæmbərɡər/", "breakfast":"/ˈbrekfəst/", "lunch":"/lʌntʃ/", "dinner":"/ˈdɪnər/",
   "food":"/fud/", "chicken":"/ˈtʃɪkən/", "beef":"/bif/", "pork":"/pɔrk/", "soup":"/sup/",
-  "dumpling":"/ˈdʌmplɪŋ/", "candy":"/ˈkændi/", "sweet":"/swit/", "chocolate":"/ˈtʃɔklət/", "biscuit":"/ˈbɪskɪt/",
+  "dumpling":"/ˈdʌmplɪŋ/", "candy":"/ˈkændi/", "sweet":"/swit/", "chocolate":"/ˈtʃɑklət/", "biscuit":"/ˈbɪskɪt/",
   "porridge":"/ˈpɔrədʒ/", "shirt":"/ʃɜrt/", "dress":"/dres/", "skirt":"/skɜrt/", "pants":"/pænts/",
   "shorts":"/ʃɔrts/", "coat":"/koʊt/", "sweater":"/ˈswetər/", "jacket":"/ˈdʒækɪt/", "hat":"/hæt/",
   "cap":"/kæp/", "shoe":"/ʃu/", "sock":"/sɑk/", "clothes":"/kloʊðz/", "scarf":"/skɑrf/",
@@ -97,7 +97,7 @@ const IPA = {
   "Sunday":"/ˈsʌndeɪ/", "weekend":"/ˈwikend/", "weekday":"/ˈwikdeɪ/", "birthday":"/ˈbɜrθdeɪ/", "big":"/bɪɡ/",
   "small":"/smɔl/", "long":"/lɔŋ/", "short":"/ʃɔrt/", "tall":"/tɔl/", "fast":"/fæst/",
   "slow":"/sloʊ/", "new":"/nu/", "young":"/jʌŋ/", "cute":"/kjut/", "pretty":"/ˈprɪti/",
-  "beautiful":"/ˈbjutəfəl/", "happy":"/ˈhæpi/", "sad":"/sæd/", "angry":"/ˈæŋɡri/", "glad":"/ɡlæd/",
+  "beautiful":"/ˈbjutɪfəl/", "happy":"/ˈhæpi/", "sad":"/sæd/", "angry":"/ˈæŋɡri/", "glad":"/ɡlæd/",
   "doctor":"/ˈdɑktər/", "nurse":"/nɜrs/", "driver":"/ˈdraɪvər/", "cook":"/kʊk/", "farmer":"/ˈfɑrmər/",
   "policeman":"/pəˈlismən/", "worker":"/ˈwɜrkər/", "singer":"/ˈsɪŋər/", "dancer":"/ˈdænsər/", "writer":"/ˈraɪtər/",
   "pilot":"/ˈpaɪlət/", "scientist":"/ˈsaɪəntɪst/", "dentist":"/ˈdentɪst/", "waiter":"/ˈweɪtər/", "vet":"/vet/",
@@ -201,7 +201,7 @@ const IPA = {
   "nothing":"/ˈnʌθɪŋ/", "something":"/ˈsʌmθɪŋ/", "everything":"/ˈevriθɪŋ/", "everybody":"/ˈevribɑdi/", "nobody":"/ˈnoʊbɑdi/",
   "somebody":"/ˈsʌmbɑdi/", "anybody":"/ˈenibədi/", "way":"/weɪ/", "away":"/əˈweɪ/", "own":"/oʊn/",
   "else":"/els/", "another":"/əˈnʌðər/", "few":"/fju/", "little":"/ˈlɪtəl/", "much":"/mʌtʃ/",
-  "many":"/ˈmeni/", "each":"/itʃ/", "every":"/ˈevəri/", "all":"/ɔl/", "some":"/sʌm/",
+  "many":"/ˈmeni/", "each":"/itʃ/", "every":"/ˈevri/", "all":"/ɔl/", "some":"/sʌm/",
   "any":"/ˈeni/", "both":"/boʊθ/", "other":"/ˈʌðər/", "next":"/nekst/", "last":"/læst/",
   "once":"/wʌns/", "twice":"/twaɪs/"
 };

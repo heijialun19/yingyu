@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-08.25",
-  "note": "记忆法质量修正：删掉全部「真构词/假构词」方法论标签（孩子不需要）；「来自古英语 eall」这类干巴巴词源换成有用钩子（257+24 条）；everybody 等拆解加结论。words-data v39 / pep-points v13。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
+  "build": "2026-11-08.26",
+  "note": "音标显示与准确性修正：pep.html 音标双斜杠 //muv// 修成 /muv/（IPA 自带斜杠又加了一对）；chocolate /ɔ/→/ɑ/、beautiful /ə/→/ɪ/、every 去多余 schwa。ASR 抽查 8 词音频全对。ipa.js v4。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
 }

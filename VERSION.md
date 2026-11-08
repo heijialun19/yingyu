@@ -14,13 +14,13 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v93 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v94 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v39 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v6 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
-| js/ipa.js | v3 | 音标 |
+| js/ipa.js | v4 | 音标 |
 | js/build-data.js | v1 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v147 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v148 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -77,6 +77,19 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-08.26 音标显示与准确性修正
+
+用户：「这个的发音我总觉不对」（截图 move 音标显示 //muv//）。
+1. pep.html 音标双斜杠：IPA 自带斜杠又加了一对 → 修掉
+2. 3 个真错音标：chocolate /ɔ/→/ɑ/、beautiful /ə/→/ɪ/、every 去多余 schwa
+3. ASR 抽查 8 词音频全对——发音没问题，是显示让人以为标错了
+
+## 2026-11-08.25 记忆法质量修正
+
+用户截图：「来自古英语没写清楚」「真构词纯属没用」。
+删全部「真构词」标签（114 条）；281 条干巴巴词源换有用钩子；
+9 条拆解补结论。判据：孩子读完能不能记住这个词。
 
 ## 2026-11-08.24 文档一致性扫尾（主动全站扫）
 
