@@ -37,7 +37,7 @@
 <script async src="svg/emoji-svg.js?v=5"></script>
 <script src="js/data.js?v=36"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=75"></script>
+<script src="js/app.js?v=76"></script>
 <script defer src="js/audio-list.js?v=2"></script>
 <script src="js/sentence.js?v=48"></script>
 <script src="js/grammar-engine.js?v=6"></script>
@@ -63,7 +63,7 @@ const GAMES = [
     { id: 'sentence', emoji: '🧑‍🔧', name: '句子火车员', desc: '句子缺了个词，你来补上！', color: 'var(--mint)' },
     { id: 'picsent',  emoji: '🖼️', name: '听句选图', desc: '听一句话，选出对应的图片', color: '#F59E0B' },
     { id: 'wordlab',  emoji: '🧪', name: '造词实验室', desc: '每轮 10 个新词，black + board 会变成什么？', color: 'var(--coral)' },
-    { id: 'phonics',  emoji: '🔤', name: '拼读闯关', desc: '听音辨词族：cat hat man 是一家人', color: '#0EA5E9' },
+    { id: 'phonics',  emoji: '🔤', name: '拼读闯关', desc: '听 /k/ /æ/ /t/ 三个音，把 cat 拼出来', color: '#0EA5E9' },
 ];
 
 /* 游戏数量的唯一真相源是 js/app.js 的 GAME_COUNT；增删游戏必须同步改它，
@@ -916,82 +916,229 @@ function themeWordsById(ids) {
   return out;
 }
 
-/* ---------------- 游戏7：拼读闯关（自然拼读词族） ----------------
-   听音辨词族：同一词族的词发音规律一致（cat/hat/man 都含 short a）。
-   词族来自 Get Smart 各册 Phonics 线，词全部取自 1000 词库（有图有声）。 */
+/* ---------------- 游戏7：拼读闯关（自然拼读：听音拼词） ----------------
+   词族来自 Get Smart 各册 Phonics 线，词全部取自 1000 词库（有图有声）。
+
+   ★★ 2026-11-08 重做（v2）。旧版只有一个题型：听**整词**，从 4 个同族词里选出来，
+      选项还把单词印在脸上 —— 用户反馈「太简单」「学不到发声」。
+      现在分两种题型：
+
+      ① 拼词（主）：播**逐音** /k/ … /æ/ … /t/（用 26 个字母音 + sh/ch/ee 等拼读块音频），
+         孩子按顺序点字母块把词拼出来；每点一个块就发那个块的音。
+         这才是自然拼读的核心训练（听音 → 拆音 → 合成）。
+      ② 听词选图（辅）：该词无法按音形对应拼写时用，只给图不给单词，只能靠听。
+
+   ⚠️ 只有 segs 里登记过的词才走拼词：**逐块读音必须与该词真实读音一致**，
+      拼不出来的宁可退回选图。不要为提高覆盖率硬塞。
+   ⚠️ a_e / i_e / o_e 三个族整族不做拼词：字母音 a 是 /æ/，拼 cake 会读成 /kæke/，那是教错。
+   ⚠️ 也别拿「首字母」当拼读（egg 的 gg 是单 /g/、thumb 的 b 不发音、chicken 的 e 读 /ɪ/）。 */
 const PHONICS = [
-  { name: 'short a · /æ/', tip: 'a 发「啊」', words: ['cat','hat','man','van','bag','ant','map','hand','fan','rabbit','sand','camp'] },
-  { name: 'short e · /e/', tip: 'e 发「哎」', words: ['pen','hen','ten','desk','bed','leg','egg','tent','vest','red'] },
-  { name: 'short i · /ɪ/', tip: 'i 发「衣」', words: ['pig','big','six','fish','milk','ship','sit','fin','pink','king'] },
-  { name: 'short o · /ɒ/', tip: 'o 发「噢」', words: ['box','fox','dog','hot','stop','clock','rock','shop','doctor'] },
-  { name: 'short u · /ʌ/', tip: 'u 发「啊」', words: ['bus','sun','run','duck','cup','jump','truck','gum','hut'] },
-  { name: 'sh · /ʃ/', tip: 'sh 发「嘘——」', words: ['ship','fish','sheep','shelf','brush','wash','shop','shoe'] },
-  { name: 'ch · /tʃ/', tip: 'ch 发「吃——」', words: ['chair','peach','lunch','catch','teacher','chess'] },
-  { name: 'th · /θ/', tip: 'th 轻轻吐舌', words: ['teeth','thumb','third','thin','birthday'] },
+  { name: 'short a · /æ/', tip: 'a 发 /æ/（大嘴「哎」）', words: ['cat','hat','man','van','bag','ant','map','hand','fan','rabbit','sand','camp'],
+    segs: { cat:['c','a','t'], hat:['h','a','t'], man:['m','a','n'], van:['v','a','n'], bag:['b','a','g'],
+            ant:['a','n','t'], map:['m','a','p'], hand:['h','a','n','d'], fan:['f','a','n'],
+            sand:['s','a','n','d'], camp:['c','a','m','p'] } },
+  { name: 'short e · /e/', tip: 'e 发 /e/（小嘴「哎」）', words: ['pen','hen','ten','desk','bed','leg','egg','tent','vest','red'],
+    segs: { pen:['p','e','n'], hen:['h','e','n'], ten:['t','e','n'], desk:['d','e','s','k'], bed:['b','e','d'],
+            leg:['l','e','g'], tent:['t','e','n','t'], vest:['v','e','s','t'], red:['r','e','d'] } },
+  { name: 'short i · /ɪ/', tip: 'i 发 /ɪ/（短「衣」）', words: ['pig','big','six','fish','milk','ship','sit','fin','pink','king'],
+    segs: { pig:['p','i','g'], big:['b','i','g'], six:['s','i','x'], fish:['f','i','sh'], milk:['m','i','l','k'],
+            ship:['sh','i','p'], sit:['s','i','t'], fin:['f','i','n'], pink:['p','i','n','k'], king:['k','i','n','g'] } },
+  { name: 'short o · /ɒ/', tip: 'o 发 /ɒ/（圆嘴「噢」）', words: ['box','fox','dog','hot','stop','clock','rock','shop','doctor'],
+    segs: { box:['b','o','x'], fox:['f','o','x'], dog:['d','o','g'], hot:['h','o','t'], stop:['s','t','o','p'],
+            clock:['c','l','o','ck'], rock:['r','o','ck'], shop:['sh','o','p'], doctor:['d','o','c','t','or'] } },
+  { name: 'short u · /ʌ/', tip: 'u 发 /ʌ/（短「啊」）', words: ['bus','sun','run','duck','cup','jump','truck','gum','hut'],
+    segs: { bus:['b','u','s'], sun:['s','u','n'], run:['r','u','n'], duck:['d','u','ck'], cup:['c','u','p'],
+            jump:['j','u','m','p'], truck:['t','r','u','ck'], gum:['g','u','m'], hut:['h','u','t'] } },
+  { name: 'sh · /ʃ/', tip: 'sh 发 /ʃ/（「嘘——」）', words: ['ship','fish','sheep','shelf','brush','wash','shop','shoe'],
+    segs: { ship:['sh','i','p'], fish:['f','i','sh'], sheep:['sh','ee','p'], shelf:['sh','e','l','f'],
+            brush:['b','r','u','sh'], wash:['w','a','sh'], shop:['sh','o','p'] } },
+  { name: 'ch · /tʃ/', tip: 'ch 发 /tʃ/（「吃——」）', words: ['chair','peach','lunch','catch','teacher','chess'],
+    segs: { chair:['ch','ai','r'], lunch:['l','u','n','ch'], catch:['c','a','t','ch'], chess:['ch','e','s','s'] } },
+  { name: 'th · /θ/', tip: 'th 轻轻吐舌', words: ['teeth','thumb','third','thin','birthday'],
+    segs: { teeth:['t','ee','th'], third:['th','ir','d'], thin:['th','i','n'], birthday:['b','ir','th','d','ay'] } },
   { name: 'a_e · /eɪ/', tip: 'a 加哑巴 e，a 念本名', words: ['cake','lake','name','plate','grape','whale','gate','game'] },
   { name: 'i_e · /aɪ/', tip: 'i 加哑巴 e，i 念本名', words: ['kite','bike','nine','white','ice','five','rice','time'] },
   { name: 'o_e · /oʊ/', tip: 'o 加哑巴 e，o 念本名', words: ['nose','rose','home','bone','stone','rope'] },
-  { name: 'ee · /iː/', tip: 'ee 发「衣——」', words: ['see','tree','bee','three','green','sleep','feet','week'] },
-  { name: 'oo · /uː/', tip: 'oo 发「乌——」', words: ['moon','food','zoo','spoon','room','afternoon'] },
-  { name: 'ai/ay · /eɪ/', tip: 'ai/ay 都发「诶」', words: ['rain','tail','train','paint','day','play','away','today'] },
-  { name: 'oa · /oʊ/', tip: 'oa 发「欧」', words: ['boat','coat','goat','road'] },
-  { name: 'ar · /ɑːr/', tip: 'ar 发「啊——」', words: ['car','star','farm','arm','garden','market'] },
-  { name: 'or · /ɔːr/', tip: 'or 发「哦——」', words: ['fork','horse','short','sport','morning'] },
-  { name: 'ck · /k/', tip: 'ck 发「克」', words: ['duck','clock','rock','black','chicken'] },
+  { name: 'ee · /iː/', tip: 'ee 发 /iː/（长「衣」）', words: ['see','tree','bee','three','green','sleep','feet','week'],
+    segs: { see:['s','ee'], tree:['t','r','ee'], bee:['b','ee'], three:['th','r','ee'],
+            green:['g','r','ee','n'], sleep:['s','l','ee','p'], feet:['f','ee','t'], week:['w','ee','k'] } },
+  { name: 'oo · /uː/', tip: 'oo 发 /uː/（长「乌」）', words: ['moon','food','zoo','spoon','room','afternoon'],
+    segs: { moon:['m','oo','n'], food:['f','oo','d'], zoo:['z','oo'], spoon:['s','p','oo','n'], room:['r','oo','m'] } },
+  { name: 'ai/ay · /eɪ/', tip: 'ai / ay 都发 /eɪ/', words: ['rain','tail','train','paint','day','play','away','today'],
+    segs: { rain:['r','ai','n'], tail:['t','ai','l'], train:['t','r','ai','n'], paint:['p','ai','n','t'],
+            day:['d','ay'], play:['p','l','ay'] } },
+  { name: 'oa · /oʊ/', tip: 'oa 发 /oʊ/', words: ['boat','coat','goat','road'],
+    segs: { boat:['b','oa','t'], coat:['c','oa','t'], goat:['g','oa','t'], road:['r','oa','d'] } },
+  { name: 'ar · /ɑːr/', tip: 'ar 发 /ɑːr/', words: ['car','star','farm','arm','garden','market'],
+    segs: { car:['c','ar'], star:['s','t','ar'], farm:['f','ar','m'], arm:['ar','m'] } },
+  { name: 'or · /ɔːr/', tip: 'or 发 /ɔːr/', words: ['fork','horse','short','sport','morning'],
+    segs: { fork:['f','or','k'], short:['sh','or','t'], sport:['s','p','or','t'], morning:['m','or','n','ing'] } },
+  { name: 'ck · /k/', tip: 'ck 发 /k/', words: ['duck','clock','rock','black','chicken'],
+    segs: { duck:['d','u','ck'], clock:['c','l','o','ck'], rock:['r','o','ck'], black:['b','l','a','ck'] } },
 ];
+
+/* 一个「块」的发音：单字母 → 字母音（/k/ /æ/ /t/）；多字母 → 现成的拼读块音频（sh/ch/ee/ay…） */
+function phBlockAudio(b) {
+  const k = String(b).toLowerCase();
+  if (!k) return '';
+  if (k.length === 1) return (typeof phonicsURL === 'function') ? phonicsURL(k) : '';
+  return localAudioURL(k);
+}
+
 function gPhonics() {
-  /* 词族 → 词库实体（有图有音频），不足 4 个可用词的词族跳过 */
   const usable = PHONICS.map(p => ({
-    name: p.name, tip: p.tip,
+    name: p.name, tip: p.tip, segs: p.segs || {},
     ws: p.words.map(w => ALLW[w]).filter(w => w && hasIcon(w))
   })).filter(p => p.ws.length >= 4);
   if (!usable.length) { $('#app').innerHTML = `<div class="card" style="text-align:center"><p>词族数据还没准备好～</p>${gameHomeBtn()}</div>`; return; }
+
   const P = pick(usable);
-  const S = { idx: 0, score: 0, first: true, answered: false };
-  const picks = shuffle(P.ws).slice(0, 6);
-  window._phShow = function () {
+  /* 优先出「能拼」的词（那才是拼读训练），不够 6 题再用听词选图补齐 */
+  const blendable = shuffle(P.ws.filter(w => P.segs[w.w]));
+  const plain = shuffle(P.ws.filter(w => !P.segs[w.w]));
+  const picks = blendable.concat(plain).slice(0, 6);
+
+  const S = { idx: 0, score: 0, first: true, answered: false, ans: [], pool: [], seg: [], cur: null, opts: [] };
+
+  /* ---- 渲染：拼词题 ---- */
+  function slotsHTML() {
+    return S.seg.map((_, i) => {
+      const got = S.ans[i] ? S.ans[i].b : '';
+      const bs = got ? 'solid' : 'dashed';
+      return `<span style="display:inline-flex;align-items:center;justify-content:center;min-width:54px;height:58px;` +
+        `border:3px ${bs} #C3D2E0;border-radius:14px;background:#fff;font-weight:700;font-size:1.45rem;` +
+        `color:#2D3142;padding:0 8px">${got}</span>`;
+    }).join('');
+  }
+  function poolHTML() {
+    return S.pool.map((b, i) => {
+      const used = S.ans.some(x => x.i === i);
+      return `<button class="opt" style="min-width:58px;font-size:1.15rem;padding:12px 8px;` +
+        `${used ? 'opacity:.3;pointer-events:none;' : ''}" onclick="phBlk(${i})"><b lang="en">${b}</b></button>`;
+    }).join('');
+  }
+  function paint() {
+    const sl = document.getElementById('phSlots');
+    const pl = document.getElementById('phPool');
+    if (sl) sl.innerHTML = slotsHTML();
+    if (pl) pl.innerHTML = poolHTML();
+  }
+
+  /* ---- 点块 ---- */
+  window.phBlk = function (i) {
+    if (S.answered) return;
+    if (S.ans.some(x => x.i === i)) return;
+    if (S.ans.length >= S.seg.length) return;
+    const b = S.pool[i];
+    S.ans.push({ i: i, b: b });
+    sfx.pop();
+    const u = phBlockAudio(b);
+    if (u) playAudioChain([u]);          // 点哪个块就发哪个块的音（即时反馈）
+    paint();
+    if (S.ans.length === S.seg.length) setTimeout(phCheck, 420);
+  };
+  window.phBack = function () {          // 点错顺序可以退一格
+    if (S.answered || !S.ans.length) return;
+    S.ans.pop(); sfx.pop(); paint();
+  };
+  window.phPlay = function () {          // 再听一遍：逐音，中间留 320ms 空白
+    if (S.answered) return;
+    const urls = S.seg.map(phBlockAudio).filter(Boolean);
+    if (urls.length) playAudioChain(urls, null, 320);
+  };
+  window.phPick = function (i) {         // 听词选图
+    if (S.answered) return;
+    const ok = !!(S.opts[i] && S.opts[i].w === S.cur.w);
+    const btn = document.getElementById('phOpt' + i);
+    feedback(btn, ok);
+    if (ok) {
+      if (S.first) { S.score++; flyStar(btn); }
+      S.answered = true; sfx.correct(); lockChoices(btn); touchWord(S.cur.w, true);
+      document.getElementById('phexp').innerHTML = `✅ <b lang="en">${S.cur.w}</b> ${S.cur.zh} —— ${P.tip}`;
+      setTimeout(() => { S.idx++; phShow(); }, 1300);
+    } else {
+      S.first = false; sfx.wrong(); touchWord(S.cur.w, false);
+      document.getElementById('phexp').innerHTML = '🤔 再听一遍～';
+      speak(S.cur.w);
+    }
+  };
+
+  /* ---- 判卷 ---- */
+  function phCheck() {
+    const w = S.cur;
+    const got = S.ans.map(x => x.b).join('');
+    if (got === w.w) {
+      S.answered = true;
+      if (S.first) { S.score++; flyStar(document.getElementById('phSlots')); }
+      sfx.correct(); touchWord(w.w, true);
+      document.getElementById('phexp').innerHTML =
+        `✅ <b lang="en">${S.seg.join(' · ')}</b> 连起来就是 <b lang="en">${w.w}</b> —— ${w.zh}` +
+        `<br><span style="color:#5C6273">${P.tip}</span>`;
+      setTimeout(() => speak(w.w), 240);          // 先听拆开的音，再听整词
+      setTimeout(() => { S.idx++; phShow(); }, 2000);
+    } else {
+      S.first = false; sfx.wrong();
+      document.getElementById('phexp').innerHTML =
+        `🤔 这样拼出来是 <b lang="en">${got || '—'}</b>，顺序再听一遍～`;
+      setTimeout(() => { S.ans = []; S.answered = false; paint(); phPlay(); }, 900);
+    }
+  }
+
+  /* ---- 出题 ---- */
+  function phShow() {
     if (S.idx >= picks.length) {
       const stars = S.score + 1; addStars(stars); sfx.win();
       if (S.score === picks.length) confetti();
       $('#app').innerHTML = endCard('🔤', `拼读闯关 ${S.score} / ${picks.length}`, stars);
       return;
     }
-    const w = picks[S.idx]; S.first = true; S.answered = false;
-    const d = shuffle(P.ws.filter(x => x.w !== w.w)).slice(0, 3);
-    const list = shuffle([w, ...d]);
-    $('#app').innerHTML = `
-      <div class="card" style="max-width:640px;margin:0 auto;text-align:center">
-        <div class="score-bar"><b>🔤 拼读闯关 · ${P.name}</b><span>第 ${S.idx + 1} / ${picks.length} 词 · ✅ ${S.score}</span></div>
-        <div class="explain" style="margin:8px 0">${P.tip} —— 这一族都长这样！</div>
-        <button class="btn coral big" style="font-size:1.4rem;margin:6px 0 12px" onclick="speak('${w.w.replace(/'/g, "\\'")}')">🔊 点我听</button>
-        <div class="opt-row">
-          ${list.map(x => `<button class="opt" style="font-size:1rem" onclick="phAns(this,'${x.w.replace(/'/g, "\\'")}')"><span class="oe">${iconOf(x)}</span><b lang="en">${x.w}</b></button>`).join('')}
-        </div>
-        <div class="explain" id="phexp"></div>
-        <div style="margin-top:12px">${gameHomeBtn()}</div>
-      </div>`;
-    window._curPh = w;
-    setTimeout(() => speak(w.w), 350);
-  };
-  window.phAns = function (btn, wname) {
-    if (S.answered) return;
-    const w = window._curPh;
-    const ok = wname === w.w;
-    feedback(btn, ok);
-    if (ok) {
-      if (S.first) { S.score++; flyStar(btn); }
-      S.answered = true; sfx.correct(); lockChoices(btn);
-      touchWord(w.w, true);
-      $('#phexp').innerHTML = `✅ <b>${w.w}</b> ${w.zh} —— ${P.tip}`;
-      setTimeout(() => { S.idx++; window._phShow(); }, 1300);
+    const w = picks[S.idx];
+    const seg = P.segs[w.w];
+    S.first = true; S.answered = false; S.ans = []; S.cur = w;
+    const bar = `<div class="score-bar"><b>🔤 拼读闯关 · ${P.name}</b><span>第 ${S.idx + 1} / ${picks.length} 词 · ✅ ${S.score}</span></div>`;
+
+    if (seg && seg.length) {
+      /* ① 拼词题 */
+      S.seg = seg; S.pool = [];
+      const extra = shuffle('abcdefghijklmnopqrstuvwxyz'.split('').filter(c => seg.indexOf(c) < 0)).slice(0, 2);
+      S.pool = shuffle(seg.concat(extra));
+      $('#app').innerHTML = `
+        <div class="card" data-w="${w.w}" style="max-width:640px;margin:0 auto;text-align:center">
+          ${bar}
+          <div class="explain" style="margin:6px 0">${P.tip} —— 听一听，把音按顺序拼出来！</div>
+          <div style="font-size:66px;line-height:1.1;margin:6px 0">${iconOf(w)}</div>
+          <button class="btn coral big" style="font-size:1.15rem;margin:4px 0 10px" onclick="phPlay()">🔊 再听一遍（一个音一个音）</button>
+          <div id="phSlots" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0"></div>
+          <div id="phPool" class="opt-row" style="gap:10px"></div>
+          <div class="explain" id="phexp"></div>
+          <div style="margin-top:10px">
+            <button class="btn ghost" style="padding:6px 14px;font-size:.78rem" onclick="phBack()">⌫ 退一格</button>
+          </div>
+          <div style="margin-top:12px">${gameHomeBtn()}</div>
+        </div>`;
+      paint();
+      setTimeout(phPlay, 500);
     } else {
-      S.first = false; sfx.wrong(); touchWord(w.w, false);
-      $('#phexp').innerHTML = '🤔 再听一遍～';
-      speak(w.w);
+      /* ② 听词选图（该词无法按音形对应拼写，硬拼会教错） */
+      S.seg = [];
+      S.opts = shuffle(shuffle([w, ...shuffle(P.ws.filter(x => x.w !== w.w)).slice(0, 3)]));
+      $('#app').innerHTML = `
+        <div class="card" data-w="${w.w}" style="max-width:640px;margin:0 auto;text-align:center">
+          ${bar}
+          <div class="explain" style="margin:6px 0">${P.tip} —— 听一听，是哪个？</div>
+          <button class="btn coral big" style="font-size:1.15rem;margin:4px 0 12px" onclick="speak('${w.w}')">🔊 再听一遍</button>
+          <div class="opt-row" style="gap:12px">
+            ${S.opts.map((x, i) => `<button class="opt" id="phOpt${i}" style="font-size:2rem;padding:16px 10px" onclick="phPick(${i})"><span class="oe">${iconOf(x)}</span></button>`).join('')}
+          </div>
+          <div class="explain" id="phexp"></div>
+          <div style="margin-top:12px">${gameHomeBtn()}</div>
+        </div>`;
+      setTimeout(() => speak(w.w), 400);
     }
-  };
-  window._phShow();
+  }
+  phShow();
 }
+
 /* ---------------- 结束卡片 ---------------- */
 function endCard(emoji, line, stars) {
   gameDone(); // completeDailyTask 幂等，一天多次游戏只记任务一次

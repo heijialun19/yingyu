@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-08.7';
+const BUILD = '2026-11-08.8';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1343,8 +1343,9 @@ const phonicsURL = L => `audio/phonics/${String(L).toLowerCase()}.mp3?v=${PHONIC
 
 /* 顺序播放一串音频（字母岛「完整口诀」= 字母名 → 字母音 → 例词）。
    用递增 token 作废旧链：连点几次只播最后一次，不会叠音、不会串到下一页。 */
-function playAudioChain(urls, onDone) {
+function playAudioChain(urls, onDone, gapMs) {
   const list = (urls || []).filter(Boolean);
+  const gap = Math.max(0, gapMs || 0);
   stopAllSpeech();                 // 先停干净（它会把 __chainToken +1）
   const token = __chainToken;      // 拿停完之后的值，本次链就用它
   const step = i => {
@@ -1358,7 +1359,9 @@ function playAudioChain(urls, onDone) {
       __inflight.delete(a);
       try { a.onended = a.onerror = null; } catch (e) {}
       if (token !== __chainToken) return;
-      step(i + 1);
+      /* gapMs：逐音拼读用（/k/ … /æ/ … /t/ 之间要留空隙，否则连成一串听不出是三个音） */
+      if (gap) setTimeout(() => { if (token === __chainToken) step(i + 1); }, gap);
+      else step(i + 1);
     };
     a.onended = next;
     a.onerror = next;              // 缺文件就跳过，绝不卡住整串

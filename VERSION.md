@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v75 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v76 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v33 | 1000 词词库 |
 | js/data.js | v36 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | — | **26 个字母音**（自然拼读 letter sound）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v133 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v134 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -77,6 +77,38 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-08.8 拼读闯关重做（别改回去）
+
+**用户反馈**：「现在的拼读闯关实在太简单了，之前的还能学发声。」
+查证：这个玩法从 2026-11-01 加入起就是这个样子（`git log -S 拼读闯关` 只有 2 个提交，
+其中 1 个只改文案），**历史上没变过**。但两条批评都成立：听整词 + 选项印着单词 = 只是认字；
+播的是 /kæt/ 而不是 /k/ /æ/ /t/ = 没教拼读。
+
+**旧版**：`gPhonics()` 单题型 —— 播整词，从 4 个同族词里选，选项直接显示单词。
+
+**新版两种题型**：
+1. **听音拼词（主，98/133 词）**：播逐音（gap 320ms）→ 孩子点字母块拼 → 每点一个块发那个块的音
+   → 拼对后再听整词、显示「c · a · t 连起来就是 cat」。支持「⌫ 退一格」。
+2. **听词选图（辅）**：拼写与读音对不上的词（rabbit/thumb/egg/peach/horse/chicken…）
+   以及 a_e/i_e/o_e 三族，只给图不给单词，只能靠听。
+
+**数据 `segs`（音素块）**：手工登记 98 个词，规则：
+- `segs` 的 key 必须在 `words` 里、`seg.join('') === 词`（脚本校验，0 错）
+- 每个块必须有音频：单字母 → `phonicsURL()`（26 个字母音）；多字母 → `audio-list` 里的拼读块
+  （sh/ch/th/ee/oo/ai/ay/oa/ar/or/ck/ng/ir 全部现成）
+- ⚠️ **a_e / i_e / o_e 三族一律不登记**：字母音 a 是 /æ/，拼 cake 会读成 /kæke/，那是教错
+- ⚠️ 也不能按「字母数」硬拆：egg 的 gg 是单 /g/、thumb 的 b 不发音、
+  chicken 的 e 读 /ɪ/、peach/teacher 的 ea 读 /iː/ —— 这些都退回选图
+
+**接口**：`app.js` 的 `playAudioChain(urls, onDone, gapMs)` 新增段间间隔（逐音朗读必需）；
+`phBlockAudio()` 决定每个块用字母音还是拼读块音频。
+
+**验证**：数据 0 拼写错 / 0 缺音频（98 词 74% 可拼）；真机自动化跑通
+「倒序点 → 判错并清空 → 正确点 → 判定并进下一题」与「选图题 4 选 1」两条路径。
+
+**顺手补的门禁**：`check_facts.py` 现在拿 VERSION.md 表格逐行对比 HTML 实际引用的 `?v=`，
+任何一行落后即 FAIL（这张表曾落后好几轮没人发现）。
 
 ## 2026-11-08.7 导航重排 + 真「字母音」（别改回去）
 
