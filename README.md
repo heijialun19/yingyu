@@ -17,7 +17,7 @@
 2. 仓库 Settings → Pages → 选择 main 分支 → Save
 3. 一分钟后得到公网网址 `https://你的用户名.github.io/仓库名/`，发给谁都能打开
 
-> 发音以站内自带的音频为主：2244 个单词 MP3 与 497 句统一声线的整句合成音频，离线可读；只有临时生成、没有预置音频的句子才联网请求第三方词典。每个小伙伴的学习进度独立保存在本机浏览器（按档案隔离），不上传任何数据；支持导出/导入备份换设备；可「添加到主屏幕」像 App 一样全屏离线使用。
+> 发音**全部是站内自带的静态音频**：2450 个单词/拼读块/字母名 + 497 句整句，同一个说话人（开源引擎 Piper + 公有领域声线自行合成），**不联网、断网可读、不请求任何第三方服务**。每个小伙伴的学习进度独立保存在本机浏览器（按档案隔离），不上传任何数据；支持导出/导入备份换设备；可「添加到主屏幕」像 App 一样全屏离线使用。
 
 ## 📁 文件结构
 
@@ -36,12 +36,14 @@ js/data.js      字母故事 / 语法关卡 / 徽章
 getsmart.html   Get Smart 学堂：6 册 237 课，学单词→闯关→句型
 pep.html        人教课本：8 册 47 单元知识点 + 拼词
 js/pep-data.js / js/pep-points.js  人教版课程数据与知识点讲解
-audio/          2244 个单词 MP3 + audio/sentences/ 下 497 句整句音频
+audio/          2450 个单词/字母/拼读块 MP3 + audio/sentences/ 下 497 句整句音频
 svg/            word-svg.js 自绘图 + emoji-svg.js / emoji-svg2.js 内置矢量图库
 js/app.js       共享运行时（进度存储 / 语音 / 音效 / 星星徽章 / 打卡 / 安装引导）
 js/sentence.js  句子朗读引擎（词组连读 / 逐词高亮跟读 / 失败自动降级）
 sw.js           Service Worker：离线可用 + 发音缓存 + 页面网络优先
 manifest.json   PWA 清单：名称 / 主题色 / 图标 / 独立窗口
+js/audio-list.js 发音清单（2450 条 slug，构建产物，defer 加载）
+THIRD-PARTY-NOTICES.txt / LICENSE 第三方素材许可与本站授权范围
 icon.svg        矢量图标（蓝底黄鸟 ABC）
 icon-192.png    PNG 图标 192×192（Android 安装）
 icon-512.png    PNG 图标 512×512

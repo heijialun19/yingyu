@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-08.1';
+const BUILD = '2026-11-08.2';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -410,39 +410,45 @@ function renderGradePicker(sel) {
     </button>`).join('');
 }
 
-/* ---------------- 语音核心：只用词典标准发音（真人录音 MP3） ----------------
-   决策：浏览器内置合成语音（speechSynthesis）音色与词典音混杂、质量参差，
-   已全部移除——全站只有一种声音：词典真人女声。
-   网络不可用或接口失败时保持安静（绝不出现机器音），用户重试即可。 */
-/* ================= 词典真人发音 引擎 v6（媒体元素直出 + SW 缓存） =================
+/* ---------------- 语音核心：只用站内自带音频（全部由本站合成） ----------------
+   ★ 2026-11-08 v8：彻底切断第三方发音接口。
+   旧版全靠某公开词典的 dictvoice 接口「查词典真人录音」：那是查词接口，
+   不是语音合成，整句一律返 500；而且那是别人家的录音，站里还带着历史抓下来
+   的 2000 多个 mp3 —— 既有服务条款问题，音色也杂（男女混搭、音量忽大忽小）。
+   现在全站发音都是本站用开源引擎（Piper，MIT）＋ 公有领域声线一次合成的
+   同源静态文件：一个说话人贯穿 2452 个单词 / 拼读块 / 字母名与 497 句整句。
+     · 不跨域、不联网、断网照读
+     · 不依赖任何第三方服务，谁家接口半死不活都影响不到这里
+     · 音量天然统一（同一引擎、同一套参数出来）
+   唯一兜底：包里没有的临时内容，用浏览器内置 speechSynthesis（本机系统语音，
+   零网络、零第三方请求），且只在**单独朗读**时启用，句子接龙里绝不插机器音。 */
+/* ================= 发音引擎 v8（媒体元素直出 + SW 缓存） =================
    唯一声源保证：全局 epoch——每一次新的播放请求（点击/重试/链式下一词）
    都会让之前所有待播/在播音频作废，任何情况下最多只有一个声音出喇叭。
 
    ★ 为什么不再做音量归一化（v5 的教训，2026-10-25 线上失声事故）：
-   有道不返回 Access-Control-Allow-Origin，浏览器只会给 opaque 响应——
-   opaque 的 body 读不到（arrayBuffer 直接抛错），也加不了响应头。
-   所以「SW 注入 CORS → 页面拿字节 → decodeAudioData 归一化」这条路
-   在浏览器安全模型下根本走不通；v5 硬做，结果是每个发音请求都被 SW
-   判成"坏音频"返回 502，全站静音。
-   能做音量的只有媒体元素：volume 上限 1.0（只能压不能抬），
-   稳定性靠缓存与预热，不靠增益。
-   真要逐条归一化，唯一可行路线是把音频预处理成**同源静态文件**（另立项）。
+   当年为了在浏览器里做增益，想让 SW 注入 CORS 头再读字节解码；
+   但对方不返回 Access-Control-Allow-Origin，页面只能拿到 opaque 响应——
+   body 读不到（arrayBuffer 直接抛错），也加不了响应头，这条路根本走不通，
+   v5 硬做的结果是每个发音请求都被判成"坏音频"、全站静音。
+   v8 之后不存在这个问题：音频是本站自己烘焙的**同源静态文件**，
+   首尾静音已裁、码率与采样率统一，直接喂给媒体元素即可，不用浏览器再算一遍。
 
-   v7 链路（本地优先）：
-   ① 词库里 1000 个词都有**同源离线音频** audio/<slug>.mp3?v=1 ——
-      这批文件是离线烘焙好的：裁掉首尾静音、静态压限 + RMS 归一到 -12.5 dBFS，
-      所以既不用 CORS、也不用在浏览器里算，音量还整齐（原生极差 5.3 dB → 0.2 dB）。
-   ② 取不到本地文件（短语/生僻词/文件缺失）才算回有道在线合成。
-   ③ SW 用**独立缓存** birdie-audio-v1 存音频：发版不清，6.6MB 只下一次。
-   失败重试一次；仍失败给一次网络提示，绝不切机器音。 */
-const DICT_AUDIO_URL = t => 'https://dict.youdao.com/dictvoice?type=1&audio=' + encodeURIComponent(t);
+   v8 链路：
+   ① 全站每个发音目标都有同源文件 audio/<slug>.mp3?v=2（单词/拼读块/字母名）
+      或 audio/sentences/<slug>.mp3（整句），文件名规则见 audioSlug()。
+   ② 拿不到本地文件时不再回退外网，改用浏览器内置 speechSynthesis 兜底。
+   ③ SW 用**独立缓存**存音频：发版不清，听过一次之后永久零网络。 */
 
 /* ===== 本地离线音频包 =====
-   文件名规则必须与生成脚本（_gen_audio.py 的 slug）逐字一致：
-   小写、非字母数字压成一个下划线、去首尾下划线。1000 个词无撞名。
+   文件名规则必须与生成脚本（_tts/build_words.py 的 slug）逐字一致：
+   小写、非字母数字压成一个下划线、去首尾下划线。
+   ★ 2026-11-08：全部 2450 个词音频用同一声线重做（原 2244 个是历史抓来的
+     词典录音，格式与音量都不统一），所以 AUDIO_VER 1 → 2 —— 老用户缓存里的
+     旧文件按新 URL 自动失效。
    AUDIO_VER 与 SW 的 AUDIO_CACHE 一起改：重做音频时两个都 +1，
    否则 SW 会拿旧文件（URL 没变就等于没换）。 */
-const AUDIO_VER = 1;
+const AUDIO_VER = 2;
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
    有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
@@ -483,18 +489,21 @@ function __registerGSAudio() {
     }));
   } catch (e) {}
 }
-/* 全量音频清单：audio/manifest.json 登记包内全部音频 slug，启动时一次注册。
-   PEP 等晚加载数据源的词从此直接命中本地文件，不再被推到有道回退。
-   清单未到时仍走 GS 注册兜底，清单到达后自动生效。 */
-let __manifestDone = false;
-function __registerManifestAudio() {
-  if (__manifestDone) return;
-  __manifestDone = true;
-  fetch('audio/manifest.json', { cache: 'no-cache' }).then(r => r.json()).then(m => {
-    (m.audio || []).forEach(k => __LOCAL_AUDIO.add(k));
-  }).catch(() => {});
+/* 全量音频清单：js/audio-list.js 登记包内全部音频 slug（2450 条）。
+   PEP 等晚加载数据源的词从此直接命中本地文件，不会被推去兜底语音。
+   ★ 2026-11-08 从「fetch audio/manifest.json」改成「defer 脚本」：
+     旧做法每翻一页都要多一次网络往返（SW 对它走网络优先），而且 file:// 下
+     fetch 会被拦掉 → 离线包里的课程词查不到本地文件。脚本标签两处都正常。
+     清单没到时（首访极短窗口）不再一刀切判定"没有"——见 localAudioURL。 */
+let __audioListReady = false;
+function __registerAudioList() {
+  if (__audioListReady) return;
+  if (!window.__AUDIO_LIST) return;
+  __audioListReady = true;
+  try { window.__AUDIO_LIST.forEach(k => __LOCAL_AUDIO.add(k)); } catch (e) {}
 }
-__registerManifestAudio();
+window.__registerAudioList = __registerAudioList;
+__registerAudioList();          /* audio-list.js 比 app.js 先执行时直接生效 */
 /* ===== 整句自有音频（2026-11-08）=====
    以前句子靠「单词 mp3 逐词接龙」或「两词一组绕有道」：前者男女声混搭、
    没有连读和句末语调，后者断网无声。现在把全站 497 句固定例句用同一个
@@ -502,7 +511,7 @@ __registerManifestAudio();
    合规：合成引擎 Piper(MIT)，声线 en_US-ljspeech-medium(public domain)，
    输出音频可自由分发；不再新增任何抓取来的词典音频。
    ★ SENTENCE_VER 独立于 AUDIO_VER：重做整句音频只升它。
-     若动 AUDIO_VER，已缓存的 2244 个单词 mp3 会全部作废（要重下 30MB）。
+     若动 AUDIO_VER，已缓存的单词 mp3 会全部作废（要重下十来 MB）。
    ★ 必须放独立目录：有 slug 与单词音频同名（clap_your_hands），
      混进 audio/ 会互相覆盖。 */
 const SENTENCE_VER = 1;
@@ -600,24 +609,27 @@ const sentenceAudioURL = t => {
 const localAudioURL = t => {
   const k = audioSlug(t);
   if (!k) return '';
-  /* 整句自有音频优先：命中就一次播完，不再逐词拼接、不再绕有道。
+  /* 整句自有音频优先：命中就一次播完，不再逐词拼接。
      speak() 里那句「含空格就走接龙」的判断正是看这里有没有命中。 */
   const whole = sentenceAudioURL(t);
   if (whole) return whole;
   if (!__LOCAL_AUDIO.has(k)) __registerGSAudio();
-  return __LOCAL_AUDIO.has(k) ? `audio/${k}.mp3?v=${AUDIO_VER}` : '';
+  if (__LOCAL_AUDIO.has(k)) return `audio/${k}.mp3?v=${AUDIO_VER}`;
+  /* 清单还没落地（首访的几十毫秒窗口）：单个词先按「本地应该有」试一次。
+     真有文件的当场响，真没有的 404 之后才走兜底语音，反正比现在更慢的情况不存在。
+     带空格的短语不做这个乐观判断——那会把整句朗读引到 404 上，
+     该走逐词接龙的还是走逐词接龙。 */
+  if (!__audioListReady && !/\s/.test(String(t))) return `audio/${k}.mp3?v=${AUDIO_VER}`;
+  return '';
 };
-/* 音源优先级：有本地就用本地，本地失败自动换有道（绝不因此变哑）。
-   短语（句子连读的两词一组）一般没有本地文件，直接走有道。
-   ★ bust：重试时必须换个 URL。有道是 opaque 响应，SW 分不清好坏，失败的那条
-     （比如 500）已经进了缓存；不换 URL 的话「重试」拿到的是缓存里那份坏响应，
-     等于把同一个错误再听一遍。加个一次性参数就绕开了。 */
-const __audioSources = (t, bust) => {
+/* 音源：只认站内自有 mp3，一个外部 URL 都不产生。
+   以前这里第二顺位是有道，用来兜「本地没有的短语/生僻词」；v8 之后
+   全站发音目标都在包里（2452 个），兜底改成本机 speechSynthesis，
+   所以这里返回空数组 = 调用方知道「这段包内没有」。
+   bust 参数保留兼容（本地文件不可变，不需要靠参数绕缓存）。 */
+const __audioSources = t => {
   const l = localAudioURL(t);
-  /* 整句是自有 mp3，只给这一个源：有道对整句必返 500，回退等于白等 24 秒。 */
-  if (l && l.indexOf('audio/sentences/') === 0) return [l];
-  const dict = DICT_AUDIO_URL(t) + (bust ? '&_r=' + bust : '');
-  return l ? [l, dict] : [dict];
+  return l ? [l] : [];
 };
 let __curAudio = null;
 let __inflight = new Set();   // 所有在途 Audio（含预热），统一管理
@@ -742,19 +754,11 @@ const __audioPrefetch = (() => {
 })();
 window.__audioPrefetch = __audioPrefetch;
 
-/* 单词/整句预热：有本地音频就交给低优先级调度器；
-   没有本地文件的（有道两词词组）保留媒体元素探路语义——
-   sentence.js 靠 onFail 把坏词组标出来，改不得。 */
+/* 预热：只排队站内自有音频。v8 之后没有外网音源可探路，
+   包内没有的直接返回——不假装失败，免得 sentence.js 把正常的词判成"坏词组"。 */
 function prewarmWord(text, onFail) {
   if (!text) return;
   if (localAudioURL(String(text))) { __audioPrefetch.queue([String(text)]); return; }
-  try {
-    const a = new Audio(__audioSources(text)[0]);
-    a.preload = 'auto';
-    __inflight.add(a);
-    a.oncanplay = () => { __inflight.delete(a); };
-    a.onerror = () => { __inflight.delete(a); if (onFail) onFail(); };
-  } catch (e) { if (onFail) onFail(); }
 }
 /* 播放入口：直接走媒体元素。epoch 在这里统一递增；
    timeoutMs 可选（连读链传短超时保持节奏）。 */
@@ -767,24 +771,18 @@ function playDictAudio(text, rate, onEnd, onFail, isRetry, timeoutMs, startIdx, 
   __playMediaElement(t, rate, epoch, onEnd, onFail, isRetry, timeoutMs, startIdx, reuseEl);
 }
 /* ===== 坏音频自愈：把这条 URL 从缓存里踢掉 =====
-   ★ 2026-11-01「读的不全」的根因之一：
-     有道的响应不带 CORS 头，落在页面上是 opaque 响应 —— SW 那边 status 恒为 0、
-     ok 恒为 false，**分不清「200 的音频」和「500 的错误 JSON」**，只能原样缓存
-     （见 sw.js：res.ok || res.type === 'opaque'）。
-     于是一次偶发的 500 会把这个词永久钉死在缓存里：往后每次播都拿到那条错误响应，
-     这台设备上这个词就再也不出声了 —— 换台电脑又是好的，极难复现。
-     句子连读是两词一组，坏掉哪个片段，听起来就是「这句话没读全」。
-   修法：播放最终失败时主动删缓存条目，让下次（含这次的重试）拿到真实响应。
+   v8 之后音频都是站内静态文件，正常不会坏；但下载中途断网、磁盘写满、
+   部署换版时正好读到半截文件，都会在音频缓存里留下一条坏条目，
+   此后这个设备上这个词就再也不出声（换台电脑又好了，极难复现）。
+   播放最终失败时删掉这条缓存，下次点击重新下载即可自愈。
    不依赖 SW 消息通道：页面和 SW 共用同一个 CacheStorage，直接删就行，
    也就不需要知道 CACHE 叫什么名字。 */
 function __purgeAudioCache(url) {
   try {
     const u = String(url || '');
-    if (!u || !/dict\.youdao\.com/.test(u)) return;      // 本地 mp3 不在此列
+    if (!u || u.indexOf('audio/') < 0) return;            // 只处理站内音频
     if (!window.caches || !caches.keys) return;
-    /* 重试会加 &_r= 换 URL，但**第一次那条原始 URL** 也存着同一份坏响应。
-       只删带 _r 的那条，下次点又命中原始坏缓存，等于每次都要白等一轮。 */
-    const urls = [u, u.replace(/&_r=\d+/, '')];
+    const urls = [u];
     caches.keys().then(ks => {
       ks.forEach(k => {
         caches.open(k).then(c => { urls.forEach(x => { c.delete(x).catch(() => {}); }); }).catch(() => {});
@@ -833,9 +831,44 @@ window.auditClear = () => { __audLog.length = 0; try { localStorage.removeItem(_
      所以两三个片段以内是好的，慢网络上第 3 段就超过 5 秒 → 从那里开始全哑。
      症状恰好是「念完前两句就停」，而且每次都在同一处。
      解法：整句连读共用一个 <audio>，只换 src —— 已授权的元素换源不会被重新拦截。 */
+/* ===== 系统语音兜底（2026-11-08）=====
+   只在「包内没有这段音频 + 单独朗读」时用：本机 speechSynthesis，零网络、
+   零第三方请求，断网也能出声。刻意不给句子接龙用（那样一句话会前后两种音色）。
+   失败不弹任何提示——点了没声是事实，页面另有「测试声音」可自查。 */
+let __ttsUtter = null;
+function __ttsFallback(text, epoch, onEnd, onFail) {
+  const done = (() => { let d = false; return fn => { if (d) return; d = true; fn && fn(); }; })();
+  let guard = null;
+  const finish = ok => done(() => {
+    if (guard) { clearTimeout(guard); __guards.delete(guard); guard = null; }
+    __ttsUtter = null;
+    if (ok) { if (onEnd) onEnd(); } else { if (onFail) onFail(); }
+  });
+  try {
+    if (!window.speechSynthesis || typeof SpeechSynthesisUtterance !== 'function') { finish(false); return; }
+    const u = new SpeechSynthesisUtterance(String(text));
+    u.lang = 'en-US'; u.rate = 0.9; u.pitch = 1;
+    u.onend = () => finish(true);
+    u.onerror = () => finish(false);
+    __ttsUtter = u;
+    __alog('tts', text, '系统语音兜底');
+    guard = setTimeout(() => finish(false), Math.max(4000, String(text).length * 220));
+    __guards.add(guard);
+    speechSynthesis.speak(u);
+  } catch (e) { finish(false); }
+}
+
 function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, srcIdx, reuseEl) {
   rate = 1; // mobile compat: always normal speed
-  const srcs = __audioSources(text, isRetry ? Date.now() : 0);
+  const srcs = __audioSources(text);
+  /* 包内没有这段音频（极少：用户自己造的怪拼写、未来新增内容还没烘焙）。
+     句子接龙里（reuseEl 非空）直接跳过这一段，绝不把机器音插进一句话中间；
+     单独朗读时才让系统语音兜底，宁可音色差一点，也不能点了没反应。 */
+  if (!srcs.length) {
+    if (reuseEl) { if (onFail) onFail(); return; }
+    __ttsFallback(text, epoch, onEnd, onFail);
+    return;
+  }
   const si = Math.min(srcIdx || 0, srcs.length - 1);
   let a = reuseEl || null;
   if (a) {
@@ -878,7 +911,7 @@ function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs
     if (!isRetry) { __purgeAudioCache(srcs[si]); playDictAudio(text, rate, onEnd, onFail, true, timeoutMs, si, reuseEl); return; }
     __purgeAudioCache(srcs[si]);
     const now = Date.now();
-    if (now - __dictFailNotified > 30000) { __dictFailNotified = now; toast('📶 发音加载失败，请检查网络后重试'); }
+    if (now - __dictFailNotified > 30000) { __dictFailNotified = now; toast('🔇 这段发音没能播放，再点一次试试'); }
     if (onFail) onFail();
   };
   /* ★ 看门狗：真正出声后不能把超时全拆掉。
@@ -1274,11 +1307,14 @@ function stopAllSpeech() {
   __inflight.forEach(a => { try { a.onended = a.onerror = a.oncanplay = a.onplaying = null; a.pause(); } catch (e) {} });
   __inflight.clear();
   __curAudio = null;
+  /* 系统语音兜底也要掐断，否则点下一个词时上一句还在念 */
+  try { if (__ttsUtter && window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {}
+  __ttsUtter = null;
   /* 句子朗读的"读完了"回调也要作废：否则被打断的旧句子会在新页面上触发自动跳题 */
   if (typeof window.__cancelSpeak === 'function') window.__cancelSpeak();
 }
 
-/* 统一朗读入口：只走词典真人发音。失败保持安静（绝不出现机器音）。 */
+/* 统一朗读入口：只走站内自带音频。没有对应文件时用系统语音兜底，绝不静默失败。 */
 /* ★ 2026-10-26：删掉所有「猜你没听到声音」的自动提示。
 
    原来有三处会主动弹 toast：
@@ -1385,11 +1421,16 @@ function unlockAudioChannels() {
   try { ac(); } catch (e) {}
   try {
     prewarmWord('hi');
-    const a = new Audio(DICT_AUDIO_URL('hi'));
-    a.volume = 0;
-    const p = a.play();
-    if (p && p.catch) p.catch(() => {});
-    setTimeout(() => { try { a.pause(); } catch (e) {} }, 1500);
+    /* 静音播一下站内的 hi.mp3：解锁媒体通道，同时把这条音频塞进缓存。
+       以前这里播放的是外网词典音频，顺便预热 DNS/TLS；现在全站零外网，不需要了。 */
+    const u = localAudioURL('hi') || localAudioURL('hello');
+    if (u) {
+      const a = new Audio(u);
+      a.volume = 0;
+      const p = a.play();
+      if (p && p.catch) p.catch(() => {});
+      setTimeout(() => { try { a.pause(); } catch (e) {} }, 1500);
+    }
   } catch (e) {}
 }
 document.addEventListener('pointerdown', unlockAudioChannels, { capture: true });
@@ -1398,7 +1439,7 @@ document.addEventListener('keydown', unlockAudioChannels, { capture: true });
 /* 语音环境检测（家长中心诊断用） */
 function speechEnv() {
   return {
-    engine: '站内自带音频（2244 个单词 MP3 + 497 句整句合成音频）',
+    engine: '站内自带音频（2450 个单词/字母/拼读块 + 497 句整句，同一声线，均本站合成）',
     wechat: /MicroMessenger/i.test(navigator.userAgent),
     online: navigator.onLine
   };

@@ -1,0 +1,157 @@
+小鸟英语乐园 Birdie ABC
+第三方素材与许可说明（THIRD-PARTY NOTICES）
+最后更新：2026-11-08
+
+本站是个人制作的免费英语学习网站。为了让图形在任何设备上都能正常显示、让发音
+不依赖任何在线服务，站内使用了下列开源素材与工具。这里逐项写明来源、许可与本站
+的实际用法；凡许可条款要求保留版权声明的，全文附在对应小节。
+
+目录
+  一、单词配图与界面图形 —— Twemoji（CC-BY 4.0）
+  二、音标数据 —— CMUdict（BSD 风格许可）
+  三、语音合成 —— Piper（MIT）+ 声线 en_US-ljspeech（公有领域）
+  四、音素化后端 —— eSpeak NG（GPLv3，仅构建期使用，不随站分发）
+  五、课程内容与教材名称
+  六、本站原创内容的授权范围
+  七、自查方法
+
+----------------------------------------------------------------------
+一、单词配图与界面图形 —— Twemoji
+----------------------------------------------------------------------
+站内 853 条图形（单词配图、课程 emoji、国旗）来自开源项目 Twemoji（jdecked 维护的
+版本，即 Twitter 开源的 Twemoji 社区续作）。
+
+  作品名称：Twemoji（图形部分）
+  版权归属：Copyright 2020 Twitter, Inc and other contributors
+  项目地址：https://github.com/jdecked/twemoji
+  许可协议：Creative Commons Attribution 4.0 International（CC-BY 4.0）
+            https://creativecommons.org/licenses/by/4.0/
+
+本站用法：这些 SVG 原样内嵌为矢量代码（未改颜色、未改形状、未裁切），仅作单词
+配图与界面图标使用，不做二次创作，也不作为本站 logo 或商标使用。也就是说，
+「未做修改」这一条是字面属实的——图形本身的著作权仍归原作者，本站只是使用方。
+
+----------------------------------------------------------------------
+二、音标数据 —— CMUdict
+----------------------------------------------------------------------
+站内 970 条美式音标由 CMU 发音词典（CMUdict）的 ARPAbet 数据转写为国际音标，
+放在 js/ipa.js。CMUdict 的许可是 BSD 风格，明确要求再分发时保留版权声明、条件
+列表与免责声明，且「字典文件内容视同源代码」。以下为该许可全文（原文照录）：
+
+Copyright (C) 1993-2015 Carnegie Mellon University. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+   The contents of this file are deemed to be source code.
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in
+   the documentation and/or other materials provided with the
+   distribution.
+
+This work was supported in part by funding from the Defense Advanced
+Research Projects Agency, the Office of Naval Research and the National
+Science Foundation of the United States of America, and by member
+companies of the Carnegie Mellon Sphinx Speech Consortium. We acknowledge
+the contributions of many volunteers to the expansion and improvement of
+this dictionary.
+
+THIS SOFTWARE IS PROVIDED BY CARNEGIE MELLON UNIVERSITY ``AS IS'' AND
+ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL CARNEGIE MELLON UNIVERSITY
+NOR ITS EMPLOYEES BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+----------------------------------------------------------------------
+三、语音合成 —— Piper 与声线
+----------------------------------------------------------------------
+站内全部发音（2450 个单词/拼读块/字母名 + 497 句整句）都是本站自己合成的静态
+音频文件，不使用任何在线发音接口，也不包含从词典或教材网站抓取的录音。
+
+  合成引擎：Piper，版本 2023.11.14（rhasspy/piper）
+  引擎许可：MIT（全文见下）
+  使用声线：en_US-ljspeech-medium
+  声线来源：LJSpeech 数据集（单人朗读、公有领域），模型由 Piper 官方发布
+  分发形式：只分发合成出的 mp3 音频文件，不分发引擎二进制或模型权重
+
+  其他备选声线（en_US-kristin-medium、en_US-joe-medium）在试听阶段使用过，
+  最终未接入线上；两者分别属于公有领域与 CC0，同样允许商用与再分发。
+
+MIT 许可全文：
+
+MIT License
+
+Copyright (c) 2022 Michael Hansen
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+----------------------------------------------------------------------
+四、音素化后端 —— eSpeak NG
+----------------------------------------------------------------------
+Piper 在**构建阶段**调用 eSpeak NG 做文本音素化。eSpeak NG 以 GPLv3 发布，
+其 GPL 义务只约束「分发引擎本身」；本站只分发合成出来的音频文件（属于输出
+内容，不是引擎的衍生作品），既不打包、不分发 eSpeak NG 的二进制与数据，
+因此不构成本站需要开源的范围。这里列出仅为说明技术栈。
+
+----------------------------------------------------------------------
+五、课程内容与教材名称
+----------------------------------------------------------------------
+· 站内的讲解文字、记忆法、口诀、例句解析均为本站原创编写。
+· 单词表、语法点属于事实性/功能性内容（单个单词与语法规则本身不受著作权保护），
+  依据义务教育英语课程标准常用词汇与人教版小学教材的单元顺序整理。
+· 「人教版」「PEP」指人民教育出版社出版的小学英语教材；「Get Smart」指
+  MM Publications 出版的教材系列，两者均为各自权利人的名称或商标。
+  **本站与上述出版社没有任何隶属、授权、合作或背书关系**，站内出现的教材名称
+  仅用于说明「这份单词表对应哪一册、哪一单元」，属于描述性使用。本站不包含
+  教材原文课文、插图、练习或任何扫描件。
+· 如果你的孩子所在学校使用其他版本教材，本站内容同样可以作为通用词汇与
+  句型练习使用，只是单元顺序对不上。
+
+----------------------------------------------------------------------
+六、本站原创内容的授权范围
+----------------------------------------------------------------------
+· 源代码：MIT 许可（见仓库 LICENSE 文件）。你可以自由使用、修改、再分发，
+  但需保留版权声明，且第三方素材仍受其各自许可约束（见上文一至四）。
+· 原创图文内容（讲解、记忆法、自绘 345 张 SVG 插画、合成音频文件）：
+  CC BY-NC 4.0 —— 可自由用于个人学习与家庭教育，署名后可转载，
+  **不得用于商业用途**（收费课程、付费 App、带广告的转载等）。
+· 站内第三方图形（Twemoji）不在此授权范围内，转载时请一并遵守 CC-BY 4.0。
+
+----------------------------------------------------------------------
+七、自查方法
+----------------------------------------------------------------------
+· 站内没有任何第三方脚本、统计、广告或字体文件：打开页面即可在开发者工具的
+  网络面板确认，全部请求都指向本站自己的域名。
+· 发音全部为 audio/ 与 audio/sentences/ 下的静态文件；断网后仍可朗读，即可
+  反证它不依赖任何在线服务。
+· 本文件随仓库一起发布；如发现遗漏的第三方素材，欢迎在仓库提 issue 指出，
+  会立即补充署名或替换掉。
+
+----------------------------------------------------------------------
+（本说明不构成法律意见；如有商业使用计划，请自行核实各许可的现行条款。）

@@ -2,12 +2,12 @@
    缓存策略：
    - 页面导航：网络优先（在线永远拿到最新版页面，发版即生效；断网回退缓存）
    - 带版本号的静态资源：缓存优先（版本号变更即新 URL，天然绕开旧缓存）
-   - 本地离线音频 audio/：独立缓存 AUDIO_CACHE，**发版不清**
-     （6.6MB 只下一次；重建音频时把 AUDIO_VER 与这里同时 +1）
-   - 有道发音：原样转发 + 原样缓存。opaque 响应的 body 读不到、头也改不了，
-     所以这里绝不读 body、绝不 new Response 重建（那样会全站失声） */
-const CACHE = 'birdie-abc-v127';
-const AUDIO_CACHE = 'birdie-audio-v2';   // 与 js/app.js 的 AUDIO_VER 同步
+   - 本地离线音频 audio/：独立缓存 AUDIO_CACHE，**正常发版不清**
+     （听过一次就永久零网络；重建音频时换一个缓存名，activate 里删掉旧的那个）
+   - 外站请求：v8 起站内不再有任何第三方发音请求，这里也就不再为它留分支。
+     历史遗留的 opaque 缓存会在 activate 时随旧缓存一起清掉。 */
+const CACHE = 'birdie-abc-v128';
+const AUDIO_CACHE = 'birdie-audio-v3';   // 每次重做音频换新名，旧的在 activate 里删掉
 /* 两个 async 大图库不进 BOOT（会拖慢激活）。基础库 emoji-svg.js 每个页面
    都会加载，在线首访必然入缓存；课程扩展库只在 getsmart/pep 加载，
    所以单独把它列进 CORE 后台补齐：装好 PWA 还没点过课程页就断网时，
@@ -15,8 +15,8 @@ const AUDIO_CACHE = 'birdie-audio-v2';   // 与 js/app.js 的 AUDIO_VER 同步
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=34', './js/app.js?v=70', './js/sentence.js?v=47', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=10', './svg/emoji-svg2.js?v=3',
-  './manifest.json', './audio/manifest.json', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
+  './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=34', './js/app.js?v=71', './js/sentence.js?v=48', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=10', './svg/emoji-svg2.js?v=3',
+  './manifest.json', './js/audio-list.js?v=1', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
    原 addAll(CORE) 是原子的：32 个文件约 700KB 全下完才激活，跨境慢网要等几十秒；
@@ -24,7 +24,7 @@ const CORE = [
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
   './', './index.html', './css/style.css?v=48',
-  './js/app.js?v=70', './js/data.js?v=34', './audio/manifest.json'
+  './js/app.js?v=71', './js/data.js?v=34'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -48,7 +48,7 @@ self.addEventListener('activate', e => {
         const reqs = await oc.keys();
         await Promise.all(reqs.map(async req => {
           const u = new URL(req.url);
-          if (u.origin !== location.origin) return;        // 有道 opaque 不迁
+          if (u.origin !== location.origin) return;        // 外站响应不迁
           if (/\.html?$|\/$/.test(u.pathname)) return;      // 导航页用新版本
           if (await nc.match(req)) return;                  // 已有不覆盖
           const res = await oc.match(req);
@@ -58,6 +58,10 @@ self.addEventListener('activate', e => {
       await caches.delete(k).catch(() => {});
     }
     await Promise.all(keys.filter(k => k !== CACHE && k !== AUDIO_CACHE && !/^birdie-abc-v/.test(k))
+      .map(k => caches.delete(k).catch(() => {})));
+    /* ★ 2026-11-08：单词音频全部重做（换声线），旧缓存的条目再也用不到。
+       只换 AUDIO_CACHE 名字会留下上一代整包 30MB 白占空间，这里主动删掉。 */
+    await Promise.all(keys.filter(k => /^birdie-audio-/.test(k) && k !== AUDIO_CACHE)
       .map(k => caches.delete(k).catch(() => {})));
     await self.clients.claim();      // 先接管：页面立刻能用上搬过来的缓存
     /* 后台补齐只补真正缺的（版本号变了的），低并发 + 宽限期，
@@ -102,20 +106,9 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
-  /* 音频清单：网络优先、断网回退缓存。
-     ★ 2026-11-07：补进 108 个例句用词的音频后，如果这里仍是「缓存优先」，
-       老用户永远拿到旧清单 → 新词查不到本地文件 → 又绕回外网/断网没声。
-       发版时不能改 AUDIO_VER（一改，已缓存的 2136 个 mp3 全部失效、要重下 32MB），
-       所以让清单本身走网络，add 新文件即刻生效，旧音频缓存原样保留。 */
-  if (url.origin === location.origin && /\/audio\/manifest\.json$/.test(url.pathname)) {
-    e.respondWith(
-      fetch(e.request, { cache: 'no-store' }).then(res => {
-        if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {}); }
-        return res;
-      }).catch(() => caches.match(e.request).then(hit => hit || new Response('{"audio":[]}', { headers: { 'Content-Type': 'application/json' } })))
-    );
-    return;
-  }
+  /* 音频清单 audio/manifest.json 已废弃（2026-11-08）：清单改成
+     js/audio-list.js 常量，跟其他带版本号的脚本一样走缓存优先，
+     每翻一页不再多一次网络往返。下面两类请求照旧。 */
   /* 本地离线音频：单独一个缓存，发版不清理。
      词是固定的、文件是不可变的（改内容会变 AUDIO_VER 的查询串），
      所以缓存优先最省流量：听过一次之后永久零网络、离线可听。 */
@@ -156,32 +149,5 @@ self.addEventListener('fetch', e => {
       }))
     );
     return;
-  }
-  /* 有道发音：原样转发 + 原样缓存
-     ★ 血泪教训（2026-10-25 全站失声事故）：有道不返回 CORS 头，SW 里 fetch 到的是
-     opaque 响应——body 读不到（arrayBuffer 直接抛错），响应头也改不了。
-     所以这里绝不能"读字节"，也不能 new Response(bytes) 重建响应；
-     只能原样返回、原样入缓存。
-     opaque 的 res.ok 恒为 false，判断要不要缓存要看 res.type === 'opaque'。 */
-  if (url.hostname === 'dict.youdao.com') {
-    /* 只给「单词 / 两词短语」做缓存。三词以上的整句请求有道一律返回
-       500 的 120 字节 JSON，但响应是 opaque、SW 分不出好坏——曾经把这条
-       错误响应钉死在缓存里，同一句每次点都白等 24 秒。现在长句纯转发
-       不入缓存，并顺手清掉历史遗留的坏条目（老用户自愈）。 */
-    const phrase = decodeURIComponent(url.searchParams.get('audio') || '');
-    const cacheable = phrase.trim().split(/\s+/).filter(Boolean).length <= 2;
-    e.respondWith(
-      caches.match(e.request).then(hit => {
-        if (hit && cacheable) return hit;
-        if (hit) caches.open(CACHE).then(c => c.delete(e.request)).catch(() => {});
-        return fetch(e.request).then(res => {
-          if (cacheable && res && (res.ok || res.type === 'opaque')) {
-            const copy = res.clone();
-            caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
-          }
-          return res;
-        }).catch(() => new Response('', { status: 504, statusText: 'offline' }));
-      })
-    );
   }
 });

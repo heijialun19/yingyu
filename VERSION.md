@@ -6,7 +6,7 @@
 
 - 线上地址：https://heijialun19.github.io/yingyu/
 - 仓库：heijialun19/yingyu（main 分支，GitHub Pages）
-- 快照日期：2026-11-08（全站一致性审查，见文末）
+- 快照日期：2026-11-08（发音全面重做 + 许可补齐，见文末）
 - 本包 = 线上 main 分支的完整快照；核验是否最新，以 GitHub 仓库 main 分支与「最近提交」为准
 - 技术栈：纯 HTML/CSS/原生 JS，零依赖、零构建，进度存 localStorage（多档案 birdie_abc_profiles_v2）
 
@@ -14,10 +14,10 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v70 | 全站共享运行时：发音系统（本地音频优先 + 坏音频自愈）、词图、星星、档案、导航 |
+| js/app.js | v71 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v32 | 1000 词词库 |
 | js/data.js | v34 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
-| js/sentence.js | v47 | 句子朗读引擎（两词一组连读 + 词组高亮，句子工厂/游戏/Get Smart 共用） |
+| js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v5 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v2 | 音标 |
@@ -25,11 +25,12 @@
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
 | js/pep-points.js | v10 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
+| js/audio-list.js | v1 | 发音清单（2450 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v48 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
-| sw.js | birdie-abc-v127 | Service Worker（音频缓存 birdie-audio-v2 不随发版清）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v128 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -37,7 +38,8 @@
 
 - 页面 HTML：Service Worker 走「网络优先」——发版即生效
 - 带版本号的 JS/CSS：走「缓存优先」——**只改文件内容不升版本号 = 老用户永远拿旧版**
-- audio/ 目录：独立缓存，发版不清；重建音频需同步把 sw.js 的 AUDIO_CACHE 与 app.js 的 AUDIO_VER 加 1
+- audio/ 目录：独立缓存，正常发版不清；重建音频 = 换 sw.js 的 AUDIO_CACHE 名 + 升 app.js 的 AUDIO_VER，
+  两处一起改（只改一处会拿到旧字节），旧音频缓存由 activate 自动删除
 
 ## 页面清单
 
@@ -58,9 +60,14 @@
 
 - 整句发音：课本 273 句 + Get Smart 227 句共 497 个 slug 的自合成整句 MP3 在 audio/sentences/，
   清单 SENTENCE_AUDIO 在 app.js，命中就一次播完；不命中才走逐词连读
-- 单词发音：优先本地 audio/{word}.mp3，失败回退有道 API。**本地音频清单是动态登记的**：
-  1000 词词库在 app.js 启动时入表，Get Smart 的 1027 个词在第一次查不到时补登记一次
-  （`__registerGSAudio()`）——因为 getsmart-data.js 比 app.js 晚加载，写死在启动时就会漏掉 644 个词
+- 单词发音：**只用站内 audio/{slug}.mp3，一个外网请求都不发**（v8，2026-11-08）。
+  全站发音目标共 2450 个（单词 + 拼读块 + 字母名），清单是 `js/audio-list.js`
+  （`window.__AUDIO_LIST`，defer 加载，不挡首屏、file:// 也能用）；
+  清单没落地前对单个词按本地文件乐观解析，`__registerGSAudio()` 另做兜底。
+  包内真没有的内容才用浏览器 speechSynthesis 兜底，且只在单独朗读时启用
+- 音频合成规范（重做时必须一致）：Piper + `en_US-ljspeech-medium`，`--length_scale 1.1`，
+  mp3 48kbps / 22050Hz 单声道，单词额外裁首尾静音（silenceremove -50dB）；
+  整句是 64kbps。生成脚本在项目外的 `_tts/`（build_words.py / deploy_words.py）
 - Get Smart 课程数据里 unit.mod 是**数字**（1-10），moduleLessons/startModuleTest 都按数字匹配
 - 单元闯关每词只考 1 题（听音选图 或 看词选义随机），认义题干扰项按中文释义去重
 - **认义题（look）的选项一律是中文释义**，听音题（listen）才是英文词/图片。
@@ -68,6 +75,32 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-08.2 发音重做与合规收口（v8，别改回去）
+
+1. **单词音频全量换成本站自合成**：2450 个（单词 2094 / 拼读块 73 / 字母名 40 / 例句拆词 231 /
+   历史残留 12）用 `en_US-ljspeech-medium` 一次生成，与 497 句整句同一个说话人。
+   原来那 2244 个是早期从公开词典接口批量抓的真人录音：条款不允许批量抓取与再分发，
+   而且混了多批次转码（Lavf56/58/59）、男女混搭、音量不齐。
+   实测体积 29.7MB → 10.6MB（中位 4.3KB/0.88s），点读出声更快。
+2. **切断第三方发音接口**：删掉 `DICT_AUDIO_URL`、`__audioSources` 的外网分支、
+   sw.js 里 `dict.youdao.com` 的 opaque 转发/缓存分支。现在全站零外网请求。
+   包内没有的内容走 `__ttsFallback()`（speechSynthesis，本机发声），
+   **只在单独朗读时启用**：句子接龙里绝不插机器音（否则一句话前后两种音色）。
+3. **缓存链**：`AUDIO_VER` 1→2、`AUDIO_CACHE` v2→v3、`CACHE` v127→v128。
+   activate 里新增「删掉所有非当前 birdie-audio-*」——只换名字不删旧的，会让老设备
+   白留一整代 20~30MB。
+4. **句子朗读简化**：sentence.js 去掉两词一组（`__CHUNK_MAX` / `__brokenChunks` 一并删），
+   整句命中就一次播完，否则逐词接龙；`prewarmSentence` 改成预热单词。
+5. **许可与披露**：新增 `LICENSE`（代码 MIT）+ `THIRD-PARTY-NOTICES.txt`
+   （Twemoji CC-BY 4.0 署名、CMUdict BSD 许可全文、Piper MIT 全文、eSpeak NG 说明、
+   教材名称非官方声明）；disclaimer.html 重写语音来源段并补「与出版社无关联」；
+   parents.html / README.txt 同步真实数量。
+6. **og-cover.png 重绘**：旧图内文字写「12 本点读绘本」，真实是 14 本（6 册 Get Smart + 8 册人教）、
+   7 个游戏。文本校验扫不到图内文字，所以旧版一直没被发现；现在图与文案同一套事实。
+7. ⚠️ **踩坑：解析 `en:` 字段必须过滤中文**。数据里有 `broken: 'break（打破）的过去分词…'`，
+   字符串里恰好含 `en: `，naive 按 `"en: "` 切分会把整段中文当成例句，切出 slug `break_a`，
+   合成出 9 秒中文音频。旧管线靠 CJK 过滤挡住了，重做时必须同样挡。
 
 ## 2026-11-01 修了什么（别改回去）
 
@@ -86,14 +119,11 @@
 
 ## 已知限制（不是 bug，但要知道）
 
-- **Get Smart 的 227 个句子没有离线音频**（只有 1 句中奖）。它们靠 sentence.js 两词一组
-  调有道接口朗读，**断网时句子朗读无声**。单词点读不受影响（本地音频已修好）。
-  ⚠️ 2026-11-01 评估过「把 643 个两词词组全烘成本地 mp3」，结论是**不做**，理由三条，
-  别再来一遍：① 有道 dictvoice 对任意短语是**看心情 500**（实测 "Hi I am" / "a red ball"
-  连续 3 次都 500，"she likes apples" 却 200），批量 643 个必然掺一堆空文件；
-  ② 本机没有 ffmpeg，做不了与现有词音一致的响度归一（现有 1000 词已归一到 -12.5 dBFS），
-  音量忽大忽小比没声音更糟；③ SW 已经把播放过的有道响应缓存下来了，
-  「听过的句子」本来就能离线，真正的缺口只剩「第一次就断网」。
+- ~~Get Smart 的 227 个句子没有离线音频~~ **已解决（2026-11-08）**：全站 497 句固定例句
+  都有整句 mp3（audio/sentences/），单一说话人，断网可读。
+- 程序临时生成的句子（句子工厂随机造句）没有整句音频，按**逐词**用站内单词音频接龙：
+  每个词都有文件，不会失败；听感是「一个一个词念」，这是刻意取舍（比原来两词一组
+  失败 12% 稳）。不要为了「顺一点」再塞外网合成。
 - `robots.txt` / `sitemap.xml` 放在项目站点根目录下，搜索引擎只读**域名根**的 robots.txt，
   所以这个 robots.txt 实际不生效；sitemap 需要去 Google Search Console 手动提交。
   GitHub Pages 项目站点没法把文件放到域名根，这一条**修不了**，不是待办。
