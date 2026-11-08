@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-08.6';
+const BUILD = '2026-11-08.7';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1300,8 +1300,15 @@ window.__emojiSvgReady = function () {
 if (window.WORD_EMOJI) window.__emojiSvgReady();    // 图库比 app.js 先到的情形
 
 /* 立刻闭嘴：所有在途音频解除回调并暂停（翻页/切题/点新词时用） */
+/* 音频链状态（在 stopAllSpeech 里用到，所以声明必须在它之前，
+   否则首次调用会踩 let 的暂时性死区） */
+let __chainToken = 0;
+let __chainEl = null;
+
 function stopAllSpeech() {
   __audioEpoch++;                          // 作废所有迟到的加载/失败回调
+  __chainToken++;                          // 作废「字母名→字母音→例词」这类音频链
+  if (__chainEl) { try { __chainEl.pause(); } catch (e) {} __chainEl = null; }
   __guards.forEach(g => clearTimeout(g));  // 拆掉加载超时，否则 9 秒后会把旧词又播一遍
   __guards.clear();
   __inflight.forEach(a => { try { a.onended = a.onerror = a.oncanplay = a.onplaying = null; a.pause(); } catch (e) {} });
@@ -1313,6 +1320,59 @@ function stopAllSpeech() {
   /* 句子朗读的"读完了"回调也要作废：否则被打断的旧句子会在新页面上触发自动跳题 */
   if (typeof window.__cancelSpeak === 'function') window.__cancelSpeak();
 }
+
+/* ================= 字母音（自然拼读 letter sound，2026-11-08） =================
+   字母岛原来点「字母音」播的是**代表词**（apple / ball），孩子听到的是 /æpl/，
+   不是 /æ/ —— 自然拼读要教的就是这个音素本身，播代表词等于没教。
+
+   这批音频由 _tts/build_phonics.py 用**同一套引擎、同一声线**单独合成，
+   生成时逐个用 `piper --debug` 的音素序列自证，再用声学特征复核：
+
+     buh → bˈʌ      辅音 + ʌ，phonics 教学里的标准近似读法（辅音单独发不出声）
+     at  → at       抽出其中的 a 就是 /æ/；词尾 /t/ 已裁掉
+                    实测平均过零率 0.076 → 纯浊元音，无清辅音残留
+     ox  → ˈɒks     裁掉词首元音得 /ks/；实测平均过零率 0.663 → 纯清擦音
+     I   → ɪt       /ɪ/ 的过零率 0.044，是 26 个里最低的 —— 符合闭前元音特征
+
+   ★ 不要改回「用代表词当字母音」，那是被用户否掉的旧行为。
+   ★ 单独版本号：重做字母音只升 PHONICS_VER，不动 AUDIO_VER
+     （后者一动，用户已缓存的十几 MB 词音频全部作废重下）。
+   ★ 文件在 audio/phonics/，SW 的 /audio/ 分支会自动缓存，发版不清理。 */
+const PHONICS_VER = 1;
+const phonicsURL = L => `audio/phonics/${String(L).toLowerCase()}.mp3?v=${PHONICS_VER}`;
+
+/* 顺序播放一串音频（字母岛「完整口诀」= 字母名 → 字母音 → 例词）。
+   用递增 token 作废旧链：连点几次只播最后一次，不会叠音、不会串到下一页。 */
+function playAudioChain(urls, onDone) {
+  const list = (urls || []).filter(Boolean);
+  stopAllSpeech();                 // 先停干净（它会把 __chainToken +1）
+  const token = __chainToken;      // 拿停完之后的值，本次链就用它
+  const step = i => {
+    if (token !== __chainToken) return;                       // 已被新的播放/切页作废
+    if (i >= list.length) { __chainEl = null; if (onDone) onDone(); return; }
+    let a;
+    try { a = new Audio(list[i]); } catch (e) { step(i + 1); return; }
+    __chainEl = a;
+    __inflight.add(a);
+    const next = () => {
+      __inflight.delete(a);
+      try { a.onended = a.onerror = null; } catch (e) {}
+      if (token !== __chainToken) return;
+      step(i + 1);
+    };
+    a.onended = next;
+    a.onerror = next;              // 缺文件就跳过，绝不卡住整串
+    const pr = a.play();
+    if (pr && pr.catch) pr.catch(() => next());
+  };
+  step(0);
+}
+
+/* 只播一个字母的「字母音」 */
+function playPhonics(L, onDone) { playAudioChain([phonicsURL(L)], onDone); }
+window.playAudioChain = playAudioChain;
+window.playPhonics = playPhonics;
+window.phonicsURL = phonicsURL;
 
 /* 统一朗读入口：只走站内自带音频。没有对应文件时用系统语音兜底，绝不静默失败。 */
 /* ★ 2026-10-26：删掉所有「猜你没听到声音」的自动提示。
@@ -1601,7 +1661,6 @@ function dismissInstallHint() {
 /* ---------------- 界面组件 ---------------- */
 const NAV_ITEMS = [
   { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
-  { id: 'letters', href: 'letters.html', emoji: '🏝️', label: '字母岛' },
   { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词镇' },
   { id: 'pep',     href: 'pep.html',     emoji: '🏫', label: '人教课本' },
   { id: 'getsmart', href: 'getsmart.html', emoji: '🎓', label: 'Get Smart' },
@@ -1637,9 +1696,13 @@ function renderNav(activeId) {
 
   /* 底部栏（手机端 App 风格，桌面端由 CSS 隐藏）：5 个常用页面 + 「我的」，
      档案/星星/声音都收在底部，顶部完全让给内容 */
+/* 手机底栏只放 6 格（再多就挤成一排小图标了）。
+     2026-11-08 调整：把「字母」换成「语法（句子工厂）」——
+     字母岛是起步期的短周期内容，学完就过去了；语法要反复练，必须随手可进。
+     字母岛没有消失，首页的岛屿卡片里一直有它的入口。 */
 const TABS = [
     { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
-    { id: 'letters', href: 'letters.html', emoji: '🏝️', label: '字母' },
+    { id: 'grammar', href: 'grammar.html', emoji: '🚂', label: '语法' },
     { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词' },
     { id: 'pep',     href: 'pep.html',     emoji: '🏫', label: '课本' },
     { id: 'getsmart', href: 'getsmart.html', emoji: '🎓', label: '学堂' },

@@ -56,8 +56,8 @@
 <script src="js/words-data.js?v=33"></script>
 <script src="svg/word-svg.js?v=3"></script>
 <script async src="svg/emoji-svg.js?v=5"></script>
-<script src="js/data.js?v=35"></script>
-<script src="js/app.js?v=74"></script>
+<script src="js/data.js?v=36"></script>
+<script src="js/app.js?v=75"></script>
 <script defer src="js/audio-list.js?v=2"></script>
 <script src="js/sentence.js?v=48"></script>
 <script src="js/grammar-engine.js?v=6"></script>
@@ -486,7 +486,6 @@ function renderLevels() {
   Flow.reset();          // 离开关卡：作废所有挂起的推进与朗读
   const done = i => !!Store.d.grammar[GRAMMAR_LEVELS[i].id];
   const unlocked = i => i === 0 || done(i - 1);
-  const STAGE_GRADE = { s1: '一年级', s2: '二年级', s3: '三年级+' };
 
   $('#app').innerHTML = `
     <div class="card" style="margin-bottom:20px;border-color:var(--grape)">
@@ -520,7 +519,6 @@ function renderLevels() {
               <div class="le">${lv.emoji}</div>
               <b>第 ${i + 1} 关 · ${lv.title}</b>
               <span class="formula">${lv.formula}</span>
-              <div style="margin-top:6px;font-size:.68rem;color:#9B72FF;font-weight:700">🎓 ${STAGE_GRADE[lv.stage]}</div>
               ${lv.gen ? '<div style="margin-top:4px;font-size:.68rem;color:#4E9E59">🏘️ 用单词镇的词造句</div>' : ''}
               ${st2 ? '<div style="margin-top:6px;font-size:.72rem;color:#4E9E59">✅ 已通过 · 点击重玩</div>' : ''}
             </div>`;

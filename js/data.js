@@ -169,7 +169,7 @@ const posInfo = p => POS_INFO[p] || POS_INFO.n;
      不用 jai/kai 这种读音不对的近似词。
    words: 3个代表词，第一个总是以该字母开头 */
 const LETTERS = [
-  { L:'A', nameEn:'ay', v:true, shape:'小鸟', emoji:'🐦', color:'#FF6B6B', s:'ah', szh:'/æ/ 啊',
+  { L:'A', nameEn:'ay', v:true, shape:'小鸟', emoji:'🐦', color:'#FF6B6B', s:'ah', szh:'/æ/ 大嘴“哎”',
     story:'大写 A 像小鸟张开的两只翅膀。小鸟张开嘴巴"啊——"地唱歌，a 的读音就藏在这里！',
     words:[ {w:'apple',zh:'苹果',e:'🍎',dec:'a 小鸟开头的词——小鸟最爱吃苹果！'},
             {w:'ant',zh:'蚂蚁',e:'🐜',dec:'小小的 a，小小的蚂蚁。'},
@@ -191,7 +191,7 @@ const LETTERS = [
     words:[ {w:'down',zh:'向下',e:'⬇️',dec:'d 就是往下！'},
             {w:'dig',zh:'挖土',e:'⛏️',dec:'往低处挖呀挖。'},
             {w:'dog',zh:'小狗',e:'🐶',dec:'小狗爱低头闻来闻去。'} ]},
-  { L:'E', nameEn:'ee', v:true, shape:'小眼睛', short:'眼睛', emoji:'👁️', color:'#4EC5F1', s:'eh', szh:'/e/ 哎',
+  { L:'E', nameEn:'ee', v:true, shape:'小眼睛', short:'眼睛', emoji:'👁️', color:'#4EC5F1', s:'eh', szh:'/e/ 小嘴“哎”',
     story:'小写 e 像一只亮晶晶的小眼睛，眨呀眨，什么新奇事都逃不过它。两只小手(p p)搭在眼睛(e e)上偷看，就是 peep（偷看）！',
     words:[ {w:'egg',zh:'鸡蛋',e:'🥚',dec:'e 小眼睛开头的词。'},
             {w:'elephant',zh:'大象',e:'🐘',dec:'e 开头的大象甩鼻子。'},
@@ -225,7 +225,7 @@ const LETTERS = [
     words:[ {w:'jump',zh:'跳',e:'🤸',dec:'像鱼钩甩出去一样跳起来！'},
             {w:'juice',zh:'果汁',e:'🧃',dec:'j 开头的甜甜果汁。'},
             {w:'jeep',zh:'吉普车',e:'🚙',dec:'jeep 吉普车，发音和汉字"吉普"超像！'} ]},
-  { L:'K', nameEn:'K', v:false, shape:'踢腿', emoji:'🦵', color:'#4EC5F1', s:'kuh', szh:'/k/ 科',
+  { L:'K', nameEn:'K', v:false, shape:'踢腿', emoji:'🦵', color:'#4EC5F1', s:'kuh', szh:'/k/ 克',
     story:'K 像一条用力踢出去的腿。踢！kick（踢）！这个单词的样子和意思一模一样。',
     py:'拼音 k 读"科"，英语 k 读 /k/，和 c 抓手是亲戚（读音一样）。',
     words:[ {w:'kick',zh:'踢',e:'⚽',dec:'K 踢腿踢球！'},
@@ -289,7 +289,7 @@ const LETTERS = [
     words:[ {w:'up',zh:'向上',e:'⬆️',dec:'u 开头——向上 up！'},
             {w:'umbrella',zh:'雨伞',e:'☂️',dec:'u 开头：圆圆的雨伞。'},
             {w:'cup',zh:'杯子',e:'🥤',dec:'结尾藏着 u 小杯子——帮你联想记住它。'} ]},
-  { L:'V', nameEn:'vee', v:false, shape:'胜利手势', short:'胜利', emoji:'✌️', color:'#6BCB77', s:'vuh', szh:'/v/ 呜（咬下唇）',
+  { L:'V', nameEn:'vee', v:false, shape:'胜利手势', short:'胜利', emoji:'✌️', color:'#6BCB77', s:'vuh', szh:'/v/ 夫（咬下唇、出声）',
     story:'v 像张开的两根手指：胜利！耶！v 开头的词也不少：van（面包车）、violin（小提琴）；five（五）和 seven（七）里也藏着小 v。',
     py:'注意：拼音里没有 v，它是英语的新朋友，读 /v/，上牙咬下唇说"呜"。上面是 u，下面是 v。',
     words:[ {w:'van',zh:'面包车',e:'🚐',dec:'v 开头——v 胜利出发！'},
@@ -336,10 +336,14 @@ const ING_ZH = { eat:'吃东西', sing:'唱歌', jump:'跳', read:'读书', slee
    gen:  动态题目——开课时从单词镇词库实时生成造句题
          kinds: likeChoice|thisIs|canDo|seeBuild|havePlural|whereIs|isQuestion|thereBe|doing|buildFamily|buildHave|buildLike
          |posChoice|posFind|thirdPerson|thirdFind|transformNeg|transformQ|beTransform|canTransform */
+/* ★ 2026-11-08：阶段名原来标着「一年级 / 二年级 / 三年级起」。
+   用户指出这样会让别的年级孩子觉得「这不是我的」而不学 ——
+   语法本来就不按年级走，只按难度走。现在只保留难度分组，不带任何年级字样，
+   也不叫「第几阶段」（同样是分级暗示），直接说这一组练什么。 */
 const GRAMMAR_STAGES = [
-  { id:'s1', name:'第一阶段 · 基础公式（一年级）', emoji:'🚂', tip:'先认识"句子小火车"，掌握五个万能公式' },
-  { id:'s2', name:'第二阶段 · 用单词镇造句（二年级）', emoji:'🏘️', tip:'题目从单词镇的词库生成，学过的单词都会来造句！' },
-  { id:'s3', name:'第三阶段 · 进阶句型（三年级起）', emoji:'🚄', tip:'疑问句、There be、进行时、词性、三单、句型转换' },
+  { id:'s1', name:'句子公式', emoji:'🚂', tip:'先认识"句子小火车"，掌握五个万能公式' },
+  { id:'s2', name:'用单词造句', emoji:'🏘️', tip:'题目从单词镇的词库生成，学过的单词都会来造句！' },
+  { id:'s3', name:'进阶句型', emoji:'🚄', tip:'疑问句、There be、进行时、词性、三单、句型转换' },
 ];
 
 const GRAMMAR_LEVELS = [

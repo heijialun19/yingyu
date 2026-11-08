@@ -14,23 +14,24 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v71 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/words-data.js | v32 | 1000 词词库 |
-| js/data.js | v34 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
+| js/app.js | v75 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/words-data.js | v33 | 1000 词词库 |
+| js/data.js | v36 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
-| js/grammar-engine.js | v5 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
-| js/ipa.js | v2 | 音标 |
+| js/grammar-engine.js | v6 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
+| js/ipa.js | v3 | 音标 |
 | js/build-data.js | v1 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
-| js/pep-points.js | v10 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
-| js/audio-list.js | v1 | 发音清单（2450 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
+| js/pep-points.js | v11 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
+| js/audio-list.js | v2 | 发音清单（2864 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v48 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
-| sw.js | birdie-abc-v128 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| audio/phonics/ | — | **26 个字母音**（自然拼读 letter sound）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
+| sw.js | birdie-abc-v133 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -61,7 +62,8 @@
 - 整句发音：课本 273 句 + Get Smart 227 句共 497 个 slug 的自合成整句 MP3 在 audio/sentences/，
   清单 SENTENCE_AUDIO 在 app.js，命中就一次播完；不命中才走逐词连读
 - 单词发音：**只用站内 audio/{slug}.mp3，一个外网请求都不发**（v8，2026-11-08）。
-  全站发音目标共 2864 个（单词 + 拼读块 + 字母名 + 复数/三单/进行时派生词），清单是 `js/audio-list.js`
+  全站发音目标共 2864 个（单词 + 拼读块 + 字母名 + 复数/三单/进行时派生词），清单是 `js/audio-list.js`；
+  另有 26 个字母音在 `audio/phonics/`（不进清单，用 `PHONICS_VER` 独立版本号）
   （`window.__AUDIO_LIST`，defer 加载，不挡首屏、file:// 也能用）；
   清单没落地前对单个词按本地文件乐观解析，`__registerGSAudio()` 另做兜底。
   包内真没有的内容才用浏览器 speechSynthesis 兜底，且只在单独朗读时启用
@@ -75,6 +77,44 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-08.7 导航重排 + 真「字母音」（别改回去）
+
+**导航**
+- 手机底栏 6 格：「字母」→「语法（句子工厂）」。理由：字母岛是起步期的短周期内容，
+  学完就过去了；语法要反复练，必须随手可进。字母岛入口一直在首页岛屿卡片里
+  （未学完字母时排到第 2 位，学完后自动退到最后）。
+- 桌面导航同样去掉「字母岛」。
+- ⚠️ 底栏只有 6 格，加第 7 个会挤成小图标；再加内容请先想清楚换掉谁。
+
+**句子工厂去年级**
+- 关卡卡片原来印着「🎓 一年级 / 二年级 / 三年级+」，阶段名也叫「第一阶段（一年级）」。
+  用户指出会让别的年级孩子觉得「这不是我的」而不学。
+- 现在只按难度分组：**句子公式 / 用单词造句 / 进阶句型**，卡片上不再有年级。
+- ⚠️ 别再按年级标注语法关卡 —— 语法不按年级走。
+
+**字母音（本次的技术重点）**
+- 原来「📢 字母音」播的是**代表词**（apple / ball），孩子听到 /æpl/，不是 /æ/。
+  自然拼读要教的就是 letter sound 本身，播代表词等于没教。
+- 新增 `audio/phonics/a–z.mp3`（26 个，61KB），同引擎同声线单独合成。
+- **piper 的 CLI 无法直接喂 IPA 音素**：`[[æ]]` 会被 espeak 当普通字符念成字母名
+  「A E」（`--debug` 可见 `Phonemizing text: [[æ]] → ˌeɪˈiː`）；`[[a]]` 侥幸出 ɐ，
+  其余 20 多个全失败。**不要再试音素直输这条路。**
+- 采用的法子：**用能稳定触发目标音素的短词做载体，再裁掉多余的辅音**，
+  每一步都能自证：
+    `buh → bˈʌ`（辅音+ʌ，phonics 教学的标准近似读法）
+    `at → at`（a 即 /æ/，裁掉词尾 /t/；实测平均过零率 0.076 → 纯浊元音）
+    `et/ot/it → ˈɛt/ˈɒt/ɪt`，`uh → ˈʌ`（本身就是单个音素）
+    `ox → ˈɒks`（裁掉词首元音得 /ks/；平均过零率 0.663 → 纯清擦音）
+- 裁剪不能按「能量下降」切：`ox` 的元音和 /s/ 之间隔着 /k/ 的闭合静音（实测 200–410ms），
+  按能量切会把静音带进来，得到 0.58s 的假 /ks/。**要按过零率突增定位清辅音起点。**
+- 生成脚本 `_tts/build_phonics.py`；`summary.json` 里有每个字母的载体、音素序列、时长、
+  峰值、有声比例，可复核。
+- 前端：`PHONICS_VER` / `phonicsURL()` / `playAudioChain()` / `playPhonics()`。
+  「完整口诀」= 字母名 → 字母音 → 例词（三段文件顺序播，token 作废旧链）。
+  进入字母岛后空闲时预取全部 26 个（61KB，比一张图小）。
+- 顺带修正中文提示：`/æ/ 啊` → `/æ/ 大嘴"哎"`（/æ/ 不是"啊"）、
+  `/v/ 呜` → `/v/ 夫（咬下唇、出声）`（"呜"是元音）、C 与 K 统一写"克"。
 
 ## 2026-11-08.6 教学内容大校对（别改回去）
 

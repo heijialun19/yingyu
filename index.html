@@ -108,8 +108,8 @@
 <script src="js/words-data.js?v=33"></script>
 <script src="svg/word-svg.js?v=3"></script>
 <script async src="svg/emoji-svg.js?v=5"></script>
-<script src="js/data.js?v=35"></script>
-<script src="js/app.js?v=74"></script>
+<script src="js/data.js?v=36"></script>
+<script src="js/app.js?v=75"></script>
 <script defer src="js/audio-list.js?v=2"></script>
 <script src="js/sentence.js?v=48"></script>
 <script src="js/getsmart-data.js?v=10"></script>
@@ -215,16 +215,18 @@ function showHome() {
     { e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html' },
     { e:'🏫', n:'人教课本', d:'3-6 年级同步', href:'pep.html' },
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
-    { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
+    { e:'🚂', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
     { e:'🎡', n:'游戏乐园', d:GAME_COUNT+'个游戏', href:'games.html' },
     { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
     { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },
   ] : [
+    /* 还没学完字母时，字母岛提到第 2 位：这是起步期每天都要进的地方。
+       学完（lettersFinished）后它自动退到最后一位，让位给课本与语法。 */
     { e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html' },
+    { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
     { e:'🏫', n:'人教课本', d:'3-6 年级同步', href:'pep.html' },
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
-    { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
-    { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
+    { e:'🚂', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
     { e:'🎡', n:'游戏乐园', d:GAME_COUNT+'个游戏', href:'games.html' },
     { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },
   ];

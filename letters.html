@@ -5,13 +5,13 @@
 <meta name="keywords" content="小学英语,英语启蒙,自然拼读,儿童英语,免费" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
-<meta name="description" content="26 个英文字母的象形小故事 + 自然拼读（字母名/字母音各读一遍），还有拼音小桥梁，防止 b/d/p/q 混淆。">
+<meta name="description" content="26 个英文字母的象形小故事 + 自然拼读（字母名 + 字母音 + 例词），还有拼音小桥梁，防止 b/d/p/q 混淆。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="字母岛 · 26 个字母朋友 · 小鸟英语乐园">
-<meta property="og:description" content="26 个英文字母的象形小故事 + 自然拼读（字母名/字母音各读一遍），还有拼音小桥梁，防止 b/d/p/q 混淆。">
+<meta property="og:description" content="26 个英文字母的象形小故事 + 自然拼读（字母名 + 字母音 + 例词），还有拼音小桥梁，防止 b/d/p/q 混淆。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/letters.html">
 <meta name="twitter:card" content="summary_large_image">
@@ -53,8 +53,8 @@
 <script src="js/words-data.js?v=33"></script>
 <script src="svg/word-svg.js?v=3"></script>
 <script async src="svg/emoji-svg.js?v=5"></script>
-<script src="js/data.js?v=35"></script>
-<script src="js/app.js?v=74"></script>
+<script src="js/data.js?v=36"></script>
+<script src="js/app.js?v=75"></script>
 <script defer src="js/audio-list.js?v=2"></script>
 <script src="js/sentence.js?v=48"></script>
 <script>
@@ -117,7 +117,7 @@ function renderStage(speakIt) {
       <div style="margin-top:6px;font-size:.8rem;opacity:.95">${type}</div>
       <div style="margin-top:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
         <button class="btn ghost" style="padding:6px 12px;font-size:.78rem" onclick="sayName()" title="播放字母的名字，如 A 读 'ay'">🔤 字母名 ${l.L}</button>
-        <button class="btn ghost" style="padding:6px 12px;font-size:.78rem" onclick="saySound()" title="慢速播放代表词，听清 ${l.L} 在开头的读音">📢 字母音（听${l.words[0].w}）</button>
+        <button class="btn ghost" style="padding:6px 12px;font-size:.78rem" onclick="saySound()" title="只读这个字母自己的音（${l.szh}），不读单词">📢 字母音 ${l.szh.split(' ')[0]}</button>
         <button class="btn ghost" style="padding:6px 12px;font-size:.78rem" onclick="sayChant()" title="完整三遍：名字 + 慢词 + 常速词">🎵 完整口诀</button>
       </div>
       <div style="margin-top:10px">
@@ -133,7 +133,7 @@ function renderStage(speakIt) {
         <div style="margin-top:10px;background:#fff;border-radius:14px;padding:8px 12px;font-size:.85rem;line-height:1.8">
           🎵 拼读小口诀：<b>${l.L} 的名字读 "${l.nameEn}"</b>，
           它在单词里发 <b>${l.szh}</b> 的音——
-          听听 <b>${l.words[0].w}</b> ${l.words[0].e} 开头的那个音！
+          点 <b>📢 字母音</b> 听它自己的音，再听 <b>${l.words[0].w}</b> ${l.words[0].e} 的开头，是同一个音。
           <span style="color:#5C6273;display:block;margin-top:4px">（点上方按钮听发音，想多听几遍就多点几次）</span>
         </div>
       </div>
@@ -169,36 +169,39 @@ function renderStage(speakIt) {
       <p style="color:#5C6273;font-size:.78rem;margin-top:10px">💡 小提示：点单词卡片可以听发音；红色 a e i o u 是"歌手"，蓝色辅音是"画家"。</p>
     </div>`;
   if (speakIt) sayName(); // 只有用户点击切换时才朗读；首次打开页面保持安静
-  // 预拉取双音频（字母名 + 代表词），用户一点就秒响
+  // 预拉取本字母的三段音频（字母名 / 字母音 / 代表词），用户一点就秒响
   prewarmWord(l.L);
   prewarmWord(l.words[0].w);
+  try { const pa = new Audio(phonicsURL(l.L)); pa.preload = 'auto'; } catch (e) {}
 }
 
 
 /* ============ 字母岛语音系统（三按钮，逻辑清晰） ============
    ① 字母名：只播字母名（如 A 读 "ay"）
-   ② 字母音：只播代表词一遍——孩子听清 A 在 "apple" 开头的 /æ/ 音
-   ③ 完整口诀：字母名 → 代表词，各一遍
+   ② 字母音：只读这个字母自己的音素（A 读 /æ/、B 读 /b/），不读单词
+      —— 2026-11-08 之前这里播的是代表词 apple，那不是 letter sound
+   ③ 完整口诀：字母名 → 字母音 → 代表词，三步各一遍
    每次点击只出一个声音；想多听几遍，多点几次就好 */
 function sayName() {
   const l = LETTERS[cur];
   sfx.pop();
-  /* 用字母名的英文拼写请求：有道对单字母 Z/E/P/R/T/X 等音质只有 56kbps，
-     用 "zee"/"ee"/"pee" 等请求能拿到 128-224kbps，听感差别很大。 */
   speak(l.nameEn || l.L, 'en-US', 1);
 }
+/* 字母音 = 这个字母在单词里的那个音素（/æ/、/b/…），
+   不是代表词。以前播 apple，孩子听到的是 /æpl/，等于没教 letter sound。 */
 function saySound() {
   const l = LETTERS[cur];
   sfx.pop();
-  speak(l.words[0].w, 'en-US', 1); // 点一下，读一遍
+  playPhonics(l.L);
 }
+/* 完整口诀 = 名字 → 字母音 → 例词（自然拼读的标准三步） */
 function sayChant() {
   const l = LETTERS[cur];
-  const w = l.words[0].w;
   sfx.pop();
-  speakChain([
-    { text: l.nameEn || l.L, rate: 1 },
-    { text: w, rate: 1 }
+  playAudioChain([
+    localAudioURL(l.nameEn || l.L),
+    phonicsURL(l.L),
+    localAudioURL(l.words[0].w)
   ]);
 }
 
@@ -239,6 +242,16 @@ function nextL() { pick(Math.min(cur + 1, LETTERS.length - 1)); }
   if (idx < 0) idx = 0;
   cur = idx;
   renderGrid(); renderStage(false);
+})();
+
+/* 26 个字母音一共 61KB（比一张图还小），空闲时静默预取：
+   点哪个字母都秒响；听过一次之后 SW 缓存住，离线也不发请求。 */
+(function preloadPhonics() {
+  const run = () => 'abcdefghijklmnopqrstuvwxyz'.split('').forEach(c => {
+    try { const a = new Audio(phonicsURL(c)); a.preload = 'auto'; } catch (e) {}
+  });
+  if (window.requestIdleCallback) requestIdleCallback(run, { timeout: 3000 });
+  else setTimeout(run, 1500);
 })();
 
 /* 字母名本地发音索引：audio/a.mp3 ~ audio/z.mp3 已生成，离线也有声 */
