@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-08.27",
-  "note": "PEP_IPA 表大修：清掉 5 条混入的记忆法文本（orange/cake/ruler/bread/train）；英式→美式 230 条（əʊ→oʊ、ɒ→ɑ、ɜː→ɜr、juː→ju）；补重音符号。eraser 音标从英式 ɪreɪzə 改为美式 ɪˈreɪsər。pep-points v14。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
+  "build": "2026-11-08.28",
+  "note": "英式残留清零：PEP_IPA 的 BATH 音（grass/classmate/plant/card/garden 的 ɑː→æ 或 ɑr）+ 长音符 12 处全清。主字典 ipa.js 0 英式 0 长音符（已验证）。ASR 抽查 grass/classmate/tomato 音频全对。pep-points v15。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
 }
