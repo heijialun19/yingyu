@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-08.22';
+const BUILD = '2026-11-08.23';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1882,32 +1882,23 @@ function openProfileModal() {
           </div>
         </details>
         <details class="profile-tool">
-          <summary>🔄 跨设备同步（同步码）</summary>
+          <summary>💾 备份与同步（换电脑、防丢失）</summary>
           <div style="margin-top:10px">
             <p style="font-size:.78rem;color:#5C6273;margin:0 0 10px;line-height:1.6">
-              在这台电脑点「生成同步码」→ 把码发到另一台设备（微信/短信/口述都行）→
-              在那台设备点「用同步码同步」粘贴进来，进度就过来了。
+              点「导出进度」会同时给你两样东西：<b>一段短码</b>（发微信/短信到另一台设备）和
+              <b>一个备份文件</b>（下载存档防丢）。到了新设备，粘贴短码或选备份文件都能恢复。
             </p>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn mint" onclick="showSyncCode()">📋 生成同步码</button>
-              <button class="btn orange" onclick="copySyncCode()">📋 复制</button>
-              <button class="btn grape" onclick="importFromSyncCode()">📥 用同步码同步</button>
+              <button class="btn mint" onclick="exportProfile()">📤 导出「${esc(p.name)}」的进度</button>
+              <button class="btn orange" onclick="copySyncCode()">📋 复制短码</button>
             </div>
-            <textarea id="syncCodeBox" readonly placeholder="点上面的按钮，这里会出现同步码。把码发给孩子另一台设备就能同步！" style="width:100%;height:88px;border:3px dashed var(--mint,#4E9E59);border-radius:14px;padding:8px;font-size:.68rem;font-family:monospace;resize:vertical;margin-top:10px"></textarea>
-            <p style="font-size:.7rem;color:#6B7280;margin:8px 0 0">🔒 同步码只在你输入时才解密，服务器（如果有）也看不到明文。</p>
-          </div>
-        </details>
-        <details class="profile-tool">
-          <summary>💾 备份与恢复（换电脑、防丢失）</summary>
-          <div style="margin-top:10px">
-            <button class="btn" style="margin-bottom:8px" onclick="exportProfile()">📤 导出「${esc(p.name)}」的进度</button>
-            <textarea id="backupBox" readonly placeholder="点上面的按钮，这里会出现备份码。把它保存好（或发到家长手机），就能在任何电脑恢复！" style="width:100%;height:72px;border:3px dashed var(--lake);border-radius:14px;padding:8px;font-size:.7rem;font-family:monospace;resize:vertical"></textarea>
-            <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+            <textarea id="syncCodeBox" readonly placeholder="点「导出进度」后，这里会出现一段短码。发到另一台设备粘贴即可同步！" style="width:100%;height:72px;border:3px dashed var(--mint,#4E9E59);border-radius:14px;padding:8px;font-size:.68rem;font-family:monospace;resize:vertical;margin-top:10px"></textarea>
+            <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
               <input type="file" id="importFile" accept=".json,.txt" style="display:none" onchange="importProfileFile(this)">
-              <button class="btn orange" style="padding:8px 14px;font-size:.82rem" onclick="document.getElementById('importFile').click()">📂 选择备份文件</button>
-              <button class="btn orange" style="padding:8px 14px;font-size:.82rem" onclick="importProfileText()">📥 粘贴备份码恢复</button>
+              <button class="btn grape" onclick="importFromSyncCode()">📥 粘贴短码恢复</button>
+              <button class="btn orange" onclick="document.getElementById('importFile').click()">📂 选择备份文件恢复</button>
             </div>
-            <p style="font-size:.7rem;color:#5C6273;margin-top:6px">恢复会新建一个档案，不会覆盖现有进度。</p>
+            <p style="font-size:.7rem;color:#6B7280;margin:8px 0 0">🔒 进度只存在你自己的浏览器里，不上传任何服务器。短码经微信/短信发送时，传输安全由该渠道负责。恢复会新建一个档案，不会覆盖现有进度。</p>
           </div>
         </details>
         <button class="btn ghost" style="margin-top:14px;width:100%" onclick="closeProfileModal()">关闭</button>
@@ -2018,7 +2009,8 @@ function createProfile() {
 }
 function exportProfile() {
   const text = Profiles.exportActive();
-  const box = document.getElementById('backupBox'); if (box) box.value = text;
+  /* 一步两样：短码（发微信）+ 文件（下载存档）。2026-11-08 合并原两套入口。 */
+  showSyncCode();                                    // 短码写进 syncCodeBox
   try {
     const blob = new Blob([text], { type: 'application/json' });
     const a = document.createElement('a');
@@ -2026,7 +2018,7 @@ function exportProfile() {
     a.download = '小鸟英语乐园-' + Profiles.active().name + '.json';
     a.click();
   } catch (e) {}
-  toast('📤 备份已生成并开始下载');
+  toast('📤 短码已生成 + 备份文件已下载');
 }
 /* ---------------- 跨设备同步码 ----------------
    跨设备同步的最小可用闭环：
@@ -2162,8 +2154,20 @@ function importFromSyncCode() {
   const box = document.getElementById('syncCodeBox');
   const go = code => {
     if (!code || !code.trim()) return;
-    parseSyncCode(code).then(obj => {
-      // 走 Profiles 的标准导入：新建档案，不覆盖现有进度
+    const t = code.trim();
+    /* 自动识别：{ 开头 = 裸 JSON（备份文件内容），否则当压缩短码解析。
+       2026-11-08 合并两套入口后，一个按钮搞定两种格式。 */
+    if (t.startsWith('{')) {
+      try {
+        const p = Profiles.importActive(t);
+        toast('📥 恢复成功！欢迎回来，' + p.name);
+        setTimeout(() => location.reload(), 700);
+      } catch (e) {
+        toast('❌ 备份内容不对，请检查后重试');
+      }
+      return;
+    }
+    parseSyncCode(t).then(obj => {
       const p = Profiles.importActive(JSON.stringify(obj));
       toast('📥 同步成功！欢迎回来，' + p.name);
       setTimeout(() => location.reload(), 800);
@@ -2172,7 +2176,7 @@ function importFromSyncCode() {
     });
   };
   if (box && box.value && box.value.trim().length > 20) return go(box.value);
-  askInput('把同步码粘贴到这里：', '同步码是一长串字符，整段粘进来', go);   // 不用 prompt：手机 WebView 会屏蔽
+  askInput('把短码或备份内容粘贴到这里：', '短码是一长串字符，备份是 JSON 文本，整段粘进来', go);
 }
 function importProfileFile(input) {
   const f = input.files && input.files[0]; if (!f) return;
@@ -2180,11 +2184,7 @@ function importProfileFile(input) {
   r.onload = () => doImport(String(r.result));
   r.readAsText(f, 'utf-8');
 }
-function importProfileText() {
-  const box = document.getElementById('backupBox');
-  if (box && box.value && box.value.trim().startsWith('{')) { doImport(box.value); return; }
-  askInput('把备份码粘贴到这里：', '备份码是一段 JSON 文本，整段粘进来', doImport);   // 不用 prompt：手机 WebView 会屏蔽
-}
+/* importProfileText 已删除（2026-11-08）：合并进 importFromSyncCode，自动识别码和 JSON。 */
 function doImport(text) {
   try {
     const p = Profiles.importActive(text);
