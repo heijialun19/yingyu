@@ -28,6 +28,8 @@ const __prewarmed = new Set();
 const __brokenChunks = new Set();   // 实测合成失败的词组，本会话内直接走逐词
 
 function prewarmSentence(text, gapMs) {
+  /* 已有整句自有音频就别再预热词组了：省掉一串两词一组的外网请求。 */
+  if (typeof sentenceAudioURL === 'function' && sentenceAudioURL(text)) return;
   const gap = gapMs || 220;
   const toks = String(text).split(/\s+/).filter(Boolean).map(__spokenToken);
   let k = 0;
@@ -116,6 +118,21 @@ function speakSentence(text, el, onDone) {
   __speakDone = typeof onDone === 'function'
     ? () => { if (my === __speakSeq) onDone(); }
     : null;
+  /* ===== 整句自有音频优先（2026-11-08）=====
+     固定例句已用同一个说话人合成好整句 mp3：一次播完，有连读、重音和句末
+     语调，音色全站统一，断网也能读。命中就不再走「两词一组」——那条链路
+     每个词组都要绕有道，慢网一顿一顿、断网直接无声。
+     不在清单里的动态生成句子仍走原来的两词一组降级链，行为不变。 */
+  if (typeof sentenceAudioURL === 'function' && sentenceAudioURL(t)) {
+    __hiChunk(spans, 0, tokens.length);
+    try {
+      playDictAudio(t, 1,
+        () => __finishSpeak(spans),
+        () => __speakFrom(tokens, spans, 0, 0, __voice()),  // 本地文件异常时回落老链
+        false, 10000, 0, __voice());
+      return;
+    } catch (e) { /* 落回老链 */ }
+  }
   /* 整句共用一个 <audio>（全局只造一个）：第一次在点击的同一个调用栈里创建并 play，
      这个元素就算「被授权」了，之后换 src 不再受自动播放策略限制。
      拿不到 Audio（Node 测试/极端老内核）就退回每段新建元素的老路径。 */
