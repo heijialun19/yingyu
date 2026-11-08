@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-08.9';
+const BUILD = '2026-11-08.10';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1321,24 +1321,28 @@ function stopAllSpeech() {
   if (typeof window.__cancelSpeak === 'function') window.__cancelSpeak();
 }
 
-/* ================= 字母音（自然拼读 letter sound，2026-11-08） =================
+/* ================= 字母音 / 拼读块（自然拼读 letter sound） =================
    字母岛原来点「字母音」播的是**代表词**（apple / ball），孩子听到的是 /æpl/，
    不是 /æ/ —— 自然拼读要教的就是这个音素本身，播代表词等于没教。
 
-   这批音频由 _tts/build_phonics.py 用**同一套引擎、同一声线**单独合成，
-   生成时逐个用 `piper --debug` 的音素序列自证，再用声学特征复核：
+   2026-11-08：这批音频**换成母语者录音**，不再自己合成。
+     来源 GitHub s5s5/phonics（MIT，作者 Xiaochao Liu，README 自述 Native speaker
+     pronunciation），public/sound/<IPA>.mp3 逐音素录音；取用与署名见
+     THIRD-PARTY-NOTICES.txt。处理脚本 _tts/build_phonics_native.py（只做响度归一 +
+     裁静音 + 转 48kbps/22050 单声道，与全站规格一致）。
+   换掉的原因：自合成的辅音是「载体词 buh/kuh + 裁 ʌ」，孩子听到的是 "buh /æ/ tuh"，
+   拼读教学里是怪腔；母语者录音是真孤立音素（/k/ 0.15s 爆破、/ʃ/ 0.64s 擦音）。
+   唯一例外：U = /ʌ/ 仍用自合成（源库只有 /ə/ 没有 /ʌ/）。
 
-     buh → bˈʌ      辅音 + ʌ，phonics 教学里的标准近似读法（辅音单独发不出声）
-     at  → at       抽出其中的 a 就是 /æ/；词尾 /t/ 已裁掉
-                    实测平均过零率 0.076 → 纯浊元音，无清辅音残留
-     ox  → ˈɒks     裁掉词首元音得 /ks/；实测平均过零率 0.663 → 纯清擦音
-     I   → ɪt       /ɪ/ 的过零率 0.044，是 26 个里最低的 —— 符合闭前元音特征
+   目录里 39 个文件 = 26 个字母音 + 13 个拼读块（sh/ch/th/ai/ay/oa/ck/ee/oo/ar/or/ir/ng）。
+   拼读闯关的多字母块也走这里，所以 ck/sh 之类不再借字母名凑数。
 
    ★ 不要改回「用代表词当字母音」，那是被用户否掉的旧行为。
+   ★ 不要把这些音素丢回给 TTS 合成：字符串 "sh" 会被念成字母名 "S H"（见 VERSION.md）。
    ★ 单独版本号：重做字母音只升 PHONICS_VER，不动 AUDIO_VER
      （后者一动，用户已缓存的十几 MB 词音频全部作废重下）。
    ★ 文件在 audio/phonics/，SW 的 /audio/ 分支会自动缓存，发版不清理。 */
-const PHONICS_VER = 1;
+const PHONICS_VER = 2;
 const phonicsURL = L => `audio/phonics/${String(L).toLowerCase()}.mp3?v=${PHONICS_VER}`;
 
 /* 顺序播放一串音频（字母岛「完整口诀」= 字母名 → 字母音 → 例词）。
@@ -1502,7 +1506,7 @@ document.addEventListener('keydown', unlockAudioChannels, { capture: true });
 /* 语音环境检测（家长中心诊断用） */
 function speechEnv() {
   return {
-    engine: '站内自带音频（2450 个单词/字母/拼读块 + 497 句整句，同一声线，均本站合成）',
+    engine: '站内自带音频（2903 个单词/字母/拼读块/字母音 + 497 句整句；单词句子同声线自合成，字母音与拼读块为母语者录音）',
     wechat: /MicroMessenger/i.test(navigator.userAgent),
     online: navigator.onLine
   };

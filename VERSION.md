@@ -14,9 +14,9 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v77 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v78 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v33 | 1000 词词库 |
-| js/data.js | v36 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
+| js/data.js | v37 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v6 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
@@ -30,8 +30,8 @@
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
-| audio/phonics/ | — | **26 个字母音**（自然拼读 letter sound）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v135 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
+| sw.js | birdie-abc-v136 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -77,6 +77,49 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-08.10 字母音 / 拼读块换成母语者录音（别改回去）
+
+**用户反馈**：「字母自然拼读发音直接用网上的……不要自己弄，你的发音太差了。」
+
+### 做了什么
+audio/phonics/ 下 38 个文件换成**母语者逐音素录音**：
+- 来源：GitHub `s5s5/phonics`（MIT，Copyright (c) 2022 Xiaochao Liu，
+  README 自述 Native speaker pronunciation，public/sound/<IPA>.mp3）
+- 取用：25 个字母音（a-z 里除 u）+ 13 个拼读块
+  （sh/ch/th/ai/ay/oa/ck/ee/oo/ar/or/ir/ng），取用表在 `_tts/build_phonics_native.py`
+- 处理：只做裁静音 + loudnorm 响度归一 + 转 48kbps/22050 单声道（与全站规格一致），
+  **发音内容未改**；署名与许可全文在 `THIRD-PARTY-NOTICES.txt`
+- 例外：U = /ʌ/ 仍是自合成（源库只有 /ə/ 没有 /ʌ/，教「u 发 /ʌ/」不用 schwa 顶替）
+
+为什么必须换：自合成的辅音是「载体词 buh/kuh + 裁 ʌ」，孩子听到 "buh /æ/ tuh"，
+是怪腔；母语者是真孤立音素（/k/ 0.15s 爆破、/ʃ/ 0.64s 擦音）。
+
+### 顺带修的
+- **拼读闯关的 sh/ch/th/ai/ay/oa 六族从「听词选图」升级成真拼词**（块音对了才敢拼），
+  拼词族从 10 个变 15 个，只剩 a_e/i_e/o_e 三族走选图（字母音 a 是 /æ/，拼 cake 会教错）。
+- 新增可拼：fish/ship/shop、three、birthday、lunch/catch/chess 等。
+  morning 改成 m-or-n-i-ng（or 是 /ɔɹ/，ng 是 /ŋ/）。
+- **字母 O 音标口径**：`/ɒ/ 喔` → `/ɑ/ 啊`（data.js）。全站音标是美式（ipa.js 里
+  hot = /hɑt/，一个 ɒ 都没有），字母音也是 /ɑ/，只有字母岛写着 /ɒ/，属于知识性不一致。
+
+### 版权口径（别再说"谁都能读没版权"）
+孤立音素录音**是有版权的**（录音制品权）。能安全用的是 CC0 / MIT / CC-BY 这类
+明确许可的来源，且 MIT 要求保留版权声明。本站现在是：
+单词与句子 = 自合成（Piper + 公有领域声线）；字母音与拼读块 = s5s5/phonics（MIT）。
+disclaimer / parents / README / THIRD-PARTY-NOTICES 四处已同步，**不再说"同一个说话人"**。
+
+### 验证
+- 38 个新文件逐个 ffmpeg 复核时长与响度（/k/ 0.15s、/ʃ/ 0.64s、/æ/ 0.43s…）
+- `check_facts.py` 86 项全过（新增：拼读块必须在 audio/phonics/ 有同名文件、
+  39 个文件数、念错的块不许走 localAudioURL）
+- `_audit/test_phonics.js` 644 项全过（15 个拼词族 + 3 个选图族各跑两遍）
+
+### 环境限制（记录备查）
+本机出网被代理限制：只有 `api.github.com` 可用，upload.wikimedia.org / freesound /
+huggingface / raw.githubusercontent 全部不通。所以「从网上拿音频」实际只能走 GitHub
+API 取文件 —— 这也是为什么最终选的是 GitHub 上的 MIT 项目，而不是维基共享的 IPA 录音
+（后者许可是 CC BY-SA，改编要同权共享，且网络不通）。
 
 ## 2026-11-08.9 拼读闯关修正（上一版是错的，别改回去）
 

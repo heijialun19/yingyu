@@ -249,7 +249,7 @@ const LETTERS = [
     words:[ {w:'no',zh:'不',e:'❌',dec:'n 摇头 = 不！'},
             {w:'nose',zh:'鼻子',e:'👃',dec:'摇摇头，鼻子也跟着动。'},
             {w:'nine',zh:'九',e:'9️⃣',dec:'数到九，摇摇头还不够十。'} ]},
-  { L:'O', nameEn:'O', v:true, shape:'圆嘴巴', emoji:'👄', color:'#FFD93D', s:'aw', szh:'/ɒ/ 喔',
+  { L:'O', nameEn:'O', v:true, shape:'圆嘴巴', emoji:'👄', color:'#FFD93D', s:'aw', szh:'/ɑ/ 啊',
     story:'o 像张得圆圆的嘴巴，"喔——"。o 开头的词常常是圆圆的东西：orange（橙子）圆圆的、octopus（章鱼）圆圆的脑袋。词中间的 o 呢？它只负责唱歌，不表义哦（比如 nose 里唱歌的 o）。',
     words:[ {w:'orange',zh:'橙子',e:'🍊',dec:'o 圆圆的橙子！'},
             {w:'octopus',zh:'章鱼',e:'🐙',dec:'o 开头的八爪章鱼。'},

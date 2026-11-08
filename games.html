@@ -35,9 +35,9 @@
 <script src="js/words-data.js?v=33"></script>
 <script src="svg/word-svg.js?v=3"></script>
 <script async src="svg/emoji-svg.js?v=5"></script>
-<script src="js/data.js?v=36"></script>
+<script src="js/data.js?v=37"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=77"></script>
+<script src="js/app.js?v=78"></script>
 <script defer src="js/audio-list.js?v=2"></script>
 <script src="js/sentence.js?v=48"></script>
 <script src="js/grammar-engine.js?v=6"></script>
@@ -919,31 +919,25 @@ function themeWordsById(ids) {
 /* ---------------- 游戏7：拼读闯关（自然拼读） ----------------
    词族来自 Get Smart 各册 Phonics 线，词全部取自 1000 词库（有图有声）。
 
-   ★ 2026-11-08 第二次重做。上一版（听逐音 /k/ /æ/ /t/ 再拼块）有两个硬伤，已全部拆掉：
+   ★ 2026-11-08 第三次修订。前两版的坑（都写在 VERSION.md 里，别再踩）：
+     ① 把 sh/ch/th/ai/ay/oa/ck 当「词」丢给 TTS，espeak 对不认识的串会**逐字母念字母名**
+        （sh → "S H"、ck → "C K"），拼读闯关里三分之一的题在教错。
+     ② 槽位数 = 手工切的分块数，孩子按常规拼写（clock = c-l-o-c-k）第 5 块点不进去，
+        正确答案被判错。
+   现在的修法：
+     · 全部块音换成**母语者录音**（GitHub s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt），
+       放在 audio/phonics/，和字母音同一套文件，PHONICS_VER 统一管。
+       不在白名单里的块 phBlockAudio() 返回空 —— 宁可不响，也不放错音。
+     · 干扰块按**单词里出现过的字母**排除（clock 的 c、k 不能当干扰项），
+       正常拼写不会被判错；判卷比「拼出来的字母串 === 单词」，不比我的切法。
 
-     ① 读音是错的。上一版把 sh / ch / th / ai / ay / oa / ck 当成「词」交给 TTS，
-        实测这些文件念的根本不是音素，而是**字母名**：
-            sh → /ˌesˈeɪtʃ/（"S H"）   ch → /siː eɪtʃ/（"C H"）   ck → /siː keɪ/（"C K"）
-            ay → /aɪ/（"I"）          ai → /ˌeɪˈaɪ/（"A I"）
-        拼读闯关里三分之一以上的题都在放大写字母的名字，孩子学不到任何音。
-        现在只有「验证过读音正确」的块才允许发声（见 PH_BLOCK_AUDIO），
-        没有正确音的块**宁可不响**，也不许放错音。
-
-     ② 题目本身无解。上一版把槽位固定成 N 格，而 N 是我手工切的分块数；
-        孩子按正常拼写拆（clock = c-l-o-c-k，5 块）时第 5 块点不进去，
-        4 格填满就判错。等于「按你的切法猜」，正确答案被判成错。
-
-   现在的两种题型（按词决定，不按词族）：
-     ① 拼词：听**整词**（真实发音），看着图，把打乱的字母块按顺序排成这个词。
-        点一个块就发那个块自己的音；多字母块（ck / ee / oo / ar / or / ing）在块面上
-        是一个整体，孩子能看出「这是一个音、两个字母」。
-        故意不自动连播逐音：数字母音本身是 "kuh /æ/ tuh"，连起来像怪腔怪调，
-        反而干扰。整词发音始终是唯一「标准音」。
-     ② 听词选图：该词的字母块凑不出正确读音时（sh / ch / th / ai / ay / oa / 哑巴 e），
-        只播整词、只给图，选出来就行 —— 决不硬拼。
-
-   ⚠️ 干扰块按**单词里出现过的字母**排除（clock 里的 c、k 都不能当干扰项），
-      否则孩子按常规拼写拼出来的词会被判错。 */
+   两种题型（按词决定，不按词族）：
+     ① 拼词（主）：听**整词**（真实发音），看着图，把打乱的字母块按顺序排成这个词。
+        点一个块就发那个块自己的音；多字母块（sh / ck / ee / ar…）是蓝色的，
+        孩子能看出「这是一个音、两个字母」。
+        不自动连播逐音：整词发音始终是唯一标准音，逐音由孩子自己点。
+     ② 听词选图（辅）：拼写与读音对不上、硬拼会教错的词（rabbit / egg / shoe / a_e 系…），
+        只播整词、只给图，选出来就行。 */
 const PHONICS = [
   { name: 'short a · /æ/', tip: 'a 发 /æ/（大嘴「哎」）', words: ['cat','hat','man','van','bag','ant','map','hand','fan','rabbit','sand','camp'],
     segs: { cat:['c','a','t'], hat:['h','a','t'], man:['m','a','n'], van:['v','a','n'], bag:['b','a','g'],
@@ -953,46 +947,53 @@ const PHONICS = [
     segs: { pen:['p','e','n'], hen:['h','e','n'], ten:['t','e','n'], desk:['d','e','s','k'], bed:['b','e','d'],
             leg:['l','e','g'], tent:['t','e','n','t'], vest:['v','e','s','t'], red:['r','e','d'] } },
   { name: 'short i · /ɪ/', tip: 'i 发 /ɪ/（短「衣」）', words: ['pig','big','six','fish','milk','ship','sit','fin','pink','king'],
-    segs: { pig:['p','i','g'], big:['b','i','g'], six:['s','i','x'], milk:['m','i','l','k'],
-            sit:['s','i','t'], fin:['f','i','n'], pink:['p','i','n','k'], king:['k','i','n','g'] } },
-  { name: 'short o · /ɒ/', tip: 'o 发 /ɒ/（圆嘴「噢」）', words: ['box','fox','dog','hot','stop','clock','rock','shop','doctor'],
+    segs: { pig:['p','i','g'], big:['b','i','g'], six:['s','i','x'], fish:['f','i','sh'],
+            milk:['m','i','l','k'], ship:['sh','i','p'], sit:['s','i','t'], fin:['f','i','n'],
+            pink:['p','i','n','k'], king:['k','i','n','g'] } },
+  { name: 'short o · /ɑ/', tip: 'o 发 /ɑ/（张嘴「啊」）', words: ['box','fox','dog','hot','stop','clock','rock','shop','doctor'],
     segs: { box:['b','o','x'], fox:['f','o','x'], dog:['d','o','g'], hot:['h','o','t'], stop:['s','t','o','p'],
-            clock:['c','l','o','ck'], rock:['r','o','ck'] } },
+            clock:['c','l','o','ck'], rock:['r','o','ck'], shop:['sh','o','p'] } },
   { name: 'short u · /ʌ/', tip: 'u 发 /ʌ/（短「啊」）', words: ['bus','sun','run','duck','cup','jump','truck','gum','hut'],
     segs: { bus:['b','u','s'], sun:['s','u','n'], run:['r','u','n'], duck:['d','u','ck'], cup:['c','u','p'],
             jump:['j','u','m','p'], truck:['t','r','u','ck'], gum:['g','u','m'], hut:['h','u','t'] } },
-  { name: 'sh · /ʃ/', tip: 'sh 发 /ʃ/（「嘘——」）', words: ['ship','fish','sheep','shelf','brush','wash','shop','shoe'] },
-  { name: 'ch · /tʃ/', tip: 'ch 发 /tʃ/（「吃——」）', words: ['chair','peach','lunch','catch','teacher','chess'] },
-  { name: 'th · /θ/', tip: 'th 轻轻吐舌', words: ['teeth','thumb','third','thin','birthday'] },
+  { name: 'sh · /ʃ/', tip: 'sh 发 /ʃ/（「嘘——」）', words: ['ship','fish','sheep','shelf','brush','wash','shop','shoe'],
+    segs: { ship:['sh','i','p'], fish:['f','i','sh'], sheep:['sh','ee','p'], shelf:['sh','e','l','f'],
+            brush:['b','r','u','sh'], shop:['sh','o','p'] } },
+  { name: 'ch · /tʃ/', tip: 'ch 发 /tʃ/（「吃——」）', words: ['chair','peach','lunch','catch','teacher','chess'],
+    segs: { lunch:['l','u','n','ch'], catch:['c','a','t','ch'], chess:['ch','e','s','s'] } },
+  { name: 'th · /θ/', tip: 'th 轻轻吐舌', words: ['teeth','thumb','third','thin','birthday'],
+    segs: { teeth:['t','ee','th'], thin:['th','i','n'], third:['th','ir','d'], birthday:['b','ir','th','d','ay'] } },
   { name: 'a_e · /eɪ/', tip: 'a 加哑巴 e，a 念本名', words: ['cake','lake','name','plate','grape','whale','gate','game'] },
   { name: 'i_e · /aɪ/', tip: 'i 加哑巴 e，i 念本名', words: ['kite','bike','nine','white','ice','five','rice','time'] },
   { name: 'o_e · /oʊ/', tip: 'o 加哑巴 e，o 念本名', words: ['nose','rose','home','bone','stone','rope'] },
   { name: 'ee · /iː/', tip: 'ee 发 /iː/（长「衣」）', words: ['see','tree','bee','three','green','sleep','feet','week'],
-    segs: { see:['s','ee'], tree:['t','r','ee'], bee:['b','ee'],
+    segs: { see:['s','ee'], tree:['t','r','ee'], bee:['b','ee'], three:['th','r','ee'],
             green:['g','r','ee','n'], sleep:['s','l','ee','p'], feet:['f','ee','t'], week:['w','ee','k'] } },
   { name: 'oo · /uː/', tip: 'oo 发 /uː/（长「乌」）', words: ['moon','food','zoo','spoon','room','afternoon'],
     segs: { moon:['m','oo','n'], food:['f','oo','d'], zoo:['z','oo'], spoon:['s','p','oo','n'], room:['r','oo','m'] } },
-  { name: 'ai/ay · /eɪ/', tip: 'ai / ay 都发 /eɪ/', words: ['rain','tail','train','paint','day','play','away','today'] },
-  { name: 'oa · /oʊ/', tip: 'oa 发 /oʊ/', words: ['boat','coat','goat','road'] },
+  { name: 'ai/ay · /eɪ/', tip: 'ai / ay 都发 /eɪ/', words: ['rain','tail','train','paint','day','play','away','today'],
+    segs: { rain:['r','ai','n'], tail:['t','ai','l'], train:['t','r','ai','n'], paint:['p','ai','n','t'],
+            day:['d','ay'], play:['p','l','ay'] } },
+  { name: 'oa · /oʊ/', tip: 'oa 发 /oʊ/', words: ['boat','coat','goat','road'],
+    segs: { boat:['b','oa','t'], coat:['c','oa','t'], goat:['g','oa','t'], road:['r','oa','d'] } },
   { name: 'ar · /ɑːr/', tip: 'ar 发 /ɑːr/（卷舌）', words: ['car','star','farm','arm','garden','market'],
     segs: { car:['c','ar'], star:['s','t','ar'], farm:['f','ar','m'], arm:['ar','m'] } },
   { name: 'or · /ɔːr/', tip: 'or 发 /ɔːr/（卷舌）', words: ['fork','horse','short','sport','morning'],
-    segs: { fork:['f','or','k'], sport:['s','p','or','t'], morning:['m','or','n','ing'] } },
+    segs: { fork:['f','or','k'], sport:['s','p','or','t'], morning:['m','or','n','i','ng'] } },
   { name: 'ck · /k/', tip: 'ck 发 /k/（和字母 k 一样）', words: ['duck','clock','rock','black','chicken'],
     segs: { duck:['d','u','ck'], clock:['c','l','o','ck'], rock:['r','o','ck'], black:['b','l','a','ck'] } },
 ];
 
-/* 哪些多字母块的录音是**真的那个音**（逐个用 piper --debug 看过音素序列）：
-     ee → /iː/   oo → /uː/   ar → /ɑː/   or → /ɔː/   ing → /ɪŋ/   ck → 借字母 c 的 /k/
-   sh / ch / th / ai / ay / oa 的录音是字母名（上面注释里写了实测结果），一律不发声。 */
-const PH_BLOCK_SRC = { ck: 'c', ee: 'ee', oo: 'oo', ar: 'ar', or: 'or', ing: 'ing' };
+/* 哪些块的录音在 audio/phonics/ 里且读音正确（母语者录音，见文件头注释）。
+   不在集合里的多字母块一律不发声 —— 宁可不响，也不放错音。
+   ⚠️ 绝不要给不在 audio/phonics/ 里的字符串走 localAudioURL()：
+      TTS 会把 "sh" 念成字母名 "S H"（2026-11-08 踩过）。 */
+const PH_BLEND_OK = new Set(['sh', 'ch', 'th', 'ai', 'ay', 'oa', 'ck', 'ee', 'oo', 'ar', 'or', 'ir', 'ng']);
 function phBlockAudio(b) {
   const k = String(b).toLowerCase();
   if (!k) return '';
   if (k.length === 1) return (typeof phonicsURL === 'function') ? phonicsURL(k) : '';
-  const src = PH_BLOCK_SRC[k];
-  if (!src) return '';
-  return src.length === 1 ? phBlockAudio(src) : localAudioURL(src);
+  return PH_BLEND_OK.has(k) && typeof phonicsURL === 'function' ? phonicsURL(k) : '';
 }
 /* 这个词能不能用「拼词」题：每一块都必须有正确读音，否则退回听词选图 */
 function phBlendable(seg) {
@@ -1164,7 +1165,6 @@ function gPhonics() {
   }
   phShow();
 }
-
 /* ---------------- 结束卡片 ---------------- */
 function endCard(emoji, line, stars) {
   gameDone(); // completeDailyTask 幂等，一天多次游戏只记任务一次

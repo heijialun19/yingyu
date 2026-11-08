@@ -10,7 +10,29 @@
   一、单词配图与界面图形 —— Twemoji（CC-BY 4.0）
   二、音标数据 —— CMUdict（BSD 风格许可）
   三、语音合成 —— Piper（MIT）+ 声线 en_US-ljspeech（公有领域）
-  四、音素化后端 —— eSpeak NG（GPLv3，仅构建期使用，不随站分发）
+  三之二、字母音与拼读块录音 —— s5s5/phonics（MIT）
+  三之二、字母音与拼读块录音 —— s5s5/phonics
+----------------------------------------------------------------------
+站内 audio/phonics/ 下 38 个音频（26 个字母音中的 25 个 + 13 个拼读块
+sh/ch/th/ai/ay/oa/ck/ee/oo/ar/or/ir/ng）来自开源项目 s5s5/phonics。
+
+  作品名称：s5s5/phonics（public/sound/*.mp3 逐音素录音）
+  版权归属：Copyright (c) 2022 Xiaochao Liu
+  项目地址：https://github.com/s5s5/phonics
+  许可协议：MIT License（允许复制、修改、合并、发布、再分发，需保留版权声明）
+  录音性质：项目 README 自述为 Native speaker pronunciation（母语者录音），
+            逐个音素单独录制（/k/ 0.15s、/ʃ/ 0.64s、/æ/ 0.43s 等）。
+
+MIT 许可全文已在本文件第三节（Piper）末尾列出。本站按许可要求保留上述版权声明。
+
+本站用法：只做格式与响度处理（裁首尾静音、loudnorm 响度归一、转 48kbps/22050Hz
+单声道，与全站其它音频同一规格），**没有改动发音内容本身**。取用清单
+（目标文件名 ← 源 IPA 文件名）记录在 _tts/build_phonics_native.py，可逐条复核。
+
+例外：字母 U = /ʌ/ 仍为本站自合成（源库只有 /ə/ 没有 /ʌ/，
+      教「u 发 /ʌ/」不用 schwa 顶替）；U 是 audio/phonics/u.mp3 唯一非母语者录音。
+
+四、音素化后端 —— eSpeak NG（GPLv3，仅构建期使用，不随站分发）
   五、课程内容与教材名称
   六、本站原创内容的授权范围
   七、自查方法
