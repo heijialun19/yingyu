@@ -14,8 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v84 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/words-data.js | v33 | 1000 词词库 |
+| js/app.js | v85 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/words-data.js | v34 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v138 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v139 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -77,6 +77,32 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-08.17 记忆法批次 1：假音变 → 刘一男式词源（别改回去）
+
+**用户反馈**：「现在的记忆法比你推荐的好，你有没有好好学刘一男的英语词源啊？」
+—— 说我上一轮给的替代文案（"雪、牛奶、云都是白的"）是**复述中文**，违反「不复述中文」铁律，
+比原来的假拆分还差。批评成立，我认了。
+
+### 根因
+原记忆法 **792/999 条是「假音变」**：把单词切成无意义片段再安个中文音
+（`hite 像「嗨特」`、`cto 像「看」`），教的是假的词内结构。违反铁律「不假拆分」。
+
+### 三层改法（用户拍板：「可以，刘一男式升级吧」）
+1. **① 真词源/同源串词**（主力）：词根、音变、同源串词，能举一反三
+   - `thank ← think`（th↔k 音变）；`doct-=教` → doctor/document/teach
+   - `hospit-=客人` → hospital/host/hotel；`libr-=书` → library/librarian
+2. **② 真构词**：sun+ny、balloon = ball+-oon（大）、bike = bi+cycle
+3. **③ 有据联想**（真词族，不是乱安音）：bl- 暗（blind/blank/bleak）、gl- 黏滑、sl- 滑、tw- 二
+
+### 本批成果（前 200 条）
+195 条已改（`I`/`it` 是好的象形钩子，保留）：
+假音变→词源 130 条 / 构词补后缀含义 54 条 / 象形→有据联想 11 条。
+备份 `_audit/words-data.bak1.js`。词序、词条数、释义、词性全部未动，只动 `dec` 字段。
+
+### 还剩
+批次 2（201–400）、3（401–600）、4（601–800）、5（801–999），共约 597 条待改。
+**每批只动「假音变」，不自作聪明编新谐音。**
 
 ## 2026-11-08.16 全站知识性错误扫描（读音/语法/释义）
 
