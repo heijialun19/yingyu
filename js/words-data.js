@@ -336,7 +336,7 @@ const GRADES = [
   { id: 'question2', name: '疑问词', emoji: '❓', color: '#FF9F45', pos: 'qw', tip: '💡 规律：疑问词几乎都用 wh 开头（how 除外）！', words: [
     W('what', '什么', '', 'wh- 问题词族来自古英语 hw-：what/who/where/when/why/which/whose/how 一家'), W('who', '谁', '', 'wh- 问题词族（古英语 hw-）'), W('where', '哪里', '', 'wh- 问题词族（古英语 hw-）'), W('when', '什么时候', '', 'wh- 问题词族（古英语 hw-）'),
     W('why', '为什么', '', 'wh- 问题词族（古英语 hw-）'), W('which', '哪一个', '', 'wh- 问题词族（古英语 hw-）'), W('whose', '谁的', '', 'who 谁 + -se 的'), W('how', '怎样', '', 'wh- 问题词族（古英语 hw-）'),
-    W('everyone', '每个人', '', 'every 每 + one 一','pron'), W('anyone', '任何人', '', 'any 任何 + one 一','pron') ]},
+    W('everyone', '每个人', '', 'every（每）+ one（一）：每个人','pron'), W('anyone', '任何人', '', 'any（任何）+ one（一）：任何人','pron') ]},
   { id: 'prep1', name: '常用虚词', emoji: '➡️', color: '#6BCB77', pos: 'prep', words: [
     W('at', '在(时刻)', '', 'at 在——箭头指着那个点'), W('of', '…的', '', 'of 的——像果子的把儿连着果'), W('for', '为了', '', 'for 为了——像捧着东西递出去'), W('with', '和…一起', '', 'with 原意是「对着/against」——with 原是「对着」，后来才变「和」'),
     W('about', '关于', '', 'about = a-（在）+ bout（弯曲）：「转来转去」关于某事'), W('to', '到/向', '', 'to 到——箭头奔向终点'), W('from', '从', '', 'from 从——小鸟从树上飞出来'), W('into', '进入', '', 'in 里 + to 到'),
@@ -376,8 +376,8 @@ const GRADES = [
     W('protect the earth', '保护地球', '', 'protect 保护 + the earth 地球'), W('save water', '节约用水', '', 'save 节约 + water 水') ]},
   { id: 'magic', name: '高频魔法词', emoji: '✨', color: '#FFD93D', pos: 'adj', words: [
     W('see', '看见', '', 'see 看见——两只眼睛睁大'), W('not', '不', '', 'not 不——摇头「不是」'), W('well', '好/井', '', 'well 好——做得好！'), W('let', '让', '', 'let 让——点头说「你来」'),
-    W('thing', '东西', '', 'thing 原是「集会上讨论的东西」（古英语 þing 集会）！'), W('nothing', '没有什么', '', 'no 没 + thing 东西'), W('something', '某事物', '', 'some 某 + thing 东西'), W('everything', '每件事', '', 'every 每 + thing 东西'),
-    W('everybody', '每个人', '', 'every 每 + body 人'), W('nobody', '没有人', '', 'no 没 + body 人'), W('somebody', '某人', '', 'some 某 + body 人'), W('anybody', '任何人', '', 'any 任何 + body 人'),
+    W('thing', '东西', '', 'thing 原是「集会上讨论的东西」（古英语 þing 集会）！'), W('nothing', '没有什么', '', 'no（没）+ thing（东西）：什么都没有'), W('something', '某事物', '', 'some（某）+ thing（东西）：某样东西'), W('everything', '每件事', '', 'every（每）+ thing（东西）：每样东西'),
+    W('everybody', '每个人', '', 'every（每）+ body（人）：每个人'), W('nobody', '没有人', '', 'no（没）+ body（人）：没有人'), W('somebody', '某人', '', 'some（某）+ body（人）：某个人'), W('anybody', '任何人', '', 'any（任何）+ body（人）：任何人'),
     W('way', '方法/路', '🛤️', 'way 方法/路——走的路 / 方法'), W('away', '离开', '', 'a + way 路'), W('own', '自己的', '', 'own 来自古英语 āgen（拥有的）'), W('else', '别的', '', 'else 来自古英语 elles（别的）'),
     W('another', '另一个', '', 'an 一 + other 另'), W('few', '很少', '', 'few 很少——只有两三颗'), W('little', '小的', '', 'little 小的——小不点儿一点点'), W('much', '许多', '', 'much 许多——堆成小山（不可数）'),
     W('many', '许多', '', 'many 许多——满天星星数不清'), W('each', '每个', '', 'each 每个——一个一个点名'), W('every', '每一个', '', 'ever + y'), W('all', '全部', '', 'all 全部——a-l-l 三个字母排排站，一个不落'),
