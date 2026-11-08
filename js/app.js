@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-08.3';
+const BUILD = '2026-11-08.4';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -857,6 +857,63 @@ function __ttsFallback(text, epoch, onEnd, onFail) {
     speechSynthesis.speak(u);
   } catch (e) { finish(false); }
 }
+
+/* ===== 中文系统语音（只给中文口诀用，2026-11-08）=====
+   句子工厂每关有一句中文口诀（"我用 am，你用 are，is 跟着他、她、它"）。
+   站内音频全是英文合成（Piper 只有英文声线），以前只能把口诀里的英文单词
+   挑出来念 → 孩子听到的就是"am … are … is … 蹦出几个单词"，根本听不出是口诀。
+   中文没有离线音频可用，所以这条路走系统中文语音：零网络、零第三方请求，
+   和英文的 __ttsFallback 一个思路，只是语言不同。
+   ★ 为什么要预取 voice：Chrome 首次 getVoices() 常返回空数组，
+     等到用户点击时才查会误判"这台设备没有中文语音"。
+   ★ 返回 false = 这台设备没有中文语音，调用方自己决定怎么降级。 */
+let __zhVoice = null;
+function __pickZhVoice() {
+  try {
+    const vs = window.speechSynthesis ? (speechSynthesis.getVoices() || []) : [];
+    const zh = vs.filter(v => /^zh/i.test(v.lang));
+    /* 优先普通话 + 优先本机音色：个别安卓把谷歌语音做成在线音色，
+       断网时那句口诀就读不出来；有本机音色时先用它。 */
+    __zhVoice = zh.find(v => /Hans|CN|SG/i.test(v.lang) && v.localService !== false && v.localService)
+      || zh.find(v => /Hans|CN|SG/i.test(v.lang))
+      || zh.find(v => v.localService)
+      || zh[0] || null;
+  } catch (e) { __zhVoice = null; }
+}
+(function () {
+  if (!window.speechSynthesis) return;
+  __pickZhVoice();
+  try { speechSynthesis.addEventListener('voiceschanged', __pickZhVoice); } catch (e) {}
+})();
+/* 口诀里带 emoji 和「+」，直接丢给语音引擎会念出奇怪的东西，先洗一遍 */
+function __zhSpeakable(s) {
+  return String(s || '')
+    .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}\u{1F1E6}-\u{1F1FF}]/gu, ' ')
+    .replace(/\+/g, '加')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\s*\n\s*/g, '，')
+    .replace(/，{2,}/g, '，')
+    .trim();
+}
+function speakZh(text, rate) {
+  if (!Store.d.soundOn) return false;                 // 声音关着：一律静默
+  const t = __zhSpeakable(text);
+  if (!t) return false;
+  if (!window.speechSynthesis || typeof SpeechSynthesisUtterance !== 'function') return false;
+  if (!__zhVoice) __pickZhVoice();                    // 首访时可能刚加载完
+  if (!__zhVoice) return false;                       // 没有中文语音：别用英文腔硬念
+  try {
+    stopAllSpeech();                                  // 掐掉正在播的英文/上一遍口诀
+    const u = new SpeechSynthesisUtterance(t);
+    u.voice = __zhVoice; u.lang = __zhVoice.lang || 'zh-CN';
+    u.rate = rate || 0.95; u.pitch = 1;
+    __ttsUtter = u;
+    __alog('tts-zh', t, __zhVoice.name);
+    speechSynthesis.speak(u);
+    return true;
+  } catch (e) { return false; }
+}
+window.speakZh = speakZh;
 
 function __playMediaElement(text, rate, epoch, onEnd, onFail, isRetry, timeoutMs, srcIdx, reuseEl) {
   rate = 1; // mobile compat: always normal speed

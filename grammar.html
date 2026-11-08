@@ -57,7 +57,7 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script async src="svg/emoji-svg.js?v=5"></script>
 <script src="js/data.js?v=34"></script>
-<script src="js/app.js?v=72"></script>
+<script src="js/app.js?v=73"></script>
 <script defer src="js/audio-list.js?v=2"></script>
 <script src="js/sentence.js?v=48"></script>
 <script src="js/grammar-engine.js?v=5"></script>
@@ -697,14 +697,19 @@ function renderLevelEnd() {
 }
 
 /* ---------------- 口诀朗读 ----------------
-   口诀是中文，词典发音只支持英文。改为朗读本关公式里的英文关键词（真人发音）。 */
+   ★ 2026-11-08 修：口诀是中文，以前只能把里面的英文单词挑出来念，
+     孩子听到的就是「am … are … is …」蹦几个单词，根本听不出是口诀。
+     现在优先用系统中文语音把整句口诀念出来（零网络、零第三方请求）；
+     设备确实没有中文语音时，才退回「念英文关键词」，并如实说明一句。 */
 function playChant() {
   const lv = GRAMMAR_LEVELS[curLevel];
-  // 提取口诀里出现的英文单词（去重，保留出现顺序）
-  const words = [...new Set((lv.chant.match(/[A-Za-z']+/g) || []).map(w => w.replace(/'s$/, '')))].filter(w => w.length > 1);
-  if (!words.length) { toast('🎵 大声跟着屏幕上的口诀念两遍吧！'); return; }
+  const chant = String(lv.chant || '');
+  if (typeof speakZh === 'function' && speakZh(chant, 0.95)) { toast('🎵 跟着念两遍吧！'); return; }
+  if (!Store.d.soundOn) { toast('🔇 声音关着呢，跟着屏幕念两遍吧'); return; }
+  const words = [...new Set((chant.match(/[A-Za-z']+/g) || []).map(w => w.replace(/'s$/, '')))].filter(w => w.length > 1);
+  if (!words.length) { toast('🎵 跟着屏幕上的口诀念两遍吧！'); return; }
   speakChain(words.map(w => ({ text: w, rate: 1 })));
-  toast('🎵 跟着念两遍吧！');
+  toast('🎵 这台设备没有中文语音，先听关键词，跟着屏幕念两遍吧');
 }
 
 renderLevels();
