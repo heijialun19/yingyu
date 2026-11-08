@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-08.10';
+const BUILD = '2026-11-08.11';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1298,6 +1298,34 @@ window.__emojiSvgReady = function () {
   } catch (e) { /* 升级失败就保持字体字形，绝不影响功能 */ }
 };
 if (window.WORD_EMOJI) window.__emojiSvgReady();    // 图库比 app.js 先到的情形
+
+/* ================= emoji 图库的加载时机（2026-11-08 晚）=================
+   emoji-svg.js 是全站最大单体（原始 870KB / gzip 297KB）。原来是 HTML 里的
+   <script async>，虽然不挡渲染，但**会和首屏阻塞脚本抢带宽**——
+   实测用户在 13~21KB/s 的窄带下，297KB 的图库能把 app.js/words-data 的下载
+   拖后十几秒，屏幕就停在浏览器自己的「服务器正在响应」转圈上。
+   现在改成由这里注入：
+     · 正常网速：立刻注入（和以前的 async 行为一致）
+     · 慢网（2g/3g/省流量）：等 load + 空闲再下，先把页面跑起来，
+       图标稍后由 __emojiSvgReady() 就地升级（本来就有这个机制）
+   页面里不再写 <script src="svg/emoji-svg.js">，避免绕开这个门。 */
+(function () {
+  const load = () => {
+    if (window.WORD_EMOJI) return;                   // 已经到了（file:// 内联兜底等）
+    const s = document.createElement('script');
+    s.src = 'svg/emoji-svg.js?v=5';
+    s.async = true;
+    s.onerror = () => {};                            // 拉不到就保持字体字形，不影响功能
+    (document.head || document.documentElement).appendChild(s);
+  };
+  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+  const slow = !!(conn.saveData || /^(slow-)?2g|3g$/.test(conn.effectiveType || ''));
+  if (!slow) { load(); return; }
+  const idle = fn => (typeof requestIdleCallback === 'function')
+    ? requestIdleCallback(fn, { timeout: 6000 }) : setTimeout(fn, 800);
+  if (document.readyState === 'complete') idle(load);
+  else window.addEventListener('load', () => idle(load));
+})();
 
 /* 立刻闭嘴：所有在途音频解除回调并暂停（翻页/切题/点新词时用） */
 /* 音频链状态（在 stopAllSpeech 里用到，所以声明必须在它之前，

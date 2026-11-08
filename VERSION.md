@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v78 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v79 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v33 | 1000 词词库 |
 | js/data.js | v37 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v136 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v137 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -77,6 +77,47 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-08.11 慢网提速：页面秒开 + 图库让路（别改回去）
+
+**用户反馈**：手机上「经常」出现浏览器自己的白屏转圈（截图是
+「服务器正在响应，请稍候」/「正在努力加载」），状态栏网速只有 13~21KB/s。
+
+### 诊断（先量再改）
+那两个转圈是**浏览器的首字节等待**，不是站内加载层 —— HTML 还没回来。
+量了一下关键路径（gzip 后）：index 首屏约 167KB；
+其中 `svg/emoji-svg.js` 单文件 gzip 297KB，是全站最大单体。
+在 20KB/s 的链路上，光这一个图库就要 15 秒，而且它是 async 的，
+**会和首屏阻塞脚本抢带宽**，把 app.js / words-data 的下载一起拖慢。
+
+### 改了三处
+1. **页面导航：网络优先 → 缓存优先 + 后台更新（stale-while-revalidate）**
+   原来在线时每次打开都等 GitHub Pages 的响应头，跨境窄带下必然转圈，
+   而且**每次**都这样 —— 缓存一点忙都帮不上。
+   现在有缓存立刻回页面（老用户秒开），网络请求在后台刷新缓存；
+   发新版本由 version.json 的更新条提示用户点刷新。
+   ⚠️ 绝不在 controllerchange 里 location.reload()（「一加载就弹回上一级」的老 bug）。
+   ⚠️ 代价：发版后老用户看到的是上一版，直到点更新条或下次冷启动。
+     比「每次白屏十几秒」划算；更新条本来就有（4 秒首查 + 5 分钟 + 切前台）。
+2. **emoji 图库改由 app.js 注入**：正常网速立刻下（行为不变）；
+   慢网（2g/3g/省流量）等 load + 空闲再下，图标由 __emojiSvgReady() 就地升级。
+   9 个页面里的 `<script async src="svg/emoji-svg.js">` 全部移除，避免绕开这个门。
+3. **窄带下跳过 SW 的 CORE 后台整包补齐**（30+ 文件约 700KB）。
+   以前 activate 后 1.2 秒就开始后台下，在窄带里就是和首屏抢带宽。
+   缺什么以后用到时由 fetch 分支按需入缓存。
+
+### 没做 / 为什么
+- **没有换托管**。GitHub Pages 在国内的跨境链路是根本瓶颈，代码能救的是
+  「重复访问」和「窄带下的带宽分配」，救不了**首次访问的 TTFB**。
+  如果首次打开还是要十几秒，那只能换国内可达的托管（WorkBuddy 站点托管 /
+  对象存储 + CDN），这是产品决策，留给用户拍板。
+- 没有把 words-data / word-svg 也改异步：首页要用它们渲染内容，
+  异步会造成图标和数字「跳一下」，得不偿失。
+
+### 验证
+- `node --check` 通过；check_facts 85 项全过（含「HTML 与 sw.js CORE/BOOT 版本一致」）。
+- 逻辑上：SWR 命中缓存即返回，后台 netP 由 e.waitUntil 保住生命周期；
+  断网无缓存仍走「同页 → 首页 → 503 明确报错」三级兜底。
 
 ## 2026-11-08.10 字母音 / 拼读块换成母语者录音（别改回去）
 
