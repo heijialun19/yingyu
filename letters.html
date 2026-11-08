@@ -53,16 +53,16 @@
 <script src="js/words-data.js?v=33"></script>
 <script src="svg/word-svg.js?v=3"></script>
 <script src="js/data.js?v=37"></script>
-<script src="js/app.js?v=79"></script>
+<script src="js/app.js?v=80"></script>
 <script defer src="js/audio-list.js?v=2"></script>
 <script src="js/sentence.js?v=48"></script>
 <script>
 renderNav('letters'); renderDecor();
 function skipLetters() {
-  if (confirm('确认：把 26 个字母都标记为已学会？以后直接从单词开始。')) {
+  askConfirm('确认：把 26 个字母都标记为已学会？<br><small style="color:#6B7280">以后直接从单词开始。</small>', function () {
     markAllLettersKnown();
     setTimeout(() => location.href = 'words.html', 800);
-  }
+  });
 }
 
 let cur = 0;

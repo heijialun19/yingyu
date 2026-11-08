@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v79 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v80 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v33 | 1000 词词库 |
 | js/data.js | v37 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v137 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v138 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -77,6 +77,35 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-08.12 头像商店修通：星星终于花得出去（别改回去）
+
+**用户反馈**：「有了星星想换个头像都不行，要星星有啥用？」
+
+### 两个真 bug
+1. **根本换不了当前头像**。头像网格只渲染在「➕ 新建一个档案」里，
+   `pickAvatar()` 也只把选择存进 `__pickedAvatar`（给 createProfile 用）。
+   想给正在用的档案换头像 —— **没有任何入口**。
+2. **`window.confirm` 在手机 WebView 里经常被屏蔽**，被屏蔽时返回 undefined，
+   解锁流程直接 return，用户看到的就是「点了没反应」。
+
+### 改法
+- 档案弹窗在档案列表下面新增**「🖼️ 换个头像」**（不用展开，一进来就看得到）：
+  点一下立刻换当前档案的头像，顶栏/底栏同步；带 🔒 的走星星解锁。
+- `applyAvatar(a, mode)`：mode='profile' 改当前档案（`Profiles.updateActive`），
+  mode='new' 仍然只是新建时用哪个。两个网格用 `data-avatar-target` 区分。
+- 解锁成功后**两个网格里的同一头像一起解锁**（原来只改点中的那个，另一处还挂着 🔒）。
+- 新增 `askConfirm(msg, onOk)` 站内确认框，替换全部 4 处 `window.confirm`：
+  解锁头像 / 删档案 / 家长中心清进度 / 字母岛「全标已会」。
+  顺带修 parents.html 里把 `Profiles.active().name` 当**字面文本**印出来的模板 bug。
+
+### 星星怎么花（说给用户听）
+6 个限定头像：🐼30 🦊30 🐙50 🦄80 🐳80 🦁120。解锁后永久有效（存档内）。
+⚠️ 解锁记录存在**档案数据**里（`Store.d.unlocked`）：换档案要重新解锁。
+如果希望"一台设备解锁一次全家共用"，要改成设备级存储 —— 未做，等用户定。
+
+### 验证
+node --check（app.js + 各页内联脚本）通过；check_facts 全过。
 
 ## 2026-11-08.11 慢网提速：页面秒开 + 图库让路（别改回去）
 

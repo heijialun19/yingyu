@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-08.11';
+const BUILD = '2026-11-08.12';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -153,7 +153,8 @@ const Profiles = {
   switchTo(id) { if (this.meta.list.find(p => p.id === id)) { this.meta.activeId = id; this.saveMeta(); } },
   remove(id) {
     if (this.meta.list.length <= 1) return false; // 至少保留一个档案
-    if (!confirm('确定删除这个档案吗？它的全部学习进度将无法恢复。')) return false;
+    /* 确认框由调用方弹（askConfirm）：window.confirm 在手机 WebView 里常被屏蔽，
+       屏蔽时返回 undefined = 直接当成"取消"，用户看到的是「删不掉」。 */
     try { localStorage.removeItem(this.dataKey(id)); } catch (e) {}
     this.meta.list = this.meta.list.filter(p => p.id !== id);
     if (this.meta.activeId === id) this.meta.activeId = this.meta.list[0].id;
@@ -1858,6 +1859,14 @@ function openProfileModal() {
         <h2>👤 小伙伴档案</h2>
         <p style="font-size:.8rem;color:#5C6273;margin:4px 0 10px">一台电脑可以有多个小朋友，每人一份独立进度，互不打扰！</p>
         <div class="profile-list">${rows}</div>
+        <div style="margin-top:14px" data-avatar-target="profile">
+          <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+            <b style="font-size:.95rem">🖼️ 换个头像</b>
+            <small style="color:#5C6273">现在是 <span id="curAvatarEcho">${p.avatar}</span> · ⭐ 当前 <b>${Store.d.stars}</b> 颗</small>
+          </div>
+          <small style="display:block;color:#5C6273;margin:4px 0 8px">点一下就换好。带 🔒 的用星星解锁，解锁后永久有效。</small>
+          <div class="avatar-grid">${AVATARS.map(a => avatarChipHtml(a, a === p.avatar)).join('')}</div>
+        </div>
         <div style="display:flex;gap:8px;margin-top:12px">
           <button class="btn ghost" style="flex:1" onclick="toggleSoundQuick();this.textContent=Store.d.soundOn?'🔊 声音：开':'🔇 声音：关'">🔊 声音：${Store.d.soundOn ? '开' : '关'}</button>
           <button class="btn mint" style="flex:1" onclick="testSound()">🎵 测试声音</button>
@@ -1875,7 +1884,7 @@ function openProfileModal() {
           <div style="margin-top:10px">
             <input id="newName" type="text" placeholder="小伙伴的名字" maxlength="10" style="width:100%;padding:10px 14px;border:3px solid var(--lemon);border-radius:14px;font-family:inherit;font-size:.95rem">
             <small style="display:block;color:#5C6273;margin-top:8px">⭐ 当前有 <b>${Store.d.stars}</b> 颗星星 · 带 🔒 的头像用星星解锁，永久有效</small>
-            <div class="avatar-grid" style="margin-top:8px">
+            <div class="avatar-grid" style="margin-top:8px" data-avatar-target="new">
               ${AVATARS.map(a => avatarChipHtml(a, false)).join('')}
             </div>
             <div class="theme-tabs" style="margin-top:10px">
@@ -1924,26 +1933,74 @@ function avatarChipHtml(a, selected) {
   const locked = avatarLocked(a);
   return `<button class="avatar-chip ${selected ? 'on' : ''} ${locked ? 'locked' : ''}" data-a="${a}" ${locked ? `data-price="${AVATAR_PRICES[a]}"` : ''} onclick="avatarTap(this)">${a}${locked ? '<i class="lock-mark">🔒</i>' : ''}</button>`;
 }
+/* 轻量确认框。原因：手机浏览器 / 内置 WebView 经常屏蔽 window.confirm，
+   被屏蔽时它返回 undefined，用户看到的就是「点了没反应」——
+   2026-11-08 用户反馈「有了星星想换个头像都不行」，一半就栽在这里。 */
+function askConfirm(msg, onOk) {
+  const old = document.getElementById('askMask'); if (old) old.remove();
+  document.body.insertAdjacentHTML('beforeend', `
+    <div class="modal-mask" id="askMask" onclick="if(event.target===this)this.remove()">
+      <div class="modal card" style="max-width:340px">
+        <p style="font-size:.95rem;line-height:1.8;margin:8px 0 18px">${msg}</p>
+        <div style="display:flex;gap:10px">
+          <button class="btn ghost" style="flex:1" onclick="document.getElementById('askMask').remove()">再想想</button>
+          <button class="btn mint" style="flex:1" id="askOkBtn">确定</button>
+        </div>
+      </div>
+    </div>`);
+  document.getElementById('askOkBtn').onclick = function () {
+    document.getElementById('askMask').remove();
+    if (onOk) onOk();
+  };
+}
 function avatarTap(btn) {
-  if (!btn.dataset.price) { pickAvatar(btn); return; }
-  const a = btn.dataset.a, price = parseInt(btn.dataset.price, 10);
-  if (Store.d.stars < price) { sfx.wrong(); toast(`🎈 解锁 ${a} 需要 ${price} 颗星星，还差 ${price - Store.d.stars} 颗，继续加油！`); return; }
-  if (!confirm(`用 ${price} 颗星星解锁头像 ${a} 吗？解锁后永久有效。`)) return;
-  Store.d.stars -= price;
-  Store.d.unlocked = Store.d.unlocked || {};
-  Store.d.unlocked[a] = true;
-  Store.save(); updateNavStats(); checkBadges();
-  btn.classList.remove('locked'); btn.removeAttribute('data-price');
-  const lk = btn.querySelector('.lock-mark'); if (lk) lk.remove();
-  sfx.win(); confetti(); toast(`🎉 解锁成功！${a} 加入你的小伙伴啦`);
-  pickAvatar(btn);
+  const a = btn.dataset.a;
+  const grid = btn.closest('[data-avatar-target]');
+  const mode = grid ? grid.getAttribute('data-avatar-target') : 'new';
+  if (!btn.dataset.price) { applyAvatar(a, mode, btn); return; }
+  const price = parseInt(btn.dataset.price, 10);
+  if (Store.d.stars < price) {
+    sfx.wrong();
+    toast(`🎈 解锁 ${a} 需要 ${price} 颗星星，还差 ${price - Store.d.stars} 颗，继续加油！`);
+    return;
+  }
+  askConfirm(`用 <b>${price}</b> 颗星星解锁头像 ${a} 吗？<br><small style="color:#6B7280">解锁后永久有效，马上就能用上。</small>`, function () {
+    Store.d.stars -= price;
+    Store.d.unlocked = Store.d.unlocked || {};
+    Store.d.unlocked[a] = true;
+    Store.save(); updateNavStats(); checkBadges();
+    /* 两个网格里的同一个头像一起解锁，别只改点中的那个 */
+    document.querySelectorAll('.avatar-chip').forEach(b => {
+      if (b.dataset.a !== a) return;
+      b.classList.remove('locked'); b.removeAttribute('data-price');
+      const lk = b.querySelector('.lock-mark'); if (lk) lk.remove();
+    });
+    sfx.win(); confetti(); toast(`🎉 解锁成功！${a} 加入你的小伙伴啦`);
+    applyAvatar(a, mode, btn);
+  });
 }
-function pickAvatar(btn) {
+/* mode='profile' → 立刻换当前档案的头像；mode='new' → 只是新建档案时用哪个 */
+function applyAvatar(a, mode, btn) {
   document.querySelectorAll('.avatar-chip').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on'); __pickedAvatar = btn.dataset.a;
+  btn.classList.add('on');
+  if (mode === 'profile') {
+    Profiles.updateActive({ avatar: a });
+    updateNavStats();
+    const echo = document.getElementById('curAvatarEcho'); if (echo) echo.textContent = a;
+    const rowPa = document.querySelector('.profile-row.on .pa'); if (rowPa) rowPa.textContent = a;
+    toast(`🖼️ 头像换成 ${a} 啦`);
+  } else {
+    __pickedAvatar = a;
+  }
 }
+function pickAvatar(btn) { applyAvatar(btn.dataset.a, 'new', btn); }   /* 兼容旧调用 */
 function switchProfile(id) { Profiles.switchTo(id); location.reload(); }
-function removeProfile(id) { if (Profiles.remove(id)) location.reload(); }
+function removeProfile(id) {
+  const p = Profiles.meta.list.find(x => x.id === id);
+  askConfirm(`确定删除档案 <b>${esc(p ? p.name : '')}</b> 吗？<br><small style="color:#6B7280">它的全部学习进度将无法恢复。</small>`, function () {
+    if (Profiles.remove(id)) location.reload();
+  });
+}
 function createProfile() {
   const name = (document.getElementById('newName').value || '').trim() || '小朋友';
   const avatar = __pickedAvatar || '🐤';
