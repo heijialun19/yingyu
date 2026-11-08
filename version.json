@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-08.26",
-  "note": "音标显示与准确性修正：pep.html 音标双斜杠 //muv// 修成 /muv/（IPA 自带斜杠又加了一对）；chocolate /ɔ/→/ɑ/、beautiful /ə/→/ɪ/、every 去多余 schwa。ASR 抽查 8 词音频全对。ipa.js v4。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
+  "build": "2026-11-08.27",
+  "note": "PEP_IPA 表大修：清掉 5 条混入的记忆法文本（orange/cake/ruler/bread/train）；英式→美式 230 条（əʊ→oʊ、ɒ→ɑ、ɜː→ɜr、juː→ju）；补重音符号。eraser 音标从英式 ɪreɪzə 改为美式 ɪˈreɪsər。pep-points v14。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
 }
