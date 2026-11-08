@@ -76,6 +76,54 @@
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
 
+## 2026-11-08.6 教学内容大校对（别改回去）
+
+**背景**：用户指出「一眼就能看出 bug，那知识性错误岂不是误导小朋友」。
+之前的检查几乎都是机器可验证项（文件、版本、报错、音频是否存在），
+知识正确性没逐条读过。这一轮把教学内容导出成可读文本，逐条读 + 机器对账。
+
+1. **词性**：主题只能给一个默认词性，但同主题内词性并不统一。实测 82 个词错：
+   classroom 整主题 pos='v'（word/sentence/question 全成动词）、sport 全标 n
+   （skate/ride/throw/catch 是动词）、shop2 全标 n（buy/sell/pay 是动词）、
+   health 的 healthy/sick/ill/safe 标 n、feeling 的 feel/smile 标 adj、
+   self 的 am/is/are 标 pron、prep1 的 and/or/but/so/because/if 标 prep、
+   question2 的 everyone/anyone 标 qw、country 的 foreign/abroad 标 n…
+   → `W()` 增加第 5 个参数 pos（逐词覆盖），主题默认只作兜底。
+2. **音标** 35 处：重音错位（giraffe /dʒˈəræf/、koala /kˈoʊɑlə/、garage、direction、
+   correct、arrive、around、kangaroo）、双主重音（thirteen/fourteen/seventeen/nineteen/
+   baseball/TV/outside）、-ɪ- 弱化成 -ə-（biscuit/ticket/jacket/rabbit/practice/
+   dentist/artist/excited/medicine/vitamin/penguin）、拼写错（toothbrush 的 brush、
+   usually 多了 w、beyond 少 j、reusable 少 j、however 重音错）。
+3. **自动出题的语法错误**：
+   - 不可数词进了 a/an 与复数模板 → `UNCOUNTABLE` 补 chicken（本站义为"鸡肉"）、
+     breakfast、lunch、dinner。
+   - 中文量词按主题给（food='份'、fruit='个'），出现"一个飞机""一个自行车"
+     "两个奶牛""两个鸡肉""两个早餐"。→ `MW_BY_WORD` 按词精确（架/艘/辆/本/支/
+     朵/棵/头/匹/颗/件/条/顶/片/块），主题只作兜底；`havePlural` 的"两个"也改成
+     读量词（原来硬编码）。
+   - 否定句中文是病句「她不有饺子」「它不有书包」「她不看见熊」→ 新增
+     `GX_VOBJ_NEG`（没有/看不见/不想要/不吃）。
+   - 否定句中文末尾带问号（「她不累？」）→ 问号只在疑问句。
+   - can 疑问句中文主谓不一致（Can you speak? 配「我会说话吗？」）→ 主语跟
+     `GX_Q_SUBJ` 走。
+   - 「小猫正在飞」→ `ING_VERBS` 去掉 fly（自动题主语固定是猫）。
+   - 「秋千在床上」「自行车在椅子上」→ whereIs 里玩具只配 floor。
+   - 家庭关出 "This is a mom." → thisIs 排除 family 主题。
+4. **单词页跟读句**（words.html）原来是三个死模板
+   `I see a ${w}` / `This is ${w}` / `I like ${w}`，按词长取模选，会让孩子跟读
+   "I see a apple." / "This is cat."。改为按语法属性生成：`takesArticle` 才加
+   a/an（`artOf` 按读音）、`pluralSafe` 才用复数、形容词动词不进来、
+   本身是复数形的词条（children/people）不再加 s。words.html 因此要加载
+   `js/grammar-engine.js`（已在 SW CORE 里）。
+5. **PEP 知识点** 273 卡：中英例句齐全、问号句号一致、无英文残留；
+   修掉一处笔误（"foxes fox" → "fox→foxes"）。
+6. **称呼语不加冠词**：sir/miss/mr/mrs/ms/madam 进 `NO_ARTICLE`，
+   否则会生成 "I see a sir."。
+
+⚠️ **教训**：机器只能证明"文件在、能跑、对得上"，证明不了"教得对"。
+以后改词库/出题模板/课程文案，必须把内容导出成可读文本抽读，
+并对同一句做"英文语法 + 中文表达 + 中英对应"三向检查。
+
 ## 2026-11-08.5 去掉「念口诀」按钮（别再加回来）
 
 - 2026-11-08.4 曾给句子工厂的「🔊 念口诀」加系统中文语音（`speakZh()`）。

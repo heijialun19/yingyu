@@ -26,7 +26,7 @@ const PEP_POINTS = {
       { t: 'like 是个小钩子', kid: '我喜欢狗：I like dogs.——like 后面直接挂喜欢的东西，不需要加"是"。喜欢一类东西时，狗要变成 dogs（复数）。', tip: 'like 一勾，挂上名词', en: 'I like dogs and cats.', zh: '我喜欢狗和猫。' },
       { t: '形容词是名词的标签', kid: 'giraffe is tall（长颈鹿高），rabbit is fast（兔子快）——这类词叫形容词，专门给名词"贴标签"，告诉你它长什么样。', tip: '形容词 = 名词的标签', en: 'The giraffe is tall.', zh: '长颈鹿很高。' },
       { t: '问"它是什么"用 What', kid: 'What is it?（它是什么？）答 It is a panda.——What 问"东西/名字"，回答用 It is...。注意别答成 This is。', tip: 'What 问物，It is 答', en: 'What is it? It is a panda.', zh: '它是什么？它是大熊猫。' },
-      { t: '复数加 s 的三个小规矩', kid: '一般加 s（cats）；s/x/ch/sh 结尾加 es（foxes fox、boxes 盒子）；辅音+y 变 i 加 es（baby→babies）。考试笔试题就考这三条！', tip: '加 s、加 es、y 变 i 加 es', en: 'I see three foxes.', zh: '我看见三只狐狸。' },
+      { t: '复数加 s 的三个小规矩', kid: '一般加 s（cats）；s/x/ch/sh 结尾加 es（fox→foxes、box→boxes）；辅音+y 变 i 加 es（baby→babies）。考试笔试题就考这三条！', tip: '加 s、加 es、y 变 i 加 es', en: 'I see three foxes.', zh: '我看见三只狐狸。' },
     ],
     u4: [
       { t: 'can 罩住的动词不变身', kid: 'I can water the flowers.——can（能）后面接的动词永远是原样，不能加 s 也不能变形。can 像一个保护罩，罩住动词。', tip: 'can 罩住的动词不变身', en: 'I can water the flowers.', zh: '我会浇花。' },

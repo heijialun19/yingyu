@@ -321,7 +321,9 @@ const LETTERS = [
 ];
 
 /* 进行时安全动词（-ing 拼写规则简单） */
-const ING_VERBS = ['eat','sing','jump','read','sleep','play','fly','draw','cry','laugh','drink','dance'];
+/* 自动题的主语固定是「小猫」——fly 放进来会出「小猫正在飞」，所以不在这里。
+   小鸟飞由静态题单独教。 */
+const ING_VERBS = ['eat','sing','jump','read','sleep','play','draw','cry','laugh','drink','dance'];
 /* 现在分词要一个个写死，不能用 v+'ing' 拼——dance→danceing 就是这么错的。
    （出题引擎只认这张表，表里没有的动词不会出现在题目里） */
 const ING_FORM = { eat:'eating', sing:'singing', jump:'jumping', read:'reading', sleep:'sleeping',

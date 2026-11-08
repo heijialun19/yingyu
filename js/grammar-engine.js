@@ -449,8 +449,11 @@ function gxThirdItem(verb, zh, subj) {
 
 /* ---------------- 名词规则（句子工厂与游戏共用） ----------------
    不可数名词：既不能加 a/an，也不能加 s。
-   注意 fish / chicken 不算在内——「a fish」「a chicken」都对，
-   fish 只是复数同形（走 IRREG_PLURAL），chicken 正常加 s。 */
+   fish 不算在内（a fish 对，复数同形走 IRREG_PLURAL）。
+   ⚠️ chicken 必须算不可数（2026-11-08）：本站 chicken 的释义是「鸡肉」，
+   生成 "There is a chicken over there."（那边有一只鸡）/"two chickens"（两份鸡肉）
+   都和中文词义对不上，直接教错。breakfast / lunch / dinner 同理——
+   小学阶段说 have breakfast，不说 a breakfast、two breakfasts。 */
 const UNCOUNTABLE = new Set(['bread','milk','water','juice','rice','meat','soup','tea',
   'coffee','butter','cheese','food','ice','grass','snow','rain','paper','money',
   'music','homework','sugar','salt','fruit','news',
@@ -459,7 +462,8 @@ const UNCOUNTABLE = new Set(['bread','milk','water','juice','rice','meat','soup'
      There is a traffic over there. 下面这些既没有复数，也不能加 a/an。 */
   'work','housework','magic','nature','pollution','peace','space','air','smoke',
   'sand','wood','land','health','pain','sweat','rest','weather','traffic','luggage',
-  'glue','porridge','chocolate','pork','beef','information','advice','fun']);
+  'glue','porridge','chocolate','pork','beef','information','advice','fun',
+  'chicken','breakfast','lunch','dinner']);
 /* 只有复数形式的名词：英语里从不单用，所以既不能加 a/an，也不能当单数主语。
    ★ 2026-10-26 修的 bug：这些词原来被 countable() 判成可数，生成了
      "There is a scissors on the desk" / "This is a pants" 这种错句。
@@ -493,6 +497,8 @@ const countable = w => {
      方位（north/south/east/west）、学科（music/art/science/math/PE）。
      TV 和 T-shirt 是普通可数名词（a TV / a T-shirt），故意不放进来。 */
 const NO_ARTICLE = new Set([
+  /* 称呼语：当面叫人不说 a sir / a miss（2026-11-08 修，原来会生成 I see a sir.） */
+  'sir','miss','mr','mrs','ms','madam',
   // 专有名词：国家 / 语言 / 星期 / 月份 / 节日
   'china','america','england','australia','canada','japan','france','chinese','english','french',
   'monday','tuesday','wednesday','thursday','friday','saturday','sunday',
