@@ -36,7 +36,7 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script src="js/data.js?v=37"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=82"></script>
+<script src="js/app.js?v=83"></script>
 <script defer src="js/audio-list.js?v=2"></script>
 <script src="js/sentence.js?v=48"></script>
 <script src="js/grammar-engine.js?v=6"></script>
@@ -138,15 +138,24 @@ function getPlayPool(mode, filter) {
 function gListen() {
   const total = 10;
   const S = { idx: 0, score: 0, first: true, qs: [] };
+  /* ★ 一轮只考一种（2026-11-08 用户反馈：两张截图一题「听字母名」一题「听字母音」，
+     而且旧版两题开头播的都是字母名 —— 孩子根本分不清这题在考什么。
+     现在一轮固定一种，题头大字写明；考完想换就再开一局。 */
+  const mode = Math.random() < 0.5 ? 'name' : 'sound';
+  const modeLabel = mode === 'name' ? '🔤 听字母名（A 读 /eɪ/）' : '📢 听字母音（A 读 /æ/）';
   /* 字母音里 C 和 K 都是 /k/：sound 模式下同题出现 = 两个正确答案，孩子怎么选都"错"。
      出题时把同音的另一个字母排除掉。其余 24 个音各不相同。 */
   const SOUND_TWIN = { C: 'K', K: 'C' };
+  const used = new Set();
   for (let i = 0; i < total; i++) {
-    const right = LETTERS[Math.floor(Math.random() * 26)];
+    /* 一轮里不重复出同一个字母（原来 10 题可能撞车，孩子会觉得"怎么又问这个"） */
+    const pool = LETTERS.filter(l => !used.has(l.L));
+    const right = pool.length ? pool[Math.floor(Math.random() * pool.length)] : LETTERS[Math.floor(Math.random() * 26)];
+    used.add(right.L);
     const twin = SOUND_TWIN[right.L];
     const opts = shuffle([right,
       ...shuffle(LETTERS.filter(l => l.L !== right.L && l.L !== twin)).slice(0, 3)]);
-    S.qs.push({ right, opts, mode: Math.random() < 0.5 ? 'name' : 'sound' });
+    S.qs.push({ right, opts, mode });
   }
   window._listenNext = function () {
     Flow.reset();                     // 新一题：作废上一题的自动推进（否则退出后会被拽回来）
@@ -161,7 +170,8 @@ function gListen() {
     const isName = q.mode === 'name';
     $('#app').innerHTML = `
       <div class="card" style="max-width:620px;margin:0 auto;text-align:center">
-        <div class="score-bar"><b>👂 听音选字母</b><span>第 ${S.idx + 1} / ${total} 题 · ✅ ${S.score}</span></div>
+        <div class="score-bar"><b>👂 听音选字母 · ${isName ? '字母名' : '字母音'}</b><span>第 ${S.idx + 1} / ${total} 题 · ✅ ${S.score}</span></div>
+        <div class="explain" style="margin:2px 0 0">${modeLabel} —— 这一轮都考这个</div>
         <button class="btn coral big" style="font-size:1.6rem;margin:8px 0 14px" onclick="_listenSay()">${isName ? '🔤 听字母名' : '📢 听字母音'}</button>
         <div class="opt-row">
           ${q.opts.map(o => `<button class="opt" onclick="listenAns(this,'${o.L}')" style="font-size:1.9rem">${o.L}${o.L.toLowerCase()}</button>`).join('')}

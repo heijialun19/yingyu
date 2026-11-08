@@ -15,7 +15,7 @@ const AUDIO_CACHE = 'birdie-audio-v3';   // 每次重做音频换新名，旧的
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=48', './js/words-data.js?v=33', './svg/word-svg.js?v=3', './js/data.js?v=37', './js/app.js?v=82', './js/sentence.js?v=48', './js/speech.js?v=1', './js/grammar-engine.js?v=6', './js/ipa.js?v=3', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=11', './svg/emoji-svg2.js?v=3',
+  './css/style.css?v=48', './js/words-data.js?v=33', './svg/word-svg.js?v=3', './js/data.js?v=37', './js/app.js?v=83', './js/sentence.js?v=48', './js/speech.js?v=1', './js/grammar-engine.js?v=6', './js/ipa.js?v=3', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=11', './svg/emoji-svg2.js?v=3',
   './manifest.json', './js/audio-list.js?v=2', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
@@ -24,7 +24,7 @@ const CORE = [
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
   './', './index.html', './css/style.css?v=48',
-  './js/app.js?v=82', './js/data.js?v=37'
+  './js/app.js?v=83', './js/data.js?v=37'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
