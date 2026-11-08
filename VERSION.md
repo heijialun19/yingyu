@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v91 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v92 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v38 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v145 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v146 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -77,6 +77,36 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-08.24 文档一致性扫尾（主动全站扫）
+
+**用户反馈**：「还有没有其他漏的或者其他错的？为啥不弄？」—— 说得对，不该等他找。
+
+### 扫出 6 处文档-实际不一致，全修
+| 问题 | 位置 | 严重度 |
+|---|---|---|
+| **README.txt 两处「同一个说话人」**（字母音已是母语者录音） | README.txt:16,123 | **披露错误** |
+| README 字母岛写「字母名/代表词」，漏了字母音 | README.md:26 | 知识性 |
+| README 写「页面网络优先」，实际已改「缓存优先」 | README.md:44 | 不一致 |
+| README.txt 写「备份与恢复」，已改名「备份与同步」 | README.txt:31 | 过时 |
+| OG 描述写「按年级分主题」（用户要求去年级标签） | index.html | 轻微 |
+| sitemap 缺 404.html | sitemap.xml | 轻微 |
+
+### 确认干净的（扫过无问题）
+- 声音按钮-行为一致性（28 个按钮逐条对了）
+- 原生 confirm/alert/prompt 清零、死按钮 0、死链 0
+- 音频覆盖（1440 个词全部有音频，之前误报 17 个是正则问题）
+- 数字对账（游戏 7 / 词 1000 / 句 497 / 音频 2903 / 语法 19 关）
+- 语法页年级标注已清、TODO 无实际占位
+
+### 门禁 +4（第 12 节，共 102 项）
+文档-实际一致性：不许说「同一个说话人」、不许说「网络优先」、
+字母岛描述必须含「字母音」、不许用旧名「备份与恢复」。
+
+### 根因（又一次）
+**改了产品的一部分，相关披露文案没全扫**。换母语者录音时改了 disclaimer
+的细节段，但 README.txt 的结论句漏了。以后改「事实」必须 grep 全站所有
+提到该事实的文件。门禁就是抓这个的。
 
 ## 2026-11-08.23 备份/同步合并 + 免责声明纠偏
 

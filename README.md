@@ -23,7 +23,7 @@
 
 ```
 index.html      首页：学习地图 + 今日任务 + 每日复习提醒
-letters.html    字母岛：26 个字母的象形故事 + 自然拼读（字母名 / 代表词，各读一遍）+ 拼音小桥梁
+letters.html    字母岛：26 个字母的象形故事 + 自然拼读（字母名 / 字母音 / 代表词，各读一遍）+ 拼音小桥梁
 words.html      单词镇：6 个年级 × 61 个主题 = 1000 词，学认练玩 + 拆拆看 + 中英搜索 + 艾宾浩斯复习
 grammar.html    句子工厂：万能公式 19 关（三阶段），第二阶段起造句题从单词镇词库实时生成
 games.html      游戏乐园：7 个游戏（听音选字母 / 图词翻翻乐 / 拼词小火车 / 句子火车员 / 听句选图 / 造词实验室 / 拼读闯关），优先复习学过的词
@@ -41,7 +41,7 @@ audio/phonics/  26 个字母音 + 13 个拼读块（自然拼读 letter sound / 
 svg/            word-svg.js 自绘图 + emoji-svg.js / emoji-svg2.js 内置矢量图库
 js/app.js       共享运行时（进度存储 / 语音 / 音效 / 星星徽章 / 打卡 / 安装引导）
 js/sentence.js  句子朗读引擎（词组连读 / 逐词高亮跟读 / 失败自动降级）
-sw.js           Service Worker：离线可用 + 发音缓存 + 页面网络优先
+sw.js           Service Worker：离线可用 + 发音缓存 + 页面缓存优先（老用户秒开，新版本走更新条）
 manifest.json   PWA 清单：名称 / 主题色 / 图标 / 独立窗口
 js/audio-list.js 发音清单（2450 条 slug，构建产物，defer 加载）
 THIRD-PARTY-NOTICES.txt / LICENSE 第三方素材许可与本站授权范围
