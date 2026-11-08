@@ -1480,15 +1480,22 @@ const PEP_IPA = {
 };
 /* 音标查询：补充表 → ipa.js 借用（返回裸音标，不含斜杠） */
 function pepIpaOf(w) {
-  const s = String(w.w || w).toLowerCase();
-  if (PEP_IPA[s]) return PEP_IPA[s];
-  if (typeof ipaOf === 'function') {
-    try {
-      let v = String(ipaOf(s) || '');
-      return v ? v.replace(/^\/+|\/+$/g, '') : '';
-    } catch (e) { return ''; }
+  /* ★ 2026-11-08 修两个 bug（用户截图 Thursday 没音标 / start 有字没斜杠）：
+     ① 大小写不敏感——原来只用 toLowerCase() 查，PEP_IPA 和 ipa.js 的键是
+        「Thursday」（大写 T），小写查两边都落空 → 音标整行没了。
+     ② 不许剥斜杠——原来 replace(/^\/+|\/+$/g,'') 把 /stɑrt/ 剥成 stɑrt，
+        看起来像把单词又打一遍。PEP_IPA 的值本身不带斜杠，所以统一在这包一层：
+        输出永远是 /…/ 一对斜杠，显示端直接印。 */
+  const raw = String(w.w || w);
+  const s = raw.toLowerCase();
+  const cap = s.charAt(0).toUpperCase() + s.slice(1);
+  let v = PEP_IPA[raw] || PEP_IPA[s] || PEP_IPA[cap] || '';
+  if (!v && typeof ipaOf === 'function') {
+    try { v = String(ipaOf(raw) || ''); } catch (e) { v = ''; }
   }
-  return '';
+  if (!v) return '';
+  v = String(v).trim().replace(/^\/+|\/+$/g, '');
+  return v ? '/' + v + '/' : '';
 }
 
 /* ---- 记忆法借用：单词镇 1000 词库同名词的 dec（记法） ---- */

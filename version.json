@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-08.28",
-  "note": "英式残留清零：PEP_IPA 的 BATH 音（grass/classmate/plant/card/garden 的 ɑː→æ 或 ɑr）+ 长音符 12 处全清。主字典 ipa.js 0 英式 0 长音符（已验证）。ASR 抽查 grass/classmate/tomato 音频全对。pep-points v15。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
+  "build": "2026-11-08.29",
+  "note": "音标查找修两个 bug：①大小写不敏感（Thursday/Monday 等大写键用小写查落空→音标整行消失）②pepIpaOf 不再剥斜杠（/stɑrt/ 曾印成 stɑrt，像把单词又打一遍）。统一由 ipaOf/pepIpaOf 输出 /…/ 一对斜杠。app v97 / pep-points v16。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
 }

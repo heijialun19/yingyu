@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-08.28';
+const BUILD = '2026-11-08.29';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -967,8 +967,19 @@ function stopAllSpeechExcept(keep) {
 }
 
 /* 音标：ipa.js 只在单词页加载，别的页面没有这个全局变量 */
+/* ★ 2026-11-08：两处修正——
+   ① 大小写不敏感。ipa.js 里星期/月份/国名是首字母大写键（Thursday、Monday…），
+     直接 IPA[w] 查「thursday」会落空 → 音标整行消失（用户截图 Thursday 就是这个）。
+   ② 统一输出 /…/ 一对斜杠。各显示端都直接印这个值，谁也不许再补斜杠
+     （pep.html 曾补成 //muv//，删补丁时又变成了没斜杠）。 */
 function ipaOf(w) {
-  return (typeof IPA !== 'undefined' && IPA[w]) || '';
+  if (typeof IPA === 'undefined') return '';
+  const raw = String(w == null ? '' : w);
+  const hit = IPA[raw] || IPA[raw.toLowerCase()]
+    || IPA[raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase()] || '';
+  if (!hit) return '';
+  const v = String(hit).trim().replace(/^\/+|\/+$/g, '');
+  return v ? '/' + v + '/' : '';
 }
 
 /* 颜色词的图：emoji 里根本没有"灰色圆点"这类符号，硬凑就会出现 grey=🐈 这种错。
