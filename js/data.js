@@ -169,8 +169,8 @@ const posInfo = p => POS_INFO[p] || POS_INFO.n;
      不用 jai/kai 这种读音不对的近似词。
    words: 3个代表词，第一个总是以该字母开头 */
 const LETTERS = [
-  { L:'A', nameEn:'ay', v:true, shape:'小鸟', emoji:'🐦', color:'#FF6B6B', s:'ah', szh:'/æ/ 大嘴“哎”',
-    story:'大写 A 像小鸟张开的两只翅膀。小鸟张开嘴巴"啊——"地唱歌，a 的读音就藏在这里！',
+  { L:'A', nameEn:'A', v:true, shape:'小鸟', emoji:'🐦', color:'#FF6B6B', s:'ah', szh:'/æ/ 大嘴“哎”',
+    story:'大写 A 像小鸟张开的两只翅膀。小鸟张大嘴巴“哎——”地唱歌，a 的读音 /æ/ 就藏在这里！',
     words:[ {w:'apple',zh:'苹果',e:'🍎',dec:'a 小鸟开头的词——小鸟最爱吃苹果！'},
             {w:'ant',zh:'蚂蚁',e:'🐜',dec:'小小的 a，小小的蚂蚁。'},
             {w:'cat',zh:'小猫',e:'🐱',dec:'c 小手抓 + a 唱歌 + t 说话 = 小猫抓老鼠喵喵叫！'} ]},
