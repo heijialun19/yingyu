@@ -14,8 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v88 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/words-data.js | v37 | 1000 词词库 |
+| js/app.js | v89 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/words-data.js | v38 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v142 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v143 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -77,6 +77,28 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-08.21 记忆法批次 5（最后一批，第 801–999 条，改 199 条）—— 797/999 全部完成
+
+**有惊喜感的**：
+- both 来自古英语 bā þā（那两个）——tw- 词族（二）：two、twice、between、twenty
+- police 来自拉丁 polis（城市）——police 就是「城市管理」，politics 政治同根
+- thing 原是「集会上讨论的东西」（古英语 þing 集会）
+- not 来自古英语 nāwiht（没有东西）——not 和 naught/nothing 同源
+- person 来自拉丁 persona（面具）——person 原是「面具/角色」
+- neighbour = neigh-（近）+ bour（家）：住在附近的人
+- very 来自拉丁 verus（真的）——very 原意是「真的」！
+- praise 来自拉丁 pretium（价值）——praise 就是「说你有价值」，price 同根
+
+### 记忆法升级全部完成（2026-11-08 一天内五批）
+| 批次 | 范围 | 改动 | 代表 |
+|---|---|---|---|
+| 1 | 0–199 | 195 | thank←think、doctor=教 |
+| 2 | 200–399 | 199 | hamburger=汉堡城（非火腿）、window=风的眼 |
+| 3 | 400–599 | 199 | Sept=七/Oct=八、星期=神名 |
+| 4 | 600–799 | 200 | money=铸钱女神、noon=第九小时、China=秦 |
+| 5 | 800–998 | 199 | both=那两个、police=城市、person=面具 |
+| **合计** | | **797** | 词序/释义/词性零改动 |
 
 ## 2026-11-08.20 记忆法批次 4（第 601–800 条，改 200 条）
 
