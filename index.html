@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
-<!-- ⚠ 下面两个 meta 里的数字（1000 词 / 19 关 / 6 游戏）必须与
+<!-- ⚠ 下面几个 meta 里的数字（1000 词 / 19 关 / 7 游戏）必须与
      words-data.js 的 TOTAL_WORDS、data.js 的 GRAMMAR_LEVELS.length、
-     games.html 的 GAMES.length 对得上。改了数据别忘改这里。 -->
-<meta name="description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子工厂 19 关万能公式，6 个复习游戏，Get Smart 课本同步。安全纯净，进度保存在本机。">
+     js/app.js 的 GAME_COUNT（= games.html 的 GAMES.length）对得上。
+     SEO 文案只能是静态文字，改完请跑 _audit/check_facts.py 校验。 -->
+<meta name="description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子工厂 19 关万能公式，7 个复习游戏，Get Smart 课本同步。安全纯净，进度保存在本机。">
 <meta name="keywords" content="小学英语,一年级英语,英语启蒙,自然拼读,英语听写,小学英语单词,Get Smart,英语学习网站,儿童英语,免费英语学习">
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
@@ -15,12 +16,12 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="小鸟英语乐园 · 一年级英语启蒙">
-<meta property="og:description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子工厂 19 关万能公式，6 个复习游戏。安全纯净，进度保存在本机。">
+<meta property="og:description" content="一年级起步的小学英语学习网站：1000 个必背词汇按年级分主题，字母象形故事 + 自然拼读，句子工厂 19 关万能公式，7 个复习游戏。安全纯净，进度保存在本机。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/index.html">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"小鸟英语乐园 Birdie ABC","url":"https://heijialun19.github.io/yingyu/","applicationCategory":"EducationalApplication","operatingSystem":"Web","description":"小学英语学习：1000 必背词汇、自然拼读、句子工厂、Get Smart 课本同步、6 个复习游戏","offers":{"@type":"Offer","price":"0"},"audience":{"@type":"EducationalAudience","educationalRole":"student","typicalAgeRange":"5-12"}}
+{"@context":"https://schema.org","@type":"WebApplication","name":"小鸟英语乐园 Birdie ABC","url":"https://heijialun19.github.io/yingyu/","applicationCategory":"EducationalApplication","operatingSystem":"Web","description":"小学英语学习：1000 必背词汇、自然拼读、句子工厂、Get Smart 课本同步、7 个复习游戏","offers":{"@type":"Offer","price":"0"},"audience":{"@type":"EducationalAudience","educationalRole":"student","typicalAgeRange":"5-12"}}
 </script>
 <title>小鸟英语乐园 · 一年级英语启蒙</title>
 <link rel="manifest" href="manifest.json">
@@ -107,8 +108,8 @@
 <script src="js/words-data.js?v=32"></script>
 <script src="svg/word-svg.js?v=3"></script>
 <script async src="svg/emoji-svg.js?v=5"></script>
-<script src="js/data.js?v=33"></script>
-<script src="js/app.js?v=69"></script>
+<script src="js/data.js?v=34"></script>
+<script src="js/app.js?v=70"></script>
 <script src="js/sentence.js?v=47"></script>
 <script src="js/getsmart-data.js?v=10"></script>
 <script>
@@ -211,19 +212,19 @@ function showHome() {
 
   const islands = lettersFinished ? [
     { e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html' },
-    { e:'🏫', n:'人教课本', d:'3-6年级拼词', href:'pep.html' },
+    { e:'🏫', n:'人教课本', d:'3-6 年级同步', href:'pep.html' },
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
     { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
-    { e:'🎡', n:'游戏乐园', d:'6个游戏', href:'games.html' },
+    { e:'🎡', n:'游戏乐园', d:GAME_COUNT+'个游戏', href:'games.html' },
     { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
     { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },
   ] : [
     { e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html' },
-    { e:'🏫', n:'人教课本', d:'3-6年级拼词', href:'pep.html' },
+    { e:'🏫', n:'人教课本', d:'3-6 年级同步', href:'pep.html' },
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
     { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
     { e:'🏭', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
-    { e:'🎡', n:'游戏乐园', d:'6个游戏', href:'games.html' },
+    { e:'🎡', n:'游戏乐园', d:GAME_COUNT+'个游戏', href:'games.html' },
     { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },
   ];
   document.getElementById('bigIslands').innerHTML = islands.map(i =>

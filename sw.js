@@ -6,12 +6,16 @@
      （6.6MB 只下一次；重建音频时把 AUDIO_VER 与这里同时 +1）
    - 有道发音：原样转发 + 原样缓存。opaque 响应的 body 读不到、头也改不了，
      所以这里绝不读 body、绝不 new Response 重建（那样会全站失声） */
-const CACHE = 'birdie-abc-v126';
+const CACHE = 'birdie-abc-v127';
 const AUDIO_CACHE = 'birdie-audio-v2';   // 与 js/app.js 的 AUDIO_VER 同步
+/* 两个 async 大图库不进 BOOT（会拖慢激活）。基础库 emoji-svg.js 每个页面
+   都会加载，在线首访必然入缓存；课程扩展库只在 getsmart/pep 加载，
+   所以单独把它列进 CORE 后台补齐：装好 PWA 还没点过课程页就断网时，
+   课程词图不会退化成黑白轮廓或空白方块。 */
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=33', './js/app.js?v=69', './js/sentence.js?v=47', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=10',
+  './css/style.css?v=48', './js/words-data.js?v=32', './svg/word-svg.js?v=3', './js/data.js?v=34', './js/app.js?v=70', './js/sentence.js?v=47', './js/speech.js?v=1', './js/grammar-engine.js?v=5', './js/ipa.js?v=2', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=10', './svg/emoji-svg2.js?v=3',
   './manifest.json', './audio/manifest.json', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
@@ -20,7 +24,7 @@ const CORE = [
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
   './', './index.html', './css/style.css?v=48',
-  './js/app.js?v=69', './js/data.js?v=33', './audio/manifest.json'
+  './js/app.js?v=70', './js/data.js?v=34', './audio/manifest.json'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {

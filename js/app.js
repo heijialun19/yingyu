@@ -7,7 +7,12 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-02.1';
+const BUILD = '2026-11-08.1';
+
+/* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
+   都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
+   （2026-11-08 全站审查：实际 7 个游戏，首页/meta/README 却分别写着 6/4。） */
+const GAME_COUNT = 7;
 
 /* ===== 新版本提醒 =====
    ★ 为什么必须有：这是一个 PWA。页面一旦打开就一直留着，Service Worker 又把
@@ -1393,7 +1398,7 @@ document.addEventListener('keydown', unlockAudioChannels, { capture: true });
 /* 语音环境检测（家长中心诊断用） */
 function speechEnv() {
   return {
-    engine: '词典真人发音（真人录音 MP3，浏览器缓存加速）',
+    engine: '站内自带音频（2244 个单词 MP3 + 497 句整句合成音频）',
     wechat: /MicroMessenger/i.test(navigator.userAgent),
     online: navigator.onLine
   };
@@ -1403,7 +1408,7 @@ function speechEnv() {
   if (!/MicroMessenger/i.test(navigator.userAgent)) return;
   document.body.insertAdjacentHTML('afterbegin', `
     <div class="wechat-tip" onclick="this.remove()">
-      📱 本站使用<b>词典真人发音</b>，微信里一般能正常出声；若仍无声，请点右上角「···」→「在浏览器打开」
+      📱 本站发音以<b>站内自带音频</b>为主；若仍无声，请点右上角「···」→「在浏览器打开」
       <span style="float:right;cursor:pointer">✕</span>
     </div>`);
 })();
