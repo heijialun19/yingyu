@@ -36,7 +36,7 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script src="js/data.js?v=37"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=80"></script>
+<script src="js/app.js?v=81"></script>
 <script defer src="js/audio-list.js?v=2"></script>
 <script src="js/sentence.js?v=48"></script>
 <script src="js/grammar-engine.js?v=6"></script>
@@ -138,9 +138,14 @@ function getPlayPool(mode, filter) {
 function gListen() {
   const total = 10;
   const S = { idx: 0, score: 0, first: true, qs: [] };
+  /* 字母音里 C 和 K 都是 /k/：sound 模式下同题出现 = 两个正确答案，孩子怎么选都"错"。
+     出题时把同音的另一个字母排除掉。其余 24 个音各不相同。 */
+  const SOUND_TWIN = { C: 'K', K: 'C' };
   for (let i = 0; i < total; i++) {
     const right = LETTERS[Math.floor(Math.random() * 26)];
-    const opts = shuffle([right, ...shuffle(LETTERS.filter(l => l.L !== right.L)).slice(0, 3)]);
+    const twin = SOUND_TWIN[right.L];
+    const opts = shuffle([right,
+      ...shuffle(LETTERS.filter(l => l.L !== right.L && l.L !== twin)).slice(0, 3)]);
     S.qs.push({ right, opts, mode: Math.random() < 0.5 ? 'name' : 'sound' });
   }
   window._listenNext = function () {
@@ -169,8 +174,12 @@ function gListen() {
   };
   window._listenSay = function () {
     const q = window._curQ;
-    if (q.mode === 'name') speak(q.right.L); // 字母名 → 词典真人音
-    else speakChain([{ text: q.right.L, rate: 1 }, { text: q.right.words[0].w, rate: 0.55 }]); // 字母音 = 名 + 慢速代表词
+    /* name = 字母名（A 读 /eɪ/）；sound = 字母音（A 读 /æ/）——两个不同的东西。
+       ★ 2026-11-08 修：原来 sound 模式播的是「字母名 + 0.55 倍速代表词」，
+         按钮写着「听字母音」实际一个字母音都没有，而且慢速单词听着像坏了。
+         现在真播字母音（audio/phonics/，母语者录音）。 */
+    if (q.mode === 'name') speak(q.right.L);              // 字母名
+    else playPhonics(q.right.L);                           // 真字母音
   };
   window.listenAns = function (btn, L) {
     const q = window._curQ;
@@ -180,7 +189,8 @@ function gListen() {
     if (ok) {
       if (S.first) { S.score++; }
       S.answered = true;
-      sfx.correct(); speak(q.right.words[0].w);
+      sfx.correct();
+      window._listenSay();                                 // 再听一遍刚考的音（不播代表词）
       lockChoices(btn);
       $('#lexp').innerHTML = `✅ <b>${q.right.L}</b>${q.right.emoji}${q.right.shape} · 读音 ${q.right.szh} —— ${q.right.words[0].w} ${q.right.words[0].e}`;
       /* 游戏回合没有解析要读，允许多停一会儿再自动走；
