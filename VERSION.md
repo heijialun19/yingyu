@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v89 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v90 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v38 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -24,14 +24,14 @@
 | js/build-data.js | v1 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
-| js/pep-points.js | v11 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
+| js/pep-points.js | v12 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
 | js/audio-list.js | v2 | 发音清单（2864 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v48 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v143 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v144 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -77,6 +77,34 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-08.22 课程词记忆法全覆盖（588 条缺口补完）
+
+**用户反馈**：「单词这么多 1200 多个吧，是不是有很多单词没有记忆法？」——对。
+
+### 问题
+`getsmart-data.js` 课程词 1026 个去重后，**588 个没有记忆法**（57%）：
+- 主词库 999 条只能覆盖 381 个课程词
+- PEP_MEM 精写只有 301 条（命中 76 个课程词）
+- 其余全靠 PEP_COMPOUNDS 32 条复合词表，杯水车薪
+
+### 做了什么
+PEP_MEM 表从 301 → **890 条**（+589），课程词覆盖 43% → **100%**：
+
+| 类型 | 条数 | 方法 |
+|---|---|---|
+| 复数/变形（apples/teeth/feet…） | 44 | 自动：X = base 词 + s/es 复数 |
+| 复合词（bookstore/armchair…） | 14 | 自动：book + store = 书店 |
+| 短语（stand up/a bag of chips…） | 181 | 逐词拆解教记法 |
+| 独立词（acrobat/architect…） | 349 | 刘一男式词源串词 |
+| 零碎补漏 | 31 | 变形/短语 |
+
+**短语也教怎么记**（用户明确要求）：不只给答案，还教拆法——
+`a bag of chips = a bag（一袋）+ of（的）+ chips（薯片）`、
+`endangered species = endangered（濒危的）+ species（物种）`。
+
+### 验证
+check_facts 97 项全过；课程词覆盖扫描 **1026/1026，0 缺口**。
 
 ## 2026-11-08.21 记忆法批次 5（最后一批，第 801–999 条，改 199 条）—— 797/999 全部完成
 
