@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-08.17",
-  "note": "记忆法批次1升级（前200条中195条）：假音变（把单词切碎安中文音）改为刘一男式词源串词/真构词/有据联想。words-data.js v34。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
+  "build": "2026-11-08.18",
+  "note": "记忆法批次2升级（第201-400条改199条）：假音变→真词源；纠正假构词（hamburger 来自汉堡城不是火腿）；window=wind+eye 等。words-data.js v35。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
 }
