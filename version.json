@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-09.2",
-  "note": "句子朗读根治：①ASR 实测 audio/a.mp3 念成字母名 /eɪ/（\"Hey\"），动态句逐词接龙把 \"This is a cat.\" 读成 \"This is A cat.\"；②新增 44 段「连读词块」音频（This is a / I have a / I don't like …），sentence.js 最长前缀匹配，冠词在语流里自然弱读；③逐词兜底里小写 a/an 改用弱读文件 weak_a/weak_an，大写 A 仍作字母名给字母岛用；④句子工厂 6 个固定短句补整句音频；⑤词卡去掉空白占位 div、无音标不再留空行、词单标签加 undefined 兜底。app v99 / sentence v49 / audio-list v4 / CACHE v153。发版时 build 必须和 js/app.js 的 BUILD 一起改。"
+  "build": "2026-11-09.3",
+  "note": "听句选图流畅度根治：真浏览器逐句量测发现 485 句全部无整句音频、全部被切成 2 段（连读词块+单词音频），段间静音与 onended 调度导致听感断裂。现 485 句全部一次合成整句（5.28MB，按需加载），登记进 SENTENCE_AUDIO，speakSentence 整句优先一次播完；烘音频前把 I eat egg./biscuit./dumpling./noodle. 4 句改为复数句。整句 503→988，发音文件 2913→3398。app v100 / CACHE v154。发版时 build 必须和 js/app.js 的 BUILD 一起改。"
 }

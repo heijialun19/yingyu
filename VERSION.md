@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v99 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v100 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v39 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v153 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v154 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -78,6 +78,28 @@
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
 
+## 2026-11-09.3 听句选图：整句音频全覆盖（别改回去）
+
+**现象**：家长反馈「听句选图的句子不流畅」。上一轮加的连读词块只解决了冠词的
+**读音**（a 不再念字母名），没解决**流畅度**——真实页面逐句量测：485 句全部
+没有整句 mp3，全部被切成 **2 段**（`I drink` | `juice`、`This is a` | `cat`）。
+两段是两次独立合成，各自带首尾静音，中间还夹一次 `onended` 调度，听感就是
+「This is a … 　cat.」断一下，而且词块是当完整短语念的，句尾已经降调了。
+
+**解法**：把 485 句全部用 Piper 一次合成整句（同参数 length_scale 1.1 / 64kbps /
+22050Hz 单声道，共 **5.28 MB**，按需加载、不进 CORE），登记进 `SENTENCE_AUDIO`。
+`speakSentence` 走整句优先，一次播完，0.65–1.0 秒一句，有连读、弱读和句末语调。
+ASR 抽检：`This is a cat.` / `I eat eggs.` / `I have an umbrella.` / `I see red.` 全对。
+
+- 句表：`_audit/picsent_final.json`（slug ↔ 文本），slug 清单 `_audit/picsent_slugs.json`
+- 枚举：真浏览器 iframe 探针 `_audit/probe_picsent.html`（复现 games.html 的 5 类句型 + 全库词池）
+- 合成：`_tts/build_picsent.py`；自测：`_audit/test_picsent_audio.js`
+- 烘音频前修掉 4 句可数单数裸用病句：`I eat egg.` → `I eat eggs.`（biscuit / dumpling / noodle 同）。
+  `games.html` 的 `FOOD_PLURAL` + `foodSay()` 是唯一出口，中文「我吃鸡蛋。」不变。
+
+⛔ **改了 games.html 的句型、词池或 FOOD_PLURAL，必须重跑探针 + 重烘 + 重跑自测**，
+否则新句子又会静默退回两段拼接。也不要把这 485 个文件删掉只留词块——那就是本次要修的问题。
+
 ## 2026-11-09.2 句子朗读根治 + 词卡空白占位清理（别改回去）
 
 **根因（用语音识别实测出来的，不是猜的）**：`audio/a.mp3` 被识别成 **"Hey"** ——
@@ -96,8 +118,9 @@ Piper 单独合成冠词 `a` 时念的是字母名 /eɪ/。动态生成的句子
    `I am a boy.` / `I am a girl.` 6 句加进 `SENTENCE_AUDIO`，不再逐词蹦。
 
 ⛔ 不要为了「省文件」把 44 段词块删掉只留 weak_a：weak_a 是单个音，
-没有连读和节奏，句子又会变回一个字一个字蹦。也不要给上千种句型组合各存一整句，
-静态站扛不住那个体积。
+没有连读和节奏，句子又会变回一个字一个字蹦。通用动态句也不要给上千种组合各存一整句，
+静态站扛不住那个体积；**但听句选图是 485 句的有限集合，已在 2026-11-09.3 全部烘成整句
+（5.28 MB），这是流畅度的唯一解，见下一节**。
 
 **词卡空白**：`words.html` 三处 `<div class="dec" style="background:transparent">`
 是纯占位空块、`<div class="ph">` 对不标音标的词留一整行空白 —— 现在改成显示真实

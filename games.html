@@ -36,7 +36,7 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script src="js/data.js?v=38"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=99"></script>
+<script src="js/app.js?v=100"></script>
 <script defer src="js/audio-list.js?v=4"></script>
 <script src="js/sentence.js?v=49"></script>
 <script src="js/grammar-engine.js?v=7"></script>
@@ -391,6 +391,12 @@ const ZH_QTY = { book:'一本书', pen:'一支笔', pencil:'一支铅笔', ruler
   shoe:'一只鞋', sock:'一只袜子', banana:'一根香蕉', orange:'一个橙子', pear:'一个梨',
   tomato:'一个番茄', potato:'一个土豆', carrot:'一根胡萝卜', clock:'一个时钟', picture:'一幅画' };
 const zhQty = w => ZH_QTY[String(w.w || '').toLowerCase()] || ('一个' + w.zh);
+/* 「我吃 X」里 X 若是可数名词，不能光秃秃用单数：I eat egg. ✗
+   这四个词在词库里是「鸡蛋 / 饼干 / 饺子 / 面条」，泛指时用复数最自然，
+   中文「我吃鸡蛋。」不用改。其余 rice / bread / chicken / soup 等是不可数，
+   直接 I eat rice. ✅。改这里必须同步重烘听句选图的整句音频。 */
+const FOOD_PLURAL = new Set(['egg','biscuit','dumpling','noodle']);
+const foodSay = w => FOOD_PLURAL.has(w.w) ? pluralOf(w.w) : w.w;
 
 function gPicSentPick() {
   poolPicker('🖼️ 听句选图', '🖼️', m => gPicSent(getPlayPool(m, w => !w.w.includes(' ') && /^[a-zA-Z]+$/.test(w.w))));
@@ -407,7 +413,7 @@ function gPicSent(pool) {
   const colors = pool.filter(w => ['red','yellow','blue','green','white','black','orange','pink','purple','brown'].includes(w.w));
 
   const mk = [];
-  if (foods.length) mk.push(() => { const w = pick(foods); return { audio: `I eat ${w.w}.`, zh: `我吃${w.zh}。`, right: w, all: foods.concat(nouns).slice(0, 12) }; });
+  if (foods.length) mk.push(() => { const w = pick(foods); return { audio: `I eat ${foodSay(w)}.`, zh: `我吃${w.zh}。`, right: w, all: foods.concat(nouns).slice(0, 12) }; });
   if (drinks.length) mk.push(() => { const w = pick(drinks); return { audio: `I drink ${w.w}.`, zh: `我喝${w.zh}。`, right: w, all: drinks.concat(nouns).slice(0, 12) }; });
   /* 冠词必须走 artOf —— 硬编码 a 会说出 "This is a elephant." */
   if (animals.length) mk.push(() => { const w = pick(animals); return { audio: `This is ${artOf(w.w)} ${w.w}.`, zh: `这是${zhQty(w)}。`, right: w, all: animals.concat(nouns).slice(0, 12) }; });
