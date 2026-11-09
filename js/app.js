@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-09.1';
+const BUILD = '2026-11-09.2';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -459,7 +459,7 @@ const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').repla
    books / didn't …）会漏音，所以这批文件补进了 audio/ 并登记 manifest。
    这里再内联一份清单：离线包走 file:// 时 fetch 不到 manifest，
    有了它照样全本地、断网也能读。 */
-const AUDIO_EXTRA = ["ali","an","animals","answers","be","began","beijing","birds","books","break","by","cakes","came","can_t","cards","cats","chairs","cheaper","cheered","children_s","clears","climbed","counted","days","desks","did","didn_t","dogs","don_t","drinks","drives","dumplings","eiffel","en","enjoyed","example","fair","fifty_five","fishing","flowers","foods","foxes","friends","games","goes","going","grandparents","grows","helps","horses","hospitals","hurry","hurts","i_m","isn_t","it_s","kilometres","learned","leaves","let_s","lights","living","looks","lot","made","makes","mike","more","mustn_t","newspapers","officer","ones","pencils","photos","pictures","playing","plays","pocket","potatoes","pyramids","questions","roots","runny","runs","schoolbags","shouldn_t","smoking","staying","stories","students","sweeps","telling","the","things","tips","turn","twenty_three","us","vegetables","visits","waited","walking","who_s","workbooks","works","would","years","zongzi"];
+const AUDIO_EXTRA = ["ali","an","animals","answers","be","began","beijing","birds","books","break","by","cakes","came","can_t","cards","cats","chairs","cheaper","cheered","children_s","clears","climbed","counted","days","desks","did","didn_t","dogs","don_t","drinks","drives","dumplings","eiffel","en","enjoyed","example","fair","fifty_five","fishing","flowers","foods","foxes","friends","games","goes","going","grandparents","grows","helps","horses","hospitals","hurry","hurts","i_m","isn_t","it_s","kilometres","learned","leaves","let_s","lights","living","looks","lot","made","makes","mike","more","mustn_t","newspapers","officer","ones","pencils","photos","pictures","playing","plays","pocket","potatoes","pyramids","questions","roots","runny","runs","schoolbags","shouldn_t","smoking","staying","stories","students","sweeps","telling","the","things","tips","turn","twenty_three","us","vegetables","visits","waited","walking","who_s","workbooks","works","would","years","zongzi","weak_a","weak_an"];
 const __LOCAL_AUDIO = (() => {
   const set = new Set(AUDIO_EXTRA);
   try {
@@ -599,12 +599,38 @@ const SENTENCE_AUDIO = new Set([
   "who_s_this_it_s_my_grandma","who_s_this_this_is_my_grandma","whose_coat_is_it_it_s_mine","whose_coat_is_this_it_s_mine","whose_jacket_is_this_it_s_mine","whose_shirt_is_this_it_s_pat_s",
   "why_because_they_help_us","why_do_you_like_giraffes_because_they_re_tall_and_pretty","why_don_t_we_ride_the_roller_coaster","would_you_like_a_cup_of_tea","would_you_like_some_ice_cream","would_you_like_to_visit_the_planetarium_i_would_love_to",
   "yesterday_we_made_cards_for_the_writer","you_are_older_than_me_but_i_am_taller","you_have_to_wear_a_space_suit","you_must_return_the_book_on_time","you_mustn_t_shout_in_the_library","you_should_exercise_every_day",
-  "you_should_not_eat_too_much_junk_food","you_should_shake_hands_when_you_meet","you_should_take_some_medicine","you_shouldn_t_stay_up_late","your_wish_will_come_true"
+  "you_should_not_eat_too_much_junk_food","you_should_shake_hands_when_you_meet","you_should_take_some_medicine","you_shouldn_t_stay_up_late","your_wish_will_come_true",
+  /* 句子工厂的固定短句：原来只能逐词蹦单词，现在有整句音频一次读完 */
+  "i_run","birds_fly","we_sing","we_drink_milk","i_am_a_girl","i_am_a_boy"
 ]);
 const sentenceAudioURL = t => {
   const k = audioSlug(t);
   return k && SENTENCE_AUDIO.has(k)
     ? `audio/sentences/${k}.mp3?v=${SENTENCE_VER}` : '';
+};
+
+/* ===== 动态句子的「连读词块」（2026-11-09）=====
+   为什么需要：程序临时拼出来的句子（听句选图 / 句子火车员 / 句子工厂）
+   没有整句 mp3，只能逐词接龙。而单独合成冠词 "a" 时 Piper 会念成**字母名**
+   /eɪ/（语音识别听成 "Hey"），于是 "This is a cat." 变成 "This is A cat."
+   —— 这就是家长说的「句子读得不对」。把句子里固定不变的前半段
+   （This is a / I have a / I don't like …）一次合成，冠词在语流里自然弱读，
+   动态句子也就有了连读。词块只有 44 条、389KB，不用给上千种组合各存一整句。
+   ★ PHRASE_VER 独立于 AUDIO_VER / SENTENCE_VER，重做词块只升它。 */
+const PHRASE_VER = 1;
+const PHRASE_AUDIO = new Set([
+  "this_is_a","this_is_an","this_is_my","this_is","i_have_a","i_have_an",
+  "i_have_two","i_have","i_eat","i_drink","i_see_a","i_see_an","i_see",
+  "i_like","i_can","i_am","i_don_t_like","i_don_t","we_like","we_drink",
+  "we_have","he_likes","she_is","she_can","it_is_a","it_is","there_is_a",
+  "there_are","is_this_a","do_you","can_you","what_is","where_is","how_many",
+  "my_name_is","every_day","i_run","birds_fly","we_sing","we_drink_milk",
+  "i_am_a_girl","i_am_a_boy","a_boy","a_girl"
+]);
+const phraseAudioURL = t => {
+  const k = audioSlug(t);
+  return k && PHRASE_AUDIO.has(k)
+    ? `audio/phrases/${k}.mp3?v=${PHRASE_VER}` : '';
 };
 
 const localAudioURL = t => {
@@ -614,6 +640,9 @@ const localAudioURL = t => {
      speak() 里那句「含空格就走接龙」的判断正是看这里有没有命中。 */
   const whole = sentenceAudioURL(t);
   if (whole) return whole;
+  /* 连读词块：句子接龙里命中就一次播完这一整块（含弱读冠词） */
+  const phrase = phraseAudioURL(t);
+  if (phrase) return phrase;
   if (!__LOCAL_AUDIO.has(k)) __registerGSAudio();
   if (__LOCAL_AUDIO.has(k)) return `audio/${k}.mp3?v=${AUDIO_VER}`;
   /* 清单还没落地（首访的几十毫秒窗口）：单个词先按「本地应该有」试一次。

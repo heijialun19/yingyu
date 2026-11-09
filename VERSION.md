@@ -14,10 +14,10 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v98 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v99 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v39 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
-| js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
+| js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v7 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v4 | 音标 |
@@ -25,13 +25,13 @@
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
 | js/pep-points.js | v16 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
-| js/audio-list.js | v3 | 发音清单（2864 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
+| js/audio-list.js | v4 | 发音清单（2874 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v48 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v152 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v153 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -77,6 +77,35 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-09.2 句子朗读根治 + 词卡空白占位清理（别改回去）
+
+**根因（用语音识别实测出来的，不是猜的）**：`audio/a.mp3` 被识别成 **"Hey"** ——
+Piper 单独合成冠词 `a` 时念的是字母名 /eɪ/。动态生成的句子（听句选图、句子火车员、
+句子工厂）没有整句 mp3，只能逐词接龙，于是 `This is a cat.` 读成 `This is A cat.`，
+每句都不对。而 `a.mp3` 又必须保留字母名，因为字母岛「字母名 A」用的就是它。
+
+**解法（三层，别只留一层）**：
+1. **连读词块** `audio/phrases/`（44 段 / 389KB）：把 `This is a` / `I have a` /
+   `I don't like` / `We like` 这类固定前半段一次合成。Piper 在短语里会把 a 自然弱读
+   （ASR 验证：`This is a` → "This is a"，不是 "Hey"）。`sentence.js::__speakFrom`
+   从当前词起试最长 4 词前缀，命中就整块播完；`prewarmSentence` 用同一套切法预热。
+2. **弱读冠词兜底** `audio/weak_a.mp3` / `weak_an.mp3`（载体词 uh / un）：
+   逐词链里遇到**小写** `a`/`an` 就换这两个文件；大写 `A` 仍是字母名，两者不冲突。
+3. **固定短句补整句**：`I run.` / `Birds fly.` / `We sing.` / `We drink milk.` /
+   `I am a boy.` / `I am a girl.` 6 句加进 `SENTENCE_AUDIO`，不再逐词蹦。
+
+⛔ 不要为了「省文件」把 44 段词块删掉只留 weak_a：weak_a 是单个音，
+没有连读和节奏，句子又会变回一个字一个字蹦。也不要给上千种句型组合各存一整句，
+静态站扛不住那个体积。
+
+**词卡空白**：`words.html` 三处 `<div class="dec" style="background:transparent">`
+是纯占位空块、`<div class="ph">` 对不标音标的词留一整行空白 —— 现在改成显示真实
+主题信息 / 不渲染空行；「我的词单」标签加了 `undefined` 兜底。全站 61 主题 1000 词
+逐一渲染核验，`word-card` 无空卡、无空图。
+
+版本：app v99 / sentence v49 / audio-list v4 / CACHE v153（AUDIO_CACHE 保持 v3，
+新音频是新 URL，换名会清掉用户已缓存的十几 MB）。
 
 ## 2026-11-09.1 长句发音逻辑修复（别改回去）
 

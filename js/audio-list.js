@@ -1,6 +1,6 @@
 /* 小鸟英语乐园 · 发音清单（构建产物，不要手改）
    ────────────────────────────────────────────────────────────
-   全站每一个能点读的字符串 → audio/<slug>.mp3 的 slug 清单，共 2872 条。
+   全站每一个能点读的字符串 → audio/<slug>.mp3 的 slug 清单，共 2874 条。
    ★ 由 _tts/deploy_words.py 生成；改音频后重跑它，并把这里的 ?v= 与 app.js
      的 AUDIO_VER 一起升。defer 加载：不挡首屏，离线包 file:// 也能用。 */
 window.__AUDIO_LIST = [
@@ -362,7 +362,8 @@ window.__AUDIO_LIST = [
   "x","x_ray","y","yard","yawn","yawns","year","years",
   "yellow","yes","yesterday","yo_yo","yoga","yogas","yoo","you",
   "you_re","young","younger","your","yours","yuan","yuans","yummy",
-  "z","zebra","zebras","zee","zero","zip","zongzi","zoo"
+  "z","zebra","zebras","zee","zero","zip","zongzi","zoo",
+  "weak_a","weak_an"
 ];
 window.__audioListReady = true;
 if (typeof window.__registerAudioList === 'function') window.__registerAudioList();

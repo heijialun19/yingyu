@@ -98,14 +98,15 @@
       <h2>🔊 语音来源说明</h2>
       <div style="font-size:.88rem;line-height:2;color:var(--ink2)">
         <p><b>全站发音都是静态音频文件，点读即响、断网可用。</b>分两套声源：</p>
-        <p>· <b>单词</b>：2911 个发音文件（词库词、课程词、字母名、拼读块，含复数/三单/进行时等派生形态，以及 26 个字母音 + 13 个拼读块母语者录音）<br>
+        <p>· <b>单词</b>：2913 个发音文件（词库词、课程词、字母名、拼读块，含复数/三单/进行时等派生形态，以及 26 个字母音 + 13 个拼读块母语者录音）<br>
            · <b>字母音</b>：26 个字母各自的音素（/æ/、/b/、/ks/…），不是字母名、也不是代表词 —— 自然拼读教的就是这个音<br>
-           · <b>整句</b>：497 句固定例句，一次合成整句，有连读和句末语调<br>
+           · <b>整句</b>：503 句固定例句，一次合成整句，有连读和句末语调<br>
+           · <b>连读词块</b>：44 段连读词块，即固定句型前半段（This is a / I have a …），让临时拼出的句子也有弱读冠词和连读<br>
            · <b>声线</b>：单词与句子为同一说话人（Piper 引擎 + 公有领域声线 en_US-ljspeech 自行合成）；<br>　　　　　字母音与拼读块为另一套母语者录音（开源项目 s5s5/phonics，MIT，仅做响度归一与格式转换），
              全站音色统一、语速一致、音量整齐</p>
         <p>这些文件都是站内静态资源，<b>点读即响、不联网、断网也能读</b>，
            也不会向任何在线服务发送请求。程序临时生成、包里没有的句子，
-           按词用站内单词音频接龙朗读；极少数包里没有的临时内容，
+           按「连读词块 + 站内单词音频」接龙朗读；极少数包里没有的临时内容，
            才用浏览器自带的系统语音兜底（本机发声，零网络请求）。</p>
         <p>为什么这样做：以前用的是公开词典的真人录音，音色男女混搭、音量忽大忽小，
            整句还查不到；现在我们自己合成，声音统一、离线可用、也不依赖别人家的接口。
@@ -145,9 +146,9 @@
 <script src="js/words-data.js?v=39"></script>
 <script src="svg/word-svg.js?v=3"></script>
 <script src="js/data.js?v=38"></script>
-<script src="js/app.js?v=98"></script>
-<script defer src="js/audio-list.js?v=3"></script>
-<script src="js/sentence.js?v=48"></script>
+<script src="js/app.js?v=99"></script>
+<script defer src="js/audio-list.js?v=4"></script>
+<script src="js/sentence.js?v=49"></script>
 <script>
 renderNav('disclaimer'); renderDecor();
 </script>

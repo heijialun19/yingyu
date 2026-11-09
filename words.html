@@ -132,10 +132,10 @@
 <script src="js/words-data.js?v=39"></script>
 <script src="svg/word-svg.js?v=3"></script>
 <script src="js/data.js?v=38"></script>
-<script src="js/app.js?v=98"></script>
+<script src="js/app.js?v=99"></script>
 <script src="js/grammar-engine.js?v=7"></script>
-<script defer src="js/audio-list.js?v=3"></script>
-<script src="js/sentence.js?v=48"></script>
+<script defer src="js/audio-list.js?v=4"></script>
+<script src="js/sentence.js?v=49"></script>
 <script src="js/speech.js?v=1"></script>
 <script src="js/ipa.js?v=4"></script>
 <script src="js/pep-data.js?v=1"></script>
@@ -182,12 +182,12 @@ function showPool(kind) {
             <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
-            <div class="ph" lang="en">${ipaOf(w.w)}</div>
+            ${ipaOf(w.w) ? `<div class="ph" lang="en">${ipaOf(w.w)}</div>` : ''}
             <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
             ${famLine(w.w)}
-            ${w.wrongCount ? `<div class="dec" style="background:#FFE9E9">🔁 错过 ${w.wrongCount} 次</div>` : `<div class="dec" style="background:transparent">${w.fromGrade || w.themeEmoji + w.themeName}</div>`}
+            ${w.wrongCount ? `<div class="dec" style="background:#FFE9E9">🔁 错过 ${w.wrongCount} 次</div>` : `<div class="dec" style="background:transparent">${esc(w.fromGrade || ((w.themeEmoji || '') + (w.themeName || '')) || '📚 词库')}</div>`}
           </div>`).join('')}
       </div>
       ${list.length > 24 ? `<p style="color:#5C6273;font-size:.78rem;margin-top:10px">先显示前 24 个，练完这批再看下一批～</p>` : ''}
@@ -234,12 +234,12 @@ function renderSearch() {
             <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
-            <div class="ph" lang="en">${ipaOf(w.w)}</div>
+            ${ipaOf(w.w) ? `<div class="ph" lang="en">${ipaOf(w.w)}</div>` : ''}
             <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
             ${famLine(w.w)}
-            ${w.dec ? `<div class="dec">🔎 ${esc(w.dec)}</div>` : '<div class="dec" style="background:transparent"></div>'}
+            ${w.dec ? `<div class="dec">🔎 ${esc(w.dec)}</div>` : `<div class="dec">📚 ${esc(w.themeEmoji || '')}${esc(w.themeName || '词库')}</div>`}
           </div>`).join('')}
       </div>
       ${hits.length > 120 ? `<p style="color:#5C6273;font-size:.8rem">只显示前 120 个，输入更长的词缩小范围～</p>` : ''}`}
@@ -323,12 +323,12 @@ function renderBrowse() {
             <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
-            <div class="ph" lang="en">${ipaOf(w.w)}</div>
+            ${ipaOf(w.w) ? `<div class="ph" lang="en">${ipaOf(w.w)}</div>` : ''}
             <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
             ${famLine(w.w)}
-            ${w.dec ? `<div class="dec">🔎 ${esc(w.dec)}</div>` : '<div class="dec" style="background:transparent"></div>'}
+            ${w.dec ? `<div class="dec">🔎 ${esc(w.dec)}</div>` : `<div class="dec">📚 ${esc(t.emoji)}${esc(t.name)}</div>`}
           </div>`).join('')}
       </div>
     </details>

@@ -29,8 +29,21 @@ function prewarmSentence(text, gapMs) {
   if (typeof sentenceAudioURL === 'function' && sentenceAudioURL(text)) return;
   const gap = gapMs || 60;
   const toks = String(text).split(/\s+/).filter(Boolean).map(__spokenToken);
+  /* 和播放链同一套切法：能连读的词块整块预热，别把里面每个单词都单独拉一遍 */
+  const items = [];
+  for (let i = 0; i < toks.length; i++) {
+    let jumped = 0;
+    if (typeof phraseAudioURL === 'function') {
+      for (let n = Math.min(4, toks.length - i); n >= 2; n--) {
+        const chunk = toks.slice(i, i + n).join(' ');
+        if (phraseAudioURL(chunk)) { items.push(chunk); jumped = n - 1; break; }
+      }
+    }
+    if (!jumped) items.push(toks[i]);
+    i += jumped;
+  }
   let k = 0;
-  for (const w of toks) {
+  for (const w of items) {
     if (__prewarmed.has(w)) continue;
     __prewarmed.add(w);
     setTimeout(() => prewarmWord(w), k * gap);   // 低优先级调度器自己排队，不会抢带宽
@@ -50,13 +63,37 @@ function __hiChunk(spans, i, n) { __clearHi(spans); if (spans) for (let k = i; k
      整句复用同一个元素只换 src，就不会被重新拦截。见 app.js __playMediaElement 的说明。 */
 function __speakFrom(tokens, spans, i, fails, voice) {
   if (i >= tokens.length) { __finishSpeak(spans); return; }
+  /* ===== 词块连读优先（2026-11-09）=====
+     从当前位置试最长 4 个词的前缀，命中「连读词块」音频就一次播完。
+     冠词 a 单独合成会变成字母名 /eɪ/，在 "This is a" 这样的词块里才弱读；
+     先把固定前半段连起来，句子才不会一个字一个字蹦。 */
+  if (typeof phraseAudioURL === 'function') {
+    const maxN = Math.min(4, tokens.length - i);
+    for (let n = maxN; n >= 2; n--) {
+      const chunk = tokens.slice(i, i + n).map(__spokenToken).join(' ');
+      if (!phraseAudioURL(chunk)) continue;
+      __hiChunk(spans, i, n);
+      try {
+        playDictAudio(chunk, 1,
+          () => __speakFrom(tokens, spans, i + n, 0, voice),
+          () => __speakFrom(tokens, spans, i + 1, fails, voice),
+          false, 8000, 0, voice);
+        return;
+      } catch (e) { /* 落回逐词，不让整句卡死 */ }
+    }
+  }
   const text = __spokenToken(tokens[i]);
+  /* 小写冠词 a / an 必须弱读。audio/a.mp3 是字母岛的**字母名** /eɪ/，
+     直接拿它进句子就成了 "This is A cat."。词块命中时已经连读过了，
+     这里是没命中词块时的兜底：换专门的弱读文件（uh / un 合成）。
+     大写 A 是字母名，走 speakWord('A')，不经过这里。 */
+  const audioKey = (text === 'a' || text === 'an') ? 'weak_' + text : text;
   __hiWord(spans, i);
   /* 包内没有这个词（理论上不会：全站词表都已烘焙）：
      跳过它继续念，宁可漏一个词，也不在一句话中间插机器音。 */
-  if (!localAudioURL(text)) { __speakFrom(tokens, spans, i + 1, fails, voice); return; }
+  if (!localAudioURL(audioKey)) { __speakFrom(tokens, spans, i + 1, fails, voice); return; }
   try {
-    playDictAudio(text, 1,
+    playDictAudio(audioKey, 1,
       () => __speakFrom(tokens, spans, i + 1, 0, voice),
       () => {                              // 这一段没放出来：跳过继续，连续 3 次才放弃
         if (fails + 1 >= 3) { __finishSpeak(spans); return; }
