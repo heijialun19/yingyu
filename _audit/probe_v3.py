@@ -104,7 +104,10 @@ def main():
     d = json.loads(m.group(1))
     for k in sorted(d):
         print('%-15s %s' % (k, json.dumps(d[k], ensure_ascii=False)))
-    ok = (d.get('build') == '2026-11-09.9' and d.get('audioVer') == 4
+    # 期望 BUILD 从 js/app.js 现读，避免每次发版都要手改这里
+    _exp = re.search(r"const BUILD = '([\d.\-]+)'",
+                     open(os.path.join(ROOT, 'js/app.js'), encoding='utf-8').read()).group(1)
+    ok = (d.get('build') == _exp and d.get('audioVer') == 4
           and d.get('audioStatus') == 200 and d.get('audioBytes', 0) > 2000
           and '?v=4' in str(d.get('urlPink', ''))
           and d.get('sentenceVer') == 2 and d.get('phraseVer') == 2

@@ -36,7 +36,7 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script src="js/data.js?v=38"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=110"></script>
+<script src="js/app.js?v=111"></script>
 <script defer src="js/audio-list.js?v=4"></script>
 <script src="js/sentence.js?v=49"></script>
 <script src="js/grammar-engine.js?v=8"></script>
@@ -233,14 +233,18 @@ function gMemory(pool) {
   if (!pool || !pool.length) { toast('这一批没有带图片的词，换一批试试～'); return; }
   window.memStart = function () {
     /* 抽词规则：图片必须互不重复。
-       全库有 212 组 emoji 被多个词共用（👦 = he / his / him / boy / brother），
-       同一张脸出现两次，孩子根本没法判断它配哪个词。 */
+       全库有 18 组「同一张真图配了两个以上词」（🧒 = child / children，
+       🎒 = bag / schoolbag，🌊 = sea / ocean，🔟 = ten / October…），
+       同一张图出现两次，孩子根本没法判断它配哪个词。 */
     /* 原来按 w.e 去重 —— 345 个词的 w.e 是空的，会被判成「同一个」只留下第一个；
-       而且没图的词（字母牌）根本配不出「图 ↔ 词」的配对。改成按渲染出的图去重。 */
+       而且没图的词（字母牌）根本配不出「图 ↔ 词」的配对。改成按渲染出的图去重。
+       ★ 2026-11-09.14：上一次只做了一半 —— 用 iconOf() 的返回串当 key，
+         那串里含 aria-label="释义"，两个词释义不同就不同，去重从来没生效过
+         （用户截图：colour / color 两个彩虹同框）。现在一律用 iconKey()。 */
     const seen = new Set(), picks = [];
     for (const w of shuffle(pool)) {
       if (!hasIcon(w)) continue;          // 字母牌不进配对
-      const k = iconOf(w);
+      const k = iconKey(w);               // 按「画出来的那张图」去重，不是按 HTML 串
       if (seen.has(k)) continue;
       seen.add(k);
       picks.push(w);
@@ -1051,11 +1055,14 @@ function gPhonics() {
     } else {
       /* ② 听词选图（块音不可靠 / 字母块凑不出正确读音时） */
       S.seg = [];
-      /* 干扰项按**渲染出来的图**去重，避免两张一样的图 = 两个正确答案 */
-      const seenIcon = new Set([iconOf(w)]);
+      /* 干扰项按**渲染出来的图**去重，避免两张一样的图 = 两个正确答案
+         ★ 2026-11-09.14：原来用 iconOf() 的返回串当 key，可它带 aria-label="释义"，
+           释义不同的两个词字符串就不同（bag/schoolbag 都是 🎒），去重从来没生效，
+           改成 iconKey()。 */
+      const seenIcon = new Set([iconKey(w)]);
       const ds = [];
       shuffle(P.ws.filter(x => x.w !== w.w)).forEach(x => {
-        const ic = iconOf(x);
+        const ic = iconKey(x);
         if (seenIcon.has(ic)) return;
         seenIcon.add(ic); ds.push(x);
       });
@@ -1168,7 +1175,7 @@ function wpConflict(a, b) {
   if (!a || !b) return true;
   if (a.w.w === b.w.w || a.theme === b.theme) return true;
   if (String(a.w.zh || '').trim() === String(b.w.zh || '').trim()) return true;
-  if (iconOf(a.w) === iconOf(b.w)) return true;
+  if (iconKey(a.w) === iconKey(b.w)) return true;      // 同一张图 = 两个正确答案（按图源比，不按 HTML 串）
   const ia = (typeof ipaOf === 'function' ? ipaOf(a.w.w) : '') || '';
   const ib = (typeof ipaOf === 'function' ? ipaOf(b.w.w) : '') || '';
   if (ia && ia === ib) return true;                    // 同音 = 两个正确答案

@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-09.13';
+const BUILD = '2026-11-09.14';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1076,6 +1076,34 @@ function iconOf(w) {
 function hasIcon(w) {
   return !/class="wtile"/.test(iconOf(w));
 }
+/* ---------------- 词图的「身份」：只认画出来的那张图 ----------------
+   ★ 2026-11-09.14：图词配对、听词选图、拼读闯关的选项去重，原来都拿 iconOf(w)
+     的返回串当 key。可 iconOf 的 HTML 里带 aria-label="释义" ——
+     两个词只要释义不同（colour / color、child / children、bag / schoolbag），
+     字符串就不同，去重等于没做。用户截图里同一轮出现两张彩虹，就是这条。
+     全库有 18 组「一张图配两个以上词」，每一组都可能撞在同一道题里。
+   iconKey 只取图源，与 aria-label 无关：
+     内置 emoji SVG / 自绘 SVG / 颜色色块 / emoji 码位 / 字母牌。 */
+function iconKey(w) {
+  if (!w) return '';
+  const name = String(w.w || '').toLowerCase();
+  const emo = String(w.e || '').trim();
+  /* U+FE0F（变体选择符）要去掉：同一张图有时带有时不带，key 必须一致 */
+  if (emo) {
+    const plain = emo.replace(/\uFE0F/g, '');
+    if (typeof hasEmojiSvg === 'function' && hasEmojiSvg(emo)) return 'esvg:' + plain;
+  }
+  if (typeof WORD_SVG !== 'undefined' && WORD_SVG[name]) {
+    /* 两对自绘 SVG 的路径数据**逐字节相同**（correct/well、everybody/everyone），
+       只按词名做 key 会漏掉它们，同一轮照样出现两张一样的画。归一到同一个 key。 */
+    return 'svg:' + (SVG_SAME_KEY[name] || name);
+  }
+  if (WORD_COLOR[name]) return 'chip:' + WORD_COLOR[name];
+  if (emo) return 'emoji:' + emo.replace(/\uFE0F/g, '');
+  return 'letter:' + name.charAt(0);
+}
+/* 画面相同、词不同：后来者归一到前者（校验脚本 _audit/test_icon_key.js 会核对这张表） */
+const SVG_SAME_KEY = { well: 'correct', everyone: 'everybody' };
 
 /* ================= emoji → 内置矢量图 =================
    ★ 2026-10-26：这是「整页显示黑白」的根因修复。

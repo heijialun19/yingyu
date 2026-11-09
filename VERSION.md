@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v110 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v111 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v40 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v164 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v165 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -85,6 +85,38 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-09.14 修「同图去重失效」（配对里出现两张一样的图）
+
+**现象**：图词翻翻乐一局 8 张牌里出现**两张彩虹**（`colour` / `color`），
+孩子翻开图片后不知道它该配哪个词；同类情况还有 `child`/`children`（都是 🧒）、
+`bag`/`schoolbag`（🎒）、`sea`/`ocean`（🌊）、`gift`/`present`（🎁）等。
+
+**原因**：不是数据错，是**去重键取错**。四处「同一张图不许出现两次」的代码
+（配对抽词、拼读闯关干扰项、听词选图撞图判定、单词镇看词选图的干扰项）
+都拿 `iconOf(w)` 的**返回 HTML 串**当 key。而 `iconOf` 的输出里带
+`aria-label="释义"` —— 两个词只要释义不同，整串就不同，
+`iconOf(a) === iconOf(b)` 永远为假，**去重从来没生效过**。
+
+**修法**：新增 `iconKey(w)`（`js/app.js`），只认画出来的那张图：
+内置 emoji SVG → `esvg:`＋码位（去掉 U+FE0F）／自绘 SVG → `svg:`＋词／
+颜色色块 → `chip:`＋色值／裸 emoji → `emoji:`＋码位／字母牌 → `letter:`＋首字母。
+四处去重全部改用 `iconKey`，`iconOf` 只管渲染。
+
+另外自绘 SVG 里有两组**路径数据逐字节相同**的画面（`correct`/`well`、
+`everybody`/`everyone`），只按词名做 key 仍会漏，用 `SVG_SAME_KEY` 把它们归一；
+自测会核对这张表名副其实、且没有漏项（以后再加重复画面会被门禁挡住）。
+
+**验收**：
+- `_audit/test_icon_key.js`（注入线上真实 `wordIcon`/`iconOf`/`iconKey`）
+  48 项：同图必同 key（11 组）、异图必异 key（5 组）、自绘画面重复组全覆盖、
+  30 主题 × 30 轮抽词图不重复、全库同图词对 ≥18 对全部被归并、
+  四个去重点都改成 `iconKey`（防回退）。
+- `_audit/probe_mem_dup.py`（真浏览器）：9 个主题 × 40 局 + 6 个年级池 × 20 局
+  = 480 局，每局都是 4 张不同的图，0 重复、0 少牌。
+- 门禁新增 3 条断言（含跑上面那个 node 自测），134 PASS / 0 FAIL。
+
+**版本链**：BUILD .13 → .14；app v110 → v111；CACHE v164 → v165；音频零改动。
 
 ## 2026-11-09.13 修错题本空态文案（1~3 个词时谎称「空的」）
 
