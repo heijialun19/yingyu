@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-09.8",
-  "note": "修拼词复习的泄底：短语词（如 hard-working）原来把「正在拼的那一段」用红色粗体原样印在题面上（hard · working），孩子照着抄即可。现在已完成段正常显示、当前段固定下划线占位、未到段省略号，可见文本里不再出现当前答案。新增真浏览器探针 probe_spell_leak.py 与门禁断言防回归。app v105 / CACHE v159。"
+  "build": "2026-11-09.9",
+  "note": "修 children 复数教错：children 本身是复数，原来既不在唯复数表也不在不规则复数表，pluralSafe=true、pluralOf 返回 childrens，句子火车员会把「我喜欢孩子们（复数）」的正确答案标成 childrens，还可能生成 This is a children. 现在 children 进 PLURAL_ONLY + IRREG_PLURAL，countable/pluralSafe/takesArticle 全 false、pluralOf 返回 children。批量抽题 3×200 轮共 3600 题 0 错句。app v106 / CACHE v160 / grammar-engine v8；AUDIO_VER 4 等音频版本不动。"
 }

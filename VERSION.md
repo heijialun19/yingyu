@@ -14,12 +14,12 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v105 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v106 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v39 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
-| js/grammar-engine.js | v7 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
+| js/grammar-engine.js | v8 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v4 | 音标 |
 | js/build-data.js | v1 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v159 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v160 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -81,6 +81,35 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-09.9 修 children 复数（原来会教成 childrens）
+
+`children` 是 `child` 的复数，词库里 `child` 与 `children` 是两条独立词条。
+但 `children` 既不在 `PLURAL_ONLY`（唯复数），也不在 `IRREG_PLURAL`（不规则复数）里，
+于是三处判定全错：
+
+| 判定 | 修前 | 修后 |
+|---|---|---|
+| `countable('children')` | true | **false** |
+| `pluralSafe('children')` | true | **false** |
+| `pluralOf('children')` | **childrens** ✗ | **children** ✓ |
+| `takesArticle('children')` | true | **false** |
+
+后果（句子火车员/语法题会实际生成）：
+- 「我喜欢孩子们（复数）」→ `I like __.` 选项 `childrens / children / childrenes`，
+  正确答案被标成 **childrens**
+- `This is a children.` / `There is a children over there.`（a + 复数）
+
+修法：`children` 进 `PLURAL_ONLY`，同时给 `IRREG_PLURAL` 补
+`children/people/police` 三条「复数同形」，保证 `pluralOf` 原样返回。
+顺带核过词库里其余不规则复数（fish/sheep/deer）本来就正确，无需改。
+
+验收 `_audit/probe_sentence_plural.py`：3 个难度 × 200 轮 = **3600 题，0 错句**；
+门禁新增断言防止以后再漏。音频零改动（`audio/childrens.mp3` 是历史派生产物，
+修后不会再被任何文本触发，留档不动）。
+
+**版本链**：BUILD .8 → .9；app v105 → v106；CACHE v159 → v160；
+grammar-engine.js v7 → v8（3 个页面 + SW CORE）；AUDIO_VER 4 等音频版本不动。
 
 ## 2026-11-09.8 修拼词复习泄底（当前段答案印在题面上）
 

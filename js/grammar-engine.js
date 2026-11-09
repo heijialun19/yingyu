@@ -476,11 +476,19 @@ const UNCOUNTABLE = new Set(['bread','milk','water','juice','rice','meat','soup'
    ★ 2026-11-01 补 people / police：它们本身就是复数形式，
      "This is a people." / "There is a police over there." 都是错的。 */
 const PLURAL_ONLY = new Set(['scissors','trousers','pants','shorts','clothes',
-  'jeans','pyjamas','pajamas','chopsticks','french fries','people','police']);
+  'jeans','pyjamas','pajamas','chopsticks','french fries','people','police',
+  /* ★ 2026-11-09.9 修的 bug：children 是 child 的复数，本身不能单用（a children ✗），
+     也不能再加 s（childrens ✗）。原来它既不在 PLURAL_ONLY 也不在 IRREG_PLURAL，
+     于是 countable()=true、pluralSafe()=true、pluralOf() 返回 "childrens"，
+     句子火车员会出「我喜欢孩子们（复数）」并把 childrens 当成正确答案 —— 直接教错。
+     词库里 child 与 children 是两条独立词条，这条必须单独挡。 */
+  'children']);
 const IRREG_PLURAL = { fish:'fish', goose:'geese', mouse:'mice', sheep:'sheep', deer:'deer',
   ox:'oxen', person:'people', man:'men', woman:'women', child:'children', foot:'feet',
   tooth:'teeth', knife:'knives', leaf:'leaves', tomato:'tomatoes', potato:'potatoes',
-  photo:'photos', piano:'pianos' };
+  photo:'photos', piano:'pianos',
+  /* 自身就是复数形式的，pluralOf 必须原样返回，不能再加 s */
+  children:'children', people:'people', police:'police' };
 const wordOf = w => String(w && w.w !== undefined ? w.w : w);
 const countable = w => {
   const x = wordOf(w).toLowerCase();
