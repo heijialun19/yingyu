@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-09.6",
-  "note": "单词发音 V3 重烘：家长反馈「单词声音听起来很奇怪」（例如 pink）。14 组同口径 ASR A/B 定位到根因不是声线，而是生成参数——`-50dB` 硬裁首尾静音把 /p/ /t/ /k/ 清爆破音削掉了、`length_scale 1.1` 人为拖慢、低码率再压掉高频细节。保持 Piper(MIT) + en_US-ljspeech-medium(公有领域) 不变，改 length_scale 1.0 / 裁静音 -70dB / 96kbps，2874 个单词全量重烘，32 词转写正确率 16/32 → 24/32，短爆破音词 3/12 → 7/12。曾测 lessac-high 也有 24/32，但其训练数据是 Blizzard 2013 研究专用许可（禁止语音合成产品开发与分发），公开发布站点不可用，已排除；ljspeech-high 实测反而降到 8~14/32，也未采用。整句/词块/字母音未动，各自独立版本号不变。app v103 / CACHE v157 / AUDIO_VER 3 / AUDIO_CACHE v4。发版时 build 必须和 js/app.js 的 BUILD 一起改。"
+  "build": "2026-11-09.7",
+  "note": "全站发音换成家长试听选定的 C2 女声：Piper(MIT) + en_US-libritts-high (模型权重 MIT；训练数据 LibriTTS / OpenSLR 60 为 CC BY 4.0，已按许可在 THIRD-PARTY-NOTICES.txt 署名并给出许可链接与改动说明)，固定 speaker_id=381、noise_scale=0 / noise_w=0。单词 2874 + 整句 503 + 词块 44 共 3421 个 mp3 全量重烘，audio/phonics/ 39 个母语者录音不动。专项复核：26 字母名 / 67 拼读块 / 弱读冠词 / 含空格短语未出现念成音素等教学错误，51 条特殊条目 ASR 覆盖 37 条（旧版 17 条），26 条含空格短语逐条全对。同步修正 speechEnv、README、NOTICES 等处的历史旧数字。app v104 / CACHE v158 / AUDIO_VER 4 / SENTENCE_VER 2 / PHRASE_VER 2 / AUDIO_CACHE v5。发版时 build 必须和 js/app.js 的 BUILD 一起改。"
 }

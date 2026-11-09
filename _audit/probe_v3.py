@@ -29,7 +29,7 @@ PROBE = r"""<script>
             ? sentenceAudioURL('A cheetah can run fast') : '?';
           R.cards = document.querySelectorAll('.island').length;
 
-          var r = await fetch('audio/pink.mp3?v=3');
+          var r = await fetch('audio/pink.mp3?v=4');
           var b = await r.arrayBuffer();
           R.audioStatus = r.status;
           R.audioBytes = b.byteLength;
@@ -104,12 +104,12 @@ def main():
     d = json.loads(m.group(1))
     for k in sorted(d):
         print('%-15s %s' % (k, json.dumps(d[k], ensure_ascii=False)))
-    ok = (d.get('build') == '2026-11-09.6' and d.get('audioVer') == 3
+    ok = (d.get('build') == '2026-11-09.7' and d.get('audioVer') == 4
           and d.get('audioStatus') == 200 and d.get('audioBytes', 0) > 2000
-          and '?v=3' in str(d.get('urlPink', ''))
-          and d.get('sentenceVer') == 1 and d.get('phraseVer') == 1
+          and '?v=4' in str(d.get('urlPink', ''))
+          and d.get('sentenceVer') == 2 and d.get('phraseVer') == 2
           and d.get('phonicsVer') == 2
-          and d.get('wpOpts') == 4 and '?v=3' in str(d.get('wpSayUrl', ''))
+          and d.get('wpOpts') == 4 and '?v=4' in str(d.get('wpSayUrl', ''))
           and not d.get('err') and not d.get('ext'))
     print('\n验收：', 'PASS ✅' if ok else 'FAIL ⛔')
 

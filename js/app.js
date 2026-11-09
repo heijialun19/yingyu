@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-09.6';
+const BUILD = '2026-11-09.7';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -416,8 +416,10 @@ function renderGradePicker(sel) {
    旧版全靠某公开词典的 dictvoice 接口「查词典真人录音」：那是查词接口，
    不是语音合成，整句一律返 500；而且那是别人家的录音，站里还带着历史抓下来
    的 2000 多个 mp3 —— 既有服务条款问题，音色也杂（男女混搭、音量忽大忽小）。
-   现在全站发音都是本站用开源引擎（Piper，MIT）＋ 公有领域声线一次合成的
-   同源静态文件：一个说话人贯穿 2452 个单词 / 拼读块 / 字母名与 497 句整句。
+   现在全站发音都是本站用开源引擎（Piper，MIT）与 en_US-libritts-high
+   一次合成的同源静态文件：一个说话人贯穿 2874 个单词 / 拼读块 / 字母名
+   与 503 句整句。模型权重 MIT，训练数据 LibriTTS (OpenSLR 60) 为
+   CC BY 4.0，署名与许可全文见 THIRD-PARTY-NOTICES.txt。
      · 不跨域、不联网、断网照读
      · 不依赖任何第三方服务，谁家接口半死不活都影响不到这里
      · 音量天然统一（同一引擎、同一套参数出来）
@@ -453,7 +455,11 @@ function renderGradePicker(sel) {
    旧参数把 /p/ /t/ /k/ 清爆破音当静音裁掉了（pink 被听成 Kink），
    改 length_scale 1.0 / 裁静音 -70dB / 96kbps，AUDIO_VER 2 → 3。
    整句、词块、字母音都有独立版本号，本次一个都没动。 */
-const AUDIO_VER = 3;
+/* ★ 2026-11-09.7：全站换 C2 声线（Piper(MIT) + en_US-libritts-high，
+   训练数据 LibriTTS/OpenSLR 60 = CC BY 4.0，须署名，见 THIRD-PARTY-NOTICES）。
+   固定 speaker_id=381 + noise_scale=0 / noise_w=0，保证每次重烘一致。
+   单词/整句/词块三类一起换，各自版本号 +1；字母音是母语者录音，不动。 */
+const AUDIO_VER = 4;
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
    有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
@@ -494,7 +500,7 @@ function __registerGSAudio() {
     }));
   } catch (e) {}
 }
-/* 全量音频清单：js/audio-list.js 登记包内全部音频 slug（2450 条）。
+/* 全量音频清单：js/audio-list.js 登记包内全部音频 slug（2874 条）。
    PEP 等晚加载数据源的词从此直接命中本地文件，不会被推去兜底语音。
    ★ 2026-11-08 从「fetch audio/manifest.json」改成「defer 脚本」：
      旧做法每翻一页都要多一次网络往返（SW 对它走网络优先），而且 file:// 下
@@ -511,15 +517,16 @@ window.__registerAudioList = __registerAudioList;
 __registerAudioList();          /* audio-list.js 比 app.js 先执行时直接生效 */
 /* ===== 整句自有音频（2026-11-08）=====
    以前句子靠「单词 mp3 逐词接龙」或「两词一组绕有道」：前者男女声混搭、
-   没有连读和句末语调，后者断网无声。现在把全站 497 句固定例句用同一个
+   没有连读和句末语调，后者断网无声。现在把全站 503 句固定例句用同一个
    说话人一次合成整句，落在 audio/sentences/，零网络、离线可读。
-   合规：合成引擎 Piper(MIT)，声线 en_US-ljspeech-medium(public domain)，
+   合规：合成引擎 Piper(MIT)，语音模型 en_US-libritts-high(权重 MIT)，
+   训练数据 LibriTTS/OpenSLR 60 为 CC BY 4.0（已按许可署名，见 NOTICES）；
    输出音频可自由分发；不再新增任何抓取来的词典音频。
    ★ SENTENCE_VER 独立于 AUDIO_VER：重做整句音频只升它。
      若动 AUDIO_VER，已缓存的单词 mp3 会全部作废（要重下十来 MB）。
    ★ 必须放独立目录：有 slug 与单词音频同名（clap_your_hands），
      混进 audio/ 会互相覆盖。 */
-const SENTENCE_VER = 1;
+const SENTENCE_VER = 2;
 const SENTENCE_AUDIO = new Set([
   "a_cheetah_can_run_fast","a_firefighter_can_put_out_fires","a_month_is_about_one_trip_of_the_moon","a_parrot_can_talk","a_penguin_can_t_fly_but_it_can_swim","adults_pay_the_bill",
   "an_apple_and_an_egg_please","an_elephant_can_carry_things","an_insect_is_a_tiny_animal","are_there_any_peppers_no_there_aren_t_any_peppers","are_they_making_a_cake_no_they_aren_t","are_they_playing_hide_and_seek_yes_they_are",
@@ -621,7 +628,7 @@ const sentenceAudioURL = t => {
    （This is a / I have a / I don't like …）一次合成，冠词在语流里自然弱读，
    动态句子也就有了连读。词块只有 44 条、389KB，不用给上千种组合各存一整句。
    ★ PHRASE_VER 独立于 AUDIO_VER / SENTENCE_VER，重做词块只升它。 */
-const PHRASE_VER = 1;
+const PHRASE_VER = 2;
 const PHRASE_AUDIO = new Set([
   "this_is_a","this_is_an","this_is_my","this_is","i_have_a","i_have_an",
   "i_have_two","i_have","i_eat","i_drink","i_see_a","i_see_an","i_see",
@@ -1583,7 +1590,7 @@ document.addEventListener('keydown', unlockAudioChannels, { capture: true });
 /* 语音环境检测（家长中心诊断用） */
 function speechEnv() {
   return {
-    engine: '站内自带音频（2903 个单词/字母/拼读块/字母音 + 497 句整句；单词句子同声线自合成，字母音与拼读块为母语者录音）',
+    engine: '站内自带音频（2913 个发音文件 + 503 句整句；单词、整句与词块由 Piper + LibriTTS 声线合成，CC BY 4.0 已署名；字母音与拼读块为母语者录音）',
     wechat: /MicroMessenger/i.test(navigator.userAgent),
     online: navigator.onLine
   };

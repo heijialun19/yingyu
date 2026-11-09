@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v103 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v104 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v39 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v157 | Service Worker（音频缓存 birdie-audio-v4 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v158 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -67,11 +67,13 @@
   （`window.__AUDIO_LIST`，defer 加载，不挡首屏、file:// 也能用）；
   清单没落地前对单个词按本地文件乐观解析，`__registerGSAudio()` 另做兜底。
   包内真没有的内容才用浏览器 speechSynthesis 兜底，且只在单独朗读时启用
-- 音频合成规范（重做时必须一致）：Piper + `en_US-ljspeech-medium`（公有领域），
-  单词 V3 = `--length_scale 1.0`、96kbps / 22050Hz 单声道、
+- 音频合成规范（重做时必须一致）：Piper + `en_US-libritts-high` / `speaker_id=381`
+  （模型权重 MIT；训练数据 LibriTTS / OpenSLR 60 = CC BY 4.0，须署名），
+  **`--noise_scale 0 --noise_w 0` 必须钉死**（默认噪声下同词连烘 5 次 MD5 全不同）。
+  单词 = `--length_scale 1.0`、96kbps / 22050Hz 单声道、
   裁首尾静音 `silenceremove -70dB / start_silence 0.03`（-50dB 会削掉 /p/ /t/ /k/）；
-  整句仍是 1.1 / 64kbps、不裁，词块同整句，字母音是母语者录音（见 THIRD-PARTY-NOTICES）。
-  生成脚本在项目外的 `_tts/`（build_words_v3.py / deploy_v3.py）
+  整句与词块 = 1.1 / 64kbps、不裁；字母音是母语者录音（见 THIRD-PARTY-NOTICES）。
+  生成脚本在项目外的 `_tts/`（build_c2.py / deploy_c2.py）
 - Get Smart 课程数据里 unit.mod 是**数字**（1-10），moduleLessons/startModuleTest 都按数字匹配
 - 单元闯关每词只考 1 题（听音选图 或 看词选义随机），认义题干扰项按中文释义去重
 - **认义题（look）的选项一律是中文释义**，听音题（listen）才是英文词/图片。
@@ -79,6 +81,41 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-09.7 全站换 C2 声线（LibriTTS / CC BY 4.0，须署名）
+
+**家长试听后选定 C2**（libritts-high 的 381 号女声，「她的比较清楚」）。
+机器口径 38 词单遍 ASR 严格命中：线上 V3 6/38、C1(221) 30/38、
+C2(381) 27/38、C3(843) 27/38；C2 虽比 C1 低 3 词，但在
+**26 字母名 / 67 拼读块 / 弱读冠词 / 含空格短语**专项复核里明显更清楚：
+51 条特殊条目 ASR 覆盖 37 条（V3 只有 17 条），26 条含空格短语逐条全对，
+V3 把 `drama class` 听成 `drummer class`、字母名成片粘连，C2 都能分开。
+最后一公里是「声音亲不亲切」这种机器证明不了的事，以家长试听为准。
+
+**换了什么**：单词类 2874 + 整句 503 + 词块 44，共 3421 个 mp3 全量重烘；
+`audio/phonics/` 39 个母语者录音不动。
+Piper(MIT) + `en_US-libritts-high`（模型权重 MIT / 训练数据 LibriTTS
+OpenSLR 60 **CC BY 4.0**），固定 `speaker_id=381`，
+**`--noise_scale 0 --noise_w 0` 钉死噪声**（默认噪声下同词连烘 5 次 MD5 全不同，
+音色会随每次发版飘）。分类参数沿用线上，不擅自改教学节奏：
+单词 1.0 / 96k / -70dB 裁静音；整句与词块 1.1 / 64k / 不裁。
+
+**新增的合规义务**：CC BY 4.0 要求署名 + 许可链接 + 改动说明，
+`THIRD-PARTY-NOTICES.txt` 第三节已按论文标题 / 8 位作者 / OpenSLR SLR60 /
+CC BY 4.0 全文补齐；`disclaimer.html`、`parents.html`、`README.md|txt`
+与 `js/app.js` 的 `speechEnv().engine` 同步改写，不再声称「公有领域声线」。
+事实门禁新增断言守住这些披露，防止以后换声线又漏改。
+
+**顺手修掉的旧数字**：`speechEnv()` 曾写「2903 个 + 497 句整句」、
+`README.md` 文件结构写「2450 条 slug」、`js/sentence.js` 注释写「497 句」、
+`THIRD-PARTY-NOTICES.txt` 写「2450 + 497」，均为历史遗留，现统一为
+2913 个发音文件 / 2874 条词音频 / 503 句整句 / 44 段词块 / 39 个字母音。
+
+**版本链**：BUILD 2026-11-09.6 → .7；app v103 → v104；CACHE v157 → v158；
+AUDIO_VER 3 → 4、SENTENCE_VER 1 → 2、PHRASE_VER 1 → 2（PHONICS_VER 2 不动）；
+AUDIO_CACHE v4 → v5，activate 自动清掉上一代整包。
+生成脚本 `_tts/build_c2.py`、专项复核 `probe_c2_special.py` /
+`align_c2_special.py`、部署 `_tts/deploy_c2.py`。
 
 ## 2026-11-09.6 单词发音 V3 重烘（没换声线，别再改回调参）
 
