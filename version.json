@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-09.9",
-  "note": "修 children 复数教错：children 本身是复数，原来既不在唯复数表也不在不规则复数表，pluralSafe=true、pluralOf 返回 childrens，句子火车员会把「我喜欢孩子们（复数）」的正确答案标成 childrens，还可能生成 This is a children. 现在 children 进 PLURAL_ONLY + IRREG_PLURAL，countable/pluralSafe/takesArticle 全 false、pluralOf 返回 children。批量抽题 3×200 轮共 3600 题 0 错句。app v106 / CACHE v160 / grammar-engine v8；AUDIO_VER 4 等音频版本不动。"
+  "build": "2026-11-09.10",
+  "note": "补齐最后 273 个缺失音标：单词镇 30 个（含 18 个短语/连字符词）+ 课本独有 243 个。原规则「同形异音词与短语一律不标」，但词库每个词条只收一个义项，读音唯一，按义项标不会错（read=读书 /rid/、live=居住 /lɪv/、use=使用 /juz/、close=关上 /kloʊz/、present=礼物 /ˈprezənt/、tear=眼泪 /tɪr/、desert=沙漠 /ˈdezərt/、wind=风 /wɪnd/、minute=分钟 /ˈmɪnɪt/）。用 CMUdict(BSD) 批量转写，与既有 970 条同一美式口径；重音按音节首辅音放，单音节不标，短语逐词拼接。覆盖：单词镇 1000/1000、课本 965/965。app v107 / ipa v5 / pep-points v17 / CACHE v161；音频版本不动。"
 }

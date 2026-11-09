@@ -2,13 +2,13 @@
    小鸟英语乐园 · 单词音标（CMUdict 转写的美式音标）
    words.html（词卡/选图题）与 games.html（造词实验室）加载；
      其余页面不加载，省 12KB 传输。
-   只收录读音唯一的词：同形异音词（read/live/use/close/wind…）
-   与短语一律不标 —— 标错比不标更糟。
+   词库每个词条只收一个义项，同形异音词按义项标（read=读书、live=居住…）；
+   短语按逐词拼接。2026-11-09.10 起 1000 词全覆盖，不再留空。
    ============================================================ */
 'use strict';
 /* ---------------- 音标（CMUdict 转写的美式音标，与 App 播放的美音一致）
-   只收录读音唯一的词：同形异音词（read/live/use/close/wind…）与短语一律不标，
-   标错比不标更糟。全库 969/1000 个词有音标（31 个短语/同形异音词按规则不标）。 ---------------- */
+   词库每个词条只收一个义项，同形异音词按义项标（read=读书、live=居住…）；
+   短语按逐词拼接。2026-11-09.10 起 1000 词全覆盖。 ---------------- */
 const IPA = {
   "hello":"/həˈloʊ/", "hi":"/haɪ/", "goodbye":"/ɡʊdˈbaɪ/", "bye":"/baɪ/", "good":"/ɡʊd/",
   "thank":"/θæŋk/", "thanks":"/θæŋks/", "please":"/pliz/", "sorry":"/ˈsɑri/", "welcome":"/ˈwelkəm/",
@@ -203,5 +203,15 @@ const IPA = {
   "else":"/els/", "another":"/əˈnʌðər/", "few":"/fju/", "little":"/ˈlɪtəl/", "much":"/mʌtʃ/",
   "many":"/ˈmeni/", "each":"/itʃ/", "every":"/ˈevri/", "all":"/ɔl/", "some":"/sʌm/",
   "any":"/ˈeni/", "both":"/boʊθ/", "other":"/ˈʌðər/", "next":"/nekst/", "last":"/læst/",
-  "once":"/wʌns/", "twice":"/twaɪs/"
+  "once":"/wʌns/", "twice":"/twaɪs/",
+  /* ★ 2026-11-09.10：补齐最后 273 个缺失音标（单词镇 30 + 课本 243）。原规则「同形异音词与短语一律不标」，但词库每个词条只有一个义项，读音唯一，按义项标不会错（read=读书 /rid/、live=居住 /lɪv/、tear=眼泪 /tɪr/、close=关上 /kloʊz/、present=礼物 /ˈprezənt/、wind=风 /wɪnd/）。
+     用 CMUdict(BSD) 转写，与全站美式口径一致；短语按逐词拼接。 */
+  "Christmas tree":"/ˈkrɪsməs tri/", "close":"/kloʊz/", "desert":"/ˈdezərt/", "excuse":"/ɪkˈskjuz/",
+  "French fries":"/frɛntʃ fraɪz/", "good afternoon":"/ɡʊd æftərˈnun/", "good morning":"/ɡʊd ˈmɔrnɪŋ/", "good night":"/ɡʊd naɪt/",
+  "graduate":"/ˈɡrædʒueɪt/", "hot dog":"/hɑt dɔɡ/", "live":"/lɪv/", "living room":"/ˈlɪvɪŋ rum/",
+  "minute":"/ˈmɪnɪt/", "New Year":"/ˌnu ˈjɪr/", "o'clock":"/əˈklɑk/", "passport photo":"/ˈpæspɔrt ˈfoʊtoʊ/",
+  "PE":"/ˌpi ˈi/", "pencil-box":"/ˈpɛnsəl bɑks/", "ping-pong":"/ˈpɪŋ pɔŋ/", "post office":"/poʊst ˈɔfɪs/",
+  "present":"/ˈprezənt/", "protect the earth":"/prəˈtɛkt ðə ɜrθ/", "read":"/rid/", "save water":"/seɪv ˈwɔtər/",
+  "T-shirt":"/ˈti ʃɜrt/", "tear":"/tɪr/", "teddy bear":"/ˈtɛdi bɛr/", "use":"/juz/",
+  "wind":"/wɪnd/", "yo-yo":"/ˈjoʊ joʊ/",
 };

@@ -14,24 +14,24 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v106 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v107 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v39 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v8 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
-| js/ipa.js | v4 | 音标 |
+| js/ipa.js | v5 | 音标 |
 | js/build-data.js | v1 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
-| js/pep-points.js | v16 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
+| js/pep-points.js | v17 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
 | js/audio-list.js | v4 | 发音清单（2874 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v48 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v160 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v161 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -81,6 +81,41 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-09.10 补齐最后 273 个缺失音标（家长：「全音标了」）
+
+家长指出的问题：单词镇有 19 个词没有音标，课本页更多。实际全量扫描是
+**273 个**：单词镇 30 个（含 18 个短语/连字符词）、课本独有 243 个。
+
+**为什么以前是空的**：`js/ipa.js` 的规则是「同形异音词与短语一律不标 —— 标错比不标更糟」。
+但词库每个词条只收**一个义项**，读音其实是唯一的，按义项标不会错：
+
+| 词 | 词库义项 | 以前 | 现在 |
+|---|---|---|---|
+| read | 读书 | 空 | `/rid/`（不是过去式 /red/） |
+| live | 居住 | 空 | `/lɪv/`（不是 /laɪv/） |
+| use | 使用 | 空 | `/juz/`（不是名词 /jus/） |
+| close | 关上 | 空 | `/kloʊz/`（不是形容词 /kloʊs/） |
+| present | 礼物 | 空 | `/ˈprezənt/`（不是 /prɪˈzent/） |
+| tear | 眼泪 | 空 | `/tɪr/`（不是 /ter/） |
+| desert | 沙漠 | 空 | `/ˈdezərt/`（不是 /dɪˈzɜrt/） |
+| wind | 风 | 空 | `/wɪnd/`（不是 /waɪnd/） |
+| minute | 分钟 | 空 | `/ˈmɪnɪt/`（不是 /maɪˈnjut/） |
+
+**怎么标的**：用 CMUdict（BSD，已在 `THIRD-PARTY-NOTICES.txt` 署名）批量转写，
+与既有的 970 条同一个美式口径（无长音符、`ER→ɜr`、`AH0→ə`）；
+重音按**音节首辅音**放（`ˈpɛnsəl` 而不是 `pˈɛnsəl`），单音节词不标重音，
+短语逐词拼接。同形异音词按上表逐条人工指定，不取词典第一条。
+
+**口径说明**：本站音标一直是美式，与站内朗读声线（美音）一致；
+人教版课本词表用的是英式符号，两者写法不同但读的是同一个词。
+若要与课本符号完全对齐，需要全站 1000+ 条一起换成英式，属于另一个决定。
+
+覆盖：单词镇 **1000/1000**、课本 **965/965** 全部有音标；
+`_audit/test_ipa_coverage.js` 5 项断言进发版门禁。
+
+**版本链**：BUILD .9 → .10；app v106 → v107；`ipa.js` v4 → v5；
+`pep-points.js` v16 → v17；CACHE v160 → v161；音频版本全部不动。
 
 ## 2026-11-09.9 修 children 复数（原来会教成 childrens）
 
