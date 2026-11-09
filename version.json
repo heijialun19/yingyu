@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-09.15",
-  "note": "colour / color 合并成一条（家长拍板 B）：同一意思、同一张彩虹的两条词条合为一条 colour，记忆法说明美式写作 color。词库 1000 → 999 词。顺带修「千词小博士」徽章门槛写死 1000（词库 999 后永远拿不到），改成按词库实际总量判断。app v112 / words-data v41 / data v39 / CACHE v166；音频零改动。"
+  "build": "2026-11-09.16",
+  "note": "colour 记忆法示例改成英式 colourful（原来写的是美式 colorful，与课本 pep3b-u4 的 colourful 不一致）。文案一处，逻辑零改动。app v113 / words-data v42 / CACHE v167；音频零改动。"
 }
