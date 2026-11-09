@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v107 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v108 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v39 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v161 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v162 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -73,6 +73,10 @@
   单词 = `--length_scale 1.0`、96kbps / 22050Hz 单声道、
   裁首尾静音 `silenceremove -70dB / start_silence 0.03`（-50dB 会削掉 /p/ /t/ /k/）；
   整句与词块 = 1.1 / 64kbps、不裁；字母音是母语者录音（见 THIRD-PARTY-NOTICES）。
+- **音标口径 = 美式**（2026-11-09.11 家长拍板 A）：`js/ipa.js` 与 `PEP_IPA` 全部美式符号
+  （无长音符、`ER→ɜr`、`AH0→ə`），与站内朗读声线一致。部分教材（人教版词表）用英式符号
+  （`/ˈwɔːtə/`），写法不同、读音是同一个词。**要换就全站 1000+ 条一起换**，
+  不要只把某几个词改成英式 —— 同一页两种符号体系比不改更糟。
   生成脚本在项目外的 `_tts/`（build_c2.py / deploy_c2.py）
 - Get Smart 课程数据里 unit.mod 是**数字**（1-10），moduleLessons/startModuleTest 都按数字匹配
 - 单元闯关每词只考 1 题（听音选图 或 看词选义随机），认义题干扰项按中文释义去重
@@ -81,6 +85,19 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-09.11 明确音标口径（美式）+ 修过期数字
+
+家长拍板：**保持 A 档 —— 全站美式**，不换成课本的英式符号。
+
+- `disclaimer.html`：把「970 条美式音标」改成真实覆盖（1000 个单词全部 + 课本补充 243 条），
+  并写明「统一用美式符号，与站内朗读的美音一致；部分教材用英式符号，写法不同但读的是同一个词」。
+  原数字自 2026-11-08 起就没跟上（当时 970 条，现在 1000 + 243）。
+- `VERSION.md`：新增「音标口径」条目并写死规则 —— 要换就全站 1000+ 条一起换，
+  **不要只把某几个词改成英式**，否则同一页里两种符号体系，孩子更困惑。
+- 代码零改动，音频零改动；只改文案 + 版本链。
+
+**版本链**：BUILD .10 → .11；app v107 → v108；CACHE v161 → v162。
 
 ## 2026-11-09.10 补齐最后 273 个缺失音标（家长：「全音标了」）
 
