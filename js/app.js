@@ -7,12 +7,12 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-09.3';
+const BUILD = '2026-11-09.4';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
-   （2026-11-08 全站审查：实际 7 个游戏，首页/meta/README 却分别写着 6/4。） */
-const GAME_COUNT = 7;
+   2026-11-09.4 下线游戏5（句子听力）后为 6 个；增删游戏必须同步改这里。 */
+const GAME_COUNT = 6;
 
 /* ===== 新版本提醒 =====
    ★ 为什么必须有：这是一个 PWA。页面一旦打开就一直留着，Service Worker 又把
@@ -601,94 +601,7 @@ const SENTENCE_AUDIO = new Set([
   "yesterday_we_made_cards_for_the_writer","you_are_older_than_me_but_i_am_taller","you_have_to_wear_a_space_suit","you_must_return_the_book_on_time","you_mustn_t_shout_in_the_library","you_should_exercise_every_day",
   "you_should_not_eat_too_much_junk_food","you_should_shake_hands_when_you_meet","you_should_take_some_medicine","you_shouldn_t_stay_up_late","your_wish_will_come_true",
   /* 句子工厂的固定短句：原来只能逐词蹦单词，现在有整句音频一次读完 */
-  "i_run","birds_fly","we_sing","we_drink_milk","i_am_a_girl","i_am_a_boy",
-  /* ★ 听句选图 485 句整句音频（2026-11-09.3）：
-     这个游戏的句子是运行时拼的，原来靠「连读词块 + 单词」接龙，
-     每一句都被切成 2 段，中间隔着两段音频各自的静音，听起来断一下。
-     现在全部烘成整句，speakSentence 走整句优先，一次播完。
-     清单由 _audit/picsent_slugs.json 生成；改 games.html 的句型/词池
-     必须重跑 _audit/probe_picsent.html 并重烘，否则又退回断句。 */
-  "i_drink_juice","i_drink_milk","i_drink_tea","i_drink_water","i_eat_beef","i_eat_biscuits",
-  "i_eat_bread","i_eat_cake","i_eat_chicken","i_eat_dumplings","i_eat_eggs","i_eat_noodles",
-  "i_eat_pork","i_eat_rice","i_eat_soup","i_have_a_t_shirt","i_have_a_tv","i_have_a_baby",
-  "i_have_a_back","i_have_a_bag","i_have_a_ball","i_have_a_balloon","i_have_a_bamboo","i_have_a_banana",
-  "i_have_a_band","i_have_a_bank","i_have_a_baseball","i_have_a_bat","i_have_a_bathroom","i_have_a_beach",
-  "i_have_a_bean","i_have_a_bear","i_have_a_bed","i_have_a_bedroom","i_have_a_bee","i_have_a_bell",
-  "i_have_a_belt","i_have_a_bike","i_have_a_bill","i_have_a_bird","i_have_a_birthday","i_have_a_biscuit",
-  "i_have_a_block","i_have_a_boat","i_have_a_body","i_have_a_book","i_have_a_bowl","i_have_a_boy",
-  "i_have_a_bridge","i_have_a_brother","i_have_a_brush","i_have_a_building","i_have_a_bus","i_have_a_button",
-  "i_have_a_cabbage","i_have_a_cake","i_have_a_call","i_have_a_camel","i_have_a_camp","i_have_a_candle",
-  "i_have_a_candy","i_have_a_cap","i_have_a_capital","i_have_a_car","i_have_a_card","i_have_a_carrot",
-  "i_have_a_cartoon","i_have_a_cat","i_have_a_cave","i_have_a_century","i_have_a_chair","i_have_a_channel",
-  "i_have_a_cherry","i_have_a_chick","i_have_a_child","i_have_a_children","i_have_a_choice","i_have_a_cinema",
-  "i_have_a_circle","i_have_a_city","i_have_a_class","i_have_a_clock","i_have_a_cloud","i_have_a_coach",
-  "i_have_a_coat","i_have_a_coconut","i_have_a_college","i_have_a_color","i_have_a_colour","i_have_a_comb",
-  "i_have_a_computer","i_have_a_concert","i_have_a_cook","i_have_a_copy","i_have_a_corn","i_have_a_corner",
-  "i_have_a_country","i_have_a_cow","i_have_a_crab","i_have_a_crayon","i_have_a_crowd","i_have_a_cucumber",
-  "i_have_a_culture","i_have_a_cup","i_have_a_customer","i_have_a_dad","i_have_a_dancer","i_have_a_danger",
-  "i_have_a_date","i_have_a_day","i_have_a_deer","i_have_a_degree","i_have_a_dentist","i_have_a_desert",
-  "i_have_a_desk","i_have_a_diamond","i_have_a_doctor","i_have_a_dog","i_have_a_doll","i_have_a_dollar",
-  "i_have_a_dolphin","i_have_a_door","i_have_a_dragon","i_have_a_dress","i_have_a_driver","i_have_a_drum",
-  "i_have_a_duck","i_have_a_dumpling","i_have_a_face","i_have_a_fall","i_have_a_family","i_have_a_farm",
-  "i_have_a_farmer","i_have_a_father","i_have_a_festival","i_have_a_fever","i_have_a_field","i_have_a_film",
-  "i_have_a_finger","i_have_a_fire","i_have_a_firework","i_have_a_fish","i_have_a_flag","i_have_a_floor",
-  "i_have_a_flower","i_have_a_fog","i_have_a_foot","i_have_a_football","i_have_a_forest","i_have_a_forget",
-  "i_have_a_fork","i_have_a_fountain","i_have_a_fox","i_have_a_fridge","i_have_a_friend","i_have_a_frog",
-  "i_have_a_front","i_have_a_future","i_have_a_game","i_have_a_garage","i_have_a_garden","i_have_a_gift",
-  "i_have_a_giraffe","i_have_a_girl","i_have_a_glove","i_have_a_goal","i_have_a_goat","i_have_a_goldfish",
-  "i_have_a_golf","i_have_a_goose","i_have_a_grade","i_have_a_graduate","i_have_a_grandma","i_have_a_grandpa",
-  "i_have_a_grape","i_have_a_group","i_have_a_guitar","i_have_a_hair","i_have_a_half","i_have_a_hand",
-  "i_have_a_hat","i_have_a_head","i_have_a_headache","i_have_a_heart","i_have_a_hen","i_have_a_hill",
-  "i_have_a_hippo","i_have_a_history","i_have_a_home","i_have_a_horse","i_have_a_hospital","i_have_a_hotel",
-  "i_have_a_house","i_have_a_jacket","i_have_a_jeep","i_have_a_job","i_have_a_journey","i_have_a_jungle",
-  "i_have_a_kangaroo","i_have_a_key","i_have_a_kid","i_have_a_kitchen","i_have_a_kite","i_have_a_kiwi",
-  "i_have_a_knee","i_have_a_knife","i_have_a_koala","i_have_a_lady","i_have_a_lake","i_have_a_lamp",
-  "i_have_a_lantern","i_have_a_law","i_have_a_leaf","i_have_a_learn","i_have_a_left","i_have_a_leg",
-  "i_have_a_lemon","i_have_a_lesson","i_have_a_letter","i_have_a_library","i_have_a_line","i_have_a_lion",
-  "i_have_a_list","i_have_a_magazine","i_have_a_man","i_have_a_mango","i_have_a_map","i_have_a_market",
-  "i_have_a_medicine","i_have_a_melon","i_have_a_message","i_have_a_middle","i_have_a_midnight","i_have_a_minute",
-  "i_have_a_mirror","i_have_a_mistake","i_have_a_mom","i_have_a_moment","i_have_a_monkey","i_have_a_month",
-  "i_have_a_moon","i_have_a_mooncake","i_have_a_mother","i_have_a_mountain","i_have_a_mouse","i_have_a_mouth",
-  "i_have_a_museum","i_have_a_mushroom","i_have_a_name","i_have_a_neck","i_have_a_noodle","i_have_a_noon",
-  "i_have_a_nose","i_have_a_notebook","i_have_a_number","i_have_a_nurse","i_have_a_panda","i_have_a_park",
-  "i_have_a_parrot","i_have_a_party","i_have_a_passport","i_have_a_pea","i_have_a_peach","i_have_a_pear",
-  "i_have_a_pen","i_have_a_pencil","i_have_a_penguin","i_have_a_pepper","i_have_a_person","i_have_a_phone",
-  "i_have_a_photo","i_have_a_piano","i_have_a_picture","i_have_a_pig","i_have_a_pilot","i_have_a_plane",
-  "i_have_a_planet","i_have_a_plant","i_have_a_plate","i_have_a_potato","i_have_a_power","i_have_a_present",
-  "i_have_a_price","i_have_a_program","i_have_a_pumpkin","i_have_a_puzzle","i_have_a_quarter","i_have_a_question",
-  "i_have_a_rabbit","i_have_a_race","i_have_a_radio","i_have_a_raincoat","i_have_a_recycle","i_have_a_remember",
-  "i_have_a_right","i_have_a_river","i_have_a_road","i_have_a_robot","i_have_a_rock","i_have_a_rose",
-  "i_have_a_rubbish","i_have_a_rule","i_have_a_ruler","i_have_a_sailor","i_have_a_say","i_have_a_scarf",
-  "i_have_a_school","i_have_a_scooter","i_have_a_screen","i_have_a_sea","i_have_a_seal","i_have_a_seaside",
-  "i_have_a_season","i_have_a_seaweed","i_have_a_sentence","i_have_a_shape","i_have_a_shark","i_have_a_sheep",
-  "i_have_a_shell","i_have_a_ship","i_have_a_shirt","i_have_a_shoe","i_have_a_shop","i_have_a_shoulder",
-  "i_have_a_shower","i_have_a_shrimp","i_have_a_singer","i_have_a_sister","i_have_a_size","i_have_a_skirt",
-  "i_have_a_sky","i_have_a_slide","i_have_a_snake","i_have_a_soap","i_have_a_sock","i_have_a_sofa",
-  "i_have_a_song","i_have_a_speak","i_have_a_spell","i_have_a_spider","i_have_a_spoon","i_have_a_spring",
-  "i_have_a_square","i_have_a_stage","i_have_a_star","i_have_a_starfish","i_have_a_station","i_have_a_statue",
-  "i_have_a_sticker","i_have_a_stone","i_have_a_store","i_have_a_storm","i_have_a_story","i_have_a_street",
-  "i_have_a_student","i_have_a_subject","i_have_a_subway","i_have_a_success","i_have_a_suitcase","i_have_a_summer",
-  "i_have_a_sun","i_have_a_sweater","i_have_a_swing","i_have_a_table","i_have_a_taxi","i_have_a_teach",
-  "i_have_a_teacher","i_have_a_team","i_have_a_tear","i_have_a_tell","i_have_a_test","i_have_a_text",
-  "i_have_a_ticket","i_have_a_tiger","i_have_a_tomato","i_have_a_tooth","i_have_a_tour","i_have_a_towel",
-  "i_have_a_tower","i_have_a_town","i_have_a_toy","i_have_a_train","i_have_a_tree","i_have_a_triangle",
-  "i_have_a_trip","i_have_a_truck","i_have_a_turtle","i_have_a_twin","i_have_a_vacation","i_have_a_van",
-  "i_have_a_vet","i_have_a_video","i_have_a_village","i_have_a_violin","i_have_a_vitamin","i_have_a_volcano",
-  "i_have_a_waiter","i_have_a_wall","i_have_a_watch","i_have_a_wave","i_have_a_way","i_have_a_week",
-  "i_have_a_weekday","i_have_a_weekend","i_have_a_whale","i_have_a_wind","i_have_a_window","i_have_a_winner",
-  "i_have_a_wolf","i_have_a_woman","i_have_a_word","i_have_a_worker","i_have_a_world","i_have_a_writer",
-  "i_have_a_yawn","i_have_a_year","i_have_a_yo_yo","i_have_a_yoga","i_have_a_yuan","i_have_a_zebra",
-  "i_have_a_zoo","i_have_an_accident","i_have_an_activity","i_have_an_adult","i_have_an_age","i_have_an_airport",
-  "i_have_an_answer","i_have_an_ant","i_have_an_apple","i_have_an_arm","i_have_an_artist","i_have_an_ask",
-  "i_have_an_aunt","i_have_an_autumn","i_have_an_eagle","i_have_an_ear","i_have_an_early","i_have_an_earth",
-  "i_have_an_effort","i_have_an_egg","i_have_an_eggplant","i_have_an_elephant","i_have_an_email","i_have_an_end",
-  "i_have_an_energy","i_have_an_eraser","i_have_an_event","i_have_an_exam","i_have_an_eye","i_have_an_hour",
-  "i_have_an_island","i_have_an_o_clock","i_have_an_ocean","i_have_an_octopus","i_have_an_onion","i_have_an_opera",
-  "i_have_an_oval","i_have_an_owl","i_have_an_umbrella","i_have_an_uncle","i_see_black","i_see_blue",
-  "i_see_brown","i_see_green","i_see_orange","i_see_pink","i_see_purple","i_see_red",
-  "i_see_white","i_see_yellow","this_is_a_bird","this_is_a_cat","this_is_a_cow","this_is_a_dog",
-  "this_is_a_duck","this_is_a_fish","this_is_a_horse","this_is_a_lion","this_is_a_monkey","this_is_a_mouse",
-  "this_is_a_pig","this_is_a_rabbit","this_is_a_sheep","this_is_a_tiger","this_is_an_elephant"
+  "i_run","birds_fly","we_sing","we_drink_milk","i_am_a_girl","i_am_a_boy"
 ]);
 const sentenceAudioURL = t => {
   const k = audioSlug(t);
@@ -697,7 +610,7 @@ const sentenceAudioURL = t => {
 };
 
 /* ===== 动态句子的「连读词块」（2026-11-09）=====
-   为什么需要：程序临时拼出来的句子（听句选图 / 句子火车员 / 句子工厂）
+   为什么需要：程序临时拼出来的句子（句子火车员 / 句子工厂）
    没有整句 mp3，只能逐词接龙。而单独合成冠词 "a" 时 Piper 会念成**字母名**
    /eɪ/（语音识别听成 "Hey"），于是 "This is a cat." 变成 "This is A cat."
    —— 这就是家长说的「句子读得不对」。把句子里固定不变的前半段

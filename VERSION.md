@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v100 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v101 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v39 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v154 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v155 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -51,7 +51,7 @@
 | words.html | 单词镇：分主题练词 + 复习（间隔重复）+ 听写 |
 | letters.html | 字母岛：26 字母象形故事 |
 | grammar.html | 句子工厂：19 关（第 5 关 a/an 按读音首音素教，不是看首字母） |
-| games.html | 游戏乐园：7 个游戏（含自然拼读） |
+| games.html | 游戏乐园：6 个游戏（含自然拼读） |
 | parents.html | 家长中心：进度报告 + 版本与朗读诊断 |
 | pep.html | 人教课本：8 册知识点 + 拼词 |
 | 404.html | 友好错误页 |
@@ -78,7 +78,41 @@
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
 
-## 2026-11-09.3 听句选图：整句音频全覆盖（别改回去）
+## 2026-11-09.4 下线「听句选图」（别再加回来）
+
+**用户拍板**：「这是什么垃圾题目？如果处理不好这些垃圾题目，你就直接给我删掉吧。
+这个游戏就不要要了。」截图题目是 `year` vs `month`（两张几乎一样的日历图），
+句子是 `I have a year.` 这类病句。
+
+**为什么删而不是补黑名单**：这个游戏的选题机制有三处结构性缺陷，不是 109 个词
+黑名单能堵住的 ——
+1. 名词池直接取 `gxNouns(全词库)` + `hasIcon + takesArticle`。`takesArticle`
+   只管「能不能加 a/an」，不管这个词有没有**清晰可辨、语义不混淆**的图，
+   于是 `year / month / day / hour / o'clock / children / forget` 全进来了；
+2. 干扰项与正确项从**同一个名词池**随机取，`seenIcon` 只按 SVG 完全相等去重，
+   `year` 和 `month` 是两张不同的日历图，因此能同时出现在四个选项里；
+3. 选项卡片直接印英文单词，孩子听到 /jɪə/ 看拼写就能选，听力训练形同虚设。
+
+要修干净得重做选题引擎 + 建视觉相似组 + 去掉选项文字，等于重写一个游戏；
+用户明确不要了，所以整体下线，不为「保住题量」留半成品。
+
+**删了什么**：`GAMES` 的 `picsent` 项、`startGame` 路由、`games.html` 游戏5 整段
+（含 `FOOD_PLURAL` / `foodSay` / `gPicSent` / `_picShow` 等）、
+`audio/sentences/` 下 485 个专属整句 mp3（5.28 MB）、`SENTENCE_AUDIO` 相应 485 条。
+`GAME_COUNT` 7→6，首页 / meta / SEO / README / 封面图数字全部同步。
+
+**保留了什么（别连带删）**：
+- `ZH_QTY` / `zhQty` 中文量词表 —— 游戏4「句子火车员」的 there be 题目在用；
+- 44 段连读词块 + `weak_a` / `weak_an` —— 句子火车员、句子工厂的动态句仍靠它们接龙；
+- 503 句固定例句整句音频 —— 教材课堂、句子工厂在用；
+- `pluralOf` / `takesArticle` / `hasIcon` 等引擎函数 —— 其他 6 个游戏在用。
+
+⛔ **别把 `_audit/picsent_*.json`、`_tts/build_picsent.py` 当成可复用的现成方案**：
+它们只是这次失败方案的历史记录。真要做句子级听力，先解决上面三条，
+再考虑烘整句音频，否则就是把垃圾题固化成 mp3。
+
+## 2026-11-09.3 听句选图：整句音频全覆盖（已于 .4 整体下线，以下仅为历史记录）
+
 
 **现象**：家长反馈「听句选图的句子不流畅」。上一轮加的连读词块只解决了冠词的
 **读音**（a 不再念字母名），没解决**流畅度**——真实页面逐句量测：485 句全部
@@ -1074,7 +1108,7 @@ batch2-11.js / colors.js / memo_1-5.js / merge.js（228KB）没有任何页面�
 5. **This is a south. / an America. / a music. / I don't like Canadas.**
    —— 「可数」不等于「能加 a/an」，专有名词/方位/学科既不能加冠词也不能加 s。
    修：grammar-engine 新增 `NO_ARTICLE` 与 `takesArticle/canTakeArticle`，
-   句子工厂（4 处）、句子火车员、听句选图都改用它。
+   句子工厂（4 处）、句子火车员都改用它。
 6. **This is a work. / a weather. / I like natures.** —— 词库里 pos='n' 但实际不可数的词
    （work/weather/traffic/space/health…）被当普通名词。修：补进 `UNCOUNTABLE`；
    people / police 补进 `PLURAL_ONLY`（"This is a people." 是错的）。
