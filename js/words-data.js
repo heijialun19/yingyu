@@ -47,7 +47,11 @@ const GRADES = [
     W('blue','蓝色','','blue 蓝天 blue sky；blew（吹过）和它同音不同义','n'), W('green','绿色','','grow（生长）元音降级成 green：草木一生长就是绿的；grass 草同根','n'),
     W('white','白色','','white 和 wheat（小麦白面）同根；w 开头常与水有关（wave/wash），水花是白的','n'), W('black','黑色','','bl- 词族带『暗/空』：blind 瞎、blank 空白、bleak 阴沉、blot 污点','n'),
     W('orange','橙色','','orange 橙子——先有橙子这个水果，才有橙色','n'), W('pink','粉色','','pink 原本是一种小花（石竹）的名字，后来成了粉色','n'),
-    W('purple','紫色','','紫色染料古代取自海螺，极珍贵，只有帝王穿得起——帝王紫','n'), W('brown','棕色','','brown 和 bruise（瘀青）同根：瘀青是棕黑色的','n'), W('grey','灰色','','grey 是黑白之间；grizzle（灰白头发）同根','n'), W('colour','颜色(英式)','🌈','colour（英式）= color（美式）：colorful 多彩的','n') ]},
+    W('purple','紫色','','紫色染料古代取自海螺，极珍贵，只有帝王穿得起——帝王紫','n'), W('brown','棕色','','brown 和 bruise（瘀青）同根：瘀青是棕黑色的','n'), W('grey','灰色','','grey 是黑白之间；grizzle（灰白头发）同根','n'), W('colour','颜色(英式)','🌈','colour（英式）= color（美式）：colorful 多彩的','n'),
+    /* ★ 2026-11-09.12 修的 bug：color（颜色(美式)）原来被放进了「音乐艺术」主题，
+       颜色主题里只有英式 colour —— 打开音乐艺术会看到一个「颜色」词，与音乐无关。
+       英式/美式对照应该并排放在颜色主题里。 */
+    W('color','颜色(美式)','🌈','color 颜色——五颜六色，和 colour 只是拼写不同','n') ]},
   { id: 'school', name: '学校文具', emoji: '🏫', color: '#4EC5F1', pos: 'n', words: [
     W('school','学校','🏫','school 学校——来自希腊语「闲暇」：古人只有闲下来才读书'), W('book','书','📖','book 书——原来是「山毛榉树皮」，古人把字写在树皮上'), W('pen','钢笔','🖊️','pen 钢笔——原来是「羽毛」，古人用羽毛蘸墨写字'),
     W('pencil','铅笔','✏️','pencil 铅笔——来自拉丁「小毛笔」，和 pen 一家'), W('ruler','尺子','📏','ruler 尺子——rule 规则 + -er：画直线的东西'), W('bag','包','🎒','bag 包——鼓鼓的包'),
@@ -232,7 +236,7 @@ const GRADES = [
     W('towel', '毛巾', '', 'towel 来自法语 toaille（布）'), W('toothbrush', '牙刷', '🪥', 'tooth 牙 + brush 刷'), W('soap', '香皂', '🧼', 'soap 来自拉丁 sapo（肥皂）'), W('comb', '梳子', '💇', 'comb 来自古英语 camb（梳子/鸡冠）——梳子和鸡冠是同一个词！'), W('key', '钥匙', '🔑', 'key 来自古英语 cǣg，key 的 k 像钥匙的齿（象形）') ]},
   { id: 'feeling', name: '感觉', emoji: '😊', color: '#FF8FAB', pos: 'adj', words: [
     W('tired', '累的', '😪', 'tired 累——累得瘫在沙发上'), W('thirsty', '渴的', '', 'thirsty 渴——嘴巴干得冒烟'), W('hungry', '饿的', '', 'hungry 饿——肚子咕咕叫（和 hunt 同源）'), W('full', '饱的', '', 'full 和拉丁 plenus（满）同源：plenty（丰富）就来自 plenus'),
-    W('afraid', '害怕的', '😨', 'afraid 害怕——心里害怕发抖'), W('worried', '担心的', '😟', 'worry 原意是「勒住/咬住」——担心像被勒住喘不过气'), W('excited', '兴奋的', '🤩', 'excited = ex-（向外）+ cite（叫）：被「叫」得心向外跳'), W('bored', '无聊的', '', 'bored 来自 bore（钻孔）——无聊像被「钻孔」一样难熬'),
+    W('afraid', '害怕的', '😨', 'afraid 害怕——心里害怕发抖'), W('worried', '担心的', '😟', 'worry 原意是「勒住/咬住」——担心像被勒住喘不过气'), W('excited', '兴奋的', '🤩', 'excited = ex-（向外）+ cite（叫）：被「叫」得心向外跳'), W('bored', '感到无聊的（人）', '', 'bored 来自 bore（钻孔）——无聊像被「钻孔」一样难熬；-ed 说的是「人」的感受'),
     W('surprised', '惊讶的', '😲', 'surprised = sur-（上面）+ prise（抓）：从上面「抓」你一把 = 吓一跳'), W('proud', '自豪的', '😎', 'proud 来自拉丁 prod-（向前）——骄傲地「向前」挺起胸'), W('shy', '害羞的', '😳', 'shy 害羞——躲在妈妈身后'), W('lonely', '孤单的', '🥺', 'lone（独自）+ -ly'),
     W('feel', '感觉', '🫶', 'feel 来自古英语 fēlan（触摸）——feeling 原是「摸到的」感觉','v'), W('smile', '微笑', '', 'smile 和 smirk（假笑）同源：都是嘴角的「小动作」','v'), W('calm', '平静的', '😌', 'calm 来自希腊语 kauma（炎热的中午）——中午热得万物「静止」下来'), W('tear', '眼泪', '', 'tear 的 t 像眼泪（象形）：一滴落下来','n') ]},
   { id: 'verb2', name: '动词二', emoji: '🤝', color: '#FF6B6B', pos: 'v', tip: '💡 规律：give / take / like / make 里都藏着一对好搭档元音！', words: [
@@ -296,12 +300,12 @@ const GRADES = [
     W('piano', '钢琴', '🎹', 'piano 来自意大利语 pianoforte（轻和响）——钢琴能「轻能响」！'), W('guitar', '吉他', '🎸', 'guitar 来自希腊语 kithara（琴）'), W('violin', '小提琴', '🎻', 'violin 来自意大利语 viola 的「小」版——violin 小提琴'), W('drum', '鼓', '🥁', 'drum 是拟声词——「咚咚」敲的鼓'),
     W('song', '歌曲', '🎶', 'song 和 sing 是亲兄弟（o↔i 元音降级）'), W('paint', '绘画', '', 'paint 来自拉丁 pingere（画/染）——paint 原是「涂颜色」'), W('brush', '画笔', '🖌️', 'brush 刷子——刷子刷一刷'), W('band', '乐队', '🎺', 'band 来自古法语 bande（一队人）'),
     W('concert', '音乐会', '', 'concert = con-（一起）+ cert（确定）：「一起确定」→合奏'), W('stage', '舞台', '🎭', 'stage 来自拉丁 stare（站）——stage 就是「站的地方」'), W('magic', '魔法', '✨', 'magic 来自希腊语 magos（术士）——magic 和 magi（东方三贤士）同源'), W('opera', '歌剧', '🎼', 'opera 来自拉丁 opus（作品）——opera 就是「作品」'),
-    W('color', '颜色(美式)', '🌈', 'color 颜色——五颜六色'), W('statue', '雕像', '🗿', 'statue 来自拉丁 statua（立着的东西）——statue 就是「立着的」像') ]},
+    W('statue', '雕像', '🗿', 'statue 来自拉丁 statua（立着的东西）——statue 就是「立着的」像') ]},
   { id: 'adj3', name: '描述三', emoji: '🔬', color: '#9B72FF', pos: 'adj', words: [
     W('correct', '正确的', '', 'correct = cor-（完全）+ rect（直）：完全「弄直」= 改对。rect- = 直：rectangle 长方形'), W('wrong', '错误的', '', 'wrong 来自古英语 wrang（扭歪的）——wrong 原是「歪的」！'), W('true', '真的', '', 'true 原意是「忠实的/可靠的」——true 真、trust 信任'), W('false', '假的', '🤥', 'false 来自拉丁 falsus（欺骗的）——false 原是「骗人的」'),
     W('same', '相同的', '🟰', 'same 相同——「s-ame」像双胞胎穿一样的'), W('different', '不同的', '🔀', 'different = dif-（分开）+ fer（拿）+ -ent：「分开拿」= 不同'), W('tight', '紧的', '🪢', 'tight 来自古英语 tyht（紧的）'), W('far', '远的', '', 'far 远——「f-ar」像越走越远'),
     W('deep', '深的', '', 'deep 和 dip（蘸）同源——deep 就是「往下蘸」到底'), W('high', '高的', '🏔️', 'high 高——高高的山顶'), W('dangerous', '危险的', '⚠️', 'danger 危险 + -ous。danger 来自法语 dangier（威胁）'), W('important', '重要的', '', 'important = im-（入）+ port（拿）+ -ant：「拿进去」= 重要'),
-    W('interesting', '有趣的', '', 'interest = inter-（之间）+ est（在）：「在其中」才有趣'), W('boring', '无聊的', '', 'bored 来自 bore（钻孔）——无聊像被「钻孔」一样难熬'), W('useful', '有用的', '', 'use 用 + -ful 满'), W('special', '特别的', '', 'special 来自拉丁 species（种类）——special 就是「特别一种」') ]},
+    W('interesting', '有趣的', '', 'interest = inter-（之间）+ est（在）：「在其中」才有趣'), W('boring', '令人无聊的（事/物）', '', 'boring = bore（钻孔）+ -ing：这东西「让人」像被钻孔一样难熬；-ing 修饰事/物，不说人'), W('useful', '有用的', '', 'use 用 + -ful 满'), W('special', '特别的', '', 'special 来自拉丁 species（种类）——special 就是「特别一种」') ]},
   { id: 'time2', name: '时间二', emoji: '⏳', color: '#FF9F45', pos: 'n', words: [
     W('age', '年龄', '', 'age 来自拉丁 aetas（年龄）'), W('date', '日期', '', 'date 来自拉丁 dare（给）——date 原是「给出的时间」'), W('quarter', '一刻钟', '', 'quarter = quart-（四）+ -er：四分之一。quart 夸脱 = 四分之一加仑'), W('half', '一半', '🌗', 'half 一半——一半一半'),
     W('past', '过去', '', 'past 来自拉丁 passus（步）——past 就是「走过去的」'), W('term', '学期', '', 'term 来自拉丁 terminus（界限）——term 原是「一段的界限」'), W('moment', '时刻', '⏱️', 'moment 来自拉丁 momentum（运动/瞬间）——moment 就是「一动之间」'), W('period', '时期', '', 'period = peri-（周围）+ od（路）：「走一圈」的时间'),

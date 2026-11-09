@@ -14,8 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v108 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/words-data.js | v39 | 1000 词词库 |
+| js/app.js | v109 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/words-data.js | v40 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v162 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v163 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -85,6 +85,33 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-09.12 修词库两处数据错误 + 同义歧义守卫
+
+**1. color 放错了主题**（打开「音乐艺术」会看到一个「颜色」词）
+`color`（颜色(美式)）原来挂在 `music2 音乐艺术` 的最后，而 `color 颜色` 主题里
+只有英式 `colour`。英式/美式对照应该并排放在颜色主题里：
+颜色主题 12 → **13 词**、音乐艺术 14 → **13 词**，总词数仍是 1000、主题仍是 61。
+
+**2. bored / boring 释义与记忆法都错**
+| 词 | 修前 | 修后 |
+|---|---|---|
+| bored | 无聊的 | **感到无聊的（人）** |
+| boring | 无聊的；记忆法却是「bored 来自 bore…」 | **令人无聊的（事/物）**；`boring = bore + -ing`，-ing 修饰事/物 |
+
+修前「无聊的」的英语是？—— `bored` 和 `boring` 两个选项都对；
+而且 `boring` 的记忆法整段抄了 `bored`，孩子看不出 -ed/-ing 的区别。
+
+**3. 同义歧义守卫**
+扫描「中文释义完全相同」的 19 组，其中 12 组没进 `SYN_GROUPS`
+（good/OK、no/not、sir/Mr、on/above、tall/high、policeman/police、job/work、
+cost/spend、gift/present、everyone/everybody、anyone/anybody、bored/boring），
+「中文选英文」题里会出现两个都算对的选项。已全部补进去。
+
+**验收**（`_audit/probe_syn_guard.py`，真浏览器）：16 组同义对 × 120 次抽题
+= **1920 题，同义对同时出现 0 次**；`bored`/`boring` 的中文已不同。
+
+**版本链**：BUILD .11 → .12；app v108 → v109；`words-data.js` v39 → v40；CACHE v162 → v163。
 
 ## 2026-11-09.11 明确音标口径（美式）+ 修过期数字
 
