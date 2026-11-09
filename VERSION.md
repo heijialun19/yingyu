@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v102 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v103 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v39 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v156 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v157 | Service Worker（音频缓存 birdie-audio-v4 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -62,14 +62,16 @@
 - 整句发音：课本 273 句 + Get Smart 227 句共 497 个 slug 的自合成整句 MP3 在 audio/sentences/，
   清单 SENTENCE_AUDIO 在 app.js，命中就一次播完；不命中才走逐词连读
 - 单词发音：**只用站内 audio/{slug}.mp3，一个外网请求都不发**（v8，2026-11-08）。
-  全站发音目标共 2864 个（单词 + 拼读块 + 字母名 + 复数/三单/进行时派生词），清单是 `js/audio-list.js`；
+  全站发音目标共 2874 个（单词 + 拼读块 + 字母名 + 复数/三单/进行时派生词），清单是 `js/audio-list.js`；
   另有 26 个字母音在 `audio/phonics/`（不进清单，用 `PHONICS_VER` 独立版本号）
   （`window.__AUDIO_LIST`，defer 加载，不挡首屏、file:// 也能用）；
   清单没落地前对单个词按本地文件乐观解析，`__registerGSAudio()` 另做兜底。
   包内真没有的内容才用浏览器 speechSynthesis 兜底，且只在单独朗读时启用
-- 音频合成规范（重做时必须一致）：Piper + `en_US-ljspeech-medium`，`--length_scale 1.1`，
-  mp3 48kbps / 22050Hz 单声道，单词额外裁首尾静音（silenceremove -50dB）；
-  整句是 64kbps。生成脚本在项目外的 `_tts/`（build_words.py / deploy_words.py）
+- 音频合成规范（重做时必须一致）：Piper + `en_US-ljspeech-medium`（公有领域），
+  单词 V3 = `--length_scale 1.0`、96kbps / 22050Hz 单声道、
+  裁首尾静音 `silenceremove -70dB / start_silence 0.03`（-50dB 会削掉 /p/ /t/ /k/）；
+  整句仍是 1.1 / 64kbps、不裁，词块同整句，字母音是母语者录音（见 THIRD-PARTY-NOTICES）。
+  生成脚本在项目外的 `_tts/`（build_words_v3.py / deploy_v3.py）
 - Get Smart 课程数据里 unit.mod 是**数字**（1-10），moduleLessons/startModuleTest 都按数字匹配
 - 单元闯关每词只考 1 题（听音选图 或 看词选义随机），认义题干扰项按中文释义去重
 - **认义题（look）的选项一律是中文释义**，听音题（listen）才是英文词/图片。
@@ -77,6 +79,36 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-09.6 单词发音 V3 重烘（没换声线，别再改回调参）
+
+**家长反馈**：「单词声音听起来很奇怪，比如粉色 pink」。改成只念一个单词的
+「听词选图」后，短词失去了句子语流的上下文，音质短板被放大。
+
+**根因不是声线，是生成参数**（14 组同口径 A/B，32 词机器转写正确率）：
+
+| 方案 | 正确 | 短爆破音词 | 结论 |
+|---|---|---|---|
+| 线上 v2（1.1 / 48k→实 56k / -50dB 硬裁） | 16/32 | 3/12 | 基线 |
+| 只换 `en_US-ljspeech-high`（同数据集 high 版） | 8~14/32 | 1~4/12 | **更差，弃** |
+| 换 `en_US-lessac-high` | 24/32 | 10/12 | 音质最好，但训练数据是 Blizzard 2013 **研究专用许可**，明确禁止语音合成产品开发与分发，公开发布站点不能用，**弃** |
+| **v3：保持 medium，1.0 / 96k / -70dB** | **24/32** | **7/12** | **采用** |
+
+`-50dB` 硬裁首尾静音是主凶：英语 /p/ /t/ /k/ 清爆破音能量就贴着 -50dB，
+被当静音削掉，`pink` 被听成 `Kink`、`pig` 被听成 `K.`、`cat` 被听成 `Pet.`。
+换成 -70dB 只削纯数字静音；`length_scale` 从 1.1 回到模型原生 1.0 去掉拖沓；
+96kbps 保住清辅音高频细节。
+
+**没动的部分**（各有独立版本号，避免全站音色被悄悄换掉）：
+`audio/sentences/` 503 句（SENTENCE_VER=1）、`audio/phrases/` 44 词块
+（PHRASE_VER=1）、`audio/phonics/` 39 字母音（PHONICS_VER=2，母语者录音、
+本来就不是同一个音源）、`js/audio-list.js`（清单未变）。
+
+体积：单词包 12.69 MB → 约 21 MB；音频按需缓存、不进 SW 的 CORE/BOOT，
+首屏不受影响；`AUDIO_CACHE` v3 → v4，activate 会自动删掉上一代整包。
+
+生成脚本在项目外 `_tts/`：`build_words_v3.py`（合成/校验）、`deploy_v3.py`（接入）、
+`ab_high.py` / `ab_round2.py` / `score_asr.py`（A/B 取证，参数别凭印象改）。
 
 ## 2026-11-09.5 听词选图：把句子题改成单词题（别改回去）
 

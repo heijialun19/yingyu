@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-09.5';
+const BUILD = '2026-11-09.6';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -449,7 +449,11 @@ function renderGradePicker(sel) {
      旧文件按新 URL 自动失效。
    AUDIO_VER 与 SW 的 AUDIO_CACHE 一起改：重做音频时两个都 +1，
    否则 SW 会拿旧文件（URL 没变就等于没换）。 */
-const AUDIO_VER = 2;
+/* ★ 2026-11-09：V3 重烘（没换声线，仍是 en_US-ljspeech-medium 公有领域）。
+   旧参数把 /p/ /t/ /k/ 清爆破音当静音裁掉了（pink 被听成 Kink），
+   改 length_scale 1.0 / 裁静音 -70dB / 96kbps，AUDIO_VER 2 → 3。
+   整句、词块、字母音都有独立版本号，本次一个都没动。 */
+const AUDIO_VER = 3;
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
    有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
