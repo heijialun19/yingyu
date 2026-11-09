@@ -1561,7 +1561,7 @@ function pepIpaOf(w) {
   return v ? '/' + v + '/' : '';
 }
 
-/* ---- 记忆法借用：单词镇 1000 词库同名词的 dec（记法） ---- */
+/* ---- 记忆法借用：单词镇词库同名词的 dec（记法） ---- */
 let __wordDecMap = null;
 function pepDecOf(w) {
   const s = String(w.w || w).toLowerCase();

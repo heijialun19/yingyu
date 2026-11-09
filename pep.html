@@ -120,12 +120,12 @@
   <div id="app"><div id="bootPlaceholder" class="card" style="max-width:560px;margin:22px auto;text-align:center;padding:26px 18px"><div style="font-size:34px">🐤</div><p style="color:#6B7280;font-size:.9rem;margin:8px 0 0">正在打开，请稍等…</p></div></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=40"></script>
+<script src="js/words-data.js?v=41"></script>
 <script src="svg/word-svg.js?v=3"></script>
 <script async src="svg/emoji-svg2.js?v=3"></script>
 <script src="js/ipa.js?v=5"></script>
-<script src="js/data.js?v=38"></script>
-<script src="js/app.js?v=111"></script>
+<script src="js/data.js?v=39"></script>
+<script src="js/app.js?v=112"></script>
 <script defer src="js/sentence.js?v=49"></script>
 <script defer src="js/audio-list.js?v=4"></script>
 <script src="js/pep-data.js?v=1"></script>
@@ -141,7 +141,7 @@ pepEnsurePage();
 
 /* ---- 词图统一入口 ----
    课本词表里有大量「单词镇词库没有」的词。取图顺序：
-   1) pep-data 自带 e 字段 → 2) 单词镇 1000 词库同名词借图 → 3) 下面 PEP_EMOJI 补充图库
+   1) pep-data 自带 e 字段 → 2) 单词镇词库同名词借图 → 3) 下面 PEP_EMOJI 补充图库
    → 4) WORD_SVG 手绘/色块（wordIcon 内部）→ 5) 字母徽章兜底。
    抽象词（can/of/if…）故意不配图：硬配会教错概念，字母徽章是正确设计。 */
 const PEP_EMOJI = {
@@ -190,7 +190,7 @@ const PEP_EMOJI = {
   camp: '⛺', 'went fishing': '🎣', 'took pictures': '📷', basket: '🧺',
   gym: '⛹️', cycling: '🚴', 'ice-skate': '⛸️', badminton: '🏸', cheetah: '🐆', dream: '💭',
 };
-/* 单词镇 1000 词库借图索引（懒建） */
+/* 单词镇词库借图索引（懒建） */
 let __wordEmoMap = null;
 function wordEmoOf(w) {
   if (__wordEmoMap) return __wordEmoMap[w];

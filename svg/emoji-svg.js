@@ -1,5 +1,5 @@
 /* 全站 emoji 的内置 SVG 图库 · 基础库（Twemoji 15.0.0，CC-BY 4.0）—— 每个页面都加载
-   词库 1000 词 + 界面装饰用到的 emoji 都在这里。Get Smart 课程专用的 195 个在 emoji-svg2.js。 */
+   词库 999 词 + 界面装饰用到的 emoji 都在这里。Get Smart 课程专用的 195 个在 emoji-svg2.js。 */
 /*   为什么需要它：emoji 在网页上是「字体字形」，不是图片。
    系统没有彩色 emoji 字形时，浏览器就用 Segoe UI Symbol / 微软雅黑自带的
    单色字形补位 —— 画出来是黑白线条；没有字形就吐空白方块。

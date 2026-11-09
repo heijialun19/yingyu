@@ -14,9 +14,9 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v111 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/words-data.js | v40 | 1000 词词库 |
-| js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
+| js/app.js | v112 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/words-data.js | v41 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
+| js/data.js | v39 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v8 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v165 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v166 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -75,7 +75,7 @@
   整句与词块 = 1.1 / 64kbps、不裁；字母音是母语者录音（见 THIRD-PARTY-NOTICES）。
 - **音标口径 = 美式**（2026-11-09.11 家长拍板 A）：`js/ipa.js` 与 `PEP_IPA` 全部美式符号
   （无长音符、`ER→ɜr`、`AH0→ə`），与站内朗读声线一致。部分教材（人教版词表）用英式符号
-  （`/ˈwɔːtə/`），写法不同、读音是同一个词。**要换就全站 1000+ 条一起换**，
+  （`/ˈwɔːtə/`），写法不同、读音是同一个词。**要换就全站 999+ 条一起换**，
   不要只把某几个词改成英式 —— 同一页两种符号体系比不改更糟。
   生成脚本在项目外的 `_tts/`（build_c2.py / deploy_c2.py）
 - Get Smart 课程数据里 unit.mod 是**数字**（1-10），moduleLessons/startModuleTest 都按数字匹配
@@ -85,6 +85,38 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-09.15 colour / color 合并为一条（词库 1000 → 999）
+
+**决定**：家长拍板 B。`colour`「颜色(英式)」和 `color`「颜色(美式)」是同一个意思的
+两条词条、共用同一张 🌈，同一个意思占两个词位。合并成 **一条 `colour`（颜色）**，
+记忆法写清「英式拼写 colour ＝ 美式 color，两种写法读音相同」。
+
+**顺手修掉一个会静静坏掉的 bug**：`js/app.js` 的「千词小博士」徽章门槛写死
+`if (w >= 1000)`，词库变 999 后这枚徽章**永远拿不到**——孩子学完全库也开不出来，
+界面上只会显示「离目标还差 1 个」。改成 `w >= totalWordCount()`（从 THEMES 现算），
+以后加减词都不会再坏；`totalWords === 0`（词库没加载）时直接跳过，
+避免门槛变成 0 一进站就发徽章。
+
+**同步的口径**：全站「1000 词」→「999 词」，共 16 个文件：
+`index.html`（description / og / JSON-LD）、`games.html`（两处按钮文案）、
+`parents.html`、`disclaimer.html`、`manifest.json`、`README.md`、`README.txt`、
+`VERSION.md`、`js/words-data.js` / `js/data.js` / `js/ipa.js` / `js/pep-points.js` /
+`js/app.js` / `svg/emoji-svg.js` / `letters.html` / `pep.html` 的注释与徽章文案。
+
+**保留不动的**：
+- `js/ipa.js` 里的 `color` 音标条目：Get Smart 1 课文原句就是 `What color is it?`
+  （美式教材），删了那一行音标会空掉。音标表比词库多这一条是有意为之。
+- `js/build-data.js` 的 `color + ful = colorful`：造词实验室演示的是构词法（美式拼写），
+  与 Get Smart 的美式课文同源，不跟着改成英式。
+- `audio/color.mp3` 等美式读音文件：仍在 `audio-list` 清单里（Get Smart 要用），
+  不删（删了反而要同时改清单和门禁，风险大于收益）。
+
+**验收**：词库 999 词 / 61 主题；门禁 136 PASS；8 套自测 + 8 个真浏览器探针全绿；
+`_audit/test_icon_key.js` 里「同图词对」从 18 组降到 17 组（彩虹那组消失了）。
+
+**版本链**：BUILD .14 → .15；app v111 → v112；words-data v40 → v41；
+data v38 → v39；CACHE v165 → v166；音频零改动。
 
 ## 2026-11-09.14 修「同图去重失效」（配对里出现两张一样的图）
 

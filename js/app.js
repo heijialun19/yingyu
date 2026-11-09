@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-09.14';
+const BUILD = '2026-11-09.15';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -290,6 +290,20 @@ function letterCount() { return Object.keys(Store.d.letters).length; }
 function wordMasteredCount() { return Object.values(Store.d.words).filter(w => w.box >= 2).length; }
 function wordSeenCount() { return Object.keys(Store.d.words).length; }
 function grammarDoneCount() { return Object.keys(Store.d.grammar).length; }
+/* 词库总量：从 THEMES 现算，不写死。
+   ★ 2026-11-09.15：colour / color 合并后词库从 1000 变 999，
+     「千词小博士」原来是 if (w >= 1000) —— 门槛比词库总量还高，
+     这枚徽章就永远拿不到（家长不会发现，孩子学到死也开不出来）。
+     现在按实际总量判，以后加词减词都不会再坏。 */
+let __totalWords = 0;
+function totalWordCount() {
+  if (!__totalWords) {
+    let n = 0;
+    if (typeof THEMES !== 'undefined') THEMES.forEach(t => { n += (t.words || []).length; });
+    __totalWords = n;
+  }
+  return __totalWords;
+}
 
 function awardBadge(id) {
   if (Store.d.badges[id]) return;
@@ -301,12 +315,13 @@ function awardBadge(id) {
 function checkBadges() {
   const d = Store.d;
   const w = wordMasteredCount();
+  const totalWords = totalWordCount();          // 0 = 词库还没加载，绝不能用 0 当门槛，否则一进站就发徽章
   if (letterCount() >= 10) awardBadge('letter10');
   if (letterCount() >= 26) awardBadge('letter26');
   if (w >= 20)  awardBadge('word20');
   if (w >= 100) awardBadge('word100');
   if (w >= 500) awardBadge('word500');
-  if (w >= 1000) awardBadge('word1000');
+  if (w >= totalWords && totalWords > 0) awardBadge('word1000');   // 词库全掌握（总量现算，见 totalWordCount）
   const s1Ids = GRAMMAR_LEVELS.filter(l => l.stage === 's1').map(l => l.id);
   if (s1Ids.every(id => d.grammar[id])) awardBadge('grammar8');
   if (grammarDoneCount() >= GRAMMAR_LEVELS.length) awardBadge('grammar1');
@@ -484,7 +499,7 @@ const __LOCAL_AUDIO = (() => {
 /* ===== Get Smart 词库的音频补登记 =====
    ★ 2026-11-01 修的 bug：audio/ 里有 1896 个 mp3，其中 644 个属于
      Get Smart 独有的词（insect / stand up / bicycle / crocodile …），
-     但 __LOCAL_AUDIO 只按「1000 词词库 + 造词实验室」建，
+     但 __LOCAL_AUDIO 只按「词库全部单词 + 造词实验室」建，
      而 getsmart-data.js 比 app.js **晚加载**（脚本顺序），
      于是这 644 个词一律查不到本地文件 → 全部回退有道：
        · 在线要多绕一圈外网（getsmart 的 prewarmBatch 一次发几百个请求）
@@ -1061,7 +1076,7 @@ function wordIcon(w) {
    ★ 血泪教训（2026-10-26）：wordIcon 修好之后，页面上仍有一大半地方直接写
      `${w.e}` 渲染 emoji 字符 —— 等于把「靠系统字体画图」的老毛病原样留着，
      老 Windows 上照样黑白/方块。凡是「给孩子看的词图」一律走下面两个函数：
-       iconOf(w)  拿渲染好的 HTML（带缓存，1000 词批量出题也不卡）
+       iconOf(w)  拿渲染好的 HTML（带缓存，整库批量出题也不卡）
        hasIcon(w) 判断有没有真图（字母牌不算图，不能拿去做「看图选」的选项）
    例外：站点导航图标（岛屿、按钮、标题前缀）是界面装饰，不是词图，不在此列。 */
 const __iconCache = new Map();
