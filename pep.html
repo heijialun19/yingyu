@@ -125,7 +125,7 @@
 <script async src="svg/emoji-svg2.js?v=3"></script>
 <script src="js/ipa.js?v=4"></script>
 <script src="js/data.js?v=38"></script>
-<script src="js/app.js?v=104"></script>
+<script src="js/app.js?v=105"></script>
 <script defer src="js/sentence.js?v=49"></script>
 <script defer src="js/audio-list.js?v=4"></script>
 <script src="js/pep-data.js?v=1"></script>
@@ -479,11 +479,15 @@ function renderSpell() {
   SP.blocks = blocks; // 目标切分：格数 = 块数（不是字母数！）
   const ipa = ipaOf(cur.w);
   /* 短语词的分段指示：已拼段划掉、当前段高亮 */
+  /* ⛔ 当前段与未到的段绝不能印出字母：以前这里把正在拼的那一段用红色粗体
+     原样显示（hard · **working**），孩子照着上面抄就能拼对，等于白送答案。
+     现在只把「已经拼出来的段」显示出来（那是孩子自己拼对的），
+     当前段用固定 4 个下划线占位（不按字母数，避免泄露长度），未到段用省略号。 */
   const partTip = SP.parts.length > 1
     ? `<div style="text-align:center;margin:2px 0 0;font-size:.92rem">${SP.parts.map((p, i) =>
         i < SP.partIdx ? `<s style="color:#4E9E59">${esc(p)}</s>` :
-        i === SP.partIdx ? `<b style="color:#FF6B6B">${esc(p)}</b>` :
-        `<span style="color:#9CA3AF">${esc(p)}</span>`).join('<span style="color:#D5DAE6;margin:0 6px">·</span>')}</div>`
+        i === SP.partIdx ? `<b style="color:#FF6B6B;letter-spacing:1px" aria-label="正在拼这一段">▁▁▁▁</b>` :
+        `<span style="color:#9CA3AF">……</span>`).join('<span style="color:#D5DAE6;margin:0 6px">·</span>')}</div>`
     : '';
   $('#app').innerHTML = `
     <button class="btn ghost" style="margin-bottom:12px" onclick="spellQuit()">← 退出拼词</button>

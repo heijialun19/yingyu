@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-09.7",
-  "note": "全站发音换成家长试听选定的 C2 女声：Piper(MIT) + en_US-libritts-high (模型权重 MIT；训练数据 LibriTTS / OpenSLR 60 为 CC BY 4.0，已按许可在 THIRD-PARTY-NOTICES.txt 署名并给出许可链接与改动说明)，固定 speaker_id=381、noise_scale=0 / noise_w=0。单词 2874 + 整句 503 + 词块 44 共 3421 个 mp3 全量重烘，audio/phonics/ 39 个母语者录音不动。专项复核：26 字母名 / 67 拼读块 / 弱读冠词 / 含空格短语未出现念成音素等教学错误，51 条特殊条目 ASR 覆盖 37 条（旧版 17 条），26 条含空格短语逐条全对。同步修正 speechEnv、README、NOTICES 等处的历史旧数字。app v104 / CACHE v158 / AUDIO_VER 4 / SENTENCE_VER 2 / PHRASE_VER 2 / AUDIO_CACHE v5。发版时 build 必须和 js/app.js 的 BUILD 一起改。"
+  "build": "2026-11-09.8",
+  "note": "修拼词复习的泄底：短语词（如 hard-working）原来把「正在拼的那一段」用红色粗体原样印在题面上（hard · working），孩子照着抄即可。现在已完成段正常显示、当前段固定下划线占位、未到段省略号，可见文本里不再出现当前答案。新增真浏览器探针 probe_spell_leak.py 与门禁断言防回归。app v105 / CACHE v159。"
 }

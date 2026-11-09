@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-09.7';
+const BUILD = '2026-11-09.8';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -459,6 +459,8 @@ function renderGradePicker(sel) {
    训练数据 LibriTTS/OpenSLR 60 = CC BY 4.0，须署名，见 THIRD-PARTY-NOTICES）。
    固定 speaker_id=381 + noise_scale=0 / noise_w=0，保证每次重烘一致。
    单词/整句/词块三类一起换，各自版本号 +1；字母音是母语者录音，不动。 */
+/* ★ 2026-11-09.8：只修 pep.html 拼词复习的泄底，音频零改动，
+   所以 AUDIO_VER / SENTENCE_VER / PHRASE_VER 都不动。 */
 const AUDIO_VER = 4;
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
