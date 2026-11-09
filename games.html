@@ -5,13 +5,13 @@
 <meta name="keywords" content="小学英语,英语启蒙,自然拼读,儿童英语,免费" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
-<meta name="description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员、造词实验室、拼读闯关 6 个游戏，优先复习学过的单词。">
+<meta name="description" content="听音选字母、听词选图、图词翻翻乐、拼词小火车、句子火车员、造词实验室、拼读闯关 7 个游戏，优先复习学过的单词。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="游戏乐园 · 边玩边学 · 小鸟英语乐园">
-<meta property="og:description" content="听音选字母、图词翻翻乐、拼词小火车、句子火车员、造词实验室、拼读闯关 6 个游戏，优先复习学过的单词。">
+<meta property="og:description" content="听音选字母、听词选图、图词翻翻乐、拼词小火车、句子火车员、造词实验室、拼读闯关 7 个游戏，优先复习学过的单词。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/games.html">
 <meta name="twitter:card" content="summary_large_image">
@@ -27,7 +27,7 @@
 <main>
   <div class="page-title">
     <h1>🎡 游戏乐园</h1>
-    <p>玩就是学！<b id="gameCount">6</b> 个游戏，优先复习<b>你学过的单词</b>，也可以从 1000 词库随机挑战</p>
+    <p>玩就是学！<b id="gameCount">7</b> 个游戏，优先复习<b>你学过的单词</b>，也可以从 1000 词库随机挑战</p>
   </div>
   <div id="app"><div id="bootPlaceholder" class="card" style="max-width:560px;margin:22px auto;text-align:center;padding:26px 18px"><div style="font-size:34px">🐤</div><p style="color:#6B7280;font-size:.9rem;margin:8px 0 0">正在打开，请稍等…</p></div></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
@@ -36,7 +36,7 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script src="js/data.js?v=38"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=101"></script>
+<script src="js/app.js?v=102"></script>
 <script defer src="js/audio-list.js?v=4"></script>
 <script src="js/sentence.js?v=49"></script>
 <script src="js/grammar-engine.js?v=7"></script>
@@ -60,12 +60,13 @@ const GAMES = [
     { id: 'memory',   emoji: '🃏', name: '图词翻翻乐', desc: '翻开卡片，图片和单词配对', color: 'var(--grape)' },
     { id: 'scramble', emoji: '🚂', name: '拼词小火车', desc: '把打乱的字母装回正确的顺序', color: 'var(--orange)' },
     { id: 'sentence', emoji: '🧑‍🔧', name: '句子火车员', desc: '句子缺了个词，你来补上！', color: 'var(--mint)' },
+    { id: 'wordpic',  emoji: '🖼️', name: '听词选图', desc: '只听一个单词，选出它的图片！', color: '#8B5CF6' },
     { id: 'wordlab',  emoji: '🧪', name: '造词实验室', desc: '每轮 10 个新词，black + board 会变成什么？', color: 'var(--coral)' },
     { id: 'phonics',  emoji: '🔤', name: '拼读闯关', desc: '听音拼词：cat 就是 c + a + t 拼出来的', color: '#0EA5E9' },
 ];
 
 /* 游戏数量的唯一真相源是 js/app.js 的 GAME_COUNT；增删游戏必须同步改它，
-   否则首页和 SEO 文案会立刻说错（2026-11-09.4 起为 6 个）。 */
+   否则首页和 SEO 文案会立刻说错（2026-11-09.5 起为 7 个）。 */
 if (typeof GAME_COUNT !== 'undefined' && GAMES.length !== GAME_COUNT) {
   console.error('[游戏数量不一致] GAMES=' + GAMES.length + '，GAME_COUNT=' + GAME_COUNT);
 }
@@ -82,7 +83,7 @@ function renderHome() {
     </div>`).join('')}
   </div>`;
 }
-function startGame(id) { sfx.pop(); ({ listen: gListen, memory: gMemoryPick, scramble: gScramblePick, sentence: gSentencePick, wordlab: gWordLab, phonics: gPhonics })[id](); }
+function startGame(id) { sfx.pop(); ({ listen: gListen, memory: gMemoryPick, scramble: gScramblePick, sentence: gSentencePick, wordpic: gWordPic, wordlab: gWordLab, phonics: gPhonics })[id](); }
 function gameHomeBtn() { return `<button class="btn ghost" onclick="renderHome()">← 换个游戏</button>`; }
 
 /* 词库选择卡：我的年级优先，可复习学过的词、换年级或全部随机 */
@@ -1075,6 +1076,199 @@ function gPhonics() {
   }
   phShow();
 }
+/* ---------------- 听词选图（听一个单词 → 选图片） ----------------
+   2026-11-09.5：原「听句选图」因出题机制坏了整体下线后，按家长建议重做。
+   只念**一个单词**，四个选项只给图，不印英文也不印中文，答对才揭示。
+   于是 a/an、单复数、可数性、句子连读这些坑**全都不存在了**：
+   「I have a children.」这类病句不可能出现，也不用给 485 种句子各烘一段音频。
+
+   ★ 词池是静态清单 WP_WORDS（364 词 / 28 主题），由 _audit/build_wordpic_pool.py
+     依据真浏览器量测生成，规则全部可复算：
+       具体实物主题白名单（排除国家主题：China/Canada 都是蓝底 C 字母块）
+       ∩ hasIcon 真图 ∩ 有站内单词 mp3 ∩ 单词不含空格
+       ∩ 图有效像素达标（ink>=0.14 且 (colors>=5 或 ink>=0.20)，
+         排除 plate/message/story/breakfast 这类淡到看不见的图）
+       ∩ 非抽象概念 / 动作 / 总称词（peace / pay / kick / colour…）
+       ∩ 该主题剔完至少还剩 4 词
+     改词库、图库或出题规则，必须重跑 probe_wordpic_pool.html /
+     probe_wordpic_contrast.html / build_wordpic_pool.py / test_wordpic_pool.js。
+
+   ★ 同题四个选项来自四个**不同主题**：两张日历图、两辆小汽车这种同族近似图
+     根本不会同屏；再加中文、同音、同义组、渲染图四重去重。
+     ⛔ 不要在选项上印英文单词或中文释义 —— 那就变成认字题，听力训练白做。
+*/
+const WP_WORDS = [
+  "red","yellow","blue","green","black","orange","pink","purple",
+  "brown","grey","school","book","pen","pencil","ruler","bag",
+  "eraser","desk","chair","blackboard","crayon","pencil-box","card","picture",
+  "teacher","student","sticker","scissors","glue","bell","schoolbag","paper",
+  "cat","dog","bird","fish","duck","pig","bear","monkey",
+  "panda","tiger","lion","elephant","rabbit","mouse","hen","chick",
+  "cow","sheep","giraffe","goose","owl","eagle","koala","zebra",
+  "dad","mom","father","mother","brother","sister","grandpa","grandma",
+  "baby","uncle","aunt","friend","eye","ear","nose","mouth",
+  "hand","head","hair","face","arm","leg","foot","tooth",
+  "finger","neck","knee","shoulder","ball","kite","doll","yo-yo",
+  "bike","robot","puzzle","plane","boat","car","balloon","game",
+  "slide","scooter","apple","banana","pear","peach","grape","watermelon",
+  "strawberry","pineapple","lemon","mango","cherry","kiwi","coconut","melon",
+  "blueberry","egg","rice","noodle","bread","cake","milk","water",
+  "juice","tea","hamburger","chicken","beef","pork","soup","dumpling",
+  "mooncake","candy","chocolate","biscuit","porridge","shirt","T-shirt","dress",
+  "skirt","pants","shorts","coat","sweater","jacket","hat","cap",
+  "shoe","sock","scarf","glove","button","house","door","window",
+  "bed","sofa","lamp","kitchen","bedroom","bathroom","garden","garage",
+  "floor","wall","sun","moon","star","sky","cloud","rain",
+  "snow","wind","tree","flower","grass","river","mountain","sea",
+  "fire","leaf","stone","hot","cold","warm","sunny","rainy",
+  "windy","snowy","cloudy","raincoat","umbrella","circle","square","triangle",
+  "rectangle","heart","diamond","oval","line","potato","tomato","carrot",
+  "cabbage","onion","pepper","cucumber","bean","pea","corn","pumpkin",
+  "eggplant","mushroom","horse","goat","fox","wolf","deer","snake",
+  "frog","turtle","butterfly","bee","ant","spider","bat","parrot",
+  "hippo","camel","kangaroo","penguin","football","basketball","ping-pong","baseball",
+  "skate","ski","bus","taxi","train","subway","helicopter","ship",
+  "jeep","van","truck","ambulance","road","street","bridge","station",
+  "airport","doctor","nurse","driver","cook","farmer","policeman","worker",
+  "singer","dancer","writer","pilot","scientist","dentist","waiter","vet",
+  "coach","artist","park","zoo","shop","store","supermarket","hospital",
+  "farm","library","cinema","museum","hotel","restaurant","bank","playground",
+  "city","village","town","cup","bowl","chopsticks","spoon","fork",
+  "knife","fridge","clock","watch","mirror","towel","toothbrush","soap",
+  "comb","key","building","tower","block","map","fountain","hill",
+  "lake","field","forest","ticket","suitcase","passport","luggage","beach",
+  "island","camp","photo","earth","planet","rock","sand","wood",
+  "rose","bamboo","cave","volcano","desert","jungle","whale","dolphin",
+  "shark","octopus","crab","shrimp","seal","shell","sailor","lighthouse",
+  "seaside","goldfish","starfish","money","yuan","dollar","market","gift",
+  "TV","phone","email","film","magazine","letter","radio","piano",
+  "guitar","violin","drum","brush","statue","Christmas","present","candle",
+  "firework","lantern","dragon","firecracker"
+];
+
+/* 跨主题仍可能撞的近图/近义词：同题最多出现一个 */
+const WP_TWIN_GROUPS = [
+  ['car','taxi','jeep','van','truck','ambulance','bus'],
+  ['plane','helicopter'], ['boat','ship'],
+  ['ball','football','basketball','baseball','ping-pong'],
+  ['bike','scooter'], ['clock','watch'],
+  ['photo','picture'], ['gift','present'], ['aunt','ant'],
+  ['face','clown','baby','friend'],
+  ['sea','seaside'], ['hill','mountain'], ['lake','river'],
+  ['sun','sunny','hot'], ['rain','rainy','raincoat','umbrella'],
+  ['snow','snowy'], ['cloud','cloudy'], ['wind','windy'],
+  ['dad','father'], ['mom','mother'], ['shop','store'],
+  ['road','street'], ['bag','schoolbag'], ['colour','color'],
+];
+function wpGroup(w) {
+  const k = String((w && w.w) || '').toLowerCase();
+  return WP_TWIN_GROUPS.find(g => g.includes(k));
+}
+function wpConflict(a, b) {
+  if (!a || !b) return true;
+  if (a.w.w === b.w.w || a.theme === b.theme) return true;
+  if (String(a.w.zh || '').trim() === String(b.w.zh || '').trim()) return true;
+  if (iconOf(a.w) === iconOf(b.w)) return true;
+  const ia = (typeof ipaOf === 'function' ? ipaOf(a.w.w) : '') || '';
+  const ib = (typeof ipaOf === 'function' ? ipaOf(b.w.w) : '') || '';
+  if (ia && ia === ib) return true;                    // 同音 = 两个正确答案
+  const ga = wpGroup(a.w), gb = wpGroup(b.w);
+  return !!(ga && ga === gb);
+}
+function wpPool() {
+  const byW = new Map();
+  THEMES.forEach(t => (t.words || []).forEach(w => {
+    if (w && w.w && !byW.has(w.w)) byW.set(w.w, { w: w, theme: t.id });
+  }));
+  return WP_WORDS.map(k => byW.get(k)).filter(x => x && hasIcon(x.w));
+}
+function wpMakeQs(pool, total) {
+  const byTheme = new Map();
+  pool.forEach(x => {
+    if (!byTheme.has(x.theme)) byTheme.set(x.theme, []);
+    byTheme.get(x.theme).push(x);
+  });
+  const themes = [...byTheme.keys()], used = new Set(), qs = [];
+  for (let i = 0; i < total; i++) {
+    let cand = shuffle(pool.filter(x => !used.has(x.w.w)));
+    if (!cand.length) { used.clear(); cand = shuffle(pool); }
+    const right = cand[0];
+    used.add(right.w.w);
+    const opts = [right];
+    for (const t of shuffle(themes.filter(t => t !== right.theme))) {
+      if (opts.length >= 4) break;
+      const ok = shuffle(byTheme.get(t).filter(x => !opts.some(o => wpConflict(o, x))));
+      if (ok.length) opts.push(ok[0]);
+    }
+    /* 极端兜底：不同主题凑不够 4 个才回全池，wpConflict 的四重去重仍然生效 */
+    if (opts.length < 4) {
+      for (const x of shuffle(pool)) {
+        if (opts.length >= 4) break;
+        if (!opts.some(o => wpConflict(o, x))) opts.push(x);
+      }
+    }
+    qs.push({ right: right, opts: shuffle(opts) });
+  }
+  return qs;
+}
+function gWordPic() {
+  const total = 10, pool = wpPool();
+  if (pool.length < 4) { toast('词图还在准备中～'); renderHome(); return; }
+  const S = { idx: 0, score: 0, qs: wpMakeQs(pool, total) };
+  window._wpNext = function () {
+    Flow.reset();                    // 新一题：作废上一题挂起的自动推进
+    if (S.idx >= total) {
+      addStars(S.score); sfx.win(); if (S.score >= 8) confetti();
+      $('#app').innerHTML = endCard('🖼️', `答对 ${S.score} / ${total}`, S.score);
+      return;
+    }
+    S.first = true; S.answered = false;
+    const q = S.qs[S.idx];
+    $('#app').innerHTML = `
+      <div class="card" style="max-width:620px;margin:0 auto;text-align:center">
+        <div class="score-bar"><b>🖼️ 听词选图</b><span>第 ${S.idx + 1} / ${total} 题 · ✅ ${S.score}</span></div>
+        <div class="explain" style="margin:2px 0 0">🔊 听一听，选出你听到的<b>那张图</b></div>
+        <button class="btn coral big" style="font-size:1.5rem;margin:8px 0 14px" onclick="_wpSay()">🔊 再听一遍</button>
+        <div class="opt-row">
+          ${q.opts.map((o, i) => `<button class="opt" style="min-height:118px" aria-label="选项 ${i + 1}" onclick="wpAns(this,${i})"><span class="oe" style="font-size:3rem;line-height:1">${iconOf(o.w)}</span></button>`).join('')}
+        </div>
+        <div class="explain" id="wpexp"></div>
+        <div style="margin-top:12px">${gameHomeBtn()}</div>
+      </div>`;
+    window._wpQ = q;
+    Flow.after(350, () => window._wpSay());
+  };
+  window._wpSay = function () {
+    const q = window._wpQ;
+    if (q) speak(String(q.right.w.w).trim(), 'en-US', 1);
+  };
+  window.wpAns = function (btn, i) {
+    const q = window._wpQ;
+    if (S.answered || !q || !q.opts[i]) return;
+    const ok = q.opts[i].w.w === q.right.w.w;
+    feedback(btn, ok);
+    if (ok) {
+      if (S.first) S.score++;
+      S.answered = true;
+      sfx.correct();
+      window._wpSay();                              // 答对再听一遍，把音和义对上
+      lockChoices(btn);
+      const w = q.right.w;
+      const ipa = (typeof ipaOf === 'function' ? ipaOf(w.w) : '') || '';
+      $('#wpexp').innerHTML = `✅ <b lang="en">${esc(w.w)}</b> <span lang="en">${esc(ipa)}</span> · ${esc(w.zh)}`;
+      const go = Flow.make(() => { S.idx++; window._wpNext(); }, 1800);
+      $('#wpexp').insertAdjacentHTML('beforeend',
+        `<div style="margin-top:10px"><button class="btn ghost" style="padding:6px 18px" onclick="window._wpGo()">下一个 ▶</button></div>`);
+      window._wpGo = go;
+    } else {
+      S.first = false; sfx.wrong();
+      $('#wpexp').innerHTML = '🤔 再听一遍～';
+      window._wpSay();
+    }
+  };
+  window._wpNext();
+}
+
 /* ---------------- 结束卡片 ---------------- */
 function endCard(emoji, line, stars) {
   gameDone(); // completeDailyTask 幂等，一天多次游戏只记任务一次

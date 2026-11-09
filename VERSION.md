@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v101 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v102 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v39 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v155 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v156 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -51,7 +51,7 @@
 | words.html | 单词镇：分主题练词 + 复习（间隔重复）+ 听写 |
 | letters.html | 字母岛：26 字母象形故事 |
 | grammar.html | 句子工厂：19 关（第 5 关 a/an 按读音首音素教，不是看首字母） |
-| games.html | 游戏乐园：6 个游戏（含自然拼读） |
+| games.html | 游戏乐园：7 个游戏（含听词选图、自然拼读） |
 | parents.html | 家长中心：进度报告 + 版本与朗读诊断 |
 | pep.html | 人教课本：8 册知识点 + 拼词 |
 | 404.html | 友好错误页 |
@@ -78,7 +78,42 @@
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
 
-## 2026-11-09.4 下线「听句选图」（别再加回来）
+## 2026-11-09.5 听词选图：把句子题改成单词题（别改回去）
+
+**家长决策**：上一版把「听句选图」整体下线后，家长认为删除影响太大，建议
+「改成听词选图，只说单词，让他们选择」。这个改法比逐条补黑名单更根本：
+
+| 老问题（听句选图） | 听单词后 |
+|---|---|
+| `I have a children.` / `I have an o'clock.` 等病句 | 不出句子，a/an、可数性、唯复数全部无关 |
+| 485 句要逐句烘整句音频（5.28 MB） | 直接复用站内已有的单词 mp3 |
+| 两段拼接断一下、冠词弱读 | 一个文件一次播完 |
+| 选项印英文单词 = 看拼写选，听力白做 | 选项**只给图**，答对才揭示 |
+| `year` / `month` 两张日历图同屏 | 同题四个选项来自四个**不同主题** |
+
+**词池不是拍脑袋黑名单**，是 `_audit/build_wordpic_pool.py` 按 5 条可复算规则
+从真浏览器量测结果里筛出来的 **364 词 / 28 主题**：
+
+1. 具体实物主题白名单；`country` 整主题剔除 —— 7 个国家词是蓝底白字首字母块
+   （China / Canada 都是 C），孩子没法分辨。
+2. `hasIcon` 真图 + 有站内单词 mp3 + 单词不含空格。
+3. 图的有效像素：把每张 SVG 画到 64×64 画布，`ink>=0.14` 且
+   `(colors>=5 或 ink>=0.20)`。剔掉 `plate` / `message` / `story` / `breakfast`
+   这类淡到看不见的图（其中 `plate` 只有 1 种颜色、ink 0.066）。
+4. 逐条读过词表后，剔掉抽象概念 / 动作 / 总称词（`peace` / `pay` / `kick` /
+   `colour` / `vegetable`…）；剔完不足 4 词的主题整组剔除。
+5. 运行时 `wpConflict`：同主题、同中文、同音（`ipaOf`）、同渲染图、同近图组
+   一律不能同题；再加一张跨主题近图组表（车 / 船 / 飞机 / 球 / 天气成对词…）。
+
+- 量测：`_audit/probe_wordpic_pool.html`（撞图/同音/音频覆盖）、
+  `probe_wordpic_contrast.html`（图像有效像素）、`probe_wordpic_wall.html`（人眼复核图墙）
+- 生成：`_audit/build_wordpic_pool.py` → `_audit/wordpic_final.json` + `wp_words.js`
+- 自测：`_audit/test_wordpic_pool.js`（5000 轮抽题，检查四图互异/无泄答案）
+
+⛔ **改词库、图库、SVG 或出题规则，必须重跑上面三个探针 + 生成脚本 + 自测**。
+更不要在选项里印英文或中文 —— 那就退回成认字题，是这个游戏唯一不能碰的红线。
+
+## 2026-11-09.4 下线「听句选图」（.5 已改成听词选图重做，不是恢复旧玩法）
 
 **用户拍板**：「这是什么垃圾题目？如果处理不好这些垃圾题目，你就直接给我删掉吧。
 这个游戏就不要要了。」截图题目是 `year` vs `month`（两张几乎一样的日历图），
