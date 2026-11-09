@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-08.29';
+const BUILD = '2026-11-09.1';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1417,6 +1417,22 @@ function playAudioChain(urls, onDone, gapMs) {
 
 /* 只播一个字母的「字母音」 */
 function playPhonics(L, onDone) { playAudioChain([phonicsURL(L)], onDone); }
+
+/* ================= 拼读块朗读（2026-11-09）=================
+   拼词小火车 / 跟读点音节会逐块发音。原来走 speak(block) → localAudioURL('th')
+   → audio/th.mp3 —— 那是把 "th" 当**词**合成的 TTS 文件，espeak 念成字母名
+   "T H"（VERSION.md 2026-11-08.9 有案底）。母语者音素在 audio/phonics/，
+   这里统一走它：26 字母 + 13 个拼读块，全部是真音素。
+   没有音素文件的块（tion / ing / igh…）退回站内词音频；再没有就不响 ——
+   宁可不响，也不放错音。 */
+const PH_BLOCK_OK = new Set(['sh','ch','th','ai','ay','oa','ck','ee','oo','ar','or','ir','ng']);
+function speakBlock(b) {
+  const k = String(b == null ? '' : b).toLowerCase().trim();
+  if (!k) return;
+  if ((k.length === 1 && /^[a-z]$/.test(k)) || PH_BLOCK_OK.has(k)) { playPhonics(k); return; }
+  if (localAudioURL(k)) { speakWord(k); return; }
+}
+window.speakBlock = speakBlock;
 window.playAudioChain = playAudioChain;
 window.playPhonics = playPhonics;
 window.phonicsURL = phonicsURL;

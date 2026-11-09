@@ -36,10 +36,10 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script src="js/data.js?v=38"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=97"></script>
-<script defer src="js/audio-list.js?v=2"></script>
+<script src="js/app.js?v=98"></script>
+<script defer src="js/audio-list.js?v=3"></script>
 <script src="js/sentence.js?v=48"></script>
-<script src="js/grammar-engine.js?v=6"></script>
+<script src="js/grammar-engine.js?v=7"></script>
 <script src="js/ipa.js?v=4"></script>
 <script>
 renderNav('games'); renderDecor();
@@ -912,7 +912,10 @@ function gSentence(pool, level) {
       $('#sexp2').insertAdjacentHTML('beforeend',
         `<div style="margin-top:8px"><button class="btn ghost" style="padding:6px 18px" onclick="window._sentGo()">下一个 ▶</button></div>`);
       window._sentGo = go;
-      speakSentence(q.zh.split('.')[0], null, () => go.arm(900));
+      /* ★ 2026-11-09：原来读 q.zh.split('.')[0] —— zh 是中英混排（"How many cats do you have? 你有几个猫？"），
+         问句没有英文句号 split 不开，中文整段被送进英文朗读链。
+         英文句的唯一真相是 sent（带 __ 挖空）+ ans，拼回去就是纯英文。 */
+      speakSentence(String(q.sent).replace('__', q.ans), null, () => go.arm(900));
     } else { S.first = false; sfx.wrong(); $('#sexp2').innerHTML = '🤔 想想公式：谁 + 干什么 + 什么'; }
   };
   window._sentShow();

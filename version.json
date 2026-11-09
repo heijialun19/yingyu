@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-08.29",
-  "note": "音标查找修两个 bug：①大小写不敏感（Thursday/Monday 等大写键用小写查落空→音标整行消失）②pepIpaOf 不再剥斜杠（/stɑrt/ 曾印成 stɑrt，像把单词又打一遍）。统一由 ipaOf/pepIpaOf 输出 /…/ 一对斜杠。app v97 / pep-points v16。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
+  "build": "2026-11-09.1",
+  "note": "长句发音逻辑修复：①生成句派生词补 15 个音频（复数 numbers/words… + 三单 talks/dreams…），原来逐词接龙静默跳过=长句漏词；②颜色词进 UNCOUNTABLE，消灭 I like reds 病句；③拼词块朗读改走母语者音素 speakBlock（原来 speak('th')→audio/th.mp3 念成字母名 T H），删 7 个坏块文件；④pep 页加载 sentence.js、例句改 speakSentence（原来走旧链）；⑤句子火车读句用 sent+ans 拼英文，不再 zh.split 混中文。app v98 / grammar-engine v7 / audio-list v3。发版时这里的 build 必须和 js/app.js 的 BUILD 一起改。"
 }

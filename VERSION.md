@@ -14,24 +14,24 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v97 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v98 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v39 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v48 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
-| js/grammar-engine.js | v6 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
+| js/grammar-engine.js | v7 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v4 | 音标 |
 | js/build-data.js | v1 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
 | js/pep-points.js | v16 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
-| js/audio-list.js | v2 | 发音清单（2864 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
+| js/audio-list.js | v3 | 发音清单（2864 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v48 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v151 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v152 | Service Worker（音频缓存 birdie-audio-v3 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -77,6 +77,40 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-09.1 长句发音逻辑修复（别改回去）
+
+**用户反馈**：「有很多长句子的发音逻辑不对，7 个游戏，教材课堂你都看看还是之前的吧」。
+
+### 三个根因
+1. **派生词缺音频 → 逐词接龙静默漏词**（「发音逻辑不对」的主因）。
+   生成句里的复数/三单没有 mp3，`__speakFrom` 遇到没音频的词直接跳过：
+   "I have two numbers." 读成 "I have two"、"She talks every day." 读成 "She every day."。
+   补 15 个派生词音频（numbers/words/sentences/texts/notebooks/raincoats/umbrellas/
+   tears/colours + talks/dreams/begins/stays/cheers/greets），Piper 同参数合成。
+2. **"I like reds." 病句**：颜色词被当可数名词进复数池。red 等 10 个纯颜色词
+   加进 UNCOUNTABLE（orange 不加，它是水果），病句消灭。
+3. **拼词块朗读念字母名**：pep 拼词小火车 / words 音节跟读走 `speak(block)` →
+   `localAudioURL('th')` → `audio/th.mp3` = TTS 把 "th" 当词合成的 **"T H"**。
+   新增 `speakBlock()` 统一入口：块音一律走 audio/phonics/（母语者音素），
+   没音素文件的块（tion/ing…）才退回词音频。删掉 7 个念字母名的坏块文件
+   （sh/ch/th/ai/ay/oa/ck）—— 注意 E='ee'、R='ar' 那批是正确巧合，保留。
+
+### 顺带修的
+- **pep.html 是唯一没加载 sentence.js 的内容页**（「还是之前的吧」——对）：
+  例句走 `speakWord` 旧链。现在加载 sentence.js、例句改 `speakSentence`，
+  与 getsmart/games/grammar 同链（整句优先 + 逐词预热）。
+- **句子火车读句混中文**：`q.zh.split('.')[0]` 问句没英文句号 split 不开，
+  中文整段进英文朗读。改用 `sent.replace('__', ans)`（英文句的唯一真相）。
+
+### 门禁（+10，共 114 项）
+派生词音频齐全（复数/三单/进行时逐条对）、颜色词 pluralSafe=false、
+speakBlock 存在且 pep/words 都走它、坏块文件不许复活、gSentence 不许 zh.split 读句。
+
+### 教训
+「发音逻辑不对」的根因常是**静默跳过**而不是报错——__speakFrom 对没音频的词
+一声不吭跳过，句子残缺但程序正常。检查发音必须**逐词对音频清单**，
+不能只看「页面能跑」。
 
 ## 2026-11-08.29 音标查找：大小写不敏感 + 恢复斜杠
 

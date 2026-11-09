@@ -125,8 +125,9 @@
 <script async src="svg/emoji-svg2.js?v=3"></script>
 <script src="js/ipa.js?v=4"></script>
 <script src="js/data.js?v=38"></script>
-<script src="js/app.js?v=97"></script>
-<script defer src="js/audio-list.js?v=2"></script>
+<script src="js/app.js?v=98"></script>
+<script defer src="js/sentence.js?v=48"></script>
+<script defer src="js/audio-list.js?v=3"></script>
 <script src="js/pep-data.js?v=1"></script>
 <script src="js/pep-points.js?v=16"></script>
 <script>
@@ -339,7 +340,7 @@ function renderPoints(uid) {
       <h3>${esc(p.t)}</h3>
       <p class="pc-kid">${esc(p.kid)}</p>
       ${p.tip && !similar(p.t, p.tip) ? `<div class="pc-tip">💡 想通这一句：${esc(p.tip)}</div>` : ''}
-      <div class="pc-en" lang="en" onclick="speakWord('${jsq(p.en)}')" title="点一下，读例句">🔊 ${esc(p.en)}</div>
+      <div class="pc-en" lang="en" onclick="speakSentence('${jsq(p.en)}')" title="点一下，读例句">🔊 ${esc(p.en)}</div>
       <div class="pc-zh">${esc(p.zh)}</div>
     </div>`).join('');
   $('#app').innerHTML = `
@@ -506,7 +507,7 @@ function renderSpell() {
     </div>`;
   const tk = __token;
   /* 第一段读整词，后续段只读当前段（孩子知道在拼哪个词） */
-  setTimeout(() => { if (tk === __token) speakWord(SP.partIdx === 0 ? cur.w : part); }, 350);
+  setTimeout(() => { if (tk === __token) (SP.partIdx === 0 ? speakWord(cur.w) : speakBlock(part)); }, 350);
 }
 function pickTile(i) {
   if (SP.used[i]) return;

@@ -457,6 +457,10 @@ function gxThirdItem(verb, zh, subj) {
 const UNCOUNTABLE = new Set(['bread','milk','water','juice','rice','meat','soup','tea',
   'coffee','butter','cheese','food','ice','grass','snow','rain','paper','money',
   'music','homework','sugar','salt','fruit','news',
+  /* ★ 2026-11-09：颜色作「颜色」义不可数 —— 原来 red 等被当可数名词，
+     生成 "I like reds." / "This is a red." 两个病句，且 reds 无音频被静默漏读。
+     加进来后只出 "I like red."（✅）；orange 不加（它是水果，可数：an orange ✅）。 */
+  'red','yellow','blue','green','white','black','pink','purple','brown','grey',
   /* ★ 2026-11-01 补：词库里 pos='n' 但实际不可数的词。原来它们被当普通可数名词，
      模板一生成就出错句：This is a work. / a weather. / I like natures. /
      There is a traffic over there. 下面这些既没有复数，也不能加 a/an。 */
