@@ -132,7 +132,7 @@
 <script src="js/words-data.js?v=40"></script>
 <script src="svg/word-svg.js?v=3"></script>
 <script src="js/data.js?v=38"></script>
-<script src="js/app.js?v=109"></script>
+<script src="js/app.js?v=110"></script>
 <script src="js/grammar-engine.js?v=8"></script>
 <script defer src="js/audio-list.js?v=4"></script>
 <script src="js/sentence.js?v=49"></script>
@@ -165,6 +165,15 @@ function showPool(kind) {
   const desc = plan
     ? `你是${myGrade().name}，一至${myGrade().name}的词都该会！先补本年级没掌握的，再补低年级的漏洞。还剩 <b>${list.length}</b> 个词就全部掌握啦`
     : `这些都是你答错过的地方，多练几次就能攻克！共 <b>${list.length}</b> 个词`;
+  /* ★ 2026-11-09.13 修：原来只有「≥4 个才出按钮，否则一律说这里暂时是空的」。
+     但 1~3 个词时上面刚写完「共 3 个词」，下面却说「空的」——自相矛盾，家长会以为数据丢了。
+     现在分三档：0 个才说空；1~3 个说「还差几个就能练」；≥4 个出练习按钮。
+     ⚠️ 这段注释必须留在模板字符串**外面**：写进反引号里会当成文本直接印到页面上。 */
+  const poolStatus = list.length === 0
+    ? '<p style="margin:12px 0;color:#4E9E59;font-weight:700">太棒了，这里暂时是空的！去按主题浏览学新词吧～</p>'
+    : list.length < 4
+      ? `<p style="margin:12px 0;color:#B26A00;font-weight:700">已经攒了 ${list.length} 个，再攒到 4 个就能「练这一批」啦～ 现在可以点词卡先听一听。</p>`
+      : '<div style="margin:12px 0;display:flex;gap:10px;flex-wrap:wrap"><button class="btn mint" onclick="startPractice()">✏️ 练这一批（得星星）</button><button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button><button class="btn orange" onclick="startSpeak()">🎤 跟读打分</button></div>';
   $('#app').innerHTML = `
     <div class="theme-tabs" id="poolTabs">
       <button class="theme-tab ${plan ? 'on' : ''}" onclick="showPool('plan')">🎯 我的词单</button>
@@ -174,7 +183,7 @@ function showPool(kind) {
     <div class="card" style="border-color:${plan ? 'var(--mint)' : 'var(--coral)'}">
       <h2>${title}</h2>
       <p style="margin:6px 0 0;color:#5C6273;font-size:.86rem;line-height:1.8">${desc}</p>
-      ${list.length >= 4 ? `<div style="margin:12px 0;display:flex;gap:10px;flex-wrap:wrap"><button class="btn mint" onclick="startPractice()">✏️ 练这一批（得星星）</button><button class="btn grape" onclick="startSpell()">🔤 拼写工坊 · 六步法</button><button class="btn orange" onclick="startSpeak()">🎤 跟读打分</button></div>` : '<p style="margin:12px 0;color:#4E9E59;font-weight:700">太棒了，这里暂时是空的！去按主题浏览学新词吧～</p>'}
+      ${poolStatus}
       <div class="word-grid">
         ${list.slice(0, 24).map(w => `
           <div class="word-card" onclick="speakWord('${jsq(w.w)}')" title="点一下，读一遍">

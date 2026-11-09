@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v109 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v110 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v40 | 1000 词词库 |
 | js/data.js | v38 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v163 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v164 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -85,6 +85,26 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-09.13 修错题本空态文案（1~3 个词时谎称「空的」）
+
+**现象**：错题本 / 我的词单里只有 1~3 个词时，页面上面写「共 3 个词」，
+下面同一张卡片却写「太棒了，这里暂时是空的！」—— 自相矛盾，家长会以为数据丢了。
+
+**原因**：`showPool()` 只有一个分支：`list.length >= 4` 出练习按钮，否则一律当空态。
+但练习需要至少 4 个词才能凑够选项，所以按钮阈值没错，**错的是把 1~3 个也归进「空」**。
+
+**修法**：分三档 —— 0 个才说空；1~3 个说「已经攒了 N 个，再攒到 4 个就能练这一批」；
+≥4 个出练习 / 拼写工坊 / 跟读三个按钮。
+
+**顺带修的**：第一次改的时候把开发注释写进了模板字符串，整段中文注释会直接印在页面上。
+已把注释移到模板外，状态 HTML 提成 `poolStatus` 变量。
+
+**验收**（`_audit/probe_pool_empty.py`，真浏览器三档对照）：
+0 个 → 只有空态；2 个 → 「已经攒了 2 个」且无按钮；4 个 → 出按钮；
+页面文本里不再出现任何开发注释。
+
+**版本链**：BUILD .12 → .13；app v109 → v110；CACHE v163 → v164；音频零改动。
 
 ## 2026-11-09.12 修词库两处数据错误 + 同义歧义守卫
 
