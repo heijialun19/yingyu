@@ -53,10 +53,10 @@
   <div id="app"><div id="bootPlaceholder" class="card" style="max-width:560px;margin:22px auto;text-align:center;padding:26px 18px"><div style="font-size:34px">🐤</div><p style="color:#6B7280;font-size:.9rem;margin:8px 0 0">正在打开，请稍等…</p></div></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=42"></script>
+<script src="js/words-data.js?v=43"></script>
 <script src="svg/word-svg.js?v=4"></script>
-<script src="js/data.js?v=40"></script>
-<script src="js/app.js?v=118"></script>
+<script src="js/data.js?v=41"></script>
+<script src="js/app.js?v=119"></script>
 <script defer src="js/audio-list.js?v=4"></script>
 <script src="js/sentence.js?v=49"></script>
 <script src="js/grammar-engine.js?v=8"></script>
@@ -145,9 +145,20 @@ const MW_BY_WORD = {
   cow:'头', horse:'匹', elephant:'头', camel:'头', giraffe:'头', zebra:'匹', bear:'头', tiger:'头', lion:'头',
   /* 食物 */
   bread:'片', cake:'块', pizza:'块', chocolate:'块', pie:'块', cheese:'块',
+  noodle:'根', biscuit:'块', candy:'颗', banana:'根',
+  /* 桌椅尺子等「把/张/块」 */
+  chair:'把', ruler:'把', eraser:'块', picture:'张', card:'张', sticker:'张',
+  teacher:'位', student:'名', fish:'条', swing:'架', slide:'座', classroom:'间', desk:'张',
+  blackboard:'块',
   /* 建筑/场所 */
   house:'栋', building:'栋', bridge:'座', mountain:'座', hill:'座', school:'所', hospital:'家', library:'座',
 };
+/* 不能「拿在手里、指着说」的抽象名词。它们配「一个」+「那边有 / 我看见」
+   会说出「那边有一个名字」「我看见一个游戏」这种不像人话的句子。 */
+const NOT_CONCRETE = new Set(['class', 'name', 'game']);
+/* 连「拿来当宾语」都不合适的：班级、名字不是能喜欢/拥有的东西。 */
+const NOT_OBJECT = new Set(['class', 'name']);
+const isObj = w => !NOT_OBJECT.has(String(w.w || w).toLowerCase());
 const measureOf = w => {
   const key = String(w.w || w);
   if (MW_BY_WORD[key]) return MW_BY_WORD[key];
@@ -189,7 +200,9 @@ const GX_VOBJ_NEG = { like:'不喜欢', have:'没有', see:'看不见', want:'�
 function gxPickObject(ws, themes) {
   let pool = ws;
   if (themes) pool = ws.filter(w => themes.includes(String(w._theme || '')));
-  const safe = pool.filter(pluralSafe);
+  /* 必须是名词：只查 pluralSafe 会把形容词 sweet 当宾语，
+     生成「He doesn't eat sweets. 他不吃甜的」。 */
+  const safe = pool.filter(w => gxPosCode(w) === 'n' && pluralSafe(w) && isObj(w));
   if (!safe.length) return null;
   const w = pick(safe);
   return { en: pluralOf(w), zh: w.zh, w };
@@ -210,7 +223,9 @@ const WHERE_FURNITURE_OK = new Set(['cat','dog','rabbit','mouse','bird','chick',
   'ball','doll','toy','robot','puzzle','yo-yo']);
 const GEN = {
   likeChoice(ws) {
-    const safe = ws.filter(pluralSafe);
+    /* 必须是名词：sweet 是形容词「甜的」，只查 pluralSafe 会生成
+       「我喜欢甜的」→ I like sweets.（把形容词当糖果用了）。 */
+    const safe = ws.filter(w => gxPosCode(w) === 'n' && pluralSafe(w) && isObj(w));
     if (!safe.length) return null;
     const w = pick(safe); const pl = pluralOf(w);
     return { type:'choice', word: w.w, from: 'fruit/food 等',
@@ -261,7 +276,8 @@ const GEN = {
       explain: '谁 + is + on + the + 地点，顺序固定。' };
   },
   isQuestion(ws) {
-    const safe = gxNouns(ws).filter(okArt);
+    const safe = gxNouns(ws).filter(okArt)
+      .filter(x => !NOT_CONCRETE.has(String(x.w).toLowerCase()));
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     return { type:'choice', word: w.w,
@@ -270,7 +286,8 @@ const GEN = {
       zh: `Is this ${a} ${w.w}? 这是一${m}${w.zh}吗？`, explain: 'is 提到最前面，句号变问号 ?。' };
   },
   thereBe(ws) {
-    const safe = gxNouns(ws).filter(okArt);
+    const safe = gxNouns(ws).filter(okArt)
+      .filter(x => !NOT_CONCRETE.has(String(x.w).toLowerCase()));
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     return { type:'choice', word: w.w,
@@ -290,7 +307,7 @@ const GEN = {
       zh: `The cat is ${ing}. 小猫正在${ING_ZH[v]}。`, explain: '它（the cat）用 is；正在做，动词加 ing。' };
   },
   havePlural(ws) {
-    const safe = gxNouns(ws).filter(pluralSafe);
+    const safe = gxNouns(ws).filter(pluralSafe).filter(isObj);
     if (!safe.length) return null;
     const w = pick(safe); const pl = pluralOf(w); const m = measureOf(w);
     return { type:'choice', word: w.w,
@@ -300,7 +317,8 @@ const GEN = {
   },
   /* ---- 造句（build）类 ---- */
   seeBuild(ws) {
-    const safe = gxNouns(ws).filter(okArt);
+    const safe = gxNouns(ws).filter(okArt)
+      .filter(x => !NOT_CONCRETE.has(String(x.w).toLowerCase()));
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     const others = shuffle(ws.filter(x => x.w !== w.w)).slice(0, 2);
@@ -311,12 +329,12 @@ const GEN = {
       hint: '读一读这个词的开头，冠词该用 a 还是 an？' };
   },
   buildLike(ws) {
-    const safe = gxNouns(ws).filter(pluralSafe);
+    const safe = gxNouns(ws).filter(pluralSafe).filter(isObj);
     if (!safe.length) return null;
     const w = pick(safe);
     const others = shuffle(safe.filter(x => x.w !== w.w)).slice(0, 2);
     return { type:'build', word: w.w,
-      prompt: `「我们喜欢${w.zh}（复数）」 ${iconOf(w)}`,
+      prompt: `「我们喜欢很多${w.zh}」 ${iconOf(w)}`,
       slots: [['We','I','They'], ['like','likes','am'], [pluralOf(w), w.w, w.w + 'es']],
       answer: ['We','like',pluralOf(w)], read: `We like ${pluralOf(w)}.`, zh: `我们喜欢${w.zh}。`,
       hint: '喜欢的是很多个东西，单词要不要变形？' };
@@ -332,7 +350,7 @@ const GEN = {
       hint: 'my 就是「我的」，放在名词前面' };
   },
   buildHave(ws) {
-    const safe = gxNouns(ws).filter(pluralSafe);
+    const safe = gxNouns(ws).filter(pluralSafe).filter(isObj);
     if (!safe.length) return null;
     const w = pick(safe); const m = measureOf(w); const pl = pluralOf(w);
     return { type:'build', word: w.w,
@@ -456,9 +474,16 @@ const GEN = {
     const s = pick(['i', 'he', 'she', 'you', 'they']);
     const S = GX_SUBJ[s];
     const askNeg = Math.random() < 0.5;
-    const right = askNeg ? gxCanNegative({ s, v }) : gxCanQuestion({ s, v });
-    const w1 = askNeg ? `${S.en} ${S.aux} can ${v}.` : `${S.en} can ${v}?`;
-    const w2 = askNeg ? `${S.en} can't ${GX_THIRD[v]}.` : `${S.qaux} ${GX_Q_SUBJ[s]} can ${v}?`;
+    /* 疑问句不换主语：原实现把 I 换成 you，题面「I can cook.」的答案变成
+       Can you cook?，孩子按「把 can 提到句首」写 Can I cook? 反被判错。
+       L13 / L19 的同类题都不换主语，这里统一。 */
+    /* 主语搬到 Can 后面要小写（I 除外）："Can He sings?" 是错的。 */
+    const qs = s === 'i' ? 'I' : S.en.toLowerCase();
+    const right = askNeg ? gxCanNegative({ s, v }) : `Can ${qs} ${v}?`;
+    const w1 = askNeg ? `${S.en} ${S.aux} can ${v}.` : `${S.en} can ${v}.`;
+    /* 干扰项用真实易错点：can 后面误加三单 s（Can he cooks?）。
+       不能再用「换主语」那句——主语不换之后它会和正解一模一样。 */
+    const w2 = askNeg ? `${S.en} can't ${GX_THIRD[v]}.` : `Can ${qs} ${GX_THIRD[v]}?`;
     const options = shuffle([right, w1, w2]);
     if (new Set(options).size !== 3) return null;
     return { type:'choice', word: v,
@@ -466,7 +491,7 @@ const GEN = {
       options, answer: options.indexOf(right), say: right,
       /* 疑问句里 gxCanQuestion 会把 I 改成 you，中文主语也得跟着换，
          否则出现「Can you speak? 我会说话吗？」这种主谓不一致。 */
-      zh: `${right} ${askNeg ? S.zh + '不会' : GX_SUBJ[GX_Q_SUBJ[s]].zh + '会'}${GX_INTRANS_ZH[v]}${askNeg ? '。' : '吗？'}`,
+      zh: `${right} ${askNeg ? S.zh + '不会' : S.zh + '会'}${GX_INTRANS_ZH[v]}${askNeg ? '。' : '吗？'}`,
       explain: askNeg ? "can 的否定直接在 can 后面加 not（can't）。" : 'can 的疑问把 Can 搬到句子最前面。' };
   },
 };

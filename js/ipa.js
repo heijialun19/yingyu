@@ -208,11 +208,11 @@ const IPA = {
   /* ★ 2026-11-09.10：补齐最后 273 个缺失音标（单词镇 30 + 课本 243）。原规则「同形异音词与短语一律不标」，但词库每个词条只有一个义项，读音唯一，按义项标不会错（read=读书 /rid/、live=居住 /lɪv/、tear=眼泪 /tɪr/、close=关上 /kloʊz/、present=礼物 /ˈprezənt/、wind=风 /wɪnd/）。
      用 CMUdict(BSD) 转写，与全站美式口径一致；短语按逐词拼接。 */
   "Christmas tree":"/ˈkrɪsməs tri/", "close":"/kloʊz/", "desert":"/ˈdezərt/", "excuse":"/ɪkˈskjuz/",
-  "French fries":"/frɛntʃ fraɪz/", "good afternoon":"/ɡʊd æftərˈnun/", "good morning":"/ɡʊd ˈmɔrnɪŋ/", "good night":"/ɡʊd naɪt/",
+  "French fries":"/frentʃ fraɪz/", "good afternoon":"/ɡʊd æftərˈnun/", "good morning":"/ɡʊd ˈmɔrnɪŋ/", "good night":"/ɡʊd naɪt/",
   "graduate":"/ˈɡrædʒueɪt/", "hot dog":"/hɑt dɔɡ/", "live":"/lɪv/", "living room":"/ˈlɪvɪŋ rum/",
   "minute":"/ˈmɪnɪt/", "New Year":"/ˌnu ˈjɪr/", "o'clock":"/əˈklɑk/", "passport photo":"/ˈpæspɔrt ˈfoʊtoʊ/",
-  "PE":"/ˌpi ˈi/", "pencil-box":"/ˈpɛnsəl bɑks/", "ping-pong":"/ˈpɪŋ pɔŋ/", "post office":"/poʊst ˈɔfɪs/",
-  "present":"/ˈprezənt/", "protect the earth":"/prəˈtɛkt ðə ɜrθ/", "read":"/rid/", "save water":"/seɪv ˈwɔtər/",
-  "T-shirt":"/ˈti ʃɜrt/", "tear":"/tɪr/", "teddy bear":"/ˈtɛdi bɛr/", "use":"/juz/",
+  "PE":"/ˌpi ˈi/", "pencil-box":"/ˈpensəl bɑks/", "ping-pong":"/ˈpɪŋ pɔŋ/", "post office":"/poʊst ˈɔfɪs/",
+  "present":"/ˈprezənt/", "protect the earth":"/prəˈtekt ðə ɜrθ/", "read":"/rid/", "save water":"/seɪv ˈwɔtər/",
+  "T-shirt":"/ˈti ʃɜrt/", "tear":"/tɪr/", "teddy bear":"/ˈtedi ber/", "use":"/juz/",
   "wind":"/wɪnd/", "yo-yo":"/ˈjoʊ joʊ/",
 };
