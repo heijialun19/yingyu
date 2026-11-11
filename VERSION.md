@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v114 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v115 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v42 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v39 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v168 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v169 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -1485,3 +1485,14 @@ batch2-11.js / colors.js / memo_1-5.js / merge.js（228KB）没有任何页面�
 - 字母岛 26 字母 × 40 轮 = 1040 次：0 问题
 - 同步码往返（3524B 进度 → 1195 字符）：字段零丢失，导入可用，带换行也能解析，坏码会报错
 - 8 个页面 + 7 个游戏的入口冒烟（含 19 个语法关卡、拼写/听写/跟读）：0 未捕获异常
+
+## 2026-11-11.2 拼读闯关「点进去却是听词选图」跨局串画面
+
+两个独立成因，本次只修第 2 个（真 bug），第 1 个是设计口径，待家长拍板：
+
+1. **设计侧（未改）**：`gPhonics()` 用 `pick(usable)` 随机挑词族，`a_e / i_e / o_e` 三族没有 `segs`（三族不做拼词，硬拼会把 cake 读成 /kæke/），整族 `phBlendable()` 恒 false → 整局 6 题全走「听词选图」渲染分支。16 个可用词族里占 3 个，真浏览器 300 局实测首屏选图 17%～20%。另外 8 个词族可拼词不足 6 个，后半局也会用选图补齐。
+2. **竞态（本次修复）**：`gPhonics()` 的 7 个 `setTimeout` 全是裸的，不走站内既有的 `Flow`。`renderHome()` 的 `Flow.reset()` 管不到它们：上一局答对后挂着的 `phShow()`（1400 / 2100ms）会在新一局打开后照常触发，把画面整个覆盖成上一局的下一题。真浏览器实证：旧局 `a_e` 选图答对 → 退出 → 新局 `short a` 首题本是拼词 → 1.8 秒后画面变成「第 2 / 6 词」选图题，标题栏还留着旧局的 `a_e`。
+
+修法：`gPhonics()` 与 `phShow()` 入口补 `Flow.reset()`，7 个延时改 `Flow.after()`；图词翻翻乐 `gMemory()` 的 2 个同类裸 timer 一并收掉（最后一轮配对 500ms 后的 `endCard` 也会覆盖新局）。沿用 Flow 的既有铁律：幂等、可取消、不抢时间。
+
+版本链：BUILD .1 → 2026-11-11.2，app v114 → v115，CACHE v168 → v169。音频零改动（AUDIO_VER 4 / SENTENCE_VER 2 / PHRASE_VER 2 / AUDIO_CACHE v5 不动）。

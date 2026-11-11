@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-11.1",
-  "note": "统信 UOS 浏览器切导航偶发整页黑白：删掉顶部导航收益为零的 backdrop-filter（软件合成内核的色彩通道竞态），SW 样式/脚本缓存 miss 时加网络重试 + 同路径旧版本降级，CSS link 加载失败自动重试一次，并补 forced-colors 下彩色词图保护。app v114 / style v49 / CACHE v168；音频零改动。"
+  "build": "2026-11-11.2",
+  "note": "拼读闯关跨局串画面修复：gPhonics 的 7 个推进/朗读裸 setTimeout 接入 Flow.after，gPhonics / phShow 入口补 Flow.reset，换游戏时旧局挂起的 phShow() 不再覆盖新局画面；图词翻翻乐 2 个同类裸 timer 一并收掉。app v115 / CACHE v169 / BUILD 2026-11-11.2；音频与教学口径零改动。"
 }

@@ -36,7 +36,7 @@
 <script src="svg/word-svg.js?v=3"></script>
 <script src="js/data.js?v=39"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=114"></script>
+<script src="js/app.js?v=115"></script>
 <script defer src="js/audio-list.js?v=4"></script>
 <script src="js/sentence.js?v=49"></script>
 <script src="js/grammar-engine.js?v=8"></script>
@@ -230,6 +230,7 @@ function gMemoryPick() {
   });
 }
 function gMemory(pool) {
+  Flow.reset();                        // 换一批词 / 换游戏：作废上一批的翻牌延时
   if (!pool || !pool.length) { toast('这一批没有带图片的词，换一批试试～'); return; }
   window.memStart = function () {
     /* 抽词规则：图片必须互不重复。
@@ -291,7 +292,7 @@ function gMemory(pool) {
       st.lock = true;
       const [a, b] = st.open;
       if (a.dataset.key === b.dataset.key) {
-        setTimeout(() => {
+        Flow.after(500, () => {
           a.classList.add('matched'); b.classList.add('matched');
           speak(a.dataset.key); sfx.correct(); flyStar(a);
           st.done++; st.open = []; st.lock = false; stat();
@@ -300,10 +301,10 @@ function gMemory(pool) {
             addStars(stars); confetti(); sfx.win();
             $('#app').innerHTML = endCard('🃏', `全部配对成功！翻错 ${st.misses} 次`, stars);
           }
-        }, 500);
+        });
       } else {
         st.misses++; stat();
-        setTimeout(() => { a.classList.remove('open'); b.classList.remove('open'); st.open = []; st.lock = false; }, 950);
+        Flow.after(950, () => { a.classList.remove('open'); b.classList.remove('open'); st.open = []; st.lock = false; });
       }
     };
   };
@@ -916,6 +917,12 @@ function phBlendable(seg) {
 }
 
 function gPhonics() {
+  /* ★ 2026-11-11.2：本局所有延时一律走 Flow.after，换游戏 / 换题由 Flow.reset() 作废。
+     原来 7 个裸 setTimeout 不受 Flow 管：上一局答对后挂着的 phShow()（1.4 / 2.1 秒）
+     会在新一局打开后照常触发，把刚点开的游戏画面整个覆盖成上一局的下一题。
+     上一局下一题若是听词选图（可拼词不足 6 个的词族很常见），看起来就是
+     「点了拼读闯关，却进了听词选图」，且标题栏还留着上一局的词族名。 */
+  Flow.reset();
   const usable = PHONICS.map(p => ({
     name: p.name, tip: p.tip, segs: p.segs || {},
     ws: p.words.map(w => ALLW[w]).filter(w => w && hasIcon(w))
@@ -966,7 +973,7 @@ function gPhonics() {
     const u = phBlockAudio(b);
     if (u) playAudioChain([u]);          // 点哪个块就发哪个块的音
     paint();
-    if (S.ans.length === S.seg.length) setTimeout(phCheck, 460);
+    if (S.ans.length === S.seg.length) Flow.after(460, phCheck);
   };
   window.phBack = function () {          // 放错了可以退一格
     if (S.answered || !S.ans.length) return;
@@ -985,7 +992,7 @@ function gPhonics() {
       if (S.first) { S.score++; flyStar(btn); }
       S.answered = true; sfx.correct(); lockChoices(btn); touchWord(S.cur.w, true);
       document.getElementById('phexp').innerHTML = `✅ <b lang="en">${S.cur.w}</b> ${S.cur.zh} —— ${P.tip}`;
-      setTimeout(() => { S.idx++; phShow(); }, 1400);
+      Flow.after(1400, () => { S.idx++; phShow(); });
     } else {
       S.first = false; sfx.wrong(); touchWord(S.cur.w, false);
       document.getElementById('phexp').innerHTML = '🤔 再听一遍～';
@@ -1004,18 +1011,19 @@ function gPhonics() {
       document.getElementById('phexp').innerHTML =
         `✅ <b lang="en">${S.seg.join(' · ')}</b> 合起来就是 <b lang="en">${w.w}</b> —— ${w.zh}` +
         `<br><span style="color:#5C6273">${P.tip}</span>`;
-      setTimeout(() => speak(w.w), 300);          // 用整词的标准音收尾
-      setTimeout(() => { S.idx++; phShow(); }, 2100);
+      Flow.after(300, () => speak(w.w));          // 用整词的标准音收尾
+      Flow.after(2100, () => { S.idx++; phShow(); });
     } else {
       S.first = false; sfx.wrong();
       document.getElementById('phexp').innerHTML =
         `🤔 这样拼出来是 <b lang="en">${got || '—'}</b>，点「🔊 听这个词」再听一遍～`;
-      setTimeout(() => { S.ans = []; S.answered = false; paint(); }, 1000);
+      Flow.after(1000, () => { S.ans = []; S.answered = false; paint(); });
     }
   }
 
   /* ---- 出题 ---- */
   function phShow() {
+    Flow.reset();                        // 新一题：作废旧题所有挂起延时
     if (S.idx >= picks.length) {
       const stars = S.score + 1; addStars(stars); sfx.win();
       if (S.score === picks.length) confetti();
@@ -1051,7 +1059,7 @@ function gPhonics() {
           <div style="margin-top:12px">${gameHomeBtn()}</div>
         </div>`;
       paint();
-      setTimeout(() => speak(w.w), 480);
+      Flow.after(480, () => speak(w.w));
     } else {
       /* ② 听词选图（块音不可靠 / 字母块凑不出正确读音时） */
       S.seg = [];
@@ -1078,7 +1086,7 @@ function gPhonics() {
           <div class="explain" id="phexp"></div>
           <div style="margin-top:12px">${gameHomeBtn()}</div>
         </div>`;
-      setTimeout(() => speak(w.w), 400);
+      Flow.after(400, () => speak(w.w));
     }
   }
   phShow();
