@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-11.8';
+const BUILD = '2026-11-11.9';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -543,7 +543,7 @@ __registerAudioList();          /* audio-list.js 比 app.js 先执行时直接�
      若动 AUDIO_VER，已缓存的单词 mp3 会全部作废（要重下十来 MB）。
    ★ 必须放独立目录：有 slug 与单词音频同名（clap_your_hands），
      混进 audio/ 会互相覆盖。 */
-const SENTENCE_VER = 3;
+const SENTENCE_VER = 4;
 const SENTENCE_AUDIO = new Set([
   "a_cheetah_can_run_fast","a_firefighter_can_put_out_fires","a_month_is_about_one_cycle_of_the_moon","a_parrot_can_talk","a_penguin_can_t_fly_but_it_can_swim","adults_pay_the_bill",
   "an_apple_and_an_egg_please","an_elephant_can_carry_things","an_insect_is_a_tiny_animal","are_there_any_peppers_no_there_aren_t_any_peppers","are_they_making_a_cake_no_they_aren_t","are_they_playing_hide_and_seek_yes_they_are",
@@ -557,31 +557,31 @@ const SENTENCE_AUDIO = new Set([
   "everyone_can_enter_the_competition","everyone_can_recycle","everyone_helps_in_the_community","february_is_before_march","finally_we_get_to_the_station","first_wash_your_hands_then_eat",
   "from_farm_to_table","get_enough_sleep_every_night","give_him_the_gift_please","go_across_the_bridge","grandpa_and_grandma_are_old","happy_birthday_lisa",
   "has_she_got_curly_hair_yes_she_has","have_you_ever_tried_rock_climbing","he_always_plays_football","he_asked_me_to_follow_him","he_can_t_paint_but_he_can_do_karate","he_didn_t_swim",
-  "he_fell_off_his_bike_and_hurt_his_foot","he_goes_skiing_in_the_winter","he_has_a_long_tail","he_has_got_a_brother","he_is_also_my_best_friend","he_is_also_my_classmate",
-  "he_is_going_to_write_an_article","he_is_my_best_friend","he_is_strict_but_friendly","he_s_riding_a_bike","he_s_sad","he_sometimes_plays_chess",
-  "he_sprained_his_ankle","he_trains_hard","he_usually_answers_questions_in_class","he_usually_visits_his_grandparents_on_sunday","he_was_exploring_the_island","he_was_the_star_of_the_race",
-  "hello_i_m_mike","hi_i_m_april","his_hair_is_short","his_name_was_tutankhamun","how_are_we_going_to_get_there_by_bus","how_are_you_i_am_fine_thank_you",
-  "how_can_i_get_to_the_station","how_did_he_die_a_snake_bit_him","how_did_you_go_to_turpan","how_long_does_it_take_twenty_minutes","how_many_cakes_five","how_many_crayons_thirty_crayons",
-  "how_many_dolls_two_dolls","how_many_frogs_are_there_there_are_twenty_frogs","how_many_horses_are_there_on_the_farm","how_many_pencils_twenty","how_many_pencils_twenty_pencils","how_many_pencils_two",
-  "how_much_is_it_twenty_yuan","how_much_is_it_two_dollars_and_fifty_cents","how_much_is_this_jacket","how_much_money_is_in_the_jar","how_much_water_do_you_drink_every_day","how_often_do_you_have_gym_twice_a_week",
-  "how_old_are_you_i_m_six","how_tall_is_the_dinosaur","hurry_up_or_we_are_late_for_class","i_always_skate_before_dinner","i_always_walk_to_school","i_am_a_boy",
-  "i_am_a_girl","i_am_from_china","i_am_going_to_go_camping_this_summer","i_am_hungry_let_s_have_dumplings","i_am_six_years_old","i_am_taller_than_my_brother",
-  "i_am_thirteen","i_am_your_friend","i_borrow_books_from_the_library","i_can_count_to_ten","i_can_give_them_sun","i_can_see_some_birds_at_sea",
-  "i_can_see_with_my_eyes","i_can_smell_with_my_nose","i_can_water_the_flowers","i_climbed_the_mountain_last_summer","i_cook_and_clean_the_room","i_could_count_when_i_was_four",
-  "i_didn_t_take_the_train_to_the_airport","i_don_t_have_a_kite","i_don_t_like_bananas","i_don_t_like_meat","i_drink_a_little_tea_and_eat_a_few_dumplings","i_feed_the_cow_every_morning",
-  "i_feel_better_and_stronger_now","i_feel_better_today_thank_you","i_feel_safe_in_the_living_room","i_fixed_the_broken_lamp_before","i_get_up_at_six_o_clock","i_go_home_at_five",
-  "i_had_a_cold_and_slept_all_day","i_have_a_big_family","i_have_a_fever_and_a_runny_nose","i_have_milk_and_bread_for_breakfast","i_have_never_won_a_contest","i_have_ten_books",
-  "i_have_to_rake_leaves","i_have_twenty_three_books","i_have_two_big_feet","i_help_mum_cook_dinner","i_learned_to_skate_two_years_ago","i_like_apples",
-  "i_like_cats_what_about_you","i_like_dogs_and_cats","i_like_friday_because_we_play_ping_pong","i_like_noodles","i_like_sandwiches","i_like_skating",
-  "i_look_after_my_sister","i_love_playing_the_violin","i_m_good_at_basketball","i_m_wearing_a_blue_coat","i_m_wearing_a_skirt","i_often_play_chess_with_him",
-  "i_pay_with_my_pocket_money","i_play_the_piano_and_he_plays_chess","i_read_a_magazine_yesterday_afternoon","i_run","i_save_half_of_my_pocket_money","i_save_up_for_a_new_microscope",
-  "i_save_up_for_a_ticket_to_the_show","i_saw_the_eiffel_tower_and_took_pictures","i_see_a_black_and_white_bird","i_see_a_yellow_duck","i_see_three_foxes","i_see_two_mice_and_three_potatoes",
-  "i_set_the_table_and_she_clears_it","i_stayed_at_home_and_watched_tv_last_weekend","i_suggest_going_there_early","i_take_photos_and_tell_stories","i_thought_it_was_a_dream_then_i_woke_up","i_visit_my_grandparents_on_sunday",
-  "i_walk_to_school_with_my_friend","i_want_a_box_of_milk","i_want_a_pair_of_shoes","i_want_to_go_to_bed","i_want_to_save_money_to_buy_a_globe","i_want_to_see_beijing_opera_one_day",
-  "i_was_in_paris_last_year","i_wear_a_sweater_in_winter","i_wish_to_see_the_pyramids_one_day","ice_cream_is_made_from_milk","if_we_plant_trees_the_air_will_be_cleaner","if_you_have_the_flu_stay_at_home",
-  "in_my_spare_time_i_collect_comic_books","is_he_your_cousin_yes_he_is","is_it_a_crocodile_yes_it_is","is_it_in_the_box_no_it_isn_t","is_she_doing_gymnastics_yes_she_is","is_she_wearing_glasses_yes_she_is",
-  "is_that_your_mother_yes_she_is","is_there_any_cheese_yes_there_is","is_this_a_computer_yes_it_is","is_this_a_pencil_yes_it_is","is_this_pen_yours_yes_it_is_mine","is_this_your_father_yes_it_is",
-  "is_this_your_sister_yes_she_is","it_has_a_big_body_and_a_long_tail","it_is_a_blue_bag","it_is_cold_i_have_a_cold","it_is_cold_today","it_is_fifty_meters_long",
+  "he_fell_off_his_bike_and_hurt_his_foot","he_goes_skiing_in_the_winter","he_has_got_a_brother","he_is_also_my_best_friend","he_is_also_my_classmate","he_is_going_to_write_an_article",
+  "he_is_my_best_friend","he_is_strict_but_friendly","he_s_riding_a_bike","he_s_sad","he_sometimes_plays_chess","he_sprained_his_ankle",
+  "he_trains_hard","he_usually_answers_questions_in_class","he_usually_visits_his_grandparents_on_sunday","he_was_exploring_the_island","he_was_the_star_of_the_race","hello_i_m_mike",
+  "hi_i_m_april","his_hair_is_short","his_name_was_tutankhamun","how_are_we_going_to_get_there_by_bus","how_are_you_i_am_fine_thank_you","how_can_i_get_to_the_station",
+  "how_did_he_die_a_snake_bit_him","how_did_you_go_to_turpan","how_long_does_it_take_twenty_minutes","how_many_cakes_five","how_many_crayons_thirty_crayons","how_many_dolls_two_dolls",
+  "how_many_frogs_are_there_there_are_twenty_frogs","how_many_horses_are_there_on_the_farm","how_many_pencils_twenty","how_many_pencils_twenty_pencils","how_many_pencils_two","how_much_is_it_twenty_yuan",
+  "how_much_is_it_two_dollars_and_fifty_cents","how_much_is_this_jacket","how_much_money_is_in_the_jar","how_much_water_do_you_drink_every_day","how_often_do_you_have_gym_twice_a_week","how_old_are_you_i_m_six",
+  "how_tall_is_the_dinosaur","hurry_up_or_we_are_late_for_class","i_always_skate_before_dinner","i_always_walk_to_school","i_am_a_boy","i_am_a_girl",
+  "i_am_from_china","i_am_going_to_go_camping_this_summer","i_am_hungry_let_s_have_dumplings","i_am_six_years_old","i_am_taller_than_my_brother","i_am_thirteen",
+  "i_am_your_friend","i_borrow_books_from_the_library","i_can_count_to_ten","i_can_give_them_sun","i_can_see_some_birds_at_sea","i_can_see_with_my_eyes",
+  "i_can_smell_with_my_nose","i_can_water_the_flowers","i_climbed_the_mountain_last_summer","i_cook_and_clean_the_room","i_could_count_when_i_was_four","i_didn_t_take_the_train_to_the_airport",
+  "i_don_t_have_a_kite","i_don_t_like_bananas","i_don_t_like_meat","i_drink_a_little_tea_and_eat_a_few_dumplings","i_feed_the_cow_every_morning","i_feel_better_and_stronger_now",
+  "i_feel_better_today_thank_you","i_feel_safe_in_the_living_room","i_fixed_the_broken_lamp_before","i_get_up_at_six_o_clock","i_go_home_at_five","i_had_a_cold_and_slept_all_day",
+  "i_have_a_big_family","i_have_a_fever_and_a_runny_nose","i_have_milk_and_bread_for_breakfast","i_have_never_won_a_contest","i_have_ten_books","i_have_to_rake_leaves",
+  "i_have_twenty_three_books","i_have_two_big_feet","i_help_mum_cook_dinner","i_learned_to_skate_two_years_ago","i_like_apples","i_like_cats_what_about_you",
+  "i_like_dogs_and_cats","i_like_friday_because_we_play_ping_pong","i_like_noodles","i_like_sandwiches","i_like_skating","i_look_after_my_sister",
+  "i_love_playing_the_violin","i_m_good_at_basketball","i_m_wearing_a_blue_coat","i_m_wearing_a_skirt","i_often_play_chess_with_him","i_pay_with_my_pocket_money",
+  "i_play_the_piano_and_he_plays_chess","i_read_a_magazine_yesterday_afternoon","i_run","i_save_half_of_my_pocket_money","i_save_up_for_a_new_microscope","i_save_up_for_a_ticket_to_the_show",
+  "i_saw_the_eiffel_tower_and_took_pictures","i_see_a_black_and_white_bird","i_see_a_yellow_duck","i_see_three_foxes","i_see_two_mice_and_three_potatoes","i_set_the_table_and_she_clears_it",
+  "i_stayed_at_home_and_watched_tv_last_weekend","i_suggest_going_there_early","i_take_photos_and_tell_stories","i_thought_it_was_a_dream_then_i_woke_up","i_visit_my_grandparents_on_sunday","i_walk_to_school_with_my_friend",
+  "i_want_a_box_of_milk","i_want_a_pair_of_shoes","i_want_to_go_to_bed","i_want_to_save_money_to_buy_a_globe","i_want_to_see_beijing_opera_one_day","i_was_in_paris_last_year",
+  "i_wear_a_sweater_in_winter","i_wish_to_see_the_pyramids_one_day","ice_cream_is_made_from_milk","if_we_plant_trees_the_air_will_be_cleaner","if_you_have_the_flu_stay_at_home","in_my_spare_time_i_collect_comic_books",
+  "is_he_your_cousin_yes_he_is","is_it_a_crocodile_yes_it_is","is_it_in_the_box_no_it_isn_t","is_she_doing_gymnastics_yes_she_is","is_she_wearing_glasses_yes_she_is","is_that_your_mother_yes_she_is",
+  "is_there_any_cheese_yes_there_is","is_this_a_computer_yes_it_is","is_this_a_pencil_yes_it_is","is_this_pen_yours_yes_it_is_mine","is_this_your_father_yes_he_is","is_this_your_sister_yes_she_is",
+  "it_has_a_big_body_and_a_long_tail","it_has_a_long_tail","it_is_a_blue_bag","it_is_cold_i_have_a_cold","it_is_cold_today","it_is_fifty_meters_long",
   "it_is_not_a_dog_it_is_a_cat","it_is_rainy_in_sydney","it_is_seven_o_clock","it_is_still_here","it_is_windy_today","it_may_be_a_cold_let_s_call_the_doctor",
   "it_s_good_for_you","it_s_nine_o_clock","it_will_be_sunny_tomorrow","its_head_was_as_big_as_a_small_car","its_tail_is_long","june_is_after_may",
   "keep_still_please","last_weekend_i_cleaned_my_room","listen_and_share","look_at_this_flower","may_i_borrow_your_pen","may_i_have_another_glass_of_water",
@@ -617,7 +617,7 @@ const SENTENCE_AUDIO = new Set([
   "we_learn_in_class","we_may_see_seals_on_the_shore","we_must_follow_the_family_rules","we_need_some_eggs_some_milk_and_some_cheese","we_packed_our_bags","we_plan_to_try_the_local_hotpot",
   "we_plan_to_visit_beijing","we_reduce_reuse_and_recycle","we_sell_goods_for_example_drinks_and_schoolbags","we_should_save_energy_at_home","we_should_save_water_and_save_money","we_sing",
   "we_waited_till_the_bus_came","we_walk_in_the_park","we_went_fishing_last_sunday","we_went_to_the_village_three_days_ago","what_are_these_they_re_erasers","what_are_these_they_re_pencils",
-  "what_are_you_doing_i_m_playing_the_guitar","what_are_you_going_to_dress_up_as_i_m_going_to_dress_up_as_a_ghost","what_color_is_it_blue","what_colour_is_it_it_is_blue","what_day_is_it_it_s_monday","what_did_they_sing_at_the_gala",
+  "what_are_you_doing_i_m_playing_the_guitar","what_are_you_going_to_dress_up_as_i_m_going_to_dress_up_as_a_ghost","what_colour_is_it_blue","what_colour_is_it_it_is_blue","what_day_is_it_it_s_monday","what_did_they_sing_at_the_gala",
   "what_did_you_do_on_the_weekend_i_went_to_the_forest","what_do_you_do_i_m_a_dentist","what_do_you_have_for_lunch_i_have_rice","what_is_he_doing_he_s_washing_the_dishes","what_is_it_it_is_a_panda","what_is_on_at_the_theater_tonight",
   "what_is_the_matter_i_feel_afraid","what_is_this_it_is_a_green_book","what_is_your_name","what_s_her_name_her_name_is_anna","what_s_the_matter_i_have_a_headache","what_s_the_weather_like_it_s_sunny",
   "what_s_this_it_s_a_pencil","what_s_your_favorite_food","what_s_your_favorite_season_my_favorite_season_is_spring","what_s_your_favorite_subject","what_s_your_name_my_name_s_john","what_time_do_you_get_up_i_get_up_at_seven_o_clock",

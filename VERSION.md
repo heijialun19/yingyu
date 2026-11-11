@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v121 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v122 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v44 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v42 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -22,16 +22,16 @@
 | js/grammar-engine.js | v8 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v6 | 音标 |
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
-| js/getsmart-data.js | v12 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
+| js/getsmart-data.js | v13 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
-| js/pep-points.js | v20 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
+| js/pep-points.js | v21 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
 | js/audio-list.js | v4 | 发音清单（2874 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v49 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v4 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v175 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v176 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -1578,3 +1578,29 @@ length_scale 1.1 / 64k / 22050 mono / 不裁首尾静音）：
 
 版本链：BUILD .7 → 2026-11-11.8，app v120 → v121，getsmart-data v11 → v12，
 pep-points v19 → v20，SENTENCE_VER 2 → 3，CACHE v174 → v175。
+
+## 2026-11-11.9 · 通读 438 条整句后的修正
+
+`.8` 只撤回了「因缺音频而妥协」的 6 处。这版把两个数据文件里的英文例句去重后
+**全部 438 条逐条读了一遍**（导出工具 `_tts/dump_sentences.py`），又抓到 3 处：
+
+1. **问人却答 it**：`Is this your father? Yes, it is.` → `Yes, he is.`
+   同一条讲解里「这是你的妈妈吗」的答语也从 `Yes, it is.` 改成 `Yes, she is.`。
+   上一版只修了 `Is that your mother` / `Is this your sister` 两条，漏了爸爸这条。
+2. **指动物用 it**：`He has a long tail.` → `It has a long tail.`，中文「他」→「它」。
+   这条讲解的主题正是「他她它用 has」，拿 it 举例才贴题；中文用「他」指动物也不自然。
+3. **拼写内部矛盾**：`What color is it?` → `What colour is it?`。词库与 PEP 全用
+   colour（2026-11-09.15 已把 colour/color 合并成一条），这里却用美式，孩子会当成两个词。
+
+另修中文：`make the bed` 译作「铺床」而不是「整理床铺」。
+
+⚠️ **剩下的是两套教材本身的美式/英式差异，不是错误**，本版未动，需要口径拍板：
+`meter/metre`（Get Smart 用 meters、PEP 用 kilometres）、`math/maths`（5:3）、
+`cookie/biscuit`（2:5）、`fall/autumn`（4:2）、`theater/theatre`（全美式）、
+`trash`（全美式）。统一成哪一套都会牵动几十条句子与音频，属体系选择。
+
+验证：`check_facts.py` 263 PASS / 0 FAIL（新增 6 项）；9 套 Node 自测；
+20 个真浏览器探针全绿；三条新音频 1.56–2.47s、规格 22050Hz/mono/64kb/s。
+
+版本链：BUILD .8 → 2026-11-11.9，app v121 → v122，getsmart-data v12 → v13，
+pep-points v20 → v21，SENTENCE_VER 3 → 4，CACHE v175 → v176。

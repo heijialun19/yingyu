@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-11.8",
-  "note": "把上一版因为「不能重录音频」而做的 6 处妥协改回正确英语，并用原声线重录整句：one trip of the moon → one cycle of the moon、Is that your mother? Yes, it is → Yes, she is、Is this your sister? Yes, it is → Yes, she is、Do you have any cereal? There isn't any juice → No, I don't、She wears a watch on her neck → on her wrist、What's that? It's my sister → Who's that? It's my sister。app v121 / getsmart-data v12 / pep-points v20 / SENTENCE_VER 3 / CACHE v175 / BUILD 2026-11-11.8。"
+  "build": "2026-11-11.9",
+  "note": "通读全部 438 条整句后再修 3 处并重录：① Is this your father? Yes, it is → Yes, he is，同条讲解里「这是你的妈妈吗」的答语也从 it 改成 she（问人不能答 it）；② He has a long tail → It has a long tail，这条讲的正是「他她它用 has」，用 it 举例才贴题，中文也从「他」改成「它」；③ What color is it 统一成 colour，与词库与 PEP 的 colour 口径一致。另修中文「整理床铺」→「铺床」（make the bed 是铺床）。app v122 / getsmart-data v13 / pep-points v21 / SENTENCE_VER 4 / CACHE v176 / BUILD 2026-11-11.9。"
 }

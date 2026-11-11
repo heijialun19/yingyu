@@ -105,7 +105,7 @@ const GS_LEVELS = [
           { w: 'white', zh: '白色', e: '⚪' }, { w: 'black', zh: '黑色', e: '⚫' },
         ],
         sentences: [
-          { en: 'What color is it? Blue.', zh: '它是什么颜色？蓝色。' },
+          { en: 'What colour is it? Blue.', zh: '它是什么颜色？蓝色。' },
         ] },
       { id: 'gs1-m02l2', mod: 2, kind: 'unit',
         title: 'M2-L2 · Classroom Objects', zh: '教室物品',

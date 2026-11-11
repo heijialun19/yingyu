@@ -16,7 +16,7 @@ const PEP_POINTS = {
       { t: 'This is... 万能介绍法', kid: '介绍家里人，英语一律 This is...（这是……），不用管他是谁。This 就是"往这一指"，指到谁介绍谁。', tip: '伸手一指 This is', en: 'This is my mother.', zh: '这是我妈妈。' },
       { t: 'grand = 跳一代', kid: 'grandfather = grand（隔一代的）+ father（爸爸）= 爷爷或外公。grand 就像"跳了一级"，grandma、grandpa 都是这样变出来的。', tip: 'grand = 跳一代', en: 'This is my grandfather.', zh: '这是我爷爷。' },
       { t: 'family 说的是一整家人', kid: 'family 指住在一起的爸爸妈妈和孩子，是「一整个家」，所以算单数：My family is big. 有人把它拆成 Father And Mother I Love You 帮着记，那只是好玩的玩笑；这个词其实来自很早以前拉丁语里「一户人家」的说法。记词可以找窍门，别把玩笑当成真来历。', tip: '玩笑好记，本源要真', en: 'I have a big family.', zh: '我有一个大家庭。' },
-      { t: '一般疑问句：把 is 提到句首', kid: '想问"这是你的妈妈吗？"，英语把 is 提到最前面：Is this your mother? 回答只说 Yes, it is. / No, it isn\'t.——问句 is 开路，答句 it 接招。', tip: '疑问 is 开路，回答 Yes/No', en: 'Is this your father? Yes, it is.', zh: '这是你爸爸吗？是的。' },
+      { t: '一般疑问句：把 is 提到句首', kid: '想问"这是你的妈妈吗？"，英语把 is 提到最前面：Is this your mother? 回答只说 Yes, she is. / No, she isn\'t.——问句 is 开路，答句用 she 接。', tip: '疑问 is 开路，回答 Yes/No', en: 'Is this your father? Yes, he is.', zh: '这是你爸爸吗？是的。' },
       { t: 'Who\'s this? 问人', kid: 'Who is = Who\'s（谁）——Who\'s this?（这是谁？）答 This is my grandma.。who\'s 和 whose 读音一样但意思不同：who\'s 是"谁是"，whose 是"谁的"。', tip: 'Who\'s 问人，whose 问主人', en: 'Who\'s this? This is my grandma.', zh: '这是谁？这是我奶奶。' },
       { t: 'and 把家人串起来', kid: 'father and mother（爸爸和妈妈）、grandpa and grandma——and 像一根小绳子，把两个词拴在一起。A and B 的谓语用复数：Dad and Mum are busy.（两个人 = are）', tip: 'and 一拴二，两个用 are', en: 'Grandpa and grandma are old.', zh: '爷爷和奶奶年纪大了。' },
     ],
@@ -59,7 +59,7 @@ const PEP_POINTS = {
       { t: 'very 是形容词的加油站', kid: 'very nice 非常好、very big 很大——very 放在形容词前加力量。但记住：very 不加动词（不能 very like）。', tip: 'very + 形容词', en: 'She is very nice.', zh: '她非常好。' },
     ],
     u2: [
-      { t: '他她它，用 has', kid: 'I have a dog. 但 He has a dog.——第三人称单数（他/她/它）用 has，其他用 have。就像 he/she 要配 is 一样，has 是它的专属搭档。', tip: '他她它，用 has', en: 'He has a long tail.', zh: '他有一条长尾巴。' },
+      { t: '他她它，用 has', kid: 'I have a dog. 但 He has a dog.——第三人称单数（他/她/它）用 has，其他用 have。就像 he/she 要配 is 一样，has 是它的专属搭档。', tip: '他她它，用 has', en: 'It has a long tail.', zh: '它有一条长尾巴。' },
       { t: '反义词手拉手', kid: 'long 长 / short 短，fat 胖 / thin 瘦——反义词成对记，记一个送一个，单词量悄悄翻倍！', tip: '反义词，手拉手', en: 'The monkey has a long tail.', zh: '猴子有长尾巴。' },
       { t: 'for you = 给你', kid: '送礼物说 This gift is for you.——for 就是"给"的意思，比 give 更轻巧，不用动词就把"给"说了。', tip: 'for you = 给你', en: 'This card is for you.', zh: '这张卡片给你。' },
       { t: 'How many...? 数量问答', kid: 'How many pencils?（多少支铅笔？）——how many + 复数名词。回答：Two pencils. 或直接 Two.。注意 how many 后面的 s 不能丢！', tip: 'how many + 复数名词', en: 'How many pencils? Two.', zh: '多少支铅笔？两支。' },
@@ -122,7 +122,7 @@ const PEP_POINTS = {
     ],
     u4: [
       { t: "why 问，because 答", kid: "Why do they help us? Because they are cleaners.——英语要求把「原因」这层关系明明白白说出来，不能像中文那样只回半句。why 和 because 是一对，问句用 why，答句开头常常就接 because。作文里想讲理由，先写 because 再写原因。", tip: "问原因，答原因", en: "Why? Because they help us.", zh: "为什么？因为他们帮助我们。" },
-      { t: "-er 和 -or 是「做这件事的人」", kid: "clean→cleaner（清洁工）、drive→driver（司机）、teach→teacher（老师），词尾像给动词挂了个小牌子：干这活儿的人。英语爱用老词造新词，把新词挂回原来的词上记，一串词一次就记住了。", tip: "动词挂个牌子变人", en: "The cleaner makes the bed.", zh: "清洁工整理床铺。" },
+      { t: "-er 和 -or 是「做这件事的人」", kid: "clean→cleaner（清洁工）、drive→driver（司机）、teach→teacher（老师），词尾像给动词挂了个小牌子：干这活儿的人。英语爱用老词造新词，把新词挂回原来的词上记，一串词一次就记住了。", tip: "动词挂个牌子变人", en: "The cleaner makes the bed.", zh: "清洁工铺床。" },
       { t: "a lot of 为什么两边都能带", kid: "a lot of 说的是「一大堆」，只管数量多，不管东西能不能一个个数：a lot of people（可数）、a lot of water（不可数）。它不像 many / much 要挑可数不可数，所以特别好用。", tip: "只管多，不挑名词", en: "There are a lot of people in the community.", zh: "社区里有很多人。" },
       { t: "everyone 看着多，其实算一个", kid: "everyone 是「每一个人合起来的一整群」，英语把它当单数看：Everyone is busy. 不能写 Everyone are。同理 everybody、everything 后面也用 is / 加 s。这类词是选择题最爱设的陷阱。", tip: "整体算单数", en: "Everyone helps in the community.", zh: "社区里人人都帮忙。" },
       { t: "help 后面接人，还是接事", kid: "help me（帮我这个人）、help with the chores（在事情上搭把手）、help me clean（帮我一起打扫）。英语先说清楚帮的是「谁」，再说帮的是「哪件事」，两样都摆明白，句子就不含糊了。", tip: "先说帮谁，再说帮什么", en: "I help Mum cook dinner.", zh: "我帮妈妈做晚饭。" },
