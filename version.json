@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-11.9",
-  "note": "通读全部 438 条整句后再修 3 处并重录：① Is this your father? Yes, it is → Yes, he is，同条讲解里「这是你的妈妈吗」的答语也从 it 改成 she（问人不能答 it）；② He has a long tail → It has a long tail，这条讲的正是「他她它用 has」，用 it 举例才贴题，中文也从「他」改成「它」；③ What color is it 统一成 colour，与词库与 PEP 的 colour 口径一致。另修中文「整理床铺」→「铺床」（make the bed 是铺床）。app v122 / getsmart-data v13 / pep-points v21 / SENTENCE_VER 4 / CACHE v176 / BUILD 2026-11-11.9。"
+  "build": "2026-11-11.10",
+  "note": "按教材口径分治：Get Smart 是 American Edition（数据文件头写明），PEP 是人教版英式。上一版把 Get Smart 的 What color is it? 统一成 colour 是改错方向（VERSION.md 早写明 Get Smart 1 课文原句就是 color），本版改回并按美式收干净：Colours×4 → Colors、What colour → What color、biscuits → cookies、travelled → traveled、neighbour → neighbor。PEP 侧英式保持不变（neighbour/colour/trousers/lift 均正确）。新录 4 个词音频（cycle/neighbor/traveled/wrist）与 2 条整句；发音清单 2874 → 2878。app v123 / getsmart-data v14 / pep-points v22 / audio-list v5 / SENTENCE_VER 5 / CACHE v177 / BUILD 2026-11-11.10。"
 }

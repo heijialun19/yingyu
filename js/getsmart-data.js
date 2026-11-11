@@ -97,7 +97,7 @@ const GS_LEVELS = [
       { id: 'gs1-m01r', mod: 1, kind: 'review', title: 'Module 1 复习闯关', zh: '打招呼 · 数字 · 启蒙词',
         from: ['gs1-m01l1', 'gs1-m01l2', 'gs1-m01l3'], count: 8 },
       { id: 'gs1-m02l1', mod: 2, modName: 'Module 2 · School 学校', modEmoji: '🏫', modTip: 'Phonics: b bag, c cat · 品德: Ask before using others things', kind: 'unit',
-        title: 'M2-L1 · Colours', zh: '颜色',
+        title: 'M2-L1 · Colors', zh: '颜色',
         words: [
           { w: 'red', zh: '红色', e: '🔴' }, { w: 'blue', zh: '蓝色', e: '🔵' },
           { w: 'yellow', zh: '黄色', e: '🟡' }, { w: 'green', zh: '绿色', e: '🟢' },
@@ -105,7 +105,7 @@ const GS_LEVELS = [
           { w: 'white', zh: '白色', e: '⚪' }, { w: 'black', zh: '黑色', e: '⚫' },
         ],
         sentences: [
-          { en: 'What colour is it? Blue.', zh: '它是什么颜色？蓝色。' },
+          { en: 'What color is it? Blue.', zh: '它是什么颜色？蓝色。' },
         ] },
       { id: 'gs1-m02l2', mod: 2, kind: 'unit',
         title: 'M2-L2 · Classroom Objects', zh: '教室物品',
@@ -177,7 +177,7 @@ const GS_LEVELS = [
           { en: 'How many dolls? Two dolls!', zh: '几个玩偶？两个玩偶！' },
         ] },
       { id: 'gs1-m05l2', mod: 5, kind: 'unit',
-        title: 'M5-L2 · Party & Colours', zh: '派对与颜色',
+        title: 'M5-L2 · Party & Colors', zh: '派对与颜色',
         words: [
           { w: 'present', zh: '礼物', e: '🎁' }, { w: 'hat', zh: '帽子', e: '🎩' },
           { w: 'candle', zh: '蜡烛', e: '🕯️' }, { w: 'cake', zh: '蛋糕', e: '🍰' },
@@ -352,7 +352,7 @@ const GS_LEVELS = [
           { en: 'Is this a pencil? Yes, it is.', zh: '这是一支铅笔吗？是的。' },
         ] },
       { id: 'gs2-m01l2', mod: 1, kind: 'unit',
-        title: 'M1-L2 · School things & Colours', zh: '文具（二）与颜色（一）',
+        title: 'M1-L2 · School things & Colors', zh: '文具（二）与颜色（一）',
         words: [
           { w: 'computer', zh: '电脑', e: '💻' }, { w: 'desk', zh: '书桌', e: '🗄️' },
           { w: 'eraser', zh: '橡皮', e: '🧽' }, { w: 'board', zh: '黑板', e: '🟩' },
@@ -363,7 +363,7 @@ const GS_LEVELS = [
           { en: 'It is a blue bag.', zh: '它是一个蓝色的书包。' },
         ] },
       { id: 'gs2-m01l3', mod: 1, kind: 'unit',
-        title: 'M1-L3 · Colours', zh: '颜色（二）',
+        title: 'M1-L3 · Colors', zh: '颜色（二）',
         words: [
           { w: 'green', zh: '绿色', e: '🟢' }, { w: 'orange', zh: '橙色', e: '🟠' },
           { w: 'purple', zh: '紫色', e: '🟣' }, { w: 'white', zh: '白色', e: '⚪' },
@@ -574,7 +574,7 @@ const GS_LEVELS = [
         words: [
           { w: 'candy', zh: '糖果', e: '🍬' }, { w: 'cake', zh: '蛋糕', e: '🍰' },
           { w: 'fruit', zh: '水果', e: '🍎' }, { w: 'cereal', zh: '麦片', e: '🥣' },
-          { w: 'sausages', zh: '香肠', e: '🌭' }, { w: 'biscuits', zh: '饼干', e: '🍪' },
+          { w: 'sausages', zh: '香肠', e: '🌭' }, { w: 'cookies', zh: '饼干', e: '🍪' },
         ],
         sentences: [
           { en: "It's good for you.", zh: '它对你有好处。' },
@@ -1348,7 +1348,7 @@ const GS_LEVELS = [
         words: [
           { w: 'serious', zh: '严肃的', e: '🧐' }, { w: 'famous', zh: '著名的', e: '⭐' },
           { w: 'fantastic', zh: '极好的', e: '🤩' }, { w: 'drawing', zh: '图画', e: '🖼️' },
-          { w: 'neighbour', zh: '邻居', e: '🏘️' }, { w: 'cartoon', zh: '卡通', e: '🐭' },
+          { w: 'neighbor', zh: '邻居', e: '🏘️' }, { w: 'cartoon', zh: '卡通', e: '🐭' },
           { w: 'sell', zh: '卖', e: '🏷️' },
         ],
         sentences: [
@@ -1917,7 +1917,7 @@ const GS_LEVELS = [
           { w: 'temple', zh: '寺庙', e: '🛕' },
         ],
         sentences: [
-          { en: 'They travelled by hot-air balloon.', zh: '他们坐热气球旅行。' },
+          { en: 'They traveled by hot-air balloon.', zh: '他们坐热气球旅行。' },
         ] },
       { id: 'gs6-m06l3', mod: 6, kind: 'unit',
         title: 'M6-L3 · Rainforest', zh: '热带雨林',

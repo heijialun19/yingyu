@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v122 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v123 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v44 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v42 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -22,16 +22,16 @@
 | js/grammar-engine.js | v8 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v6 | 音标 |
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
-| js/getsmart-data.js | v13 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
+| js/getsmart-data.js | v14 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
-| js/pep-points.js | v21 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
-| js/audio-list.js | v4 | 发音清单（2874 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
+| js/pep-points.js | v22 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
+| js/audio-list.js | v5 | 发音清单（2878 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v49 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v4 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v176 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v177 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -62,7 +62,7 @@
 - 整句发音：课本 273 句 + Get Smart 227 句共 497 个 slug 的自合成整句 MP3 在 audio/sentences/，
   清单 SENTENCE_AUDIO 在 app.js，命中就一次播完；不命中才走逐词连读
 - 单词发音：**只用站内 audio/{slug}.mp3，一个外网请求都不发**（v8，2026-11-08）。
-  全站发音目标共 2874 个（单词 + 拼读块 + 字母名 + 复数/三单/进行时派生词），清单是 `js/audio-list.js`；
+  全站发音目标共 2878 个（单词 + 拼读块 + 字母名 + 复数/三单/进行时派生词），清单是 `js/audio-list.js`；
   另有 26 个字母音在 `audio/phonics/`（不进清单，用 `PHONICS_VER` 独立版本号）
   （`window.__AUDIO_LIST`，defer 加载，不挡首屏、file:// 也能用）；
   清单没落地前对单个词按本地文件乐观解析，`__registerGSAudio()` 另做兜底。
@@ -366,8 +366,8 @@ CC BY 4.0 全文补齐；`disclaimer.html`、`parents.html`、`README.md|txt`
 **顺手修掉的旧数字**：`speechEnv()` 曾写「2903 个 + 497 句整句」、
 `README.md` 文件结构写「2450 条 slug」、`js/sentence.js` 注释写「497 句」、
 `THIRD-PARTY-NOTICES.txt` 写「2450 + 497」，均为历史遗留，现统一口径为：
-**合计 3460 个音频文件** = 2874 条词音频 + 503 句整句 + 44 段词块 + 39 个字母音
-（其中「词音频 + 字母音」= 2913，是披露页 `disclaimer` / `parents` 里那个数字的口径）。
+**合计 3463 个音频文件** = 2878 条词音频 + 502 句整句 + 44 段词块 + 39 个字母音
+（其中「词音频 + 字母音」= 2917，是披露页 `disclaimer` / `parents` 里那个数字的口径）。
 
 **版本链**：BUILD 2026-11-09.6 → .7；app v103 → v104；CACHE v157 → v158；
 AUDIO_VER 3 → 4、SENTENCE_VER 1 → 2、PHRASE_VER 1 → 2（PHONICS_VER 2 不动）；
@@ -1604,3 +1604,52 @@ pep-points v19 → v20，SENTENCE_VER 2 → 3，CACHE v174 → v175。
 
 版本链：BUILD .8 → 2026-11-11.9，app v121 → v122，getsmart-data v12 → v13，
 pep-points v20 → v21，SENTENCE_VER 3 → 4，CACHE v175 → v176。
+
+## 2026-11-11.10 · 按教材口径分治：PEP 英式、Get Smart 美式
+
+家长指示：「要和教材同步。教材是英式就用英式，教材是美式就用美式。」
+上一版（.9）我按「全站统一英式」处理，方向错了。
+
+**先查证教材版本**（不猜）：
+- `js/getsmart-data.js` 文件头写着 `教材：MM Publications《Get Smart》(New Get Smart, American Edition)`；
+  官方目录也确认 Get Smart 是「two editions, AmE / BrE」双版本。
+- 数据内部证据一致：`football` 释义「美式橄榄球」、`favorite×7`、`theater`、`trash`、
+  `pants`、`Math`、`candy`、`fall`(秋天) 全是美式 → 用的是 **American Edition**。
+- PEP（人教版）是英式：`colour / favourite / trousers / lift` 压倒性。
+
+⚠️ **本文件早写过这件事**（`.15` 那段）：「`js/ipa.js` 里的 `color` 音标条目：
+Get Smart 1 课文原句就是 `What color is it?`（美式教材）」「`audio/color.mp3` 仍在
+audio-list 清单里（Get Smart 要用），不删」。**.9 把 `What color is it?` 改成
+`colour` 是把教材原文改错了**，本版改回。
+
+### Get Smart（AmE）清掉混入的英式
+| 位置 | 旧 | 新 |
+|---|---|---|
+| 4 个单元标题 | `Colours` | `Colors` |
+| 颜色问句 | `What colour is it? Blue.` | `What color is it? Blue.` |
+| 零食单元 | `biscuits`（饼干） | `cookies` |
+| 句子 | `They travelled by…` | `They traveled by…` |
+| 邻居词条 | `neighbour` | `neighbor` |
+
+### PEP（BrE）保持不变
+`neighbour`（词库）、`colour`、`favourite`、`trousers`、`lift`、`metres` 全部正确，未动。
+PEP 里那套记忆法字典是**全站共享**的（`take out the trash`、`theater`、`meters`、
+`soccer` 这些 key 服务的是 Get Smart 的词条），所以**不能按 PEP 口径改成英式**，
+否则 Get Smart 的词卡就查不到记忆法了。
+
+### 音频
+新录 4 个词音频（`cycle` / `neighbor` / `traveled` / `wrist`，都是句子里的词、
+逐词接龙要用）与 2 条整句；下线 2 条旧句。发音清单 2874 → **2878**。
+⚠️ 只升 `SENTENCE_VER` 与 audio-list 的 `?v=`，**不动 `AUDIO_VER` / `AUDIO_CACHE`**
+（只新增文件，旧文件 URL 未变，老设备不必重下 30MB）。
+
+### 顺带修正两个一直没更新的数字
+- 披露文案的整句数还写着 **503**，但 `.8` 起实际就是 502 → 4 处文案 + 断言一起改。
+- 单词音频 2874 → 2878、合计 2913 → 2917（= 2878 + 39 字母音）、总音频 3463。
+
+验证：`check_facts.py` **275 PASS / 0 FAIL**（新增 12 项，含「Get Smart 数据头写明
+American Edition」「Get Smart 用 Colors/color/cookies/traveled/neighbor」
+「PEP 保留英式用词」「美式音频仍在」）；9 套 Node 自测；20 个真浏览器探针全绿。
+
+版本链：BUILD .9 → 2026-11-11.10，app v122 → v123，getsmart-data v13 → v14，
+pep-points v21 → v22，audio-list v4 → v5，SENTENCE_VER 4 → 5，CACHE v176 → v177。

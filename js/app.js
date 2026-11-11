@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-11.9';
+const BUILD = '2026-11-11.10';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -433,7 +433,7 @@ function renderGradePicker(sel) {
    的 2000 多个 mp3 —— 既有服务条款问题，音色也杂（男女混搭、音量忽大忽小）。
    现在全站发音都是本站用开源引擎（Piper，MIT）与 en_US-libritts-high
    一次合成的同源静态文件：一个说话人贯穿 2874 个单词 / 拼读块 / 字母名
-   与 503 句整句。模型权重 MIT，训练数据 LibriTTS (OpenSLR 60) 为
+   与 502 句整句。模型权重 MIT，训练数据 LibriTTS (OpenSLR 60) 为
    CC BY 4.0，署名与许可全文见 THIRD-PARTY-NOTICES.txt。
      · 不跨域、不联网、断网照读
      · 不依赖任何第三方服务，谁家接口半死不活都影响不到这里
@@ -534,7 +534,7 @@ window.__registerAudioList = __registerAudioList;
 __registerAudioList();          /* audio-list.js 比 app.js 先执行时直接生效 */
 /* ===== 整句自有音频（2026-11-08）=====
    以前句子靠「单词 mp3 逐词接龙」或「两词一组绕有道」：前者男女声混搭、
-   没有连读和句末语调，后者断网无声。现在把全站 503 句固定例句用同一个
+   没有连读和句末语调，后者断网无声。现在把全站 502 句固定例句用同一个
    说话人一次合成整句，落在 audio/sentences/，零网络、离线可读。
    合规：合成引擎 Piper(MIT)，语音模型 en_US-libritts-high(权重 MIT)，
    训练数据 LibriTTS/OpenSLR 60 为 CC BY 4.0（已按许可署名，见 NOTICES）；
@@ -543,7 +543,7 @@ __registerAudioList();          /* audio-list.js 比 app.js 先执行时直接�
      若动 AUDIO_VER，已缓存的单词 mp3 会全部作废（要重下十来 MB）。
    ★ 必须放独立目录：有 slug 与单词音频同名（clap_your_hands），
      混进 audio/ 会互相覆盖。 */
-const SENTENCE_VER = 4;
+const SENTENCE_VER = 5;
 const SENTENCE_AUDIO = new Set([
   "a_cheetah_can_run_fast","a_firefighter_can_put_out_fires","a_month_is_about_one_cycle_of_the_moon","a_parrot_can_talk","a_penguin_can_t_fly_but_it_can_swim","adults_pay_the_bill",
   "an_apple_and_an_egg_please","an_elephant_can_carry_things","an_insect_is_a_tiny_animal","are_there_any_peppers_no_there_aren_t_any_peppers","are_they_making_a_cake_no_they_aren_t","are_they_playing_hide_and_seek_yes_they_are",
@@ -607,7 +607,7 @@ const SENTENCE_AUDIO = new Set([
   "there_are_fifteen_desks_and_forty_chairs","there_are_ten_sheep_on_the_farm","there_are_three_hundred_students","there_are_twenty_students","there_are_two_hospitals_near_the_shop","there_is_a_library_in_my_community",
   "there_is_a_park_in_my_town","there_is_a_river_near_the_hotel","there_is_one_big_room","there_is_someone_at_the_door","there_is_something_on_the_table","there_s_a_toy_store",
   "there_s_some_milk","there_used_to_be_a_lake_here","there_was_a_small_school_three_years_ago","there_was_a_theater_near_my_home","these_are_my_books","these_scissors_are_used_for_cutting",
-  "they_are_between_the_lamp_and_the_computer","they_are_cute_animals","they_travelled_by_hot_air_balloon","things_are_different_now_can_you_see_the_difference","this_card_is_for_you","this_is_my_grandfather",
+  "they_are_between_the_lamp_and_the_computer","they_are_cute_animals","they_traveled_by_hot_air_balloon","things_are_different_now_can_you_see_the_difference","this_card_is_for_you","this_is_my_grandfather",
   "this_is_my_mother","this_is_the_easiest_race_of_all","those_sunglasses_are_beautiful","those_trousers_are_large","throw_trash_in_the_trash_can","tigers_are_stronger_than_lions",
   "touch_your_nose","turn_left_at_the_traffic_lights","turn_off_the_fan_please","turn_off_the_faucet_please","turn_off_the_light_please","two_hundred_books_are_on_the_list",
   "unplug_the_air_conditioner_before_you_leave","vegetables_are_healthy_food","walking_is_good_for_everyday_health","walking_is_good_for_your_health","was_the_movie_good_yes_it_was","wash_your_hands_before_dinner",
@@ -617,7 +617,7 @@ const SENTENCE_AUDIO = new Set([
   "we_learn_in_class","we_may_see_seals_on_the_shore","we_must_follow_the_family_rules","we_need_some_eggs_some_milk_and_some_cheese","we_packed_our_bags","we_plan_to_try_the_local_hotpot",
   "we_plan_to_visit_beijing","we_reduce_reuse_and_recycle","we_sell_goods_for_example_drinks_and_schoolbags","we_should_save_energy_at_home","we_should_save_water_and_save_money","we_sing",
   "we_waited_till_the_bus_came","we_walk_in_the_park","we_went_fishing_last_sunday","we_went_to_the_village_three_days_ago","what_are_these_they_re_erasers","what_are_these_they_re_pencils",
-  "what_are_you_doing_i_m_playing_the_guitar","what_are_you_going_to_dress_up_as_i_m_going_to_dress_up_as_a_ghost","what_colour_is_it_blue","what_colour_is_it_it_is_blue","what_day_is_it_it_s_monday","what_did_they_sing_at_the_gala",
+  "what_are_you_doing_i_m_playing_the_guitar","what_are_you_going_to_dress_up_as_i_m_going_to_dress_up_as_a_ghost","what_color_is_it_blue","what_colour_is_it_it_is_blue","what_day_is_it_it_s_monday","what_did_they_sing_at_the_gala",
   "what_did_you_do_on_the_weekend_i_went_to_the_forest","what_do_you_do_i_m_a_dentist","what_do_you_have_for_lunch_i_have_rice","what_is_he_doing_he_s_washing_the_dishes","what_is_it_it_is_a_panda","what_is_on_at_the_theater_tonight",
   "what_is_the_matter_i_feel_afraid","what_is_this_it_is_a_green_book","what_is_your_name","what_s_her_name_her_name_is_anna","what_s_the_matter_i_have_a_headache","what_s_the_weather_like_it_s_sunny",
   "what_s_this_it_s_a_pencil","what_s_your_favorite_food","what_s_your_favorite_season_my_favorite_season_is_spring","what_s_your_favorite_subject","what_s_your_name_my_name_s_john","what_time_do_you_get_up_i_get_up_at_seven_o_clock",
@@ -1649,7 +1649,7 @@ document.addEventListener('keydown', unlockAudioChannels, { capture: true });
 /* 语音环境检测（家长中心诊断用） */
 function speechEnv() {
   return {
-    engine: '站内自带音频（2913 个发音文件 + 503 句整句；单词、整句与词块由 Piper + LibriTTS 声线合成，CC BY 4.0 已署名；字母音与拼读块为母语者录音）',
+    engine: '站内自带音频（2917 个发音文件 + 502 句整句；单词、整句与词块由 Piper + LibriTTS 声线合成，CC BY 4.0 已署名；字母音与拼读块为母语者录音）',
     wechat: /MicroMessenger/i.test(navigator.userAgent),
     online: navigator.onLine
   };

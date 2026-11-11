@@ -1121,7 +1121,7 @@ const PEP_MEM = {
   napkin: 'napkin 来自古法语 nape（布）+ -kin（小）：小布 = 餐巾',
   naughty: 'naughty 来自古英语 nāwiht（没有东西）——naughty 原是「一无所有的」→ 淘气',
   nectar: 'nectar 来自希腊语 nektar（神的饮料）——nectar 就是「神仙喝的」',
-  neighborhood: 'neighbour（邻居）+ -hood（区域）：邻居的区域 = 街区',
+  neighborhood: 'neighbor（邻居）+ -hood（区域）：邻居的区域 = 街区',
   nest: 'nest 来自古英语 nest（巢）——nest 和 network 网络同源（编织的家）',
   net: 'net 来自古英语 nett（网）',
   'no one': 'no（没有）+ one（人）：没有人',
@@ -1416,7 +1416,7 @@ function pepPosKey(w) {
 /* ---- 音标补充表：PEP 特有、ipa.js 大概率没有的词（英式） ---- */
 const PEP_IPA = {
   'grandma': 'ˈɡrænmɑ', 'grandpa': 'ˈɡrænpɑ', 'grandfather': 'ˈɡrænfɑðər', 'grandmother': 'ˈɡrænmʌðər',
-  'cousin': 'ˈkʌzən', 'uncle': 'ʌŋkl', 'aunt': 'ænt', 'neighbour': 'ˈneɪbər', 'classmate': 'ˈklæsmeɪt',
+  'cousin': 'ˈkʌzən', 'uncle': 'ʌŋkl', 'aunt': 'ænt', 'neighbour': 'ˈneɪbər', 'neighbor': 'ˈneɪbər', 'classmate': 'ˈklæsmeɪt',
   'giraffe': 'dʒəˈræf', 'panda': 'pændə', 'rabbit': 'ræbɪt', 'animal': 'ænɪml', 'elephant': 'ˈɛləfənt',
   'monkey': 'mʌŋki', 'tiger': 'ˈtaɪɡər', 'lion': 'ˈlaɪən', 'fox': 'fɑks', 'zoo': 'zu',
   'garden': 'ˈɡɑrdən', 'flower': 'flaʊə', 'grass': 'ɡræs', 'plant': 'plænt', 'tree': 'tri',
