@@ -22,15 +22,31 @@ html { font-size: 18px; }
     transition-duration: .001ms !important; scroll-behavior: auto !important;
   }
 }
+/* ★ 2026-11-11.11（A1）emoji 字体必须排在中文字体前面，但**不能无限接管**。
+   原来三个 emoji 字体直接写进 font-family 开头：微软雅黑自带 🎡🔎🔒 的单色
+   字形，排在后面就会被画成黑白线条 —— 所以当时只能放最前面。代价是安卓预装的
+   Noto Color Emoji 连**数字**也接管了，它给数字一套又宽又空的字形
+   （14px 下 "171" 量到 51px，正常字体 25px），于是全站「0 / 1 7 1」被撑成
+   一位一位，汉字与英文之间还出现空洞。
+   现在用 @font-face 声明一个**只覆盖 emoji 码位**的通道：emoji 仍走彩色字形，
+   数字、字母、汉字完全不经过它（unicode-range 之外的字形不会用它）。
+   ⚠️ U+200D（ZWJ）、U+FE0F（变体选择符）、U+20E3（键帽）必须一起列进来，
+      否则 👨‍👩‍👧 / ⭐️ / 1️⃣ 这类组合会被拆散或回退成单色。 */
+@font-face {
+  font-family: "EmojiFallback";
+  src: local("Apple Color Emoji"), local("Segoe UI Emoji"), local("Noto Color Emoji"),
+       local("Noto Emoji"), local("EmojiOne Color"), local("Android Emoji");
+  unicode-range: U+200D, U+20E3, U+FE0F, U+203C, U+2049, U+2122, U+2139,
+                 U+2194-21AA, U+231A-23FA, U+24C2, U+25AA-25AB, U+25B6, U+25C0,
+                 U+25FB-27BF, U+2934-2935, U+2B05-2B07, U+2B1B-2B1C, U+2B50,
+                 U+2B55, U+3030, U+303D, U+3297, U+3299, U+1F000-1FAFF;
+}
 body {
   margin: 0; min-height: 100vh; color: var(--ink);
-  /* ★ 彩色 emoji 字体必须排在**中文字体前面**（2026-10-26 修）。
-     原因：微软雅黑自带 🎡🔎🔒 这类符号的**单色字形**，只要它排在前面，
-     浏览器就就近取用，画出来是黑白线条 —— 实测 Win11 + Edge 也是黑白，
-     不是只有老电脑才会。这三个字体没有中文字形，中文照常回退，不影响排版。
-     Segoe UI Symbol 是纯黑白字体，只能放最后当兜底。 */
-  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji",
-               "Comic Sans MS", "Chalkboard SE", "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC",
+  /* Segoe UI Symbol 是纯黑白字体，只能放最后当兜底（不放进 EmojiFallback，
+     否则缺少彩色字体的设备会整片退回黑白）。 */
+  font-family: "EmojiFallback", "Comic Sans MS", "Chalkboard SE",
+               "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC",
                "Segoe UI Symbol", sans-serif;
   background: linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 42%, #E8FBFF 100%) fixed;
   overflow-x: hidden;
@@ -71,6 +87,9 @@ ruby rt { font-size: .5em; color: var(--ink2); letter-spacing: 1px; }
   display: flex; flex-direction: column; align-items: center; gap: 1px;
   padding: 5px 10px; border-radius: 16px; font-size: .72rem; color: var(--ink2);
   transition: .18s; border: 2px solid transparent;
+  /* ★ 2026-11-11.11（A3）「Get Smart」在桌面被拆成「Get / Smart」两行，
+     其余六项都是单行，基线不齐。导航项一律不许折行。 */
+  white-space: nowrap;
 }
 .nav-emoji { font-size: 22px; }
 .nav-link:hover { background: #FFF1D6; transform: translateY(-2px); }
@@ -96,24 +115,38 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   background: #fff; border-radius: var(--card-r); padding: 20px;
   box-shadow: var(--shadow); border: 3px solid rgba(45,49,66,.07);
 }
-.card h2 { margin: 0 0 8px; font-size: 1.15rem; display: flex; align-items: center; gap: 8px; }
+/* ★ 2026-11-11.11（A2）原来是 display:flex 且不换行：标题后面跟一个长 <small>
+   副标题时，flex 会先把主标题压到最窄 —— 手机 390px 下「学习总览」被压成
+   竖排四行（实测 h2 宽 332px、高 104px）。加 flex-wrap 让副标题自己掉到第二行。 */
+.card h2 { margin: 0 0 8px; font-size: 1.15rem; display: flex; align-items: center;
+           gap: 8px; flex-wrap: wrap; row-gap: 2px; }
+.card h2 > small { flex: 1 1 100%; font-size: .82rem; }
+/* ⚠️ 不要给上面的 small 加 :only-child 例外 —— h2 里的文字是文本节点，
+   `:only-child` 只看元素兄弟，所以「标题 + 副标题」时 small 恰好是唯一元素子节点，
+   加了例外就等于没加。这里要的就是「有副标题就让它独占一行」。 */
 
 /* ---------- 3D 按钮 ---------- */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   border: none; cursor: pointer; user-select: none;
-  font-family: inherit; font-weight: 700; color: #fff;
+  /* ★ 2026-11-11.11（F1）白字压在糖果色上对比度全都不达标：
+     湖蓝 1.98、薄荷 2.01、橙 2.04、粉 2.15、珊瑚 2.78、柠檬 1.38（WCAG AA 要 4.5）。
+     改成深墨蓝文字后实测：湖蓝 6.2 / 薄荷 6.1 / 橙 6.0 / 粉 5.8 / 柠檬 6.8，
+     珊瑚与葡萄压不住，单独把底色提亮（见下）。糖果色底保留，只换字色。 */
+  font-family: inherit; font-weight: 700; color: var(--ink);
   background: var(--lake); border-radius: 20px; padding: 14px 26px; font-size: 1rem;
   box-shadow: 0 5px 0 #2B98C4; transition: .12s;
 }
 .btn:hover { filter: brightness(1.06); }
 .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #2B98C4; }
-.btn.coral  { background: var(--coral);  box-shadow: 0 5px 0 #D14B4B; }
-.btn.coral:active  { box-shadow: 0 1px 0 #D14B4B; }
+/* 珊瑚 #FF6B6B 配深墨蓝只有 4.28，差一点；提亮到 #FF8585 = 4.9 */
+.btn.coral  { background: #FF8585;  box-shadow: 0 5px 0 #D96969; }
+.btn.coral:active  { box-shadow: 0 1px 0 #D96969; }
 .btn.mint   { background: var(--mint);   box-shadow: 0 5px 0 #4E9E59; }
 .btn.mint:active   { box-shadow: 0 1px 0 #4E9E59; }
-.btn.grape  { background: var(--grape);  box-shadow: 0 5px 0 #7A54CC; }
-.btn.grape:active  { box-shadow: 0 1px 0 #7A54CC; }
+/* 葡萄 #9B72FF 配深墨蓝 3.64，提亮到 #B79AFF = 5.2 */
+.btn.grape  { background: #B79AFF;  box-shadow: 0 5px 0 #8E6AD8; }
+.btn.grape:active  { box-shadow: 0 1px 0 #8E6AD8; }
 .btn.orange { background: var(--orange); box-shadow: 0 5px 0 #DB7E27; }
 .btn.orange:active { box-shadow: 0 1px 0 #DB7E27; }
 .btn.ghost  { background: #fff; color: var(--ink); box-shadow: 0 5px 0 rgba(45,49,66,.15); border: 2px solid rgba(45,49,66,.1); }
@@ -189,10 +222,11 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 
 .letter-stage { display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start; }
 .letter-hero {
-  text-align: center; padding: 26px 20px; border-radius: 30px; color: #fff;
+  /* F1：湖蓝底 + 白字只有 1.98，字母 Hero 的 7rem 大字母同样看不清 */
+  text-align: center; padding: 26px 20px; border-radius: 30px; color: var(--ink);
   background: var(--lake); box-shadow: 0 8px 0 rgba(45,49,66,.15); position: relative;
 }
-.letter-hero .glyph { font-size: 7rem; font-weight: 700; line-height: 1; text-shadow: 0 6px 0 rgba(0,0,0,.15); }
+.letter-hero .glyph { font-size: 7rem; font-weight: 700; line-height: 1; text-shadow: 0 5px 0 rgba(255,255,255,.75); }
 .letter-hero .glyph small { font-size: .4em; opacity: .9; }
 .letter-hero .shape { font-size: 1.1rem; margin-top: 4px; }
 .letter-hero .speak-btn {
@@ -453,11 +487,12 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .train-demo { display: flex; align-items: flex-end; gap: 6px; flex-wrap: wrap; margin: 14px 0; }
 .train-demo .t-part {
   display: flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 12px 16px; border-radius: 16px; font-weight: 700; color: #fff; font-size: 1rem;
+  /* F1：句子工厂的「车厢」同样是白字压糖果色，一起换深色 */
+  padding: 12px 16px; border-radius: 16px; font-weight: 700; color: var(--ink); font-size: 1rem;
   box-shadow: 0 5px 0 rgba(45,49,66,.18); position: relative;
 }
 .train-demo .t-part small { display: block; font-size: .6em; font-weight: 400; opacity: .9; }
-.train-demo .t-part.head { background: var(--coral); border-radius: 22px 22px 12px 12px; padding: 14px 18px; }
+.train-demo .t-part.head { background: #FF8585; border-radius: 22px 22px 12px 12px; padding: 14px 18px; }
 .train-demo .t-part.mid  { background: var(--mint); }
 .train-demo .t-part.tail { background: var(--grape); }
 .train-demo .t-plus { font-size: 1.6rem; font-weight: 700; color: var(--ink2); align-self: center; }
@@ -579,12 +614,15 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   box-shadow: 0 8px 24px rgba(0,0,0,.25); max-width: 86vw; text-align: center;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
-.confetti-box { position: fixed; inset: 0; pointer-events: none; z-index: 98; overflow: hidden; }
+/* ★ 2026-11-11.11（F3）彩带原来 z-index 98、飘 1.8 秒，正好压在「答对后的
+   解析文字」上（孩子刚要读就被盖住）。降到 toast 之下，并把单颗时长压到
+   ≤0.8 秒、透明度末段淡出，读完之前就散干净。数量在 app.js 里也减了。 */
+.confetti-box { position: fixed; inset: 0; pointer-events: none; z-index: 40; overflow: hidden; }
 .confetti-box i {
-  position: absolute; top: -4vh; width: 12px; height: 18px; border-radius: 3px;
-  animation: fall linear forwards;
+  position: absolute; top: -4vh; width: 10px; height: 15px; border-radius: 3px;
+  animation: fall linear forwards; opacity: .95;
 }
-@keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+@keyframes fall { 0% { opacity: .95; } 70% { opacity: .85; } to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
 .fly-star {
   position: fixed; z-index: 99; font-size: 26px; pointer-events: none;
   animation: flyUp 1s ease-in forwards;
@@ -630,7 +668,9 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   .bottom-nav {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
     display: grid; grid-template-columns: repeat(6, 1fr) 1.15fr; gap: 2px;
-    background: rgba(255,255,255,.97);
+    /* ★ 2026-11-11.11（A4）原 .97 半透明，滚动时下层卡片文字会隐约透出来。
+       底栏不需要透出任何东西，直接给不透明白。 */
+    background: #fff;
     border-top: 2px solid #E8EAF0;
     padding: 6px 6px calc(7px + env(safe-area-inset-bottom));
     box-shadow: 0 -6px 20px rgba(45,49,66,.08);

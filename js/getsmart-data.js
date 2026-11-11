@@ -53,8 +53,20 @@ function gsFlowState() {
       const g = lv.units.find(u => u.kind === 'unit' && !gm[u.id]);
       gap = g ? { id: g.id, title: g.title } : null;
     }
-    return { today, due, games: act.games || 0, gap };
-  } catch (e) { return { today: '', due: 0, games: 0, gap: null }; }
+    /* ★ 2026-11-11.11（E1/E2）「没数据」和「做完了」必须分开。
+       新档案：gap=null（没落下课）、due=0（没有到期词）—— 首页原来把这两个
+       「空」都当成「已完成」，于是孩子还没开始就被告知「2/3 已完成」。
+       这里给出 started，调用方据此显示「今天还没开始」。 */
+    const started = !!(
+      Object.keys(Store.d.getsmart || {}).length ||
+      Object.keys(Store.d.words || {}).length ||
+      Object.keys(Store.d.letters || {}).length ||
+      Object.keys(Store.d.games || {}).length ||
+      ((Store.d.streak || {}).count || 0) > 0 ||
+      (act.games || 0) > 0
+    );
+    return { today, due, games: act.games || 0, gap, started };
+  } catch (e) { return { today: '', due: 0, games: 0, gap: null, started: false }; }
 }
 
 const GS_LEVELS = [

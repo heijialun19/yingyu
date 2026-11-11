@@ -338,7 +338,7 @@ const ING_FORM = { eat:'eating', sing:'singing', jump:'jumping', read:'reading',
   play:'playing', fly:'flying', draw:'drawing', cry:'crying', laugh:'laughing', drink:'drinking', dance:'dancing' };
 const ING_ZH = { eat:'吃东西', sing:'唱歌', jump:'跳', read:'读书', sleep:'睡觉', play:'玩耍', fly:'飞', draw:'画画', cry:'哭', laugh:'笑', drink:'喝水', dance:'跳舞' };
 
-/* ---------- 句子工厂：万能公式 19 关 ----------
+/* ---------- 句子工厂：万能公式 23 关 ----------
    stage: s1 基础公式 / s2 结合单词镇 / s3 进阶句型
    items: 静态题目（概念、口诀类）
    gen:  动态题目——开课时从单词镇词库实时生成造句题
@@ -530,8 +530,74 @@ const GRAMMAR_LEVELS = [
       {type:'choice', prompt:'「Is she happy?」的肯定回答是哪一句？', options:['Yes, she is.','Yes, she does.','Yes, she are.'], answer:0, say:'Yes, she is.',
         zh:'Yes, she is. 是的，她开心。',
         explain:'用 be 动词问，就用 be 动词答；问 is she，答 she is。'} ]},
-];
 
+  /* ============ 课本同步：六年级下册的四个核心语法（2026-11-11.11 / B3） ============ */
+  { id:'L20', stage:'s3', title:'昨天的事：一般过去时', emoji:'⏰', formula:'was / were + 动词加 -ed', stars:3,
+    intro:'说"昨天、刚才、上个星期"发生的事，动词要换成过去式。be 动词变成 was / were；其他动词大多直接加 -ed。中文说"了"，英文常常就是过去式。',
+    chant:'昨天的事用过去 ⏰\nI am 变 I was\nare 变 were 别忘记\n动词加 ed 就过去！',
+    items:[
+      {type:'choice', prompt:'「昨天我很开心」哪个说法对？', options:['I am happy yesterday.','I was happy yesterday.','I were happy yesterday.'], answer:1, say:'I was happy yesterday.',
+        zh:'I was happy yesterday. 昨天我很开心。', explain:'yesterday 是过去，am 要变成 was；I 后面用 was，不用 were。'},
+      {type:'choice', prompt:'「他们昨天在学校」哪个说法对？', options:['They was at school yesterday.','They are at school yesterday.','They were at school yesterday.'], answer:2, say:'They were at school yesterday.',
+        zh:'They were at school yesterday. 他们昨天在学校。', explain:'they 是复数，be 动词用 were（was 只跟 I / he / she / it）。'},
+      {type:'choice', prompt:'「我昨天踢足球」哪个说法对？', options:['I play football yesterday.','I played football yesterday.','I playing football yesterday.'], answer:1, say:'I played football yesterday.',
+        zh:'I played football yesterday. 我昨天踢足球。', explain:'规则动词加 -ed 就是过去式：play → played。'},
+      {type:'choice', prompt:'「她昨天看电视了」哪个说法对？', options:['She watch TV yesterday.','She watched TV yesterday.','She watches TV yesterday.'], answer:1, say:'She watched TV yesterday.',
+        zh:'She watched TV yesterday. 她昨天看电视了。', explain:'以 t 结尾直接加 -ed：watch → watched。过去式不分人称，she 后面也不用再加 s。'},
+      {type:'choice', prompt:'「我昨天不在家」哪个说法对？', options:["I didn't was at home yesterday.","I not was at home yesterday.","I wasn't at home yesterday."], answer:2, say:"I wasn't at home yesterday.",
+        zh:"I wasn't at home yesterday. 我昨天不在家。", explain:'be 动词的否定直接在后面加 not：was → wasn\'t。didn\'t 只跟普通动词，不能跟 was 一起用。'},
+      {type:'choice', prompt:'「你昨天在学校吗？」哪个说法对？', options:['Were you at school yesterday?','Did you were at school yesterday?','Was you at school yesterday?'], answer:0, say:'Were you at school yesterday?',
+        zh:'Were you at school yesterday? 你昨天在学校吗？', explain:'be 动词的疑问句把它搬到句首：You were → Were you…?'} ]},
+
+  { id:'L21', stage:'s3', title:'问过去：Where did you go?', emoji:'🗺️', formula:'疑问词 + did + 谁 + 动词原形', stars:3,
+    intro:'问过去做了什么，请 did 来帮忙。did 一出现，后面的动词立刻变回原形 —— 这是最容易丢分的一条。',
+    chant:'问过去，请 did 来 ❓\ndid 后面跟原形\nWhere did you go 去了哪\nWhat did you see 看见啥！',
+    items:[
+      {type:'choice', prompt:'「你昨天去哪儿了？」哪个说法对？', options:['Where did you go yesterday?','Where did you went yesterday?','Where you did go yesterday?'], answer:0, say:'Where did you go yesterday?',
+        zh:'Where did you go yesterday? 你昨天去哪儿了？', explain:'did 已经表示过去，go 保持原形，不能再写 went。'},
+      {type:'choice', prompt:'「你看见了什么？」哪个说法对？', options:['What did you saw?','What did you see?','What you saw?'], answer:1, say:'What did you see?',
+        zh:'What did you see? 你看见了什么？', explain:'did 后面用原形 see；saw 是 see 的过去式，不能和 did 同时出现。'},
+      {type:'choice', prompt:'「你去动物园了吗？」哪个说法对？', options:['Did you went to the zoo?','Do you went to the zoo?','Did you go to the zoo?'], answer:2, say:'Did you go to the zoo?',
+        zh:'Did you go to the zoo? 你去动物园了吗？', explain:'问过去用 Did，不用 Do；后面跟原形 go。'},
+      {type:'choice', prompt:'「你几点起床的？」哪个说法对？', options:['When did you get up?','When did you got up?','When you got up?'], answer:0, say:'When did you get up?',
+        zh:'When did you get up? 你几点起床的？', explain:'疑问词放最前面，接着 did + 主语 + 原形。'},
+      {type:'choice', prompt:'「我去年去了北京」哪个说法对？', options:['I go to Beijing last year.','I went to Beijing last year.','I did go to Beijing last year.'], answer:1, say:'I went to Beijing last year.',
+        zh:'I went to Beijing last year. 我去年去了北京。', explain:'这是陈述句，不用 did；直接把 go 变成过去式 went。'},
+      {type:'choice', prompt:'「你上周末做了什么？」哪个说法对？', options:['What did you did last weekend?','What do you did last weekend?','What did you do last weekend?'], answer:2, say:'What did you do last weekend?',
+        zh:'What did you do last weekend? 你上周末做了什么？', explain:'do 在这里是实义动词"做"，所以是 did + you + do（原形）。'} ]},
+
+  { id:'L22', stage:'s3', title:'比一比：比较级与最高级', emoji:'📏', formula:'-er than / the -est', stars:3,
+    intro:'两个人比高低用比较级（taller），三个人以上比出第一名用最高级（the tallest）。短词加 -er / -est，长词前面加 more / most。',
+    chant:'两个比，加 er 📏\n三个以上 the est\nbig 变 bigger 双写字母\n长的词前加 more！',
+    items:[
+      {type:'choice', prompt:'「我比你高」哪个说法对？', options:['I am tall than you.','I am taller than you.','I am the tallest than you.'], answer:1, say:'I am taller than you.',
+        zh:'I am taller than you. 我比你高。', explain:'两个人比，用比较级 taller，后面跟 than。'},
+      {type:'choice', prompt:'「他是我们班最高的」哪个说法对？', options:['He is taller in our class.','He is the tallest in our class.','He is the taller in our class.'], answer:1, say:'He is the tallest in our class.',
+        zh:'He is the tallest in our class. 他是我们班最高的。', explain:'全班比出第一名用最高级，前面必须加 the：the tallest。'},
+      {type:'choice', prompt:'「这头大象比那头大」哪个说法对？', options:['This elephant is bigger than that one.','This elephant is more big than that one.','This elephant is biger than that one.'], answer:0, say:'This elephant is bigger than that one.',
+        zh:'This elephant is bigger than that one. 这头大象比那头大。', explain:'big 是「辅音 + 元音 + 辅音」结尾，要双写最后一个字母再加 -er：big → bigger。'},
+      {type:'choice', prompt:'「这本书比那本贵」哪个说法对？', options:['This book is expensiver than that one.','This book is most expensive than that one.','This book is more expensive than that one.'], answer:2, say:'This book is more expensive than that one.',
+        zh:'This book is more expensive than that one. 这本书比那本贵。', explain:'expensive 是长词（三个音节以上），比较级在前面加 more，不加 -er。'},
+      {type:'choice', prompt:'「今天比昨天热」哪个说法对？', options:['It is hotter today than yesterday.','It is more hot today than yesterday.','It is hoter today than yesterday.'], answer:0, say:'It is hotter today than yesterday.',
+        zh:'It is hotter today than yesterday. 今天比昨天热。', explain:'hot 同样双写 t 再加 -er：hot → hotter。'},
+      {type:'choice', prompt:'「她是三个女孩里最高的」哪个说法对？', options:['She is taller of the three.','She is the tallest of the three.','She is the most tall of the three.'], answer:1, say:'She is the tallest of the three.',
+        zh:'She is the tallest of the three. 她是三个女孩里最高的。', explain:'三者以上比第一名：the + 最高级 tallest；范围用 of the three。'} ]},
+
+  { id:'L23', stage:'s3', title:'打算做：be going to', emoji:'🎯', formula:'am / is / are + going to + 动词原形', stars:3,
+    intro:'说"打算做、将要做"的事，就用 be going to + 动词原形。be 动词跟着主语走：I am、he is、they are。',
+    chant:'打算做，going to 🎯\nbe 动词先站好\nI am going to swim\n明天的事今天说！',
+    items:[
+      {type:'choice', prompt:'「我明天打算游泳」哪个说法对？', options:['I am going to swim tomorrow.','I going to swim tomorrow.','I am going to swimming tomorrow.'], answer:0, say:'I am going to swim tomorrow.',
+        zh:'I am going to swim tomorrow. 我明天打算游泳。', explain:'I 后面要有 am；going to 后面跟动词原形 swim。'},
+      {type:'choice', prompt:'「她打算买一本书」哪个说法对？', options:['She are going to buy a book.','She is going to buy a book.','She is going to buys a book.'], answer:1, say:'She is going to buy a book.',
+        zh:'She is going to buy a book. 她打算买一本书。', explain:'she 用 is；going to 后面用原形 buy。'},
+      {type:'choice', prompt:'「我们打算去公园」哪个说法对？', options:['We is going to go to the park.','We are going to going to the park.','We are going to go to the park.'], answer:2, say:'We are going to go to the park.',
+        zh:'We are going to go to the park. 我们打算去公园。', explain:'we 是复数，用 are；后面 go 用原形。'},
+      {type:'choice', prompt:'「他不打算踢足球」哪个说法对？', options:["He isn't going to play football.","He don't going to play football.","He isn't going to plays football."], answer:0, say:"He isn't going to play football.",
+        zh:"He isn't going to play football. 他不打算踢足球。", explain:'否定把 not 加在 be 后面：is not → isn\'t，其余不变。'},
+      {type:'choice', prompt:'「你打算去看奶奶吗？」哪个说法对？', options:['Do you going to visit your grandma?','Are you going to visit your grandma?','Are you going to visiting your grandma?'], answer:1, say:'Are you going to visit your grandma?',
+        zh:'Are you going to visit your grandma? 你打算去看奶奶吗？', explain:'有 be 动词的句子，疑问句把 be 提到句首：You are → Are you…?'} ]},
+];
 /* ---------- 徽章 ---------- */
 const BADGES = [
   {id:'letter10',  emoji:'🌟', name:'字母新星',   desc:'学会 10 个字母'},
@@ -540,7 +606,7 @@ const BADGES = [
   {id:'word100',   emoji:'📚', name:'百词小达人', desc:'掌握 100 个单词'},
   {id:'word500',   emoji:'💪', name:'五百词超人', desc:'掌握 500 个单词'},
   {id:'word1000',  emoji:'🧠', name:'千词小博士', desc:'掌握词库全部单词'},
-  {id:'grammar1',  emoji:'🔧', name:'句子小工程师', desc:'通过句子工厂全部 19 关'},
+  {id:'grammar1',  emoji:'🔧', name:'句子小工程师', desc:'通过句子工厂全部 23 关'},
   {id:'grammar8',  emoji:'🚃', name:'公式小达人', desc:'通过第一阶段全部关卡'},
   {id:'streak3',   emoji:'🔥', name:'坚持之星',   desc:'连续学习 3 天'},
   {id:'streak7',   emoji:'🌈', name:'七日学霸',   desc:'连续学习 7 天'},

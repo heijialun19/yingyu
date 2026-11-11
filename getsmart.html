@@ -5,8 +5,15 @@
 <meta name="keywords" content="小学英语,英语启蒙,自然拼读,儿童英语,免费" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Get Smart 学堂 · 小鸟英语乐园</title>
+<link rel="canonical" href="https://heijialun19.github.io/yingyu/getsmart.html">
+<meta name="description" content="MM Publications《Get Smart》(American Edition) 六册同步：47 个单元的词表、句型与整句朗读，按官方目录逐课对齐，配今日任务流与复习调度。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Get Smart 学堂 · 小鸟英语乐园">
+<meta property="og:description" content="Get Smart (American Edition) 六册 47 个单元逐课同步，词表 + 整句朗读 + 复习调度。">
+<meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
+<meta property="og:url" content="https://heijialun19.github.io/yingyu/getsmart.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=49" onerror="this.onerror=null;this.href='css/style.css?v=49&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=50" onerror="this.onerror=null;this.href='css/style.css?v=50&amp;retry=1'">
 <style>
 /* ---- Get Smart 学堂专属样式（其余复用全站） ---- */
 .gs-levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
@@ -16,7 +23,8 @@
 .gs-level .gle{font-size:40px;line-height:1.1}
 .gs-level b{display:block;margin-top:4px;font-size:1rem}
 .gs-level small{color:#6B7280;font-size:.72rem;display:block;margin-top:2px}
-.gs-badge{position:absolute;top:-10px;right:-6px;background:#FF6B6B;color:#fff;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+/* F1 同类：白字压 #FF6B6B 只有 2.78，改深一档底 + 保持白字 */
+.gs-badge{position:absolute;top:-10px;right:-6px;background:#C94A4A;color:#fff;font-size:.68rem;font-weight:800;padding:3px 10px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.18)}
 .gs-prog{height:10px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin-top:8px}
 .gs-prog i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--mint),var(--lake))}
 .gs-modhead{margin:20px 0 10px;font-size:1.02rem;font-weight:800;color:#374151;display:flex;align-items:center;gap:8px}
@@ -53,7 +61,8 @@
 .gs-num{display:inline-flex;align-items:center;justify-content:center;min-width:62px;height:62px;padding:0 10px;border-radius:14px;background:#FFF7DA;border:3px solid var(--lemon);font-size:1.45rem;font-weight:900;color:var(--ink)}
 </style>
 </head>
-<body>
+<!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
+<body data-emoji="full">
   <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
     <div style="font-size:52px">🐤</div>
     <div style="font-size:.9rem;color:#5C6273;font-weight:700">加载中，请稍等…</div>
@@ -66,19 +75,19 @@
   <div id="app"><div id="bootPlaceholder" class="card" style="max-width:560px;margin:22px auto;text-align:center;padding:26px 18px"><div style="font-size:34px">🐤</div><p style="color:#6B7280;font-size:.9rem;margin:8px 0 0">正在打开，请稍等…</p></div></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#78909C">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
-<script src="js/words-data.js?v=44"></script>
-<script src="svg/word-svg.js?v=4"></script>
+<script src="js/words-data.js?v=45"></script>
+<script src="svg/word-svg.js?v=5"></script>
 <!-- 课程专用的 195 个 emoji（🐓🦅🦖🟡🩷🪑…）单独一个文件，只有这一页加载：
      并进基础库会让首页/单词镇白白多传 119KB(gzip)。两个图库都用 Object.assign
      合并，谁先到都不影响对方。 -->
 <script async src="svg/emoji-svg2.js?v=3"></script>
 <script src="js/ipa.js?v=6"></script>
-<script src="js/data.js?v=42"></script>
-<script src="js/app.js?v=123"></script>
+<script src="js/data.js?v=43"></script>
+<script src="js/app.js?v=124"></script>
 <script defer src="js/audio-list.js?v=5"></script>
 <script src="js/sentence.js?v=49"></script>
-<script src="js/getsmart-data.js?v=14"></script>
-<script src="js/pep-points.js?v=22"></script>
+<script src="js/getsmart-data.js?v=15"></script>
+<script src="js/pep-points.js?v=23"></script>
 <script>
 renderNav('getsmart'); renderDecor();
 
@@ -694,8 +703,17 @@ function gsFlowState() {
     let gap = null;
     const lv = GS_LEVELS.find(l => l.id === gsActiveLevelId());
     if (lv) { const g = lv.units.find(u => u.kind === 'unit' && !gsDone(u.id)); gap = g ? { id: g.id, title: g.title } : null; }
-    return { today, due, games: act.games || 0, gap };
-  } catch (e) { return { today: '', due: 0, games: 0, gap: null }; }
+    /* 与 js/getsmart-data.js 里的同名函数保持一致（含 started，见 E1） */
+    const started = !!(
+      Object.keys(Store.d.getsmart || {}).length ||
+      Object.keys(Store.d.words || {}).length ||
+      Object.keys(Store.d.letters || {}).length ||
+      Object.keys(Store.d.games || {}).length ||
+      ((Store.d.streak || {}).count || 0) > 0 ||
+      (act.games || 0) > 0
+    );
+    return { today, due, games: act.games || 0, gap, started };
+  } catch (e) { return { today: '', due: 0, games: 0, gap: null, started: false }; }
 }
 function renderTodayFlow() {
   view = 'flow'; stopAllSpeech(); __lessonToken++; gsEnsure();

@@ -19,8 +19,8 @@ const GRADES = [
 { id: 'g1', name: '一年级', emoji: '🌱', themes: [
   { id: 'greet', name: '打招呼', emoji: '👋', color: '#FF6B6B', pos: 'interj', words: [
     W('hello','你好','👋','hello 原是喊人的『喂喽！』，和 hi 一样都是招呼声'), W('hi','嗨','🙋','hi 是短促一声『嗨！』——招呼就喊它'), W('goodbye','再见','🤚','goodbye 原是 God be with ye（愿上帝与你同行）缩成的'),
-    W('bye','拜拜','🖐️','bye 是 goodbye 的尾巴，再见的简称'), W('good','好的','👍','good 和 well 是亲兄弟（元音降级 o↔e）：好 / 很好','adj'), W('good morning','早上好','🌅','morning 的 morn 就是『早晨』，morrow（明日）同根'),
-    W('good afternoon','下午好','','noon 原指中午的祷告时刻；after noon = 午后'), W('good night','晚安','','night 一家：knight 骑士同根——古时骑士是夜里守卫的人'),
+    W('bye','拜拜','🖐️','bye 是 goodbye 的尾巴，再见的简称'), W('good','好的','👍','good 好，well 也是「好」——但 good 形容人/物（a good boy），well 形容做得怎么样（sing well）；不是同一个词的变形','adj'), W('good morning','早上好','🌅','morning 的 morn 就是『早晨』，morrow（明日）同根'),
+    W('good afternoon','下午好','','noon 原指中午的祷告时刻；after noon = 午后'), W('good night','晚安','','night 夜晚；knight 骑士和它长得像、读音一样，但意思无关——knight 的 k 不发音，记住「有个暗 k」就不会拼错'),
     W('thank','感谢','🙏','thank 来自 think（th↔k 音变）：心里想着你的好，才开口道谢','v'), W('thanks','谢谢','🙇','thanks = thank + s：谢意一串串'), W('please','请','🤲','please 来自拉丁『取悦』：说 please 是想让你高兴；pleasant（愉快的）同根','adv'),
     W('sorry','对不起','😞','sorry 和 sore（疼）同根：弄疼了别人，才说对不起'), W('welcome','欢迎','🎊','welcome = well(好) + come(来)：好，来吧'), W('yes','是的','✅','yes 是——点头说「yes！」'),
     W('no','不','❌','no 不——用力摇头'), W('OK','好的','👌','OK 原是 1839 年美国人把 all correct 玩笑写成 oll korrect，缩成 OK') ]},

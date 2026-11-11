@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
-<!-- ⚠ 下面几个 meta 里的数字（999 词 / 19 关 / 7 游戏）必须与
+<!-- ⚠ 下面几个 meta 里的数字（999 词 / 23 关 / 7 游戏）必须与
      words-data.js 的 TOTAL_WORDS、data.js 的 GRAMMAR_LEVELS.length、
      js/app.js 的 GAME_COUNT（= games.html 的 GAMES.length）对得上。
      SEO 文案只能是静态文字，改完请跑 _audit/check_facts.py 校验。 -->
-<meta name="description" content="一年级起步的小学英语学习网站：999 个必背词汇按主题分组，字母象形故事 + 自然拼读，句子工厂 19 关万能公式，7 个复习游戏，Get Smart 课本同步。安全纯净，进度保存在本机。">
+<meta name="description" content="一年级起步的小学英语学习网站：999 条必背词条（含 13 条常用短语）按主题分组，字母象形故事 + 自然拼读，句子工厂 23 关万能公式，7 个复习游戏，Get Smart 课本同步。安全纯净，进度保存在本机。">
 <meta name="keywords" content="小学英语,一年级英语,英语启蒙,自然拼读,英语听写,小学英语单词,Get Smart,英语学习网站,儿童英语,免费英语学习">
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
@@ -16,16 +16,18 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="小鸟英语乐园 · 一年级英语启蒙">
-<meta property="og:description" content="一年级起步的小学英语学习网站：999 个必背词汇按主题分组，字母象形故事 + 自然拼读，句子工厂 19 关万能公式，7 个复习游戏。安全纯净，进度保存在本机。">
+<meta property="og:description" content="一年级起步的小学英语学习网站：999 条必背词条（含 13 条常用短语）按主题分组，字母象形故事 + 自然拼读，句子工厂 23 关万能公式，7 个复习游戏。安全纯净，进度保存在本机。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
-<meta property="og:url" content="https://heijialun19.github.io/yingyu/index.html">
+<!-- ★ 2026-11-11.11（D1）canonical 写的是 /yingyu/，og:url 却写 /index.html，
+     同一页两个「标准网址」。统一成目录形式（GitHub Pages 两种都能打开）。 -->
+<meta property="og:url" content="https://heijialun19.github.io/yingyu/">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"小鸟英语乐园 Birdie ABC","url":"https://heijialun19.github.io/yingyu/","applicationCategory":"EducationalApplication","operatingSystem":"Web","description":"小学英语学习：999 必背词汇、自然拼读、句子工厂、Get Smart 课本同步、7 个复习游戏","offers":{"@type":"Offer","price":"0"},"audience":{"@type":"EducationalAudience","educationalRole":"student","typicalAgeRange":"5-12"}}
 </script>
 <title>小鸟英语乐园 · 一年级英语启蒙</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=49" onerror="this.onerror=null;this.href='css/style.css?v=49&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=50" onerror="this.onerror=null;this.href='css/style.css?v=50&amp;retry=1'">
 <style>
 .hello-line{text-align:center;color:#5C6273;font-size:.9rem;margin:4px 0 14px}
 .hello-line b{color:var(--ink)}
@@ -105,13 +107,15 @@
   </div>
 </main>
 
-<script src="js/words-data.js?v=44"></script>
-<script src="svg/word-svg.js?v=4"></script>
-<script src="js/data.js?v=42"></script>
-<script src="js/app.js?v=123"></script>
+<script src="js/words-data.js?v=45"></script>
+<!-- ★ 2026-11-11.11（C3）首页不画任何词图（导航与岛屿用的是界面表情），
+     所以不引 246KB 的 svg/word-svg.js。没图时会自动回退到表情 SVG，
+     真要画词卡的页面（单词镇/课本/学堂/游戏/字母岛/语法）都还在引。 -->
+<script src="js/data.js?v=43"></script>
+<script src="js/app.js?v=124"></script>
 <script defer src="js/audio-list.js?v=5"></script>
 <script src="js/sentence.js?v=49"></script>
-<script src="js/getsmart-data.js?v=14"></script>
+<script src="js/getsmart-data.js?v=15"></script>
 <script>
 renderNav('index'); renderDecor();
 
@@ -186,11 +190,17 @@ function showHome() {
     try {
       const st = gsFlowState();
       const parts = [st.gap ? '📖 补课：' + st.gap.title : '📖 补课 ✅', st.due > 0 ? '🔔 复习 ' + st.due + ' 词' : '🔔 复习 ✅', st.games > 0 ? '🎮 游戏 ✅' : '🎮 玩一局'];
-      const doneN = [!st.gap, st.due === 0, st.games > 0].filter(Boolean).length;
+      /* ★ 2026-11-11.11（E1）新档案不该被告知「已完成」：没数据时 gap 和 due
+         都是「空」，原来把两个空都算成做完，于是填完名字就显示 2/3。
+         现在只有 started 才计数，否则写「还没开始」。
+         ★（E2）同一屏下方还有一套「今日任务（字母 / 单词 / 游戏）」，两个
+         「x/3」含义不同会让人以为矛盾 —— 标题里写明这是 Get Smart 的三步。 */
+      const doneN = st.started ? [!st.gap, st.due === 0, st.games > 0].filter(Boolean).length : 0;
+      const head = st.started ? `Get Smart 三步 ${doneN}/3` : 'Get Smart 三步还没开始';
       fc.style.display = '';
       fc.innerHTML = `<div class="gs-catch" style="cursor:pointer" onclick="location.href='getsmart.html?flow=1'">
         <span style="font-size:30px">🚀</span>
-        <div style="flex:1"><b>今天学什么？${doneN}/3 已完成</b>
+        <div style="flex:1"><b>今天学什么？${head}</b>
         <div style="font-size:.8rem;color:#5C6273">${parts.join(' · ')}</div></div>
         <button class="btn grape">开始 ▶</button></div>`;
     } catch (e) {}
@@ -204,9 +214,11 @@ function showHome() {
 
   /* 今日三任务：完成打勾，三个全完成奖励 5 颗星星 */
   const tk = Store.d.daily.tasks;
+  /* ★（E1）字母这一项只在孩子真的在学字母时才算数，否则显示「选学」而不是勾选 */
+  const letterOn = (typeof dailyLetterApplicable === 'function') ? dailyLetterApplicable() : (letterN > 0 && letterN < 26);
   document.getElementById('taskStrip').innerHTML =
     `<span>📋 今日任务</span>` +
-    `<span class="${tk.letter ? 'tdone' : ''}">${tk.letter ? '✅' : '⬜'} ${letterN === 0 ? '🏝️ 字母·选学' : '🏝️ 学字母'}</span>` +
+    `<span class="${letterOn && tk.letter ? 'tdone' : ''}">${letterOn ? (tk.letter ? '✅ 学字母' : '⬜ 学字母') : '➖ 字母·选学'}</span>` +
     `<span class="${tk.words ? 'tdone' : ''}">${tk.words ? '✅' : '⬜'} 🏘️ 练单词</span>` +
     `<span class="${tk.game ? 'tdone' : ''}">${tk.game ? '✅' : '⬜'} 🎮 玩游戏</span>`;
 

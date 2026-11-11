@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-11.10';
+const BUILD = '2026-11-11.11';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -201,10 +201,12 @@ const Store = {
     // 年级以档案为准
     this.d.grade = Profiles.active().grade || this.d.grade;
     if (this.d.daily.date !== todayStr()) this.d.daily = { date: todayStr(), tasks: { letter: false, words: false, game: false }, bonus: false, studySec: 0, break15: false, break30: false };
-    // 字母任务只为「正在学字母」的孩子保留：没开始学（选学）、已学完、或点了跳过的，自动视为完成，
-    // 保证「三任务全勤」奖励对每个孩子都可达
-    const __letterN = Object.keys(this.d.letters || {}).length;
-    if (this.d.lettersSkip || __letterN === 0 || __letterN >= 26) this.d.daily.tasks.letter = true;
+    /* ★ 2026-11-11.11（E1）这里原来写着：
+         if (lettersSkip || __letterN === 0 || __letterN >= 26) tasks.letter = true;
+       「没学过任何字母」被当成「已完成」—— 新档案一进门就是「字母 ✅」，
+       而首页又据此宣布「2/3 已完成」。没数据 ≠ 做完了。
+       现在不再改写任务状态，改成「不计入分母」：dailyTaskList() 只在孩子
+       真的在学字母（1~25 个）时才算这一项，三任务全勤的奖励对谁都可达成。 */
     return this.d;
   },
   save() {
@@ -230,10 +232,21 @@ function markActivity(type) {
   checkBadges(); Store.save(); updateNavStats();
 }
 
+/* 「今日任务」里到底有哪几项：
+   字母岛只在孩子正在学字母（学过 1~25 个、且没点「我会字母了」）时才算一项。
+   其余情况这一项不存在 —— 而不是假装它已经完成（2026-11-11.11 / E1）。 */
+function dailyLetterApplicable() {
+  const n = Object.keys(Store.d.letters || {}).length;
+  return !Store.d.lettersSkip && n > 0 && n < 26;
+}
+function dailyTaskList() {
+  return dailyLetterApplicable() ? ['letter', 'words', 'game'] : ['words', 'game'];
+}
+
 function completeDailyTask(kind) { // 'letter' | 'words' | 'game'
   if (Store.d.daily.tasks[kind]) return;
   Store.d.daily.tasks[kind] = true;
-  const t = Object.values(Store.d.daily.tasks);
+  const t = dailyTaskList().map(k => !!Store.d.daily.tasks[k]);
   if (t.every(Boolean) && !Store.d.daily.bonus) {
     Store.d.daily.bonus = true;
     addStars(5);
@@ -1421,13 +1434,33 @@ if (window.WORD_EMOJI) window.__emojiSvgReady();    // 图库比 app.js 先到�
        图标稍后由 __emojiSvgReady() 就地升级（本来就有这个机制）
    页面里不再写 <script src="svg/emoji-svg.js">，避免绕开这个门。 */
 (function () {
+  /* ★ 2026-11-11.11（C2）图库拆成两份：
+       emoji-core.js（约 87KB）—— 界面装饰 / 导航 / 岛屿 / 弹窗 / 提示语用到的 80 个；
+       emoji-svg.js（约 860KB）—— 词库 999 个词的表情，只有真画词卡时才需要。
+     首页 / 家长中心 / 声明 / 404 只取核心库，剩下的按需补：
+     emojiSvgFor() 查不到会调 window.__emojiNeedFull()，全量到货后
+     __emojiSvgReady() 就地升级 —— 不会出现「少图变黑白」。
+     重页面（单词镇 / 课本 / 学堂 / 游戏 / 字母岛 / 语法）在 <body data-emoji="full">
+     上直接声明要全量，避免先下一份核心库再下一份全量。 */
+  const inject = src => {
+    const el = document.createElement('script');
+    el.src = src;
+    el.async = true;
+    el.onerror = () => {};                           // 拉不到就保持字体字形，不影响功能
+    (document.head || document.documentElement).appendChild(el);
+  };
+  const wantFull = /\bfull\b/.test((document.body && document.body.getAttribute('data-emoji')) || '');
+  let fullLoaded = false;
+  const loadFull = () => {
+    if (fullLoaded) return;
+    fullLoaded = true;
+    inject('svg/emoji-svg.js?v=6');
+  };
+  window.__emojiNeedFull = loadFull;                 // 缺图时的补载入口
   const load = () => {
-    if (window.WORD_EMOJI) return;                   // 已经到了（file:// 内联兜底等）
-    const s = document.createElement('script');
-    s.src = 'svg/emoji-svg.js?v=5';
-    s.async = true;
-    s.onerror = () => {};                            // 拉不到就保持字体字形，不影响功能
-    (document.head || document.documentElement).appendChild(s);
+    if (window.WORD_EMOJI && wantFull === false) return;
+    if (wantFull) { loadFull(); return; }
+    inject('svg/emoji-core.js?v=1');
   };
   const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
   const slow = !!(conn.saveData || /^(slow-)?2g|3g$/.test(conn.effectiveType || ''));
@@ -1912,12 +1945,12 @@ function confetti() {
     p.style.left = (5 + Math.random() * 90) + 'vw';
     p.style.background = colors[i % colors.length];
     p.style.animationDelay = (Math.random() * 0.3) + 's';
-    p.style.animationDuration = (0.9 + Math.random() * 0.9) + 's';
+    p.style.animationDuration = (0.5 + Math.random() * 0.3) + 's';   /* F3：≤0.8 秒，读解析前就散 */
     p.style.transform = `rotate(${Math.random() * 360}deg)`;
     box.appendChild(p);
   }
   document.body.appendChild(box);
-  setTimeout(() => box.remove(), 2200);
+  setTimeout(() => box.remove(), 1200);
 }
 
 /* 星星飞入动画（从触发元素飞向右上角星星计数） */
@@ -2346,7 +2379,8 @@ function prewarmBatch(list, gap) {
     bl.style.opacity = '0'; bl.style.transition = 'opacity .3s';
     setTimeout(() => { try { bl.remove(); } catch (e) {} }, 300);
   };
-  const showRetry = () => {
+  /* kind: 'error' 资源加载失败 / 'slow' 迟迟没渲染完（2026-11-11.11 / C1） */
+  const showRetry = (kind) => {
     let ph = document.getElementById('bootPlaceholder');
     if (!ph) {
       const app = document.getElementById('app');
@@ -2357,7 +2391,10 @@ function prewarmBatch(list, gap) {
       ph.style.cssText = 'max-width:560px;margin:22px auto;text-align:center;padding:26px 18px';
       host.appendChild(ph);
     }
-    ph.innerHTML = '<p style="color:#6B7280;font-size:.9rem">内容没能加载出来，检查网络后重试一下～</p>'
+    const msg = kind === 'slow'
+      ? '网络有点慢，内容还在路上…<br><span style="font-size:.82rem">可以先点下面重试，或者等一下下～</span>'
+      : '内容没能加载出来，检查网络后重试一下～';
+    ph.innerHTML = '<p style="color:#5C6273;font-size:.9rem;line-height:1.6">' + msg + '</p>'
       + '<button class="btn" style="margin-top:10px" onclick="location.reload()">🔄 点这里重试</button>';
   };
   window.addEventListener('error', e => {
@@ -2368,6 +2405,17 @@ function prewarmBatch(list, gap) {
     const app = document.getElementById('app');
     if (app && !app.innerHTML.trim()) showRetry();
   });
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hide, { once: true });
-  else hide();
+  /* ★ 2026-11-11.11（C1）原来只在「资源加载失败」时给重试，脚本**慢**但没失败
+     就一直转圈：实测冷缓存 3G 下单词镇首屏要等约 1.6MB 同步脚本，慢网能停
+     十几秒。10 秒还没渲染出内容就换成「网络有点慢」+ 重试按钮。
+     ⚠️ 只是**多给一条出路**：不清占位、不假装成功 —— 内容一到，hide() 照常接管。 */
+  const slowTimer = setTimeout(() => {
+    if (!document.getElementById('bootLoader')) return;        // 加载层已经撤了
+    const app = document.getElementById('app');
+    if (app && app.innerHTML.trim()) return;                    // 内容已经渲染
+    showRetry('slow');
+  }, 10000);
+  const hideOnce = () => { clearTimeout(slowTimer); hide(); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hideOnce, { once: true });
+  else hideOnce();
 })();

@@ -14,24 +14,24 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v123 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/words-data.js | v44 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
-| js/data.js | v42 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
+| js/app.js | v124 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/words-data.js | v45 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
+| js/data.js | v43 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v8 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v6 | 音标 |
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
-| js/getsmart-data.js | v14 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
+| js/getsmart-data.js | v15 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
-| js/pep-points.js | v22 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
+| js/pep-points.js | v23 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
 | js/audio-list.js | v5 | 发音清单（2878 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v49 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v4 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v177 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v178 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -50,7 +50,7 @@
 | getsmart.html | Get Smart 学堂：课本同步（学单词→闯关→句型 三步 + 复习课 + 单元小测 + 今日任务流 ?flow=1） |
 | words.html | 单词镇：分主题练词 + 复习（间隔重复）+ 听写 |
 | letters.html | 字母岛：26 字母象形故事 |
-| grammar.html | 句子工厂：19 关（第 5 关 a/an 按读音首音素教，不是看首字母） |
+| grammar.html | 句子工厂：23 关（第 5 关 a/an 按读音首音素教，不是看首字母） |
 | games.html | 游戏乐园：7 个游戏（含听词选图、自然拼读） |
 | parents.html | 家长中心：进度报告 + 版本与朗读诊断 |
 | pep.html | 人教课本：8 册知识点 + 拼词 |
@@ -1653,3 +1653,82 @@ American Edition」「Get Smart 用 Colors/color/cookies/traveled/neighbor」
 
 版本链：BUILD .9 → 2026-11-11.10，app v122 → v123，getsmart-data v13 → v14，
 pep-points v21 → v22，audio-list v4 → v5，SENTENCE_VER 4 → 5，CACHE v176 → v177。
+## 2026-11-11.11 · 全站质量审查：20 项问题一次收干净
+
+家长转来一份外部审查报告（20 项：P0×5 / P1×8 / P2×7），审的是 2026-11-11.10。
+逐条对照代码核实后：**12 项完全属实、5 项部分不准确、3 项是误报**（D3 games.js
+实际无引用、F2 音标行用的是 --ink2 而非 #8B93A7、B4 是家长已拍板的美式音标口径）。
+按家长指示「除 D3/F2/B4 外全部做」落地：
+
+### A · 显示与排版
+- **A1（P0）数字被撑成「1 7 1」**：根因是字体栈把三个 emoji 字体排在所有文字字体
+  之前，安卓预装的 Noto Color Emoji 连**数字**也接管了（14px 下 "171" 量到 51px，
+  正常字体 25px）。改用 @font-face + unicode-range 声明一个**只覆盖表情码位**的
+  EmojiFallback 通道：表情仍走彩色字形（雅黑会画成黑白线条的问题保留原对策），
+  数字 / 字母 / 汉字完全不经过它。
+- **A2 家长中心标题竖排**：.card h2 是 flex 且不换行，长副标题把主标题压到最窄
+  （390px 下「学习总览」变成四行）。加 flex-wrap，副标题独占一行。
+- **A3 导航「Get Smart」折行**：导航项加 white-space: nowrap。
+- **A4 底栏透出下层文字 + 没有家长中心入口**：底栏改不透明白；家长中心放进
+  底栏「我的」弹窗里（第 6 格已满，不再挤掉现有项）。
+- **F1 糖果色按钮白字对比度**：湖蓝 1.98 / 薄荷 2.01 / 橙 2.04 / 粉 2.15 /
+  珊瑚 2.78 / 柠檬 1.38，全部低于 WCAG AA 的 4.5。按钮文字改深墨蓝（6.0~6.8），
+  珊瑚 #FF8585、葡萄 #B79AFF 提亮以压住深字；字母 Hero、句子车厢同步。
+- **F3 彩带盖住解析文字**：z-index 98 → 40（toast 之下），单颗 0.9~1.8 秒 →
+  0.5~0.8 秒并淡出，数量 28 → 18。
+
+### B · 内容与教学
+- **B1（P0）her / miss / she 没有头发**：三条路径里有生成器残渣 `*`（如
+  `q0 -9 * 1.1`），浏览器报 Expected number 整条丢弃。按头部圆心/半径重算两段
+  头发（后脑圆 + 额前刘海），并给门禁加「d 属性不得含 *」。
+- **B2 拆块粒度混乱**：根因是 PEP_DIGRAPHS 把 nd/nt/st/mp/pp/tr/str 这类**辅音
+  连缀**当成字母组合。拆成两套各管各的：
+  · 拼读（🔤 行、拼读地图、拼词块）**按音**：只留真 phonogram，辅音连缀全拆
+    （apple → a·p·p·l·e，每个字母一个音）。
+  · 拆词（拼写工坊第 3 步、跟读音节）**按音节**：新增 splitSyllables()，最大音节
+    首原则 + 复合词先行 + -tion/-le 特例（apple → ap·ple、umbrella → um·brel·la、
+    elephant → e·le·phant、banana → ba·na·na、goodbye → good·bye）。
+  1648 个词全量跑过：拼接 100% 等于原词、无「无元音块」（除 Mr/Mrs. 缩写）。
+- **B3（P1）语法 19 关止于现在进行时**：补 4 关，对齐人教六下四个单元 ——
+  L20 一般过去时（was/were + -ed）、L21 Where did you go?（did + 动词原形）、
+  L22 比较级与最高级（-er/-est、双写、more/most）、L23 be going to。23 关。
+- **B5 伪词源**：good/well「亲兄弟、元音降级」、night/knight「同根」都改成
+  不断言词源的联想（good/well 的用法差异、knight 的 k 不发音）。
+- **B6 口径**：「999 个必背词」→「999 条必背词条（含 13 条常用短语）」。
+
+### C · 性能
+- **C1（P0）慢网无限停在「正在打开」**：原来只在资源加载失败时给重试，脚本慢但
+  没失败就一直等（冷缓存 3G 首屏要等约 1.6MB 同步脚本）。加 10 秒超时兜底，
+  显示「网络有点慢」+ 重试按钮 —— 只给出路，不清占位，内容一到照常接管。
+- **C2 871KB 表情库每页全量加载**：拆成 emoji-core.js（界面核心 80 条 / 87KB）+
+  emoji-svg.js（词库全量 625 条 / 860KB）。首页/声明/404 只取核心库；要画词卡的
+  7 个页面用 <body data-emoji="full"> 直接取全量，避免先下小的再下大的。
+- **C3 各页数据未裁剪**：首页不画任何词图，去掉 246KB 的 svg/word-svg.js
+  （typeof 保护下自动回退表情 SVG）。
+
+### D · 结构与可发现性
+- **D1 canonical / og:url 打架**：9 页只有 2 页有 canonical，首页 canonical 用
+  /yingyu/ 而 og:url 用 /index.html。统一目录形式、补齐 7 页 canonical、
+  getsmart 补 description 与 og:*、sitemap 去掉 404.html 与 /index.html 重复项。
+- **D2 全站 JS 渲染，搜索引擎看不到内容**：words / grammar / pep 三页各加一段
+  <noscript> 静态摘要（年级词量 + 前 12 个词、23 关标题与公式、8 册单元与词量），
+  由 _audit/gen_static_digest.js 从数据现算，不手写数字。
+
+### E · 状态逻辑
+- **E1（P0）新用户一进门就「2/3 已完成」**：两处叠加 —— Store.load 把「0 个字母」
+  当成字母任务已完成；首页把 gap=null / due=0 两个「空」都算成做完。现在
+  「没数据 ≠ 做完了」：字母任务只在真在学字母（1~25 个）时计入分母，否则显示
+  「➖ 字母·选学」；GS 卡片有 started 才计数，否则写「还没开始」。
+- **E2 两套进度口径打架**：同屏两处「x/3」含义不同。GS 卡片标题写明是
+  「Get Smart 三步（补课 / 复习 / 游戏）」，与下方「今日任务（字母 / 单词 / 游戏）」
+  分层。
+
+验证：check_facts **318 PASS / 0 FAIL**（新增 45 项，把 A1~E2 每条都钉成断言）；
+9 套 Node 自测、20 个真浏览器探针全绿；390px 真机宽度渲染目视验收
+（标题横排、数字无空隙、按钮深色字可读）；33 张小人插画里 her/miss/she 的
+头发与 he/you/i 风格一致。
+
+版本链：BUILD .10 → 2026-11-11.11，app v123 → v124，style v49 → v50，
+data v42 → v43，pep-points v22 → v23，words-data v44 → v45，
+getsmart-data v14 → v15，word-svg v4 → v5，emoji-svg v5 → v6，
+新增 emoji-core v1，CACHE v177 → v178。音频零改动。

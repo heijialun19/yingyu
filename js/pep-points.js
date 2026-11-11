@@ -392,8 +392,20 @@ const PEP_POINTS = {
    ear 的发音分两派：ear/hear/year 读 /ɪə/（整块科学），
    bear/wear/pear 读 /eə/、learn/early/earth 读 /ɜː/ —— 这些词整块 ear 会教错，
    例外表让它们退回 ea+r 切分（ea 在这些词里恰好读对应音）。 */
-const PEP_TRIGRAPHS = ['old', 'air', 'ear', 'all', 'ell', 'ill', 'ing', 'ang', 'ong', 'ung', 'tion', 'igh', 'ire', 'str', 'spr', 'thr', 'eau'];
-const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu', 'oo', 'ee', 'ea', 'ai', 'ay', 'oa', 'ow', 'ou', 'oi', 'oy', 'ar', 'or', 'er', 'ir', 'ur', 'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd', 'st', 'sp', 'sk', 'tr', 'dr', 'cr', 'fr', 'gr', 'pr', 'br', 'pl', 'bl', 'cl', 'fl', 'gl', 'sl', 'sw', 'tw', 'sm', 'sn', 'nd', 'nk', 'nt', 'mp', 'ld', 'lt', 'ft', 'pt', 'lk', 'ei', 'eo', 'ie', 'ui', 'ew', 'au', 'kn'];
+/* ★ 2026-11-11.11（B2）只留「一个块 = 一个音」的真组合。
+   去掉的全是辅音连缀 / 韵脚整块，它们不是音素：
+     str/spr/thr（三个辅音连读）、old/all/ell/ill/ing/ang/ong/ung（韵脚，
+     里面还含独立音素）、air（ai+r 已能覆盖）—— 留着会把 grandma 切成 gr·a·nd·m·a。
+   保留 ear/ire 是因为它们对应 /ɪə/、/aɪə/ 一个韵，例外表另有处理。 */
+const PEP_TRIGRAPHS = ['tion', 'igh', 'eau', 'ear', 'ire'];
+/* ★（B2）辅音连缀全部移除：st sp sk tr dr cr fr gr pr br pl bl cl fl gl sl sw
+   tw sm sn nd nk nt mp ld lt ft pt lk —— 它们各自由两个音素组成，当成一个块
+   会让孩子把 nt、nd 读成一个音（elephant → e·l·e·ph·a·nt 就是它造成的）。
+   ll ss tt ff pp rr dd 保留：双写只读一个音，确实是一个块。 */
+const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu',
+  'oo', 'ee', 'ea', 'ai', 'ay', 'oa', 'ow', 'ou', 'oi', 'oy',
+  'ar', 'or', 'er', 'ir', 'ur', 'au', 'ew', 'ei', 'eo', 'ie', 'ui', 'kn',
+  'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd'];
 const EAR_NOT_IER = { bear: 1, wear: 1, pear: 1, learn: 1, early: 1, earth: 1, search: 1, heart: 1, swear: 1 };
 /* 组合例外表：这些词在特定位置组合并不成立，命中也要跳过（回到逐字母诚实拆分）。
    - homework/bathroom：复合词边界（home|work、bath|room）上的 ew/thr 是假组合
@@ -446,8 +458,176 @@ function splitBlocks(w) {
 }
 /* 短语/连字符词分段：'look after'→['look','after']，'o'clock'→['o','clock'] */
 function splitPhrase(w) { return String(w).split(/[\s'’\-]+/).filter(Boolean); }
-/* 词 → 拼读拆分展示串：look after → l · oo · k ／ a · ft · er */
+/* 词 → 拼读拆分展示串（按音）：look after → l · oo · k ／ a · f · t · er */
 function phonicsLine(w) { return splitPhrase(w).map(p => splitBlocks(p).join(' · ')).join(' ／ '); }
+
+/* ================= 音节切分（2026-11-11.11 / B2） =================
+   用途：拆词（"按一口气读得出来分"）、跟读音节。
+   与上面的 splitBlocks 不是一回事：那个切「音」，这个切「音节」。
+
+   规则（最大音节首原则 MOP，也就是词典里 apple→ap·ple 那套）：
+     1. 先把字母聚成单元：音素组合（ch/sh/ee/ai/igh…）算一个单元；
+        其余每个字母一个单元。这样切出来的边界绝不会落在组合中间。
+     2. 找元音单元 = 音节核。词尾的哑音 e（make/nine/table 的 e）不算核。
+     3. 两个核之间的辅音串：从右边取**最长的合法音节首**（≤3 个单元），
+        剩下的留给前一个音节的尾巴。
+        · win|ter（nt 不是合法音节首，只能取 t）
+        · ap|ple（pl 是合法音节首，取 pl，剩 p 给前面）
+        · um|brel|la（br 合法；ll 取一个 l）
+     4. -Cle 结尾（apple/table/little）：le 自成音节，由第 3 条自然得出。
+     5. 兜底：切出没有元音的块就与前一块合并；最终拼接必须等于原词。 */
+const SYL_ONSET2 = new Set(['pl', 'pr', 'bl', 'br', 'tr', 'dr', 'kl', 'kr', 'gl', 'gr',
+  'fl', 'fr', 'sl', 'sw', 'sp', 'st', 'sk', 'sm', 'sn', 'tw', 'kw', 'dw', 'gw',
+  'th', 'sh', 'ch', 'ph', 'wh', 'qu']);
+const SYL_ONSET3 = new Set(['str', 'spr', 'skr', 'spl', 'skw', 'thr', 'shr']);
+const SYL_CANT_START = new Set(['ck', 'ng']);      // 不能作音节首的组合
+const SYL_VOWEL_DIGRAPH = ['eau', 'igh', 'air', 'ear', 'eer', 'ire', 'our', 'oor',
+  'ea', 'ee', 'oo', 'ai', 'ay', 'oa', 'ow', 'ou', 'oi', 'oy', 'au', 'aw', 'ew',
+  'ei', 'ie', 'ue', 'ui', 'eo', 'ar', 'or', 'er', 'ir', 'ur'];
+const SYL_CONS_DIGRAPH = ['tch', 'dge', 'ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu'];
+
+function sylUnits(s) {
+  /* 返回 [{t:'V'|'C', s:原文片段, i:起始下标}] */
+  const out = [];
+  let i = 0;
+  while (i < s.length) {
+    const rest = s.slice(i);
+    const isVowelAt = c => 'aeiou'.includes(c);
+    let hit = null, type = null;
+    for (const d of SYL_VOWEL_DIGRAPH) if (rest.startsWith(d)) { hit = d; type = 'V'; break; }
+    if (!hit) for (const d of SYL_CONS_DIGRAPH) if (rest.startsWith(d)) { hit = d; type = 'C'; break; }
+    if (!hit) {
+      const c = rest[0];
+      if (isVowelAt(c)) { hit = c; type = 'V'; }
+      else if (c === 'y') {
+        /* y：词首或紧跟元音 → 辅音（yes / play 的 y 已在 ay 里）；其余当元音（happy 的 y） */
+        const prev = s[i - 1] || '';
+        const next = s[i + 1] || '';
+        /* ⚠️ 不能只写 !isVowelAt(next)：''.includes('') 是 true，
+           词尾的 y 会被误判成辅音（happy 就不切了）。 */
+        const vowelLike = i > 0 && !isVowelAt(prev) && (next === '' || !isVowelAt(next));
+        hit = c; type = vowelLike ? 'V' : 'C';
+      } else { hit = c; type = 'C'; }
+    }
+    out.push({ t: type, s: hit, i });
+    i += hit.length;
+  }
+  return out;
+}
+
+function sylIsLegalOnset(units) {
+  const txt = units.map(u => u.s).join('');
+  if (units.length === 1) {
+    const u = units[0];
+    if (u.t !== 'C') return false;
+    if (SYL_CANT_START.has(u.s)) return false;
+    if (u.s === 'x') return false;                 // x = /ks/，不能起头
+    return true;
+  }
+  if (units.some(u => u.t !== 'C')) return false;
+  if (units.length === 2) return SYL_ONSET2.has(txt);
+  if (units.length === 3) return SYL_ONSET3.has(txt);
+  return false;
+}
+
+/* 复合词：先按词根切，切不动再走音节规则（goodbye → good·bye） */
+const SYL_COMPOUNDS = {
+  goodbye: ['good', 'bye'], grandma: ['grand', 'ma'], grandpa: ['grand', 'pa'],
+  grandfather: ['grand', 'father'], grandmother: ['grand', 'mother'],
+  grandparent: ['grand', 'parent'], grandson: ['grand', 'son'],
+  granddaughter: ['grand', 'daughter'], classroom: ['class', 'room'],
+  classmate: ['class', 'mate'], homework: ['home', 'work'],
+  housework: ['house', 'work'], bedroom: ['bed', 'room'], bathroom: ['bath', 'room'],
+  playground: ['play', 'ground'], football: ['foot', 'ball'],
+  basketball: ['basket', 'ball'], volleyball: ['volley', 'ball'],
+  baseball: ['base', 'ball'], weekend: ['week', 'end'], weekday: ['week', 'day'],
+  birthday: ['birth', 'day'], breakfast: ['break', 'fast'], afternoon: ['after', 'noon'],
+  morning: ['morn', 'ing'], nothing: ['no', 'thing'], something: ['some', 'thing'],
+  anything: ['any', 'thing'], everything: ['every', 'thing'], everybody: ['every', 'body'],
+  everyone: ['every', 'one'], sometimes: ['some', 'times'], always: ['al', 'ways'],
+  outside: ['out', 'side'], inside: ['in', 'side'], upstairs: ['up', 'stairs'],
+  downstairs: ['down', 'stairs'], supermarket: ['super', 'market'],
+  postoffice: ['post', 'office'], policeman: ['police', 'man'],
+  firefighter: ['fire', 'fighter'], watermelon: ['water', 'melon'],
+  pineapple: ['pine', 'apple'], strawberry: ['straw', 'berry'],
+  blackboard: ['black', 'board'], whiteboard: ['white', 'board'],
+  bookcase: ['book', 'case'], notebook: ['note', 'book'], storybook: ['story', 'book'],
+  playgrounds: ['play', 'grounds'], bedroom2: ['bed', 'room'],
+};
+
+function splitSyllablesOnce(raw) {
+  const s = raw.toLowerCase();
+  /* -tion / -sion 是固定的一整个音节（/ʃən/），不按 ti·on 切。
+     先摘掉尾巴再切前半，避免 station → sta·ti·on。 */
+  if (s.length > 5 && /(tion|sion)$/.test(s)) {
+    return splitSyllablesOnce(raw.slice(0, -4)).concat([raw.slice(-4)]);
+  }
+  const fixed = SYL_COMPOUNDS[s];
+  if (fixed) {
+    /* 用词根长度回切原文，保证大小写一致 */
+    const out = [];
+    let p = 0;
+    for (const part of fixed) { out.push(raw.substr(p, part.length)); p += part.length; }
+    if (out.join('') === raw) return out;
+  }
+  const units = sylUnits(s);
+  /* 音节核：元音单元；词尾哑音 e 不算 */
+  let nuclei = [];
+  for (let k = 0; k < units.length; k++) {
+    if (units[k].t !== 'V') continue;
+    nuclei.push(k);
+  }
+  const lastU = units[units.length - 1];
+  if (nuclei.length > 1 && lastU && lastU.t === 'V' && lastU.s === 'e') {
+    /* 哑音 e：make / nine / table 的尾 e。table 的 le 另算（l 是响音） */
+    const prev = units[units.length - 2];
+    if (!(prev && prev.t === 'C' && prev.s === 'l')) nuclei = nuclei.slice(0, -1);
+  }
+  /* -Cle 结尾且 l 前只有一个辅音时，le 单独成一个音节核（syllabic l） */
+  const mLe = /([^aeiou])le$/.exec(s);
+  if (mLe) {
+    /* -Cle 的尾音节核是 l 本身（syllabic l），把尾巴上的 e 从核里去掉，
+       否则会切出 tabl·e / appl·e 这种。 */
+    const lIdx = units.findIndex(u => u.i === s.length - 2);
+    if (lIdx >= 0) {
+      nuclei = nuclei.filter(k => k < lIdx);
+      if (!nuclei.includes(lIdx)) nuclei.push(lIdx);
+    }
+  }
+  nuclei = [...new Set(nuclei)].sort((a, b) => a - b);
+  if (nuclei.length <= 1) return [raw];
+
+  /* 计算每个音节的起始单元下标 */
+  const starts = [0];
+  for (let n = 0; n < nuclei.length - 1; n++) {
+    const a = nuclei[n], b = nuclei[n + 1];
+    const run = [];
+    for (let k = a + 1; k < b; k++) run.push(units[k]);
+    let onsetLen = 0;
+    for (let take = Math.min(3, run.length); take >= 1; take--) {
+      const cand = run.slice(run.length - take);
+      if (sylIsLegalOnset(cand)) { onsetLen = take; break; }
+    }
+    starts.push(b - onsetLen);            // 音节从「音节首」的第一个单元开始
+  }
+  /* 按单元下标切原文 */
+  const idx = starts.map(k => units[k].i).concat([raw.length]);
+  const out = [];
+  for (let k = 0; k < idx.length - 1; k++) {
+    const piece = raw.slice(idx[k], idx[k + 1]);
+    if (!piece) continue;
+    /* 兜底：没有元音字母的块并入前一块 */
+    if (!/[aeiouy]/i.test(piece) && out.length) out[out.length - 1] += piece;
+    else out.push(piece);
+  }
+  return out.length ? out : [raw];
+}
+
+function splitSyllables(w) {
+  return splitPhrase(w).reduce((acc, part) => acc.concat(splitSyllablesOnce(part)), []);
+}
+/* 词 → 音节展示串：apple → ap · ple */
+function syllableLine(w) { return splitSyllables(w).join(' · '); }
 
 /* ---- 复合词趣味记（自动拆分高置信复合词，补齐 PEP 特有词的记忆法） ---- */
 const PEP_COMPOUNDS = {
@@ -592,7 +772,7 @@ const PEP_MEM = {
   Saturday: '土星 Saturn 日——周六',
   Sunday: 'sun（太阳）日——周日，太阳休息日',
   evening: 'even（平）+ ing——夜色平平压下来 = 晚上',
-  night: 'night 夜晚——knight 骑士同根（夜里守卫的人）',
+  night: 'night 夜晚；knight 骑士长得像、读音也一样，但两者没有词源关系——knight 的 k 不发音。',
   should: 'should 该——比 must 温柔的建议；shouldn\'t 不该',
   flu: 'influenza 的昵称——流感，飞沫传染 flu（飞流）',
   enough: 'enough 足够——口诀「名前形后」：enough sleep / old enough',

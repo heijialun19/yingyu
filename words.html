@@ -5,19 +5,20 @@
 <meta name="keywords" content="小学英语,英语启蒙,自然拼读,儿童英语,免费" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
-<meta name="description" content="小学 1-6 年级 999 个必背词汇，按年级分主题，每个词都有记忆法拆解；练一练、拼写工坊、中英搜索、艾宾浩斯复习。">
+<meta name="description" content="小学 1-6 年级 999 条必背词条（含 13 条常用短语），按年级分主题，每个词都有记忆法拆解；练一练、拼写工坊、中英搜索、艾宾浩斯复习。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="单词镇 · 小学 999 词 · 小鸟英语乐园">
-<meta property="og:description" content="小学 1-6 年级 999 个必背词汇，按年级分主题，每个词都有记忆法拆解；练一练、拼写工坊、中英搜索、艾宾浩斯复习。">
+<meta property="og:description" content="小学 1-6 年级 999 条必背词条（含 13 条常用短语），按年级分主题，每个词都有记忆法拆解；练一练、拼写工坊、中英搜索、艾宾浩斯复习。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/words.html">
 <meta name="twitter:card" content="summary_large_image">
 <title>单词镇 · 小鸟英语乐园</title>
+<link rel="canonical" href="https://heijialun19.github.io/yingyu/words.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=49" onerror="this.onerror=null;this.href='css/style.css?v=49&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=50" onerror="this.onerror=null;this.href='css/style.css?v=50&amp;retry=1'">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -115,7 +116,8 @@
 .today-card .tc-row .btn{flex:1;min-width:86px;padding:9px 4px;font-size:.85rem}
 </style>
 </head>
-<body>
+<!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
+<body data-emoji="full">
   <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
     <div style="font-size:52px">🐤</div>
     <div style="font-size:.9rem;color:#5C6273;font-weight:700">加载中，请稍等…</div>
@@ -123,23 +125,43 @@
 <main>
   <div class="page-title">
     <h1>🏘️ 单词镇</h1>
-    <p>小学 1-6 年级 · <b id="totalWords">1000</b> 个必背词 · 按年级分主题 · 「拆拆看」理解着记</p>
+    <p>小学 1-6 年级 · <b id="totalWords">1000</b> 条词条（含短语）· 按年级分主题 · 「拆拆看」理解着记</p>
   </div>
 
   <div id="app"><div id="bootPlaceholder" class="card" style="max-width:560px;margin:22px auto;text-align:center;padding:26px 18px"><div style="font-size:34px">🐤</div><p style="color:#6B7280;font-size:.9rem;margin:8px 0 0">正在打开，请稍等…</p></div></div>
-<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
+<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div>
+  <!-- ★ 2026-11-11.11（D2）静态摘要：关掉 JS / 爬虫抓取时也能读到目录与词表样本。
+       内容由 _audit/gen_static_digest.js 从 words-data.js 现算，改词库请重跑脚本。 -->
+  <noscript>
+    <section class="card" style="margin-top:18px">
+      <h2>📖 词库速览（不依赖脚本）</h2>
+      <p>共 <b>999</b> 条词条，按 6 个年级分成 61 个主题。
+      每个词都有中文释义、词性与记忆法拆解，配真人式合成朗读。下面是各年级的词量与前 12 个词：</p>
+      <ul style="line-height:1.9">
+      <li><b>一年级</b>：171 条 —— hello（你好）、hi（嗨）、goodbye（再见）、bye（拜拜）、good（好的）、good morning（早上好）、good afternoon（下午好）、good night（晚安）、thank（感谢）、thanks（谢谢）、please（请）、sorry（对不起）…</li>
+      <li><b>二年级</b>：162 条 —— eleven（十一）、twelve（十二）、thirteen（十三）、fourteen（十四）、fifteen（十五）、sixteen（十六）、seventeen（十七）、eighteen（十八）、nineteen（十九）、twenty（二十）、hundred（百）、thousand（千）…</li>
+      <li><b>三年级</b>：126 条 —— potato（土豆）、tomato（西红柿）、carrot（胡萝卜）、cabbage（卷心菜）、onion（洋葱）、pepper（辣椒）、cucumber（黄瓜）、bean（豆子）、pea（豌豆）、corn（玉米）、pumpkin（南瓜）、eggplant（茄子）…</li>
+      <li><b>四年级</b>：148 条 —— doctor（医生）、nurse（护士）、driver（司机）、cook（厨师）、farmer（农民）、policeman（警察）、worker（工人）、singer（歌手）、dancer（舞蹈家）、writer（作家）、pilot（飞行员）、scientist（科学家）…</li>
+      <li><b>五年级</b>：173 条 —— health（健康）、healthy（健康的）、exercise（锻炼）、sick（生病的）、ill（病的）、fever（发烧）、headache（头疼）、medicine（药）、rest（休息）、hurt（受伤）、pain（疼痛）、sweat（汗水）…</li>
+      <li><b>六年级</b>：219 条 —— festival（节日）、Christmas（圣诞节）、present（礼物）、party（聚会）、candle（蜡烛）、firework（烟花）、lantern（灯笼）、dragon（龙）、celebrate（庆祝）、New Year（新年）、Christmas tree（圣诞树）、firecracker（鞭炮）…</li>
+      </ul>
+      <p>想按主题逐词学，请开启 JavaScript 后进入
+      <a href="words.html">单词镇</a>；课本同步词表在 <a href="pep.html">人教课本</a>。</p>
+    </section>
+  </noscript>
+</main>
 
-<script src="js/words-data.js?v=44"></script>
-<script src="svg/word-svg.js?v=4"></script>
-<script src="js/data.js?v=42"></script>
-<script src="js/app.js?v=123"></script>
+<script src="js/words-data.js?v=45"></script>
+<script src="svg/word-svg.js?v=5"></script>
+<script src="js/data.js?v=43"></script>
+<script src="js/app.js?v=124"></script>
 <script src="js/grammar-engine.js?v=8"></script>
 <script defer src="js/audio-list.js?v=5"></script>
 <script src="js/sentence.js?v=49"></script>
 <script src="js/speech.js?v=1"></script>
 <script src="js/ipa.js?v=6"></script>
 <script src="js/pep-data.js?v=1"></script>
-<script src="js/pep-points.js?v=22"></script>
+<script src="js/pep-points.js?v=23"></script>
 <script>
 renderNav('words'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
@@ -790,8 +812,8 @@ function renderSpeak() {
   s.tries = 0;
 
   if (!s.supported) {
-    // 降级：点击拼读块跟读（与词卡/拼词同一套自然拼读拆块，口径全站统一）
-    const syllables = splitBlocks(q.word.w);
+    // 降级：点击音节跟读（口径与「拆词」一致：按音节，不按音）
+    const syllables = splitSyllables(q.word.w);
     $('#app').innerHTML = `
       <div class="card" style="max-width:620px;margin:0 auto;text-align:center">
         <div class="score-bar"><b>🎤 跟读 · ${esc(s.label)}</b><span>第 ${s.idx + 1} / ${s.qs.length} 个 · ✅ ${s.score}</span></div>
@@ -930,10 +952,11 @@ const SP_VG = ['igh','air','ear','eer','ea','ee','oo','ou','ow','oi','oy','ai','
 const SP_CG = ['tch','dge','sh','ch','th','ph','wh','ck','ng','qu'];
 const spIsV = ch => 'aeiou'.includes(ch);
 function chunkWord(w0) {
-  /* 统一口诀：拼写工坊的拆块与词卡「🔤 拼读」行、拼词小火车、拼读地图
-     用同一套自然拼读组合表（pep-points.js 的 splitBlocks）——
-     词卡上教 oo，工坊就拆 oo，绝不再出现两套切法。 */
-  return splitBlocks(w0);
+  /* ★ 2026-11-11.11（B2）这一步是「切一刀，分成几个**音节**」，用的是
+     splitSyllables（按最大音节首原则：apple → ap·ple，banana → ba·na·na）。
+     词卡上的「🔤 拼读」行是另一件事——它按**音**切（a·pp·l·e），两边标签
+     也分开写，不再共用一个函数。混用正是质量审查指出的问题根源。 */
+  return splitSyllables(w0);
 }
 
 const SP_STEPS = [['read','读'],['look','看'],['pick','选'],['split','拆'],['build','拼'],['write','写']];
@@ -1109,11 +1132,11 @@ function renderSpell() {
       ${spNextBtn('spGoPick', '下一步 ▶', !spell.board.solved)}`;
   } else if (spell.step === 3) {
     body = `
-      <p class="sp-tip"><b>切一刀，把单词分成几个音块</b>——按"一口气读得出来"来分。</p>
+      <p class="sp-tip"><b>切一刀，把单词分成几个音节</b>——按"一口气读得出来"来分。</p>
       <div class="sp-cutline">${spCutline()}</div>
       <p class="sp-tip" style="margin-top:6px">两个字母打一个音的（<b>sh、ee、ai</b>）不要拆开哦。${spell.split.ref ? '' : '<button class="btn ghost" style="margin-left:6px;padding:4px 12px;font-size:.8rem" onclick="spShowRef()">看参考切法</button>'}</p>
       ${familyOf(w.w) ? `<p class="sp-tip sp-fam">👪 这一家的其他人：<b>${familyOf(w.w).base}</b> + <b>${familyOf(w.w).suf}</b> = <b>${familyOf(w.w).d}</b>（${familyOf(w.w).zh}${familyOf(w.w).note ? '，' + familyOf(w.w).note : ''}）</p>` : ''}
-      ${spell.split.ref ? `<div class="sp-ref">${chunkWord(w.w).map(c => `<span class="sp-chunk ${/[aeiou]/.test(c) ? 'v' : 'c'}">${c}</span>`).join('')}</div><div class="sp-ref-label">↑ 参考切法（橙色是含元音的音块）</div>` : ''}
+      ${spell.split.ref ? `<div class="sp-ref">${chunkWord(w.w).map(c => `<span class="sp-chunk ${/[aeiou]/.test(c) ? 'v' : 'c'}">${c}</span>`).join('')}</div><div class="sp-ref-label">↑ 参考切法（音节；橙色是含元音的那一段）</div>` : ''}
       ${spNextBtn('spGoSplit', '下一步 ▶')}`;
   } else if (spell.step === 4) {
     body = `
