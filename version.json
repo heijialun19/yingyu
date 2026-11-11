@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-11.7",
-  "note": "第二批全站修错：修好词性管道（13 个动词被标成名词，learn/teach/say…）、跟读句 9 条病句（This is children → These are children）、词族 4 条「去 e」规则写反、Get Smart 227 句里 13 处（手表戴脖子、oclock 缺撇号等）、课本要点 273 条里 11 处、造词实验室栗子假合成、7 处可疑词源。app v120 / data v42 / words-data v44 / pep-points v19 / getsmart-data v11 / build-data v3 / CACHE v174 / BUILD 2026-11-11.7；音频零改动。"
+  "build": "2026-11-11.8",
+  "note": "把上一版因为「不能重录音频」而做的 6 处妥协改回正确英语，并用原声线重录整句：one trip of the moon → one cycle of the moon、Is that your mother? Yes, it is → Yes, she is、Is this your sister? Yes, it is → Yes, she is、Do you have any cereal? There isn't any juice → No, I don't、She wears a watch on her neck → on her wrist、What's that? It's my sister → Who's that? It's my sister。app v121 / getsmart-data v12 / pep-points v20 / SENTENCE_VER 3 / CACHE v175 / BUILD 2026-11-11.8。"
 }

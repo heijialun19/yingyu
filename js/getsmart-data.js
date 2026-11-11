@@ -129,7 +129,7 @@ const GS_LEVELS = [
         ],
         sentences: [
           { en: "Who's this? It's my grandma.", zh: '这是谁？是我的奶奶。' },
-          { en: 'Is this your sister? Yes, it is.', zh: '这是你妹妹吗？是的。' },
+          { en: 'Is this your sister? Yes, she is.', zh: '这是你妹妹吗？是的。' },
         ] },
       { id: 'gs1-m03l2', mod: 3, kind: 'unit',
         title: 'M3-L2 · Friends & Pets', zh: '朋友与宠物',
@@ -396,8 +396,8 @@ const GS_LEVELS = [
           { w: 'baby', zh: '宝宝', e: '👶' },
         ],
         sentences: [
-          { en: "Who's this? This is my grandma.", zh: '这是谁？这是我奶奶。' },
-          { en: 'Is that your mother? Yes, it is.', zh: '那是你妈妈吗？是的。' },
+          { en: "Who's that? It's my sister.", zh: '那是谁？是我姐姐。' },
+          { en: 'Is that your mother? Yes, she is.', zh: '那是你妈妈吗？是的，是她。' },
         ] },
       { id: 'gs2-m02l2', mod: 2, kind: 'unit',
         title: 'M2-L2 · Family', zh: '家人（二）',
@@ -1175,7 +1175,7 @@ const GS_LEVELS = [
           { w: 'knife', zh: '刀', e: '🔪' },
         ],
         sentences: [
-          { en: "Do you have any cereal? There isn't any juice.", zh: '你有麦片吗？家里没有果汁了。' },
+          { en: "Do you have any cereal? No, I don't.", zh: '你有麦片吗？没有。' },
           { en: 'How much water do you drink every day?', zh: '你每天喝多少水？' },
         ] },
       { id: 'gs4-m05r', mod: 5, kind: 'review', title: 'Module 5 复习闯关', zh: '容器 · 水果 · 餐具',
@@ -1825,7 +1825,7 @@ const GS_LEVELS = [
           { w: 'bill', zh: '账单', e: '🧾' },
         ],
         sentences: [
-          { en: 'Is she wearing glasses? Yes, she is.', zh: '她戴着眼镜吗？是的。' },
+          { en: 'She wears a watch on her wrist.', zh: '她手腕上戴着手表。' },
         ] },
       { id: 'gs6-m04l3', mod: 4, kind: 'unit',
         title: 'M4-L3 · Inventions', zh: '小发明',

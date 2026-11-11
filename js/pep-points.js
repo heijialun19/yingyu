@@ -337,7 +337,7 @@ const PEP_POINTS = {
     ],
     u5: [
       { t: "space 一串词是拼出来的", kid: "space + station = space station 空间站、space + ship = spaceship 宇宙飞船、outer + space = outer space 外太空。把新词拆回认识的老词，一串太空词就挂在同一张图上，不用各背各的。", tip: "老词拼出太空词", en: "The taikonaut works in the space station.", zh: "航天员在空间站工作。" },
-      { t: "month 本来就是「月亮走一圈」", kid: "month（月）和 moon（月亮）在很早的英语里是同一个词根，古人靠月亮圆缺一次来数一个月。所以这两个词长得像不是巧合。知道来路，拼写里的 n 就不会漏。", tip: "靠月亮圆缺数月份", en: "A month is about one trip of the moon.", zh: "一个月大约是月亮绕一圈的时间。" },
+      { t: "month 本来就是「月亮走一圈」", kid: "month（月）和 moon（月亮）在很早的英语里是同一个词根，古人靠月亮圆缺一次来数一个月。所以这两个词长得像不是巧合。知道来路，拼写里的 n 就不会漏。", tip: "靠月亮圆缺数月份", en: "A month is about one cycle of the moon.", zh: "一个月大约是月亮绕一圈的时间。" },
       { t: "astronaut 是「星星水手」", kid: "astro 来自希腊语「星星」，naut 是「水手」，合起来就是「在星星之间航行的人」——航天员。中国的航天员叫 taikonaut，前半来自中文「太空」，后半还是那个「水手」。词根认得，一串词都好懂。", tip: "星星之间的水手", en: "The astronaut looks at Mars through a telescope.", zh: "航天员用望远镜看火星。" },
       { t: "into 是 in 加 to，画的是「进到里面去」", kid: "The rover goes into the soil.（探测车钻进土里）——to 给方向，in 给结果，两个叠起来才是「进到里面」。只写 in 少了「进去」这层动作，只写 to 又没说进没进去。", tip: "方向加结果，叠成一个词", en: "The rover drives into the red soil.", zh: "探测车驶进红色的土壤。" },
       { t: "永远如此的事，用一般现在时", kid: "The moon goes around the earth. / The earth is a planet.——不管昨天、今天还是明天都成立，英语就用一般现在时，不用过去式也不用将来时。看到讲自然常识、讲事实的句子，先想到这一条。", tip: "事实不挑时间", en: "The earth goes around the sun.", zh: "地球绕着太阳转。" },
