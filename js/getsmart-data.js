@@ -85,7 +85,7 @@ const GS_LEVELS = [
           { en: 'I can count to ten!', zh: '我能数到十！' },
         ] },
       { id: 'gs1-m01l3', mod: 1, kind: 'unit',
-        title: 'M1-L3 · A B C Words', zh: '元音启蒙词',
+        title: 'M1-L3 · Vowel Words', zh: '元音启蒙词',
         words: [
           { w: 'apple', zh: '苹果', e: '🍎' }, { w: 'egg', zh: '鸡蛋', e: '🥚' },
           { w: 'insect', zh: '昆虫', e: '🐛' }, { w: 'octopus', zh: '章鱼', e: '🐙' },
@@ -154,7 +154,7 @@ const GS_LEVELS = [
           { en: "How old are you? I'm six.", zh: '你几岁？我六岁。' },
         ] },
       { id: 'gs1-m04l2', mod: 4, kind: 'unit',
-        title: 'M4-L2 · Happy & Sad', zh: '大与小 · 开心与难过',
+        title: 'M4-L2 · Big & Small, Happy & Sad', zh: '大与小 · 开心与难过',
         words: [
           { w: 'big', zh: '大的', e: '🐘' }, { w: 'small', zh: '小的', e: '🐭' },
           { w: 'happy', zh: '开心的', e: '😊' }, { w: 'sad', zh: '难过的', e: '😢' },
@@ -349,7 +349,7 @@ const GS_LEVELS = [
         ],
         sentences: [
           { en: "What's this? It's a pencil.", zh: '这是什么？是一支铅笔。' },
-          { en: 'Is this a pencil? Yes, it is.', zh: '这是铅笔吗？是的。' },
+          { en: 'Is this a pencil? Yes, it is.', zh: '这是一支铅笔吗？是的。' },
         ] },
       { id: 'gs2-m01l2', mod: 1, kind: 'unit',
         title: 'M1-L2 · School things & Colours', zh: '文具（二）与颜色（一）',
@@ -396,7 +396,7 @@ const GS_LEVELS = [
           { w: 'baby', zh: '宝宝', e: '👶' },
         ],
         sentences: [
-          { en: "What's that? It's my sister.", zh: '那是谁？是我的姐姐。' },
+          { en: "Who's this? This is my grandma.", zh: '这是谁？这是我奶奶。' },
           { en: 'Is that your mother? Yes, it is.', zh: '那是你妈妈吗？是的。' },
         ] },
       { id: 'gs2-m02l2', mod: 2, kind: 'unit',
@@ -419,7 +419,6 @@ const GS_LEVELS = [
         ],
         sentences: [
           { en: "Where is the doll? It's in the closet.", zh: '玩偶在哪里？在衣柜里。' },
-          { en: 'This is between the lamp and the computer.', zh: '它在家灯和电脑之间。' },
         ] },
       { id: 'gs2-m02l4', mod: 2, kind: 'unit',
         title: 'M2-L4 · Rooms', zh: '房间里',
@@ -451,8 +450,8 @@ const GS_LEVELS = [
           { w: 'short hair', zh: '短头发', e: '💇‍♂️' }, { w: 'long hair', zh: '长头发', e: '👩‍🦳' },
         ],
         sentences: [
-          { en: 'Has she got curly hair? Yes, she has.', zh: '她是卷发吗？是的。' },
-          { en: 'She has straight hair.', zh: '她是直头发。' },
+          { en: 'Has she got curly hair? Yes, she has.', zh: '她有卷发吗？是的。' },
+          { en: 'She has straight hair.', zh: '她留着直发。' },
         ] },
       { id: 'gs2-m03l3', mod: 3, kind: 'unit',
         title: 'M3-L3 · My Face', zh: '五官',
@@ -767,7 +766,7 @@ const GS_LEVELS = [
         ],
         sentences: [
           { en: "What's her name? Her name is Anna.", zh: '她叫什么名字？她叫 Anna。' },
-          { en: 'She has curly hair.', zh: '她是卷发。' },
+          { en: 'She has curly hair.', zh: '她留着卷发。' },
         ] },
       { id: 'gs3-m01l2', mod: 1, kind: 'unit',
         title: 'M1-L2 · Numbers 10-100', zh: '数字 10-100',
@@ -1081,7 +1080,7 @@ const GS_LEVELS = [
         ],
         sentences: [
           { en: "What's your favorite subject?", zh: '你最喜欢的科目是什么？' },
-          { en: 'How often do you have Gym? Twice a week.', zh: '你们几节体育课？每周两次。' },
+          { en: 'How often do you have Gym? Twice a week.', zh: '你多久上一次体育课？每周两次。' },
         ] },
       { id: 'gs4-m02l2', mod: 2, kind: 'unit',
         title: 'M2-L2 · Chores', zh: '家务活',
@@ -1117,7 +1116,7 @@ const GS_LEVELS = [
           { w: 'dry', zh: '晾干', e: '☀️' },
         ],
         sentences: [
-          { en: 'Did you wake up at ten oclock? Yes, I did.', zh: '你十点醒的吗？是的。' },
+          { en: "Did you wake up at ten o'clock? Yes, I did.", zh: '你十点醒的吗？是的。' },
           { en: 'How did he die? A snake bit him.', zh: '他怎么死的？被蛇咬了。' },
         ] },
       { id: 'gs4-m03l3', mod: 3, kind: 'unit',
@@ -1176,7 +1175,7 @@ const GS_LEVELS = [
           { w: 'knife', zh: '刀', e: '🔪' },
         ],
         sentences: [
-          { en: "Do you have any cereal? There isn't any juice.", zh: '你有麦片吗？没有果汁了。' },
+          { en: "Do you have any cereal? There isn't any juice.", zh: '你有麦片吗？家里没有果汁了。' },
           { en: 'How much water do you drink every day?', zh: '你每天喝多少水？' },
         ] },
       { id: 'gs4-m05r', mod: 5, kind: 'review', title: 'Module 5 复习闯关', zh: '容器 · 水果 · 餐具',
@@ -1826,7 +1825,7 @@ const GS_LEVELS = [
           { w: 'bill', zh: '账单', e: '🧾' },
         ],
         sentences: [
-          { en: 'She wears a watch on her neck.', zh: '她脖子上戴着手表。' },
+          { en: 'Is she wearing glasses? Yes, she is.', zh: '她戴着眼镜吗？是的。' },
         ] },
       { id: 'gs6-m04l3', mod: 4, kind: 'unit',
         title: 'M4-L3 · Inventions', zh: '小发明',
@@ -1837,7 +1836,7 @@ const GS_LEVELS = [
           { w: 'toothbrush', zh: '牙刷', e: '🪥' },
         ],
         sentences: [
-          { en: 'These scissors are used for cutting.', zh: '这把剪刀是用来剪东西的。' },
+          { en: 'These scissors are used for cutting.', zh: '这些剪刀是用来剪东西的。' },
         ] },
       { id: 'gs6-m04l4', mod: 4, kind: 'unit',
         title: 'M4-L4 · Process', zh: '制作过程',
@@ -1883,7 +1882,7 @@ const GS_LEVELS = [
           { w: 'entertainment', zh: '娱乐', e: '🎪' },
         ],
         sentences: [
-          { en: 'The capital existed hundreds of years ago.', zh: '这座首都存在于几百年前。' },
+          { en: 'The capital existed hundreds of years ago.', zh: '这座都城在几百年前就存在了。' },
         ] },
       { id: 'gs6-m05l4', mod: 5, kind: 'unit',
         title: 'M5-L4 · Then and Now', zh: '今与昔',

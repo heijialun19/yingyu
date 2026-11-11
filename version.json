@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-11.6",
-  "note": "全站文案/量词/音标/词源批量修错：语法页量词（一条鱼、一根面条、一把椅子）、抽象名词不再进「那边有」（班级/名字/游戏）、宾语池补词性闸门（sweets 不再是「甜的」）、canTransform 疑问句不再把 I 换成 you、题面去掉「（复数）」；造词库 7 条音标与 ipa.js 5 处 ɛ 统一；字母表 E/K/F/W 四处、词源 18 处改成站得住的记忆法。app v119 / data v41 / words-data v43 / ipa v6 / build-data v2 / CACHE v173 / BUILD 2026-11-11.6；音频零改动。"
+  "build": "2026-11-11.7",
+  "note": "第二批全站修错：修好词性管道（13 个动词被标成名词，learn/teach/say…）、跟读句 9 条病句（This is children → These are children）、词族 4 条「去 e」规则写反、Get Smart 227 句里 13 处（手表戴脖子、oclock 缺撇号等）、课本要点 273 条里 11 处、造词实验室栗子假合成、7 处可疑词源。app v120 / data v42 / words-data v44 / pep-points v19 / getsmart-data v11 / build-data v3 / CACHE v174 / BUILD 2026-11-11.7；音频零改动。"
 }

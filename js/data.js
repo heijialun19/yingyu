@@ -34,6 +34,10 @@ const POS_OVERRIDE = {
   am:'be', is:'be', are:'be',
   thank:'v', good:'adj', colour:'n', color:'n',
   raincoat:'n', umbrella:'n',
+  /* 颜色词在词库里写的是 n（红色是名词感），但主题默认是 adj；
+     两个口径会打架，钉死成 adj，免得它们变回名词混进「我看见一个红」。 */
+  red:'adj', yellow:'adj', blue:'adj', green:'adj', white:'adj', black:'adj',
+  orange:'adj', pink:'adj', purple:'adj', brown:'adj', grey:'adj',
   skate:'v', ski:'v', ride:'v', climb:'v', throw:'v', catch:'v', kick:'v', hike:'v',
   word:'n', sentence:'n', question:'n', answer:'n', mistake:'n', text:'n', notebook:'n', dictionary:'n',
   here:'adv', there:'adv', front:'n', back:'n', left:'n', right:'n', middle:'n',
@@ -62,7 +66,11 @@ const POS_OVERRIDE = {
 };
 /* 给每个单词自动标注词性：覆盖表 > 多词短语 > 主题默认 > 名词 */
 THEMES.forEach(t => t.words.forEach(w => {
-  w.pos = POS_OVERRIDE[w.w] || (w.w.includes(' ') ? 'phrase' : (t.pos || 'n'));
+  /* ★ 2026-11-11.7：原来直接按主题默认重算，把 words-data.js 里
+     W() 第 5 个参数（逐词词性）整表覆盖掉了 —— learn / teach / say / call
+     等 13 个动词因此在词卡上显示成「名词」。优先级改成：
+     覆盖表 > 逐词显式 pos > 主题默认。 */
+  w.pos = POS_OVERRIDE[w.w] || w.pos || (w.w.includes(' ') ? 'phrase' : (t.pos || 'n'));
 }));
 /* ---------------- 词族（同根派生）：23 组，人工核对过 ----------------
    只收"意思透明的真派生"：teach→teacher 是"教书的人"，sun→sunny 是"有太阳的"。
@@ -71,9 +79,9 @@ THEMES.forEach(t => t.words.forEach(w => {
 const WORD_FAMILY = {
   art:     { d: 'artist',    suf: 'ist', zh: '艺术 → 艺术家' },
   build:   { d: 'building',  suf: 'ing', zh: '建造 → 建筑物' },
-  care:    { d: 'careful',   suf: 'ful', zh: '用心 → 仔细的', note: 'care 去 e 加 -ful' },
+  care:    { d: 'careful',   suf: 'ful', zh: '用心 → 仔细的', note: 'care 直接加 -ful（-ful 是辅音开头，e 不丢）' },
   cloud:   { d: 'cloudy',    suf: 'y',   zh: '云 → 多云的' },
-  dance:   { d: 'dancer',    suf: 'r',   zh: '跳舞 → 舞者', note: 'dance 去 e 加 -r' },
+  dance:   { d: 'dancer',    suf: 'r',   zh: '跳舞 → 舞者', note: 'dance 直接加 -r' },
   farm:    { d: 'farmer',    suf: 'er',  zh: '种田 → 农民' },
   foreign: { d: 'foreigner', suf: 'er',  zh: '外国的 → 外国人' },
   friend:  { d: 'friendly',  suf: 'ly',  zh: '朋友 → 友好的', note: 'ly 结尾但是形容词不是副词' },
@@ -86,12 +94,12 @@ const WORD_FAMILY = {
   snow:    { d: 'snowy',     suf: 'y',   zh: '雪 → 下雪的' },
   sun:     { d: 'sunny',     suf: 'y',   zh: '太阳 → 晴朗的', note: 'n 要双写' },
   teach:   { d: 'teacher',   suf: 'er',  zh: '教 → 老师' },
-  use:     { d: 'useful',    suf: 'ful', zh: '用 → 有用的', note: 'use 去 e 加 -ful' },
+  use:     { d: 'useful',    suf: 'ful', zh: '用 → 有用的', note: 'use 直接加 -ful（-ful 是辅音开头，e 不丢）' },
   wait:    { d: 'waiter',    suf: 'er',  zh: '等 → 服务员' },
   win:     { d: 'winner',    suf: 'er',  zh: '赢 → 获胜者', note: 'n 要双写' },
   wind:    { d: 'windy',     suf: 'y',   zh: '风 → 刮风的' },
   work:    { d: 'worker',    suf: 'er',  zh: '工作 → 工人' },
-  write:   { d: 'writer',    suf: 'r',   zh: '写 → 作家', note: 'write 去 e 加 -r' },
+  write:   { d: 'writer',    suf: 'r',   zh: '写 → 作家', note: 'write 直接加 -r' },
 };
 /* ---------------- 合成词：36 个，两个现成的词拼起来 ----------------
    「拆词」是语言学事实，不受版权保护；这 36 个都核对过 a + b 能还原成整词。 */
@@ -141,7 +149,7 @@ const PART_ZH = {
   port: '港口', birth: '出生', ground: '场地', mate: '伙伴', pass: '通行',
   basket: '篮子', super: '超级', grand: '（外）祖', pa: '爸', ma: '妈',
   break: '打破', times: '次', bath: '洗澡', living: '生活',
-  brush: '刷', fast: '禁食', egg: '蛋', plant: '植物', pine: '松树', apple: '苹果',
+  brush: '刷', fast: '禁食', egg: '蛋', plant: '植物', apple: '苹果',
 };
 
 const FAMILY_OF = (() => {

@@ -14,24 +14,24 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v119 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/words-data.js | v43 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
-| js/data.js | v41 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
+| js/app.js | v120 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/words-data.js | v44 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
+| js/data.js | v42 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v8 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v6 | 音标 |
-| js/build-data.js | v2 | 造词实验室题库（合成词 / 派生词 / 词根） |
-| js/getsmart-data.js | v10 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
+| js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
+| js/getsmart-data.js | v11 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
-| js/pep-points.js | v18 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
+| js/pep-points.js | v19 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
 | js/audio-list.js | v4 | 发音清单（2874 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v49 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v4 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v173 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v174 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -365,8 +365,9 @@ CC BY 4.0 全文补齐；`disclaimer.html`、`parents.html`、`README.md|txt`
 
 **顺手修掉的旧数字**：`speechEnv()` 曾写「2903 个 + 497 句整句」、
 `README.md` 文件结构写「2450 条 slug」、`js/sentence.js` 注释写「497 句」、
-`THIRD-PARTY-NOTICES.txt` 写「2450 + 497」，均为历史遗留，现统一为
-2913 个发音文件 / 2874 条词音频 / 503 句整句 / 44 段词块 / 39 个字母音。
+`THIRD-PARTY-NOTICES.txt` 写「2450 + 497」，均为历史遗留，现统一口径为：
+**合计 3460 个音频文件** = 2874 条词音频 + 503 句整句 + 44 段词块 + 39 个字母音
+（其中「词音频 + 字母音」= 2913，是披露页 `disclaimer` / `parents` 里那个数字的口径）。
 
 **版本链**：BUILD 2026-11-09.6 → .7；app v103 → v104；CACHE v157 → v158；
 AUDIO_VER 3 → 4、SENTENCE_VER 1 → 2、PHRASE_VER 1 → 2（PHONICS_VER 2 不动）；

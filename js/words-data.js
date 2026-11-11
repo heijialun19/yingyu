@@ -115,9 +115,9 @@ const GRADES = [
     W('chocolate', '巧克力', '🍫', 'chocolate 来自墨西哥阿兹特克语 xocolātl（苦的水）——可可豆本来是苦的，加了糖才变甜'), W('biscuit', '饼干', '🍪', 'biscuit = bis（两次）+ cook（烤）：烤两次的饼干，古代保存食物的方法'), W('porridge', '粥', '🍲', 'porridge 和 pot（锅）有关：锅里煮出来的稠粥') ]},
   { id: 'clothes', name: '衣服', emoji: '👕', color: '#FF8FAB', pos: 'n', words: [
     W('shirt', '衬衫', '👔', 'shirt 和 skirt 是亲兄弟（sh↔sk 音变）：shirt 衬衫穿上面，skirt 短裙穿下面'), W('T-shirt', 'T恤', '👕', 'T 字形的 T 恤，像字母 T 一样展开两只袖子'), W('dress', '连衣裙', '👗', 'dress 原意是「整理、穿戴」——dress up 就是打扮'), W('skirt', '短裙', '👚', 'skirt 和 shirt 是亲兄弟（sk↔sh 音变）：shirt 上衣、skirt 下裙'),
-    W('pants', '裤子', '👖', 'pants 来自意大利喜剧角色 Pantalone（穿长裤的老头）——从戏服变成裤子的名字'), W('shorts', '短裤', '🩳', 'short 短 + s 复数：短裤'), W('coat', '大衣', '🧥', 'coat 和 cot（小屋）同源：都是「外面包一层」——大衣是身体的小屋'), W('sweater', '毛衣', '🧶', 'sweat 汗 + -er：sweater 原指「让人出汗的厚衣服」，后来指毛衣'),
-    W('jacket', '夹克', '🥼', 'jacket 来自 Jack（人名）的昵称——本来是「Jack 穿的小外套」'), W('hat', '帽子', '🎩', 'hat 和 hut（小屋）同源：都是「顶上盖一层」——帽子是脑袋的小屋'), W('cap', '鸭舌帽', '🧢', 'cap 来自拉丁 cappa（头巾），和 cape（披肩）同源——都是「盖在头上/肩上」'),
-    W('shoe', '鞋', '👟', 'shoe 的 sh- 像鞋帮的弧线（象形），sh- 词族常与「覆盖」有关'), W('sock', '袜子', '🧦', 'sock 来自拉丁 soccus（古罗马的轻便鞋）'), W('clothes', '衣服', '🧺', 'cloth 布 + -es 复数：布做成的衣服。cloth 和 clothe（穿衣）同源'),
+    W('pants', '裤子', '👖', 'pants 来自意大利喜剧角色 Pantalone（穿长裤的老头）——从戏服变成裤子的名字'), W('shorts', '短裤', '🩳', 'short 短 + s 复数：短裤'), W('coat', '大衣', '🧥', 'coat 来自古法语 cote（外套）——和 cot（小屋）只是拼写像'), W('sweater', '毛衣', '🧶', 'sweat 汗 + -er：sweater 原指「让人出汗的厚衣服」，后来指毛衣'),
+    W('jacket', '夹克', '🥼', 'jacket 来自 Jack（人名）的昵称——本来是「Jack 穿的小外套」'), W('hat', '帽子', '🎩', 'hat 来自古英语 hætt——和 hut（小屋）只是长得像，不是一家'), W('cap', '鸭舌帽', '🧢', 'cap 来自拉丁 cappa（头巾），和 cape（披肩）同源——都是「盖在头上/肩上」'),
+    W('shoe', '鞋', '👟', 'shoe 鞋——一双鞋说 a pair of shoes，成双的东西英语总用复数'), W('sock', '袜子', '🧦', 'sock 来自拉丁 soccus（古罗马的轻便鞋）'), W('clothes', '衣服', '🧺', 'cloth 布 + -es 复数：布做成的衣服。cloth 和 clothe（穿衣）同源'),
     W('scarf', '围巾', '🧣', 'scarf 来自法语 escharpe（肩带）——绕在肩上的东西'), W('glove', '手套', '🧤', 'glove 手套——戴上它才好「握住」东西'), W('belt', '皮带', '', 'belt 来自拉丁 balteus（剑带/腰带）'), W('button', '纽扣', '', 'button 和 bud（花蕾）同源：纽扣像一个小花蕾突出来') ]},
   { id: 'home', name: '我的家', emoji: '🏠', color: '#4EC5F1', pos: 'n', words: [
     W('home', '家', '🏠', 'home 家——和 hamlet 同源：小小的家的聚落'), W('house', '房子', '🏡', 'house 房子——和 hide 同源：让人藏身的地方'), W('door', '门', '🚪', 'door 门——推开门'), W('window', '窗户', '🪟', 'window 窗户——wind 风 + eye 眼：风的眼睛'),
@@ -160,7 +160,7 @@ const GRADES = [
     W('pea', '豌豆', '🫛', 'pea 是从 pease（豌豆）缩写来的——古人以为 pease 是复数，就造了单数 pea'), W('corn', '玉米', '🌽', 'corn 和拉丁 grānum（谷粒）是亲戚（c↔g 音变）：grain（谷物）就来自 grānum。corn 原指「谷粒」，到了美洲才专指玉米'), W('pumpkin', '南瓜', '🎃', 'pumpkin = pepon（希腊语「大甜瓜」）+ -kin（小）：小大瓜——南瓜圆滚滚的'), W('eggplant', '茄子', '🍆', 'egg 蛋 + plant 植物：形状像蛋的植物'),
     W('mushroom', '蘑菇', '🍄', 'mushroom 来自法语 mousse（苔藓）：蘑菇长在苔藓里'), W('vegetable', '蔬菜', '🥦', 'vegetable 来自拉丁「使有生气」——吃蔬菜让你有活力。vigour（活力）同根') ]},
   { id: 'animal2', name: '更多动物', emoji: '🦊', color: '#FF9F45', pos: 'n', words: [
-    W('horse', '马', '🐴', 'horse 和 course（跑道）同源——都来自「跑」这个词根'), W('goat', '山羊', '🐐', 'goat 和拉丁 haedus（小山羊）是亲戚'), W('fox', '狐狸', '🦊', 'fox 和 fug-（逃/溜）同源：狐狸最会溜走'), W('wolf', '狼', '🐺', 'wolf 和拉丁 lupus（狼）是亲戚（w↔l 音变）：lupine（狼的）就来自 lupus'),
+    W('horse', '马', '🐴', 'horse 和 course（跑道）同源——都来自「跑」这个词根'), W('goat', '山羊', '🐐', 'goat 和拉丁 haedus（小山羊）是亲戚'), W('fox', '狐狸', '🦊', 'fox 古英语里就叫 fox——「狡猾」是后来人给它安的印象，不是词义'), W('wolf', '狼', '🐺', 'wolf 和拉丁 lupus（狼）是亲戚（w↔l 音变）：lupine（狼的）就来自 lupus'),
     W('deer', '鹿', '🦌', 'deer 原来是「野兽」的统称——后来专指鹿'), W('snake', '蛇', '🐍', 'snake 和 sn- 词族有关：sn- 常与「扭/鼻」有关——蛇是扭着爬的'), W('frog', '青蛙', '🐸', 'frog 是拟声词——模拟青蛙「呱呱」的叫声'),
     W('turtle', '乌龟', '🐢', 'turtle 和 tort-（扭）同源——tortoise（陆龟）来自「扭着走」'), W('butterfly', '蝴蝶', '🦋', 'butterfly = butter（黄油）+ fly（飞）——有人说蝴蝶爱落在黄油上'), W('bee', '蜜蜂', '🐝', 'bee 是拟声词——模拟蜜蜂「嗡嗡」的声音'), W('ant', '蚂蚁', '🐜', 'ant 来自古英语「æmette」（小东西）——蚂蚁就是「小小的东西」'),
     W('spider', '蜘蛛', '🕷️', 'spider 来自「纺纱者」——蜘蛛纺出一张网'), W('bat', '蝙蝠', '🦇', 'bat 作「球棒」来自「击打」（beat 同源）；作「蝙蝠」可能因为翅膀像拍打'), W('parrot', '鹦鹉', '🦜', 'parrot 来自人名 Perrot（Pierre 的昵称）——鹦鹉爱「学人说话」，就用人名来叫它'),
@@ -182,9 +182,9 @@ const GRADES = [
   { id: 'transport', name: '交通', emoji: '🚌', color: '#4EC5F1', pos: 'n', words: [
     W('bus', '公交车', '🚌', 'bus 公交车——来自拉丁「给所有人的车」'), W('taxi', '出租车', '🚕', 'taxi 是 taximeter cabriolet 的缩写：taximeter 是「计价器」，按价钱走的车'), W('train', '火车', '🚂', 'train 火车——来自拉丁「拉」：拉着一串车厢'),
     W('subway', '地铁', '🚇', 'sub（下）+ way（路）：地下铁路'), W('helicopter', '直升机', '🚁', 'helico（螺旋）+ pter（翼）：螺旋翼飞机。pter- = 翼：pterodactyl 翼龙'), W('ship', '轮船', '🚢', 'ship 轮船——和 skipper 船长同源'),
-    W('jeep', '吉普车', '🚙', 'jeep 来自「GP」（General Purpose 通用）的读音——通用型军车'), W('van', '面包车', '🚐', 'van 是 caravan（大篷车）的缩写'), W('truck', '卡车', '🚚', 'truck 来自希腊语 trochos（轮子）——有轮子的运货车'),
+    W('jeep', '吉普车', '🚙', 'jeep 来自「GP」（General Purpose 通用）的读音——通用型军车'), W('van', '面包车', '🚐', 'van 是 caravan（大篷车）的缩写'), W('truck', '卡车', '🚚', 'truck 可能来自拉丁 trochus（铁环、轮）——来路不确定，别当定论'),
     W('ambulance', '救护车', '🚑', 'ambulance 来自拉丁 ambulare（走动）——「流动的医院」，跟着伤员走'), W('traffic', '交通', '🚥', 'traffic 来自拉丁 transigere（穿过、做完）——车「穿过」街道'), W('road', '马路', '🛣️', 'road 路——和 ride 同源：骑马走的就是 road'),
-    W('street', '街道', '', 'street 街——来自拉丁「铺好的路」'), W('bridge', '桥', '🌉', 'bridge 来自古英语 brycg，和 balk（横梁）同源——桥就是一根「横梁」'), W('station', '车站', '🚉', 'station 来自拉丁 stare（站）——stand 同根：车停靠的「站」'), W('airport', '机场', '🛫', 'air 空气 + port 港口：飞机的港口') ]},
+    W('street', '街道', '', 'street 街——来自拉丁「铺好的路」'), W('bridge', '桥', '🌉', 'bridge 来自古英语 brycg——桥最早就是架在两岸的一根横木'), W('station', '车站', '🚉', 'station 来自拉丁 stare（站）——stand 同根：车停靠的「站」'), W('airport', '机场', '🛫', 'air 空气 + port 港口：飞机的港口') ]},
   { id: 'position', name: '方位', emoji: '🧭', color: '#FF6B6B', pos: 'prep', words: [
     W('in', '在里面', '', 'in 的 i 像小球、n 像盒子：小球跳进盒子关上门'), W('on', '在上面', '', 'o 圆球 + n 桌面：球稳稳坐在桌面上'), W('under', '在下面', '', 'under 和 undergo（经历）同源——「在下面承受」'), W('behind', '在后面', '', 'be + hind（后面的）：藏在门背后。hind = 后面的'),
     W('beside', '在旁边', '', 'be + side 边：并肩坐在旁边'), W('near', '在附近', '', 'near 和 nigh（近的）同源：near 近、nigh 更古的「近」'), W('over', '在上方', '', 'over 和拉丁 super（在上）同源：over 在上方、super 超级'), W('above', '在上面', '', 'a-（在）+ bove（= up）：挂在上面'),
@@ -281,7 +281,7 @@ const GRADES = [
     W('sail', '航行', '', 'sail 航行——扬帆起航'), W('sailor', '水手', '⚓', 'sail 航行 + -or 表「人」'), W('lighthouse', '灯塔', '', 'light 灯 + house 房'), W('seaside', '海边', '', 'sea 海 + side 边'),
     W('goldfish', '金鱼', '🐠', 'gold 金 + fish 鱼'), W('starfish', '海星', '', 'star 星星 + fish 鱼') ]},
   { id: 'verb3', name: '动词三', emoji: '💭', color: '#9B72FF', pos: 'v', words: [
-    W('think', '思考', '💭', 'think 思考——摸着下巴想一想'), W('guess', '猜', '🤔', 'guess 和 get 同源：「猜到」就是「得到」线索'), W('decide', '决定', '', 'decide = de-（完全）+ cide（切）：「一刀切下去」= 决定。cide = 切：suicide 自杀'), W('hope', '希望', '', 'hope 希望——心里的期盼'),
+    W('think', '思考', '💭', 'think 思考——摸着下巴想一想'), W('guess', '猜', '🤔', 'guess 来自古英语 gessen（判断）——先估摸，再判断'), W('decide', '决定', '', 'decide = de-（完全）+ cide（切）：「一刀切下去」= 决定。cide = 切：suicide 自杀'), W('hope', '希望', '', 'hope 希望——心里的期盼'),
     W('wish', '愿望', '🌠', 'wish 来自古英语 wȳscan（希望）'), W('dream', '梦想', '💫', 'dream 原意是「欢乐/音乐」——后来才指「梦」'), W('plan', '计划', '', 'plan 来自法语 plan（平面图）——plan 原是「画的图」'), W('try', '尝试', '', 'try 尝试——努力试一试'),
     W('begin', '开始', '', 'begin 开始——故事开始了'), W('start', '出发', '🚦', 'start 开始——按下启动键（原意「吓一跳跳起来」）'), W('finish', '完成', '', 'finish 来自拉丁 finis（结束）——和 fine 同根'), W('stop', '停止', '', 'stop 停——红灯停'),
     W('continue', '继续', '⏭️', 'continue 来自拉丁 continuare（连在一起）——continue 就是「连着」'), W('mix', '混合', '', 'mix 来自拉丁 miscere（混合）'), W('fix', '修理', '🔧', 'fix 来自拉丁 figere（钉住）——fix 原是「钉牢」'), W('build', '建造', '🏗️', 'build 来自古英语 byldan（建造）'),

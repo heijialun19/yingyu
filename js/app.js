@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-11.6';
+const BUILD = '2026-11-11.7';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -550,7 +550,7 @@ const SENTENCE_AUDIO = new Set([
   "are_you_happy_yes_i_am","be_quiet","bees_make_honey_from_nectar","before_i_was_quiet_but_now_i_am_active","beijing_has_a_long_history","bring_a_heavy_raincoat_with_you",
   "bring_an_umbrella_it_may_rain","brush_your_teeth_twice_a_day","can_i_try_them_on","can_you_feed_the_cow_yes_i_can","can_you_help_them_yes_i_can","can_you_swim_yes_i_can",
   "cars_pollute_the_air","chopsticks_are_a_tradition_in_china","clap_your_hands","climbing_mountains_is_tiring","could_you_tell_me_about_your_hometown","dad_is_busy_today",
-  "did_you_wake_up_at_ten_oclock_yes_i_did","did_you_watch_tv_yes_i_did","do_not_drop_broken_glass","do_you_have_a_car_yes_i_do","do_you_have_any_cereal_there_isn_t_any_juice","do_you_have_any_cheaper_ones",
+  "did_you_wake_up_at_ten_o_clock_yes_i_did","did_you_watch_tv_yes_i_did","do_not_drop_broken_glass","do_you_have_a_car_yes_i_do","do_you_have_any_cereal_there_isn_t_any_juice","do_you_have_any_cheaper_ones",
   "do_you_have_twenty_shells_yes_i_do","do_you_like_carrots_yes_i_do","do_you_work_in_a_restaurant_yes_i_do","does_he_have_brown_eyes_yes_he_does","does_she_take_the_bus_to_school_yes_she_does","don_t_be_late_for_class",
   "don_t_be_loud_in_the_study","don_t_be_sad","don_t_be_worried_it_is_easy","don_t_cut_down_the_trees","don_t_run_in_the_bedroom","don_t_stay_up_late_playing_video_games",
   "don_t_take_pictures","eat_less_sugar_and_more_vegetables","elephants_are_bigger_than_rhinos","energy_will_run_out_one_day","even_the_koala_is_special_there","everyone_can_enter_the_competition",
