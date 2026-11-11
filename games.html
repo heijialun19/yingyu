@@ -33,10 +33,10 @@
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=42"></script>
-<script src="svg/word-svg.js?v=3"></script>
+<script src="svg/word-svg.js?v=4"></script>
 <script src="js/data.js?v=39"></script>
 <script src="js/build-data.js?v=1"></script>
-<script src="js/app.js?v=115"></script>
+<script src="js/app.js?v=116"></script>
 <script defer src="js/audio-list.js?v=4"></script>
 <script src="js/sentence.js?v=49"></script>
 <script src="js/grammar-engine.js?v=8"></script>
@@ -88,7 +88,7 @@ function gameHomeBtn() { return `<button class="btn ghost" onclick="renderHome()
 
 /* 词库选择卡：我的年级优先，可复习学过的词、换年级或全部随机 */
 function poolPicker(title, emoji, onStart) {
-  /* 「有没有图」看 hasIcon，不能看 w.e —— 345 个词靠自绘 SVG，w.e 是空的 */
+  /* 「有没有图」看 hasIcon，不能看 w.e —— 378 个词靠自绘 SVG，w.e 是空的 */
   const learned = learnedPool().filter(w => hasIcon(w) && !w.w.includes(' '));
   const canReview = learned.length >= 4;
   const g = myGrade();
@@ -237,7 +237,7 @@ function gMemory(pool) {
        全库有 18 组「同一张真图配了两个以上词」（🧒 = child / children，
        🎒 = bag / schoolbag，🌊 = sea / ocean，🔟 = ten / October…），
        同一张图出现两次，孩子根本没法判断它配哪个词。 */
-    /* 原来按 w.e 去重 —— 345 个词的 w.e 是空的，会被判成「同一个」只留下第一个；
+    /* 原来按 w.e 去重 —— 378 个词的 w.e 是空的，会被判成「同一个」只留下第一个；
        而且没图的词（字母牌）根本配不出「图 ↔ 词」的配对。改成按渲染出的图去重。
        ★ 2026-11-09.14：上一次只做了一半 —— 用 iconOf() 的返回串当 key，
          那串里含 aria-label="释义"，两个词释义不同就不同，去重从来没生效过
@@ -926,7 +926,13 @@ function gPhonics() {
   const usable = PHONICS.map(p => ({
     name: p.name, tip: p.tip, segs: p.segs || {},
     ws: p.words.map(w => ALLW[w]).filter(w => w && hasIcon(w))
-  })).filter(p => p.ws.length >= 4);
+  })).filter(p => p.ws.length >= 4 && p.ws.some(w => phBlendable(p.segs[w.w])));
+  /* ★ 2026-11-11.3：拼读闯关必须真有词可拼。a_e / i_e / o_e 三族没有 segs
+     （硬拼会把 cake 读成 /kæke/，教学上故意不做拼词），整族 phBlendable()
+     恒 false；原来随机挑中它们就是整局 6 题全走听词选图，家长点「拼读闯关」
+     却进去选图，300 局实测 17%%～20%%。用「至少一个可拼词」过滤，比硬编码
+     三个族名更能挡住以后新增的全选图词族。这 18 个词在单词镇、听词选图里
+     仍练得到，教学覆盖不减少。 */
   if (!usable.length) { $('#app').innerHTML = `<div class="card" style="text-align:center"><p>词族数据还没准备好～</p>${gameHomeBtn()}</div>`; return; }
 
   const P = pick(usable);

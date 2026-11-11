@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v115 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v116 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v42 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v39 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -27,11 +27,11 @@
 | js/pep-points.js | v17 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
 | js/audio-list.js | v4 | 发音清单（2874 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v49 | 全站样式（含首屏加载层 6 秒兜底） |
-| svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
+| svg/word-svg.js | v4 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v169 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v170 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -1496,3 +1496,21 @@ batch2-11.js / colors.js / memo_1-5.js / merge.js（228KB）没有任何页面�
 修法：`gPhonics()` 与 `phShow()` 入口补 `Flow.reset()`，7 个延时改 `Flow.after()`；图词翻翻乐 `gMemory()` 的 2 个同类裸 timer 一并收掉（最后一轮配对 500ms 后的 `endCard` 也会覆盖新局）。沿用 Flow 的既有铁律：幂等、可取消、不抢时间。
 
 版本链：BUILD .1 → 2026-11-11.2，app v114 → v115，CACHE v168 → v169。音频零改动（AUDIO_VER 4 / SENTENCE_VER 2 / PHRASE_VER 2 / AUDIO_CACHE v5 不动）。
+
+## 2026-11-11.3 拼读闯关首屏 100% 拼词 + 33 张可看懂的词图
+
+家长拍板 ①A + ②A。**先纠正上一版的一处误报**：.2 里报的「3 组 / 18 个词渲染同图、去重静默失效」是探针口径错误 —— 它只取 `querySelector('svg')`的第一个 SVG，而 `1️⃣1️⃣` 会渲染成两张并排的键帽；按「整幅画」重扫，全库 938 个带图词里 **0 组**「画相同但 iconKey 不同」，`iconKey` 机制本来没坏。
+
+真正的问题是**图没有教学信息量**：
+
+- `one / Monday / January` 都是同一张 `1️⃣`，「星期一」画成一个「1」；
+- `eleven` 是 `1️⃣1️⃣` 两张方块，孩子看到「1 1」，对不上「十一」；
+- `China / Canada` 是两张蓝色区域指示符字母块，不是国旗。
+
+全库扫描共 36 个数字键帽词 + 7 个国家词。`0–9` 十个数字词用 keycap 合适，保留；其余 **33 词**补自绘图：11–20 数字卡、7 张星期日历卡（第 N 天高亮）、9 张月份日历卡（第 N 月高亮）、7 面几何国旗卡。卡面只放数字 / 序号 / 几何图形，**不写英文**，避免看词选图泄答案（产品铁律 3）。生成脚本 `_audit/gen_card_svg.py`，产物 `svg/word-svg.js` 345 → 378 条。
+
+图源优先级：`wordIcon` / `iconKey` 同时判断 `WORD_SVG_FIRST` 集合，两处口径必须一致，否则图与身份对不上。新增图两两不同，`iconKey` 天然互斥；`_audit/check_facts.py` 会核对集合与产物条目。
+
+①A：`gPhonics()` 的 `usable` 池加 `p.ws.some(w => phBlendable(p.segs[w.w]))`过滤。`a_e / i_e / o_e` 三族无 `segs`（硬拼会把 cake 读成 /kæke/，教学上故意不做拼词），整族无可拼词，原来随机挑中就是整局 6 题全选图，300 局实测首屏选图 17%～20%。用「至少一个可拼词」而非硬编码三个族名，以后新增的全选图词族也进不来。三族的 18 个词在单词镇 / 听词选图里仍练得到。
+
+版本链：BUILD .2 → 2026-11-11.3，app v115 → v116，word-svg v3 → v4，CACHE v169 → v170。音频零改动（AUDIO_VER 4 / SENTENCE_VER 2 / PHRASE_VER 2 / AUDIO_CACHE v5 不动）。

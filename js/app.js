@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-11.2';
+const BUILD = '2026-11-11.3';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1056,7 +1056,7 @@ function wordIcon(w) {
   const emo = String((w && w.e) || '').trim();
   /* 内置 SVG 优先：不依赖系统 emoji 字体，任何电脑画出来都一样彩色
      （emoji 靠字体渲染，会变黑白或吐方块，见下面 emojiClusters 的说明） */
-  if (emo && hasEmojiSvg(emo)) {
+  if (emo && !wordSvgFirst(name) && hasEmojiSvg(emo)) {
     return `<span class="wsvg" role="img" aria-label="${esc(w.zh || name)}">${emoSvg(emo)}</span>`;
   }
   /* SVG 卡通插画（svg/word-svg.js） */
@@ -1071,6 +1071,21 @@ function wordIcon(w) {
   const ch = String((w && w.w) || '?').trim().charAt(0).toUpperCase();
   return `<span class="wtile" aria-hidden="true">${esc(ch)}</span>`;
 }
+
+/* ---------------- 自绘优先的「坏 emoji」词 ----------------
+   ★ 2026-11-11.3：组合键帽（1️⃣1️⃣）在图库里会画成两张并排的蓝色键帽，
+     区域指示符国旗（🇨🇳）画成两张字母方块 —— 「十一 / 中国 / 星期一」根本
+     看不出来。svg/word-svg.js 已补 33 张数字卡 / 日历卡 / 几何国旗卡，
+     这些词改走自绘 SVG。0️⃣～9️⃣ 十个数字词的图是合适的，不在此列。
+   ⚠️ wordIcon 与 iconKey 必须同时判断：只改一处，图与身份对不上，去重会静默失效。
+   ⚠️ 集合里的词必须在 svg/word-svg.js 有条目（_audit/check_facts.py 会核对）。
+   ⚠️ 卡面只放数字 / 序号 / 几何图形，绝不写英文：看词选图会泄答案（产品铁律 3）。 */
+const WORD_SVG_FIRST = new Set(
+  ('eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty ' +
+   'monday tuesday wednesday thursday friday saturday sunday ' +
+   'january february march april may june july august september ' +
+   'china america england australia canada japan france').split(' '));
+function wordSvgFirst(name) { return WORD_SVG_FIRST.has(name); }
 
 /* ---------------- 词图的统一取用口 ----------------
    ★ 血泪教训（2026-10-26）：wordIcon 修好之后，页面上仍有一大半地方直接写
@@ -1104,7 +1119,7 @@ function iconKey(w) {
   const name = String(w.w || '').toLowerCase();
   const emo = String(w.e || '').trim();
   /* U+FE0F（变体选择符）要去掉：同一张图有时带有时不带，key 必须一致 */
-  if (emo) {
+  if (emo && !wordSvgFirst(name)) {
     const plain = emo.replace(/\uFE0F/g, '');
     if (typeof hasEmojiSvg === 'function' && hasEmojiSvg(emo)) return 'esvg:' + plain;
   }
