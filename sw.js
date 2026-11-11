@@ -6,7 +6,7 @@
      （听过一次就永久零网络；重建音频时换一个缓存名，activate 里删掉旧的那个）
    - 外站请求：v8 起站内不再有任何第三方发音请求，这里也就不再为它留分支。
      历史遗留的 opaque 缓存会在 activate 时随旧缓存一起清掉。 */
-const CACHE = 'birdie-abc-v167';
+const CACHE = 'birdie-abc-v168';
 const AUDIO_CACHE = 'birdie-audio-v5';   // 每次重做音频换新名，旧的在 activate 里删掉
 /* 两个 async 大图库不进 BOOT（会拖慢激活）。基础库 emoji-svg.js 每个页面
    都会加载，在线首访必然入缓存；课程扩展库只在 getsmart/pep 加载，
@@ -15,7 +15,7 @@ const AUDIO_CACHE = 'birdie-audio-v5';   // 每次重做音频换新名，旧的
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=48', './js/words-data.js?v=42', './svg/word-svg.js?v=3', './js/data.js?v=39', './js/app.js?v=113', './js/sentence.js?v=49', './js/speech.js?v=1', './js/grammar-engine.js?v=8', './js/ipa.js?v=5', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=17', './svg/emoji-svg2.js?v=3',
+  './css/style.css?v=49', './js/words-data.js?v=42', './svg/word-svg.js?v=3', './js/data.js?v=39', './js/app.js?v=114', './js/sentence.js?v=49', './js/speech.js?v=1', './js/grammar-engine.js?v=8', './js/ipa.js?v=5', './js/build-data.js?v=1', './js/getsmart-data.js?v=10', './js/pep-data.js?v=1', './js/pep-points.js?v=17', './svg/emoji-svg2.js?v=3',
   './manifest.json', './js/audio-list.js?v=4', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
@@ -23,8 +23,8 @@ const CORE = [
    而且任一文件 404 就让整个 SW 装不上（曾因 CORE 里一个多余逗号全站失效）。
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
-  './', './index.html', './css/style.css?v=48',
-  './js/app.js?v=113', './js/data.js?v=39'
+  './', './index.html', './css/style.css?v=49',
+  './js/app.js?v=114', './js/data.js?v=39'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -149,19 +149,37 @@ self.addEventListener('fetch', e => {
   /* 同站静态资源：缓存优先；缓存命中若是坏响应自动走网络自愈；只缓存成功响应 */
   if (url.origin === location.origin) {
     e.respondWith(
-      caches.open(CACHE).then(c => c.match(e.request).then(hit => {
+      caches.open(CACHE).then(c => c.match(e.request).then(async hit => {
         if (good(hit)) return hit;
-        return fetch(e.request).then(res => {
-          if (res && res.ok) { const copy = res.clone(); c.put(e.request, copy).catch(() => {}); }
-          return res;
-        }).catch(() => {
-          // 脚本/样式离线缺失时返回 504——绝不能回退 index.html，
-          // 否则浏览器会把 HTML 当 JS 解析，页面静默半死（不报错但全站失灵）
-          if (e.request.destination === 'script' || e.request.destination === 'style' || e.request.destination === 'audio') {
-            return new Response('', { status: 504, statusText: 'offline' });
-          }
-          return caches.match('./index.html');
-        });
+        /* ★ 2026-11-11 整页黑白事故：样式/脚本 URL 带 ?v=，发版迁移或删旧缓存的
+           窗口期里切导航容易恰好 miss。原来这时只要网络抖一下就直接返回
+           504 空响应 —— 浏览器拿到 0 字节 CSS，整页退化成白底黑字。
+           现在三级兜底，绝不轻易交白卷：
+             ① 再试一次网络（单次抖动最常见）
+             ② 找同路径任意 ?v= 的旧版本缓存（CSS/JS 向后兼容，远好过裸 HTML）
+             ③ 真的什么都没有才 504；非脚本/样式资源才回首页 */
+        const isAsset = e.request.destination === 'script' ||
+                        e.request.destination === 'style' ||
+                        e.request.destination === 'audio';
+        const net = async () => {
+          try {
+            const res = await fetch(e.request.clone());
+            if (res && res.ok) {
+              const copy = res.clone(); c.put(e.request, copy).catch(() => {});
+              return res;
+            }
+          } catch (err) {}
+          return null;
+        };
+        let res = await net();
+        if (!res) res = await net();
+        if (res) return res;
+        if (isAsset) {
+          const older = (await c.matchAll(e.request, { ignoreSearch: true })).find(good);
+          if (older) return older;
+          return new Response('', { status: 504, statusText: 'offline' });
+        }
+        return caches.match('./index.html');
       }))
     );
     return;

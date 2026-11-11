@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v113 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v114 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v42 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v39 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -26,12 +26,12 @@
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
 | js/pep-points.js | v17 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
 | js/audio-list.js | v4 | 发音清单（2874 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
-| css/style.css | v48 | 全站样式（含首屏加载层 6 秒兜底） |
+| css/style.css | v49 | 全站样式（含首屏加载层 6 秒兜底） |
 | svg/word-svg.js | v3 | 345 个手绘单词 SVG 卡通 |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v167 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v168 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -85,6 +85,37 @@
 - 图标渲染优先级：内置 SVG → 手绘 WORD_SVG → 色块（颜色词）→ 系统 emoji → 字母块
 - 新增 js/css 文件时**必须同时加进 sw.js 的 CORE**，否则离线首次打开该功能会 504 崩掉
   （2026-11-01 的 speech.js 就是这么漏的）
+
+## 2026-11-11.1 统信 UOS 浏览器切导航偶发「整页黑白」
+
+**现象**：国产 Linux 浏览器（多为软件合成、无 GPU 硬件加速）点顶部导航换页时，
+小概率整页颜色消失，刷新通常恢复。站点里**没有任何整页 grayscale 规则**，
+`grayscale` 只用在家长中心徽章格和首页未解锁关卡这两个局部元素上。
+
+**三层加固（都是消掉放大偶发的缺陷，不是给页面加反灰度滤镜）**：
+
+1. `css/style.css` `.nav` 删掉 `backdrop-filter: blur(4px)`。背景本来就是 92% 不
+   透明白、模糊肉眼看不出来，却强制整页成为 backdrop root；软件合成内核切页重建
+   合成层时，backdrop 读回偶发色彩通道丢失。白度补到 96%，视觉几乎零变化。
+2. `sw.js` 同站静态资源原逻辑是「缓存 miss + 网络失败 → 直接 504 空响应」。
+   CSS/JS 带 `?v=`，发版迁移或删旧缓存的窗口期里切导航容易恰好 miss，网络抖一下
+   浏览器就拿到 0 字节 CSS → 整页白底黑字。改成 **网络重试一次 → 同路径任意 `?v=`
+   的旧版本缓存降级 → 才 504**；`matchAll(ignoreSearch)` 里挑第一个好响应，不会被
+   历史毒化的 404 挡住。
+3. 10 个页面的 CSS `<link>` 加 `onerror` 自愈：失败时把地址换成 `?v=49&retry=1`
+   重取一次，绕开坏缓存条目，和第 2 点的降级闭环。不会无限重试（先置 null）。
+
+另补 `@media (forced-colors: active)`：系统高对比度/色彩滤镜把彩色词图、emoji 刷成
+黑白剪影后，「看词选图 / 听词选图」这类题直接失效。只对承载教学信息的彩图用
+`forced-color-adjust: none`，文字和页面其余配色仍交给系统 —— 站点**不主动反转**
+用户或系统的灰度设置，也不猜是不是误开。若确属系统黑白模式，需在系统设置里关。
+
+**未能验证**：统信真机无法在此环境复现，以上按代码缺陷与渲染机理定位；需家长在
+真机上连续切几十次导航确认。自测：Node 桩覆盖 SW 四种失败分支 + 真浏览器探针
+验证 CSS 首请求失败后能自愈。
+
+版本链：BUILD .16 → 2026-11-11.1，app v113 → v114，style v48 → v49，CACHE v167 → v168。
+音频零改动（AUDIO_VER 4 / SENTENCE_VER 2 / PHRASE_VER 2 / AUDIO_CACHE v5 不动）。
 
 ## 2026-11-09.16 colour 记忆法的示例改成英式 colourful
 

@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-09.16",
-  "note": "colour 记忆法示例改成英式 colourful（原来写的是美式 colorful，与课本 pep3b-u4 的 colourful 不一致）。文案一处，逻辑零改动。app v113 / words-data v42 / CACHE v167；音频零改动。"
+  "build": "2026-11-11.1",
+  "note": "统信 UOS 浏览器切导航偶发整页黑白：删掉顶部导航收益为零的 backdrop-filter（软件合成内核的色彩通道竞态），SW 样式/脚本缓存 miss 时加网络重试 + 同路径旧版本降级，CSS link 加载失败自动重试一次，并补 forced-colors 下彩色词图保护。app v114 / style v49 / CACHE v168；音频零改动。"
 }

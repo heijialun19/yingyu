@@ -54,9 +54,12 @@ ruby rt { font-size: .5em; color: var(--ink2); letter-spacing: 1px; }
   position: sticky; top: 10px; z-index: 50;
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
   max-width: 1080px; margin: 10px auto 0; padding: 8px 16px;
-  background: rgba(255,255,255,.92); border-radius: 999px;
+  background: rgba(255,255,255,.96); border-radius: 999px;
   box-shadow: 0 4px 18px rgba(45,49,66,.14), 0 3px 0 rgba(45,49,66,.08);
-  backdrop-filter: blur(4px);
+  /* ★ 2026-11-11 删掉 backdrop-filter: blur(4px)。白底已经 96% 不透明，
+     模糊肉眼看不出来；但它会强制整页成为 backdrop root，在无 GPU 硬件加速的
+     国产 Linux 浏览器（统信 UOS 常见软件合成）里，切页重建合成层时偶发整页
+     色彩通道丢失 —— 表现就是「页面突然全变黑白」。视觉零收益，风险全担。 */
 }
 .brand { display: flex; align-items: center; gap: 8px; margin-right: auto; }
 .brand-bird { font-size: 30px; animation: bob 2.6s ease-in-out infinite; display: inline-block; }
@@ -813,3 +816,20 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
    最坏情况是"没样式的内容"，也好过永远转圈。 */
 #bootLoader { animation: bootAutoHide 0s linear 6s forwards; }
 @keyframes bootAutoHide { to { opacity: 0; visibility: hidden; } }
+
+
+/* ---------- 系统「高对比度 / 色彩滤镜」下的教学内容保护 ----------
+   Chromium 的 forced-colors 会把背景、边框、SVG 全部换成系统色，页面看起来
+   就是「整页黑白」。本站大量教学信息本身是颜色（彩色词图、emoji、糖果色
+   按钮/徽章），灰度后「看词选图 / 听词选图」直接没法做。
+   这里只对承载教学信息的彩图保留原色；文字和页面其余配色仍交给系统，
+   不反转真正需要高对比度的用户设置，也不去猜用户是不是误开。 */
+@media (forced-colors: active) {
+  .wsvg, .wsvg svg, .wsvg img, .emj-img, .emj-img svg,
+  .nav-emoji, .brand-bird, .hero-bird, .cloud, .sun,
+  .badge-cell .be, .level-card .le, .mem-pic {
+    forced-color-adjust: none;
+  }
+  /* 高对比度下阴影和底色都会消失，按钮/卡片得靠边框还能看出边界 */
+  .btn, .chip, .card, .level-card, .badge-cell { border: 2px solid CanvasText; }
+}
