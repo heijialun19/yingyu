@@ -419,7 +419,11 @@ const COMBO_EXC = {
   sew: ['ew'],
 };
 function splitBlocks(w) {
-  const s = String(w).toLowerCase().replace(/[^a-z]/g, '');
+  /* ★ 2026-11-11.4：保留词库原始大小写。China / January / Monday 是专有
+     名词，切块前若先 toLowerCase，孩子拼出来就是 china / january / monday。
+     raw 与 s 等长（同样滤掉非字母），切片位置一一对应。 */
+  const raw = String(w).replace(/[^A-Za-z]/g, '');
+  const s = raw.toLowerCase();
   const exc = COMBO_EXC[s];
   let trigs = EAR_NOT_IER[s] ? PEP_TRIGRAPHS.filter(d => d !== 'ear') : PEP_TRIGRAPHS;
   let digs = PEP_DIGRAPHS;
@@ -434,13 +438,14 @@ function splitBlocks(w) {
     if (i + 4 <= s.length && s.startsWith('tion', i)) hit = 'tion';
     if (!hit && i + 3 <= s.length) hit = trigs.find(d => d !== 'tion' && s.startsWith(d, i)) || null;
     if (!hit) hit = digs.find(d => s.startsWith(d, i)) || null;
-    parts.push(hit || s[i]);
-    i += (hit || s[i]).length;
+    const len = (hit || s[i]).length;
+    parts.push(raw.slice(i, i + len));
+    i += len;
   }
   return parts;
 }
 /* 短语/连字符词分段：'look after'→['look','after']，'o'clock'→['o','clock'] */
-function splitPhrase(w) { return String(w).toLowerCase().split(/[\s'’\-]+/).filter(Boolean); }
+function splitPhrase(w) { return String(w).split(/[\s'’\-]+/).filter(Boolean); }
 /* 词 → 拼读拆分展示串：look after → l · oo · k ／ a · ft · er */
 function phonicsLine(w) { return splitPhrase(w).map(p => splitBlocks(p).join(' · ')).join(' ／ '); }
 

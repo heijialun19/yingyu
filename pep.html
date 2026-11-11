@@ -55,14 +55,14 @@
 .spell-stage .sp-zh{font-size:1.15rem;font-weight:700;margin-top:2px}
 .spell-stage .sp-speaker{margin-top:6px}
 .spell-slots{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:14px 0 6px;min-height:64px}
-.slot{min-width:46px;height:56px;padding:0 10px;border:3px solid #E3E7F0;border-radius:12px;background:#FAFBFE;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:800;text-transform:lowercase;cursor:pointer;position:relative;white-space:nowrap}
+.slot{min-width:46px;height:56px;padding:0 10px;border:3px solid #E3E7F0;border-radius:12px;background:#FAFBFE;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:800;cursor:pointer;position:relative;white-space:nowrap}
 .slot .hint{position:absolute;bottom:4px;width:18px;height:3px;border-radius:2px;background:#D5DAE6}
 .slot.filled{background:#FFF7DA;border-color:var(--lemon)}
 .slot.ok{background:#F2FBF5;border-color:var(--mint)}
 .slot.bad{background:#FFEDEF;border-color:var(--pink);animation:shake .35s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .spell-tiles{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}
-.tile{min-width:52px;height:54px;padding:0 12px;border:3px solid #E3E7F0;border-radius:14px;background:#fff;font-family:inherit;font-size:1.3rem;font-weight:800;text-transform:lowercase;color:var(--ink);cursor:pointer;transition:.12s;box-shadow:0 3px 0 rgba(45,49,66,.08)}
+.tile{min-width:52px;height:54px;padding:0 12px;border:3px solid #E3E7F0;border-radius:14px;background:#fff;font-family:inherit;font-size:1.3rem;font-weight:800;color:var(--ink);cursor:pointer;transition:.12s;box-shadow:0 3px 0 rgba(45,49,66,.08)}
 .tile:hover{border-color:var(--lemon);transform:translateY(-2px)}
 .tile.used{opacity:.25;pointer-events:none}
 .tile.glint{animation:glint 0.9s infinite}
@@ -125,11 +125,11 @@
 <script async src="svg/emoji-svg2.js?v=3"></script>
 <script src="js/ipa.js?v=5"></script>
 <script src="js/data.js?v=39"></script>
-<script src="js/app.js?v=116"></script>
+<script src="js/app.js?v=117"></script>
 <script defer src="js/sentence.js?v=49"></script>
 <script defer src="js/audio-list.js?v=4"></script>
 <script src="js/pep-data.js?v=1"></script>
-<script src="js/pep-points.js?v=17"></script>
+<script src="js/pep-points.js?v=18"></script>
 <script>
 renderNav('pep'); renderDecor();
 
@@ -471,7 +471,10 @@ function renderSpell() {
   const pool = new Set();
   S.list.forEach(x => { if (x.w !== cur.w) splitPhrase(x.w).forEach(p => splitBlocks(p).forEach(b => pool.add(b))); });
   SP.parts.forEach(p => { if (p !== part) splitBlocks(p).forEach(b => pool.add(b)); });
-  blocks.forEach(b => pool.delete(b));
+  /* 块现在保留大小写（China → Ch / i / n / a），本组其它词的干扰块仍是
+     小写；统一按小写比对去重，避免干扰块和目标块长得一模一样。 */
+  const targetLower = new Set(blocks.map(b => b.toLowerCase()));
+  Array.from(pool).forEach(b => { if (targetLower.has(b.toLowerCase())) pool.delete(b); });
   const distract = shuffle(Array.from(pool)).slice(0, Math.min(3, Math.max(1, 5 - Math.min(4, blocks.length))));
   SP.tiles = shuffle(blocks.concat(distract));
   SP.filled = [];
