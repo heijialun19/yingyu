@@ -433,7 +433,7 @@ const GRAMMAR_LEVELS = [
     chant:'on 在上面 🆙\nin 在里面 📥\nunder 在下面 ⬇️\nThe cat is on the bed!',
     gen:{ n:4, kinds:['whereIs'], themes:['animal1','toy'], places:['table','bed','chair','sofa','floor'] },
     items:[
-      {type:'choice', prompt:'「小猫在床上」哪个说法对？', options:['The cat is on the bed.','The cat on is the bed.','The cat is on bed.'], answer:0, zh:'The cat is on the bed.', explain:'谁 + is + on + the + 地点，一个都不能少。'} ]},
+      {type:'choice', prompt:'想说「小猫在床上」，哪句英语对？', options:['The cat is on the bed.','The cat on is the bed.','The cat is on bed.'], answer:0, zh:'The cat is on the bed.', explain:'谁 + is + on + the + 地点，一个都不能少。'} ]},
   { id:'L12', stage:'s2', title:'我有：I have __', emoji:'🎒', formula:'I have + 数字 + 复数', stars:3,
     intro:'数数你有什么！公式：谁 + have + 数字 + 东西（复数加 s）。two cats、three birds……',
     chant:'我有两只小猫咪 🐱🐱\nI have two cats\n数字后面加 s\n东西变多笑哈哈！',

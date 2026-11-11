@@ -14,9 +14,9 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v117 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v118 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v42 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
-| js/data.js | v39 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
+| js/data.js | v40 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v8 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
@@ -31,7 +31,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v171 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v172 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -1514,3 +1514,29 @@ batch2-11.js / colors.js / memo_1-5.js / merge.js（228KB）没有任何页面�
 ①A：`gPhonics()` 的 `usable` 池加 `p.ws.some(w => phBlendable(p.segs[w.w]))`过滤。`a_e / i_e / o_e` 三族无 `segs`（硬拼会把 cake 读成 /kæke/，教学上故意不做拼词），整族无可拼词，原来随机挑中就是整局 6 题全选图，300 局实测首屏选图 17%～20%。用「至少一个可拼词」而非硬编码三个族名，以后新增的全选图词族也进不来。三族的 18 个词在单词镇 / 听词选图里仍练得到。
 
 版本链：BUILD .2 → 2026-11-11.3，app v115 → v116，word-svg v3 → v4，CACHE v169 → v170。音频零改动（AUDIO_VER 4 / SENTENCE_VER 2 / PHRASE_VER 2 / AUDIO_CACHE v5 不动）。
+
+## 2026-11-11.5 位置题中文改说「人话」
+
+家长反馈「游戏在地板上」这句不通顺、不像正常话。.4 只是把 game 等抽象/大型词
+塞进黑名单，属于治标：`gxNouns(animal1 + toy)` 里还有自行车、踏板车、小船、
+飞机、小汽车、母鸡、风筝，随机配 bed / sofa / floor 仍会生成「自行车在地板上」
+「小船在地板上」「母鸡在沙发上」「风筝在床上」。本版改两处：
+
+1. **词池改真白名单** `WHERE_OK`：只留家中真会摆在家具或地上的小宠物 +
+   小玩具（16 个）。`WHERE_FURNITURE_OK` 子集才可上 bed / table / chair / sofa，
+   其余（家禽、会飘的）只说「在地上」。交通工具（真车/玩具车有歧义）、
+   户外设施、大型野生动物、离水动物、抽象名词整族不进这一关；
+   它们在单词镇、听词选图里照常学得到，教学覆盖不减。
+2. **中文自然化**：`PLACE_ZH` 把 on the floor 写成「在地上」而不是「在地板上」；
+   题面从「"X在Y上" 哪个说法对？」改成「想说「X在Y上」，哪句英语对？」，
+   答题解析同步。L11 静态题问法也同步；其它关既有的「哪个说法对？」问法未动。
+
+三选一里两句错句是辨析用干扰项，按家长选 A 保持不动。
+
+验证：导出 19 关全量题库逐条审阅，L11 中文题面里「在地板上」0 条、
+不通顺名词 0 条；改动前基线负对照能抓到 42 条荒谬/生硬组合。
+check_facts 新增白名单、自然中文与静态题问法断言；真浏览器探针全覆盖。
+
+版本链：BUILD .4 → 2026-11-11.5，app v117 → v118，data v39 → v40，
+CACHE v171 → v172。音频零改动（AUDIO_VER 4 / SENTENCE_VER 2 /
+PHRASE_VER 2 / AUDIO_CACHE v5 不动）。

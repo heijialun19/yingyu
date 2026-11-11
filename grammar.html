@@ -55,8 +55,8 @@
 
 <script src="js/words-data.js?v=42"></script>
 <script src="svg/word-svg.js?v=4"></script>
-<script src="js/data.js?v=39"></script>
-<script src="js/app.js?v=117"></script>
+<script src="js/data.js?v=40"></script>
+<script src="js/app.js?v=118"></script>
 <script defer src="js/audio-list.js?v=4"></script>
 <script src="js/sentence.js?v=49"></script>
 <script src="js/grammar-engine.js?v=8"></script>
@@ -194,17 +194,20 @@ function gxPickObject(ws, themes) {
   const w = pick(safe);
   return { en: pluralOf(w), zh: w.zh, w };
 }
-/* ★ 2026-11-11.4：位置题只能用「真能放在这些家具上的小实物」。
-   原来 gxNouns(ws) 把 game（游戏，抽象）、swing/slide（户外设施）、
-   elephant/cow（大型动物）、fish/duck（离水）全放进来，再随机配
-   bed/sofa/table/chair，拼出「游戏在地板上」「大象在沙发上」
-   「奶牛在桌子上」——语法对、常识荒谬，孩子会以为英语可以这么说。
-   白名单比事后黑名单可靠：小物件可上家具，其余实物只放地板，
-   抽象/过大/离水的词整族不进这一关。 */
-const WHERE_EXCLUDE = new Set(['game','swing','slide','fish','duck','goose','owl','eagle',
-  'bear','panda','tiger','lion','elephant','cow','sheep','giraffe','zebra','koala','yo-yo']);
-const WHERE_SMALL = new Set(['cat','dog','bird','rabbit','mouse','hen','chick',
-  'monkey','pig','ball','kite','doll','toy','robot','puzzle','balloon']);
+/* ★ 2026-11-11.5：位置题改「真白名单」。
+   .4 的黑名单只排掉 game 等抽象/大型动物，但 gxNouns(animal1 + toy) 里还有
+   自行车 / 踏板车 / 小船 / 飞机 / 小汽车 / 母鸡 / 风筝，配 bed/sofa/floor
+   会说成「自行车在地板上」「小船在地板上」「母鸡在沙发上」——中文不通顺，
+   不像正常人说话。家长原话点的是「游戏在地板上」，属于同一类病根：
+   不是常识对错，是整句中文别扭。现在只留家中真会摆在家具或地上的
+   小宠物 + 小玩具（交通工具整族不进，真车/玩具车有歧义）；其中能上家具的
+   另设子集，其余只说「在地上」。
+   中文方位用口语：on the floor 说「在地上」，不说「在地板上」。 */
+const PLACE_ZH = { table:'桌子上', bed:'床上', chair:'椅子上', sofa:'沙发上', floor:'地上' };
+const WHERE_OK = new Set(['cat','dog','rabbit','mouse','bird','chick','hen','pig',
+  'ball','doll','toy','robot','puzzle','yo-yo','kite','balloon']);
+const WHERE_FURNITURE_OK = new Set(['cat','dog','rabbit','mouse','bird','chick',
+  'ball','doll','toy','robot','puzzle','yo-yo']);
 const GEN = {
   likeChoice(ws) {
     const safe = ws.filter(pluralSafe);
@@ -241,18 +244,20 @@ const GEN = {
       zh: `I can ${w.w}. 我会${w.zh}。`, explain: 'can 后面的动词用原形，不加 s 不加 to。' };
   },
   whereIs(ws, lv) {
-    const ns = gxNouns(ws).filter(w => !WHERE_EXCLUDE.has(String(w.w).toLowerCase()));
+    const ns = gxNouns(ws).filter(w => WHERE_OK.has(String(w.w).toLowerCase()));
     if (!ns.length) return null;
     const w = pick(ns);
-    /* 小物件可上床/沙发/椅子/桌子，其余实物只放地板。 */
-    let places = (lv.gen.places || ['bed']).slice();
-    if (!WHERE_SMALL.has(String(w.w).toLowerCase())) places = places.filter(x => x === 'floor');
+    /* 小宠物 + 小玩具可上家具；家禽、玩具车、会飘的只说「在地上」。 */
+    let places = (lv.gen.places || ['floor']).slice();
+    if (!WHERE_FURNITURE_OK.has(String(w.w).toLowerCase()))
+      places = places.filter(x => x === 'floor');
     if (!places.length) places = ['floor'];
-    const p = pick(places.map(x => ({ w: x, zh: themeWordZh(x) })));
+    const p = pick(places);
+    const pz = PLACE_ZH[p] || themeWordZh(p);
     return { type:'choice', word: w.w,
-      prompt: `「${w.zh}在${p.zh}上」哪个说法对？ ${iconOf(w)}`,
-      options: [`The ${w.w} is on the ${p.w}.`, `The ${w.w} on the ${p.w} is.`, `The ${w.w} is on ${p.w}.`], answer: 0,
-      zh: `The ${w.w} is on the ${p.w}. ${w.zh}在${p.zh}上。`,
+      prompt: `想说「${w.zh}在${pz}」，哪句英语对？ ${iconOf(w)}`,
+      options: [`The ${w.w} is on the ${p}.`, `The ${w.w} on the ${p} is.`, `The ${w.w} is on ${p}.`], answer: 0,
+      zh: `The ${w.w} is on the ${p}. ${w.zh}在${pz}。`,
       explain: '谁 + is + on + the + 地点，顺序固定。' };
   },
   isQuestion(ws) {
