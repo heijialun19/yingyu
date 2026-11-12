@@ -877,3 +877,30 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   /* 高对比度下阴影和底色都会消失，按钮/卡片得靠边框还能看出边界 */
   .btn, .chip, .card, .level-card, .badge-cell { border: 2px solid CanvasText; }
 }
+
+/* ---------- B4：词卡音标旁的「课本写法」入口（2026-11-12.2） ----------
+   只给符号对照，不生成逐词课本音标 —— 美式表丢了重音层级，机械转换会教错。
+   ? 用纯 ASCII + CSS 画圆圈，不依赖系统 emoji 字体。 */
+.ipa-note{
+  display:inline-flex;align-items:center;justify-content:center;flex:none;
+  width:16px;height:16px;margin-left:5px;padding:0;vertical-align:middle;
+  border:1.5px solid #9AA7B8;border-radius:50%;background:#F4F7FB;
+  color:#3D4459;font:700 11px/1 system-ui,-apple-system,sans-serif;cursor:pointer;
+}
+.ipa-note:hover{background:#E4EEF8;border-color:#3D4459}
+.ipa-note:focus-visible{outline:2px solid #2D3142;outline-offset:2px}
+.ipa-modal{padding:20px 22px}
+.ipa-modal h2{font-size:1.15rem;margin:0 0 10px}
+.ipa-modal p{font-size:.9rem;line-height:1.8;color:var(--ink2);margin:8px 0}
+.ipa-lead{color:var(--ink) !important}
+.ipa-big{font-size:1.12rem;color:#2D3142;letter-spacing:.01em}
+.ipa-cmp{width:100%;border-collapse:collapse;margin:12px 0;font-size:.82rem}
+.ipa-cmp th,.ipa-cmp td{border:1px solid #E4EAF2;padding:7px 8px;text-align:left;vertical-align:top;line-height:1.6}
+.ipa-cmp th{background:#F4F8FD;font-weight:800;color:#2D3142}
+.ipa-cmp td{color:#3D4459}
+.ipa-fine{font-size:.8rem !important;color:var(--ink2) !important}
+@media (max-width:420px){
+  .ipa-modal{padding:16px 14px}
+  .ipa-cmp{font-size:.74rem}
+  .ipa-cmp th,.ipa-cmp td{padding:5px 5px}
+}

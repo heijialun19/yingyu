@@ -18,7 +18,7 @@
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/words.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=51" onerror="this.onerror=null;this.href='css/style.css?v=51&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=52" onerror="this.onerror=null;this.href='css/style.css?v=52&amp;retry=1'">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -131,7 +131,7 @@
   <div id="app"><div id="bootPlaceholder" class="card" style="max-width:560px;margin:22px auto;text-align:center;padding:26px 18px"><div style="font-size:34px">🐤</div><p style="color:#6B7280;font-size:.9rem;margin:8px 0 0">正在打开，请稍等…</p></div></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div>
   <!-- ★ 2026-11-11.11（D2）静态摘要：关掉 JS / 爬虫抓取时也能读到目录与词表样本。
-       内容由 _audit/gen_static_digest.js 从 words-data.js 现算，改词库请重跑脚本。 -->
+       内容由词库现算生成，改词库后需同步重建本段摘要。 -->
   <noscript>
     <section class="card" style="margin-top:18px">
       <h2>📖 词库速览（不依赖脚本）</h2>
@@ -169,6 +169,44 @@ document.getElementById('totalWords').textContent = TOTAL_WORDS;
 /* ---------------- 工具 ---------------- */
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const jsq = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'"); // 安全放进 onclick 的 JS 字符串参数
+/* ---------------- B4：课本音标写法对照（2026-11-12.2） ----------------
+   本站音标是 CMUdict 转写的美式紧凑记法（家长 2026-11-09 拍板保留）。
+   人教版等课本常用带长音符的写法，家长对着课本核对会以为印错了。
+   这里只给「符号对照」，绝不生成逐词的课本音标：美式表丢了重音层级，
+   /i/ 在词尾非重读音节（happy）与重读音节（she）对应不同写法，
+   /ɑ/ 的英式对应还随词变化，机械转换 1000 条必然教错孩子。 */
+function openIpaNote(w) {
+  const ipa = (typeof ipaOf === 'function' ? ipaOf(w) : '') || '';
+  const mask = document.createElement('div');
+  mask.className = 'modal-mask';
+  mask.onclick = e => { if (e.target === mask) mask.remove(); };
+  mask.innerHTML = `
+    <div class="modal card ipa-modal" role="dialog" aria-modal="true" aria-labelledby="ipaNoteTitle">
+      <h2 id="ipaNoteTitle">🔤 课本写法对照</h2>
+      <p class="ipa-lead">本站 <b lang="en">${esc(w)}</b> 标注为
+        <b class="ipa-big" lang="en">${esc(ipa)}</b>，用的是<b>美式音标</b>，和站内朗读的美音一致。</p>
+      <p>人教版等课本常用带长音符 <b lang="en">ː</b> 的写法。<b>两种写法读的是同一个词</b>，不是印错了。</p>
+      <table class="ipa-cmp">
+        <thead><tr><th>本站（美式）</th><th>课本常见</th><th>例子</th></tr></thead>
+        <tbody>
+          <tr><td lang="en">/i/</td><td lang="en">/iː/</td><td lang="en">she /ʃi/ → /ʃiː/</td></tr>
+          <tr><td lang="en">/u/</td><td lang="en">/uː/</td><td lang="en">school /skul/ → /skuːl/</td></tr>
+          <tr><td lang="en">/oʊ/</td><td lang="en">/əʊ/</td><td lang="en">no /noʊ/ → /nəʊ/</td></tr>
+          <tr><td lang="en">词尾 /ər/</td><td lang="en">/ə/</td><td lang="en">teacher /ˈtitʃər/ → /ˈtiːtʃə/</td></tr>
+          <tr><td lang="en">/ɑr/ /ɔr/ /ɜr/</td><td lang="en">/ɑː/ /ɔː/ /ɜː/</td><td>词尾的 r，课本常不写</td></tr>
+        </tbody>
+      </table>
+      <p class="ipa-fine">上表是<b>符号对照</b>，不是整词转换规则：同一个符号在不同词里课本写法可能不同
+        （如词尾非重读的 /i/）。本站不逐词提供课本音标，<b>抄写作业请以老师板书和课本词表为准</b>。</p>
+      <button type="button" class="btn" onclick="this.closest('.modal-mask').remove()">知道啦</button>
+    </div>`;
+  document.body.appendChild(mask);
+  mask.tabIndex = -1;
+  mask.addEventListener('keydown', e => { if (e.key === 'Escape') mask.remove(); });
+  const close = mask.querySelector('.btn');
+  if (close) close.focus();
+}
+
 const ALL = {};
 THEMES.forEach(t => t.words.forEach(w => { if (!ALL[w.w]) ALL[w.w] = Object.assign({ theme: t.id }, w); }));
 const themeById = id => THEMES.find(t => t.id === id);
@@ -213,7 +251,7 @@ function showPool(kind) {
             <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
-            ${ipaOf(w.w) ? `<div class="ph" lang="en">${ipaOf(w.w)}</div>` : ''}
+            ${ipaOf(w.w) ? `<div class="ph" lang="en">${ipaOf(w.w)}<button type="button" class="ipa-note" lang="zh-CN" data-w="${esc(w.w)}" title="课本写法对照" aria-label="查看音标的课本写法对照" onclick="event.stopPropagation();openIpaNote(this.dataset.w)">?</button></div>` : ''}
             <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
@@ -265,7 +303,7 @@ function renderSearch() {
             <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
-            ${ipaOf(w.w) ? `<div class="ph" lang="en">${ipaOf(w.w)}</div>` : ''}
+            ${ipaOf(w.w) ? `<div class="ph" lang="en">${ipaOf(w.w)}<button type="button" class="ipa-note" lang="zh-CN" data-w="${esc(w.w)}" title="课本写法对照" aria-label="查看音标的课本写法对照" onclick="event.stopPropagation();openIpaNote(this.dataset.w)">?</button></div>` : ''}
             <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
@@ -354,7 +392,7 @@ function renderBrowse() {
             <span class="spk" aria-hidden="true">🔊</span>
             <span class="we">${wordIcon(w)}</span>
             <b lang="en">${w.w}</b>
-            ${ipaOf(w.w) ? `<div class="ph" lang="en">${ipaOf(w.w)}</div>` : ''}
+            ${ipaOf(w.w) ? `<div class="ph" lang="en">${ipaOf(w.w)}<button type="button" class="ipa-note" lang="zh-CN" data-w="${esc(w.w)}" title="课本写法对照" aria-label="查看音标的课本写法对照" onclick="event.stopPropagation();openIpaNote(this.dataset.w)">?</button></div>` : ''}
             <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
             <div class="zh">${w.zh}</div>
             <div class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</div>
@@ -408,7 +446,7 @@ function renderCardFlow() {
         <button class="cf-word" onclick="speakWord('${jsq(w.w)}')" title="点我发音">${esc(w.w)}</button>
         <div class="cf-meta">
           <span class="pos-chip" title="${posInfo(w.pos).kid}">${posInfo(w.pos).emoji} ${posInfo(w.pos).zh}</span>
-          <span class="cf-ipa">${ipaOf(w.w)}</span>
+          ${ipaOf(w.w) ? `<span class="cf-ipa">${ipaOf(w.w)}<button type="button" class="ipa-note" lang="zh-CN" data-w="${esc(w.w)}" title="课本写法对照" aria-label="查看音标的课本写法对照" onclick="event.stopPropagation();openIpaNote(this.dataset.w)">?</button></span>` : ''}
         </div>
         <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
         <div class="cf-zh">${w.zh}</div>

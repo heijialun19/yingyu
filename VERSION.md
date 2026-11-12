@@ -26,12 +26,12 @@
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
 | js/pep-points.js | v23 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
 | js/audio-list.js | v5 | 发音清单（2878 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
-| css/style.css | v51 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
+| css/style.css | v52 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
 | svg/word-svg.js | v6 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡；3 张泄答案图已重画） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v180 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v181 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -1846,3 +1846,65 @@ getsmart-data v14 → v15，word-svg v4 → v5，emoji-svg v5 → v6，
 拍板的口径；B3 新补 4 关仍是静态题；自动出题关的 themes 白名单没扩，
 探针用全量词池抽出的抽象名词题（「这是一个力量」等）**不是线上路径**，
 不据此改教学口径，只作为未来扩池时的参考。
+
+## 2026-11-12.2 · B4 音标课本写法对照 + D3 注释清理
+
+外部审查 **B4**（P2）：「`js/ipa.js` 1000 条音标里长音符 `ː` 出现 0 次……家长对着
+课本核对会以为音标打错了，孩子抄到作业本上也和老师的板书不一致。修法二选一：
+① 全表补长音符，与教材统一；② 保留现写法，但在词卡上加一行『课本写法 /iː/』对照。」
+
+**决定：走 ②，且只给符号对照，不生成逐词课本音标。**
+
+- ① 会推翻家长 2026-11-09 拍板的「全站美式」口径，也会让站内音标与朗读的美音
+  声线自相矛盾，不做。
+- ② 若理解成「给每个词配一条课本音标」，等于凭空造第二份 1000 条音标表。
+  本站美式表由 CMUdict 转写而来，**已经丢了重音层级**：`/i/` 在重读音节
+  （she /ʃi/）课本写 `/iː/`，在词尾非重读音节（happy /ˈhæpi/）课本常仍写 `/i/`；
+  `/ɑ/` 的英式对应依词不同（`ɑː` / `ɒ`），`/ɔr/` 又牵涉 r 是否省略。
+  机械规则必然教错孩子 —— 这比不加对照更糟。机器能证明文件在、能跑、对得上，
+  证明不了教得对（见 2026-11-11 教学内容正确性那课）。
+
+**落地**：单词镇 3 处词卡音标行 + 卡片学 `cf-ipa` 加一个 `?` 小圆按钮
+（纯 ASCII + CSS 画圈，不依赖 emoji 字体；`data-w` 属性寻址，单词不拼进 onclick，
+`event.stopPropagation()` 防止点说明时触发整卡发音）。点开浮层显示当前词的美式音标、
+5 组符号对照表、以及「本站不逐词提供课本音标，抄写作业请以老师板书和课本词表为准」。
+家长中心补完整说明卡，免责声明补入口指引。**`js/ipa.js` 与 `PEP_IPA` 一个字符未动。**
+
+**D3 残留一并清掉**：3 处正式页 HTML 注释写着本地 `_audit/...` 脚本路径
+（index / words / games），另 1 处 games.html 还写着「China/Canada 都是蓝底 C 字母块」
+—— 两国早在图库补齐时就是国旗自绘图了。零功能影响，随这次发版顺手带，
+不单独为 4 行注释升一次 CACHE。
+
+### C3 首屏数据：本轮不裁，附工程结论
+
+报告 C3 建议「首页只导出年级→词数的统计」，核算后**不成立**。
+先给可复算的基线：按两页 HTML 实际引用的 `script[src]` / `link[rel=stylesheet]`
+逐个文件 gzip -9 实测（KB 按 1024 换算；不含 SW 后台补缓存的资源、
+不含点击后才请求的音频；旧报告快照里的 1.7MB 是 raw 且已过期）：
+
+| 页面 | 首屏资源 raw | gzip | 最大的几块（gzip） |
+|---|---|---|---|
+| `index.html` | 509.6 KB | **176.4 KB** | `app.js` 54.4 / `words-data.js` 40.6 / `getsmart-data.js` 34.0 / `data.js` 21.1 / `style.css` 16.3 / `audio-list.js` 10.2 |
+| `words.html` | 937.7 KB | **292.7 KB** | `pep-points.js` 83.0 / `app.js` 54.4 / `words-data.js` 40.6 / `word-svg.js` 29.9 / `data.js` 21.1 / `style.css` 16.3 |
+
+| 文件 | 首页真实依赖 | 能否用统计替代 |
+|---|---|---|
+| `js/words-data.js` raw 97.2KB / gzip 40.6KB | `cumGrades()` → `gradeWordCount()` / `cumMasteredCount()` 要**逐词**查 `Store.d.words[w.w].box` | 否，需要词条对象本身 |
+| `js/getsmart-data.js` raw 128.3KB / gzip 34.0KB | `gsLevelProgress()` 与 `gsFlowState()` 要读每册每单元算「今天补哪一课」 | 否，需要课程表 |
+| `js/app.js` raw 136.8KB / gzip 54.4KB | 9 个正式页共用，导航 / 档案 / 发音 / 进度全在里面 | 否 |
+
+两档可选（都需单独立项，本轮不动）：
+- **A 档（低风险）**：不动数据结构，只把首页 `sentence.js`（raw 8.6KB / gzip 3.9KB）摘掉。
+  已逐页核过：9 个正式页都引它（404 不引），但 `index.html` 既不调用
+  `speakSentence` 也不调用 `prewarmSentence`，`js/app.js` 同样没有调用点，
+  确证首页可摘。收益 gzip 3.9KB，几乎无感，且会让 9 页脚本矩阵不一致，性价比一般。
+- **B 档（架构级）**：把词库拆成「轻量索引（词 w + 年级 + 主题 id）」与「详情（中文/记忆法/图解）」，
+  首页只载索引；或用构建脚本生成 `home-stats.js` 派生数据并用门禁钉住与真相源一致。
+  理论上限是 `words-data.js` 40.6KB + `getsmart-data.js` 34.0KB = 74.6KB，
+  扣掉要新增的索引/派生数据，净省估计 55~65KB；但要把进度计算改成异步 fetch，
+  **会把 2026-11-07 白屏事故的风险重新引回来**，需先补首屏骨架与超时回归。
+- 另注：`words.html` 最大的 `pep-points.js`（gzip 83.0KB）不是首页问题，
+  若真要优化单词镇首屏，比动首页数据结构更值，但同样要单独立项验证依赖。
+
+版本链：style v51→v52、CACHE v180→v181、BUILD 2026-11-12.1→.2。
+音频四套版本号与 `AUDIO_CACHE` 全未动，老设备不重下音频包。

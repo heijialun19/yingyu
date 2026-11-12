@@ -18,7 +18,7 @@
 <title>游戏乐园 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/games.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=51" onerror="this.onerror=null;this.href='css/style.css?v=51&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=52" onerror="this.onerror=null;this.href='css/style.css?v=52&amp;retry=1'">
 </head>
 <!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
 <body data-emoji="full">
@@ -1105,16 +1105,15 @@ function gPhonics() {
    于是 a/an、单复数、可数性、句子连读这些坑**全都不存在了**：
    「I have a children.」这类病句不可能出现，也不用给 485 种句子各烘一段音频。
 
-   ★ 词池是静态清单 WP_WORDS（364 词 / 28 主题），由 _audit/build_wordpic_pool.py
+   ★ 词池是静态清单 WP_WORDS（364 词 / 28 主题），由词图池构建脚本
      依据真浏览器量测生成，规则全部可复算：
-       具体实物主题白名单（排除国家主题：China/Canada 都是蓝底 C 字母块）
+       具体实物主题白名单（排除国家主题：国旗卡与实物不同类）
        ∩ hasIcon 真图 ∩ 有站内单词 mp3 ∩ 单词不含空格
        ∩ 图有效像素达标（ink>=0.14 且 (colors>=5 或 ink>=0.20)，
          排除 plate/message/story/breakfast 这类淡到看不见的图）
        ∩ 非抽象概念 / 动作 / 总称词（peace / pay / kick / colour…）
        ∩ 该主题剔完至少还剩 4 词
-     改词库、图库或出题规则，必须重跑 probe_wordpic_pool.html /
-     probe_wordpic_contrast.html / build_wordpic_pool.py / test_wordpic_pool.js。
+     改词库、图库或出题规则，必须重跑词图池的量测、对比、构建与校验脚本。
 
    ★ 同题四个选项来自四个**不同主题**：两张日历图、两辆小汽车这种同族近似图
      根本不会同屏；再加中文、同音、同义组、渲染图四重去重。
