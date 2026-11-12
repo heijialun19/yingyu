@@ -24,14 +24,16 @@
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v15 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
-| js/pep-points.js | v23 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
+| js/pep-lessons.js | v1 | 人教版单元知识点讲解（273 张卡 / gzip 40.1KB）。**仅 pep.html 引**；`en:` 字段与整句音频对账 |
+| js/pep-mem.js | v1 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
+| js/pep-points.js | v24 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
 | js/audio-list.js | v5 | 发音清单（2878 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v52 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
 | svg/word-svg.js | v6 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡；3 张泄答案图已重画） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v181 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v182 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -1908,3 +1910,105 @@ getsmart-data v14 → v15，word-svg v4 → v5，emoji-svg v5 → v6，
 
 版本链：style v51→v52、CACHE v180→v181、BUILD 2026-11-12.1→.2。
 音频四套版本号与 `AUDIO_CACHE` 全未动，老设备不重下音频包。
+
+## 2026-11-12.3 · C3 首屏瘦身：课本数据按页拆开（别再合并回去）
+
+**决定：不采纳上一节的 B 档（拆词库索引）。** 那条路净省 55~65KB，但要把
+`cumGrades()` / `gsLevelProgress()` 改成异步 fetch，等于把 2026-11-07 白屏事故
+的风险请回来。本轮改走零架构风险的一条：把「9 页复制粘贴出来的脚本矩阵」
+按真实依赖拆开，收益更大、一个字符的数据结构和进度逻辑都没动。
+
+### 账：`js/pep-points.js` gzip 83.0KB 里到底装了什么
+
+| 段（拆分前行号） | gzip | 谁真的用 |
+|---|---|---|
+| `PEP_POINTS` 单元讲解 5-389 | 40.1 KB | **只有 pep.html**（`pepPointsOf`） |
+| `PEP_MEM` 记忆法 667-1563 | 25.8 KB | getsmart / pep（`pepMemOf`） |
+| `PEP_POS` + `PEP_IPA` | 8.2 KB | pep.html（`pepPosKey` / `pepIpaOf`） |
+| 拼读 / 音节工具 390-666 + 查询函数 | **8.8 KB** | words / getsmart / pep 全站 |
+
+`words.html` 只用 `phonicsLine` / `splitSyllables`（词卡那行「🔤 拼读拆分」和
+跟读音节），却为 74KB 课本数据付了首屏。`getsmart.html` 只用 `pepMemOf` +
+`phonicsLine`，不需要 40KB 的单元讲解。静态符号级依赖矩阵 +
+逐页 `onclick` 全文核对过，`js/app.js` 里**没有任何** `PEP_*` 引用。
+
+### 切法与接线
+
+拆成三份纯静态脚本（生成脚本 `_audit/split_pep_20261112.py` 幂等可复算，
+⚠ 读写一律 `newline=''`，否则 LF 变 CRLF 整文件 diff 上千行）：
+
+| 页面 | 引用 | 首屏 gzip |
+|---|---|---|
+| `words.html` | `pep-points.js` | 8.8 KB |
+| `getsmart.html` | `pep-mem.js` + `pep-points.js` | 42.4 KB |
+| `pep.html` | `pep-lessons.js` + `pep-mem.js` + `pep-points.js` | 82.5 KB |
+
+**跨 `<script>` 的顶层 `const` 共享同一个全局词法环境**：`pep-points.js` 里的
+`pepMemOf` / `pepIpaOf` / `pepPosKey` 运行时能读到另两个文件的数据；
+函数定义时不求值，所以 words 页单独加载它、缺那三块数据也不会报错。
+数据先于工具加载是刻意选的顺序。所有脚本仍是**同步加载**，没有 async、
+没有 fetch、没有首屏骨架，白屏风险不增。
+
+⚠ 切分边界别按「大块行数」硬切：390-399 是「自然拼读拆块」的两段注释
+（属工具，不属课本讲解），667 行是 `PEP_MEM` 的段头注释（属数据，不属工具）。
+第一版按 5-399 / 400-667 切，把注释放错了文件，已按顶层定义行重新定位。
+
+### 发版升级路径的坑
+
+activate 会把旧 CACHE 的字节搬进新 CACHE，但**这两个文件是本次新增的，
+上一代缓存里根本没有，搬不过来**。老用户升级后若立刻打开课本页，后台
+补齐还没跑到，就会静默没讲解 / 没记忆法。已把 `todo.sort()` 加进 SW，
+让 `pep-lessons.js` / `pep-mem.js` 排到后台补齐队列最前面先补；
+BOOT 没动，激活不被拖慢，窄带仍整批跳过（那时页面自身的 fetch 会顺带入缓存）。
+
+### 实测（按各页 HTML 实际 script/link 逐文件 gzip -9，KB 按 1024）
+
+| 页面 | 拆分前 | 现在 | 变化 |
+|---|---|---|---|
+| `index.html` | 176.4 KB | 176.4 KB | 0（首页不引课本数据） |
+| `words.html` | 292.7 KB | **220.5 KB** | **-72.2 KB / -24.7%** |
+| `getsmart.html` | 430.1 KB | **391.4 KB** | **-38.7 KB / -9.0%** |
+| `pep.html` | 412.1 KB | 413.5 KB | +1.4 KB（两个新文件头，基本持平） |
+
+`sw.js CORE` 仍预缓存三份，离线可用性和总下载量不变；CORE 后台补齐有
+1200ms 宽限期 + 低并发 + 窄带跳过，不与首屏抢连接。
+
+### 验收
+
+| 项 | 结果 |
+|---|---|
+| 事实门禁 | **348 PASS / 0 FAIL**；新增跨文件求值（`PEP_POINTS`/`PEP_MEM`/`PEP_IPA`/`phonicsLine`/`splitSyllables` 在拼接作用域里真实可调用）与按页引用断言 |
+| 真浏览器 `probe_split_pep.py` | 16 项全绿：**Performance API 实证** words 没下载 lessons/mem、getsmart 只下载 mem、pep 三份齐全；三页拼读结果一致；**交互层劫持计数**证明 pep 点进单元时 `pepPointsOf` 真被调用且渲染 6 张知识点卡、Get Smart 走到词卡时 `pepMemOf` 真被调用并返回记忆法；零 console / 零资源失败 / 零溢出 |
+| 全站 10 页运行时 | 0 console error / 0 资源失败 / 加载层全撤 / 每页 1 个 h1 |
+| 390px 多状态溢出 | 16/16 PASS |
+| B4 音标浮层 | 16/16 PASS（words.html 改过，复验） |
+| 本地 IPA 自测 | `test_ipa_coverage.js` / `test_ipa_lookup.js` 改为读拆分后的文件，全绿 |
+
+门禁改造时踩到并修掉 3 个坑，都记在这里防重犯：
+① 判「页面引了什么」只能扫 `<script src=...>` 标签，扫全文会被 words.html
+   的说明注释里写的文件名误命中；
+② 老断言读 `js/pep-points.js` 检查教材文案，拆分后要看三份合并文本
+   `_PEP_ALL`，否则把「文件里没有」误判成「内容被删」；
+③ `en:` 字段 ↔ 整句音频的对账列表必须把 `js/pep-lessons.js` 加进去；
+④ 交互探针第一版判「页面文本含『知识点』」—— 导航栏本来就有这三个字，
+   **假 PASS**。改成劫持 `pepPointsOf` / `pepMemOf` 数调用次数 + 数
+   `.point-card`，并让 Get Smart 真的走到 `L.step=1` 词卡
+   （Step 0 只是开场页，根本不调 `pepMemOf`）。判据松等于没验。
+
+### 维护备注 / 还没做的
+
+- ⚠ `pep-points.js` 里 `pepMemOf` / `pepIpaOf` / `pepPosKey` / `pepPointsOf`
+  依赖另两份数据；**将来若要在单词镇调用它们，必须先引对应数据文件**，
+  否则会抛 ReferenceError。当前 words 页线上路径零调用，探针已单独确认。
+- 后续可选（本轮刻意没做，收益小或需改结构）：
+  ① `sentence.js`（gzip 3.9KB）在 index/letters/disclaimer 三页零调用点
+     （`__cancelSpeak` 是 `typeof` 软调用），可摘，但 parents 页有「点我试听」
+     真调用，**不能整站摘**；
+  ② `words.html` 的 `pep-data.js`（15.6KB）只用 `PEP_LEVELS` 一个符号，
+     `getsmart.html` 的 `pep-points.js` 同理可再细拆，收益递减；
+  ③ 首页 `words-data.js` 40.6KB + `getsmart-data.js` 34.0KB 仍是**真依赖**
+     （逐词掌握统计 / 课程表），要保持现状，别按「统计能代替」硬裁。
+
+版本链：新增 `pep-lessons.js?v=1` / `pep-mem.js?v=1` 并进 CORE，
+`pep-points.js?v=23→v24`、`CACHE v181→v182`、`BUILD 2026-11-12.2→.3`。
+音频四套版本号、`AUDIO_CACHE`、`js/ipa.js` 与 `PEP_IPA` 数据零改动。

@@ -23,15 +23,17 @@ const IPA = {}; // ipa.js 形如 { "cat": "/kæt/", ... }，用 eval 装进对�
 })();
 console.log('ipa.js 条目', Object.keys(IPA).length);
 
-const pepSrc = fs.readFileSync(path.join(ROOT, 'js/pep-points.js'), 'utf8');
+// 2026-11-12.3：数据在 pep-mem.js，查询函数在 pep-points.js，别再从同一个文件里抽
+const pepDataSrc = fs.readFileSync(path.join(ROOT, 'js/pep-mem.js'), 'utf8');
+const pepToolSrc = fs.readFileSync(path.join(ROOT, 'js/pep-points.js'), 'utf8');
 let PEP_IPA = {};
 (function () {
-  const i = pepSrc.indexOf('const PEP_IPA = {');
-  if (i < 0) { console.log('FATAL: pep-points.js 里找不到 PEP_IPA'); process.exit(1); }
-  let depth = 0, j = pepSrc.indexOf('{', i);
-  for (let k = j; k < pepSrc.length; k++) {
-    if (pepSrc[k] === '{') depth++;
-    else if (pepSrc[k] === '}') { depth--; if (depth === 0) { PEP_IPA = eval('(' + pepSrc.slice(j, k + 1) + ')'); break; } }
+  const i = pepDataSrc.indexOf('const PEP_IPA = {');
+  if (i < 0) { console.log('FATAL: pep-mem.js 里找不到 PEP_IPA'); process.exit(1); }
+  let depth = 0, j = pepDataSrc.indexOf('{', i);
+  for (let k = j; k < pepDataSrc.length; k++) {
+    if (pepDataSrc[k] === '{') depth++;
+    else if (pepDataSrc[k] === '}') { depth--; if (depth === 0) { PEP_IPA = eval('(' + pepDataSrc.slice(j, k + 1) + ')'); break; } }
   }
 })();
 console.log('PEP_IPA 条目', Object.keys(PEP_IPA).length);
@@ -48,7 +50,7 @@ function extractFn(src, name) {
   return src.slice(i, j);
 }
 const ipaOfSrc = extractFn(fs.readFileSync(path.join(ROOT, 'js/app.js'), 'utf8'), 'ipaOf');
-const pepIpaOfSrc = extractFn(pepSrc, 'pepIpaOf');
+const pepIpaOfSrc = extractFn(pepToolSrc, 'pepIpaOf');
 console.log('抽到 ipaOf：', ipaOfSrc.split('\n')[0]);
 console.log('抽到 pepIpaOf：', pepIpaOfSrc.split('\n')[0]);
 

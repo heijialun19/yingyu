@@ -161,7 +161,9 @@
 <script src="js/speech.js?v=1"></script>
 <script src="js/ipa.js?v=6"></script>
 <script src="js/pep-data.js?v=1"></script>
-<script src="js/pep-points.js?v=23"></script>
+<!-- 2026-11-12.3：单词镇只用拼读/音节工具（phonicsLine / splitSyllables），
+     不引 pep-lessons.js（课本讲解）与 pep-mem.js（记忆法/补充音标）—— 省首屏约 74KB。 -->
+<script src="js/pep-points.js?v=24"></script>
 <script>
 renderNav('words'); renderDecor();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
