@@ -18,11 +18,11 @@
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/words.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=50" onerror="this.onerror=null;this.href='css/style.css?v=50&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=51" onerror="this.onerror=null;this.href='css/style.css?v=51&amp;retry=1'">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
-.sp-steps li{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 0;border-radius:12px;background:#F1F3F7;color:#8B93A7;font-size:.7rem;line-height:1.25}
+.sp-steps li{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 0;border-radius:12px;background:#F1F3F7;color:var(--ink2);font-size:.7rem;line-height:1.25}
 .sp-steps li i{font-style:normal;font-weight:800;font-size:.78rem}
 .sp-steps li b{font-weight:800}
 .sp-steps li.on{background:#FFE9A8;color:#8A6A00;outline:3px solid #FFD93D}
@@ -34,7 +34,7 @@
 .sp-ask{font-size:1rem}
 .sp-ask b{color:#5C6273}
 .sp-ask-e{font-size:1.15rem;margin-left:2px}
-.sp-count{text-align:center;color:#8B93A7;font-size:.85rem;font-weight:700;margin-top:6px}
+.sp-count{text-align:center;color:var(--ink2);font-size:.85rem;font-weight:700;margin-top:6px}
 .sp-listen{display:block;margin:10px auto 0;padding:14px 26px;border-radius:999px;border:3px solid #4EC5F1;background:#EAF7FD;color:#1C7FA6;font-size:1.05rem;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 0 rgba(45,49,66,.10)}
 .sp-listen:active{transform:translateY(2px);box-shadow:none}
 .sp-slots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0 4px}
@@ -57,7 +57,7 @@
 .sp-chunk{padding:6px 12px;border-radius:10px;font-weight:800;font-size:1.25rem}
 .sp-chunk.v{background:#FFE9E9;color:#C0392B}
 .sp-chunk.c{background:#EAF3FF;color:#2C6FBB}
-.sp-ref-label{text-align:center;color:#8B93A7;font-size:.8rem;margin-top:6px}
+.sp-ref-label{text-align:center;color:var(--ink2);font-size:.8rem;margin-top:6px}
 .sp-input{display:block;margin:14px auto 4px;font-size:1.5rem;font-weight:800;text-align:center;letter-spacing:.15em;padding:12px 14px;border:3px solid #FFD93D;border-radius:14px;width:min(320px,86%);font-family:inherit;background:#fff;color:#2D3142}
 .sp-input:focus{outline:3px solid #FFD93D}
 .sp-foot{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
@@ -68,7 +68,7 @@
 .pep-u{border:3px solid #FDE9C8;border-radius:18px;padding:12px 14px;margin-top:10px;background:#FFFDF7}
 .pep-u .pu-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .pep-u .pu-h b{font-size:.95rem}
-.pep-u .pu-h small{color:#8B93A7;font-size:.76rem}
+.pep-u .pu-h small{color:var(--ink2);font-size:.76rem}
 .pep-u .pu-w{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
 .pu-chip{border:2px solid #F2E3C4;background:#fff;border-radius:999px;padding:4px 11px;font-family:inherit;font-size:.86rem;font-weight:700;color:#374151;cursor:pointer;transition:.12s}
 .pu-chip:hover{border-color:#F59E0B;background:#FFF7DA;color:#B45309}
@@ -85,7 +85,7 @@
 .pf-head{display:flex;align-items:center;gap:10px}
 .pf-head .pf-t{flex:1;min-width:0}
 .pf-head b{display:block;font-size:.95rem;line-height:1.35}
-.pf-head small{color:#8B93A7;font-size:.76rem}
+.pf-head small{color:var(--ink2);font-size:.76rem}
 .pf-head .pf-arrow{color:#C4CAD6;font-size:.8rem;transition:.2s}
 .pf-item.open .pf-arrow{transform:rotate(90deg)}
 .pf-body{display:none;margin-top:10px}
@@ -334,7 +334,7 @@ function renderBrowse() {
       </h2>
       ${t.tip ? `<div class="tip">${t.tip}</div>` : ''}
       <div class="tc-bar"><i style="width:${Math.round(mastered / Math.max(1, t.words.length) * 100)}%"></i></div>
-      <small style="color:#8B93A7;font-size:.78rem">本主题已掌握 ${mastered}/${t.words.length} · 每次乱序抽 10 张卡片</small>
+      <small style="color:var(--ink2);font-size:.78rem">本主题已掌握 ${mastered}/${t.words.length} · 每次乱序抽 10 张卡片</small>
       <button class="tc-big" style="margin-top:10px" onclick="startCardFlow()">🃏 开始卡片学（10 张 · 学完得星星）</button>
       <div class="tc-row">
         <button class="btn mint" onclick="startPractice()">✏️ 练一练</button>

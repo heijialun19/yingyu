@@ -26,12 +26,12 @@
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
 | js/pep-points.js | v23 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
 | js/audio-list.js | v5 | 发音清单（2878 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
-| css/style.css | v49 | 全站样式（含首屏加载层 6 秒兜底） |
-| svg/word-svg.js | v4 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡） |
+| css/style.css | v51 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
+| svg/word-svg.js | v5 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v178 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v179 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -1732,3 +1732,39 @@ pep-points v21 → v22，audio-list v4 → v5，SENTENCE_VER 4 → 5，CACHE v17
 data v42 → v43，pep-points v22 → v23，words-data v44 → v45，
 getsmart-data v14 → v15，word-svg v4 → v5，emoji-svg v5 → v6，
 新增 emoji-core v1，CACHE v177 → v178。音频零改动。
+
+## 2026-11-11.12 · F2 收尾：次级文字对比度与音标字号
+
+外部审查 **F2** 原文：「次级文字 `#8B93A7` 在白色上只有 3.07:1，用在词卡的音标行、
+年级、说明文字；音标 11px + 3.07:1 是双重不利；修法换 `#6B7280`（4.83:1），
+音标字号提到 13px 以上。」
+
+**逐条核实后的判定**（没有照单全收）：
+
+| 子断言 | 代码实际 | 判定 |
+|---|---|---|
+| 词卡音标行用 `#8B93A7` | `.wl-card .ph` / `.word-card .ph` 都是 `#6B7280`，白卡上 4.83:1 已过 AA | **误报**，颜色不改 |
+| 对比度 3.07:1 | 是拿错误色 `#8B93A7` 算出来的，音标行实际 4.83:1 | **误报**（同上） |
+| 音标 11px | `.wl-card .ph` = `.72rem` = 11.5px、`.word-card .ph` = `.8rem` = 12.8px | **属实** |
+| 年级 / 说明文字用 `#8B93A7` | 9 处（style.css 2 / words.html 6 / grammar.html 1），白底 3.07:1 | **属实** |
+
+**修法按背景分档，不搞一刀切**：
+
+- 8 处白 / 近白底（`#FFFFFF` / `#F1F3F7` / `#FBFCFE` / `#FFFDF7`）统一用系统色
+  `var(--ink2)` = `#5C6273`，实测 5.48~6.09:1 全过 AA。比报告建议的 `#6B7280` 更稳：
+  后者在 `#F1F3F7` 上只有 4.35:1，仍不达标。
+- `.tab-label` 是唯一落在天空渐变上的（最深处 `#8ED8F8`），`#5C6273` 在那里只有
+  3.86:1，单独给 `#3D4459`（6.14:1）；底栏 `.bnav` 已是不透明白，用 `--ink2` 即可。
+- 两处音标字号 11.5px / 12.8px → `.85rem` = 13.6px，`.wl-card .ph` 补
+  `line-height:1.25` 防长音标挤行。颜色 `#6B7280` 保持不动。
+
+**顺带修掉的真错**：`VERSION.md` 版本表落后一轮（style 写 v49、word-svg 写 v4，
+实际 v50 / v5），`check_facts` 的「版本表 = HTML 实际引用」逐行比对当时已 FAIL，
+这次一并对齐，并补 3 条 F2 防回退断言。
+
+**音标数据未动**：抽查 999 条，未发现 F2 相关错误。B4「美式无长音符」是家长
+2026-11-09 拍板的口径，9 条次重音 `ˌ`（thirteen / nineteen / TV …）属同一套美式记法，
+不在 F2 范围，本次不改，也不借机改教学口径。
+
+版本链：BUILD .11 → 2026-11-11.12，style v50 → v51，CACHE v178 → v179。
+其余 JS / 数据 / 音频零改动。

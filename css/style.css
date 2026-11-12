@@ -330,7 +330,8 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .wl-card { background: #fff; border: 2px solid #E6EEF9; border-radius: 16px; padding: 8px 10px; }
 .wlCardHead { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
 .wlCardHead b { font-size: 1rem; word-break: break-word; }
-.wl-card .ph { font-size: .72rem; color: #6B7280; }
+/* F2：原来 .72rem=11.5px，小字+灰字双重不利；提到 13.6px。 */
+.wl-card .ph { font-size: .85rem; color: #6B7280; line-height: 1.25; }
 .wlCardMeta { font-size: .72rem; color: #6B7280; margin-top: 2px; }
 .wl-q {
   width: 66px; height: 62px; border-radius: 18px; border: 3px dashed #C9D6E8; background: #fff;
@@ -406,7 +407,8 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .word-card .fam .op { color: #8FA3C8; margin: 0 2px; }
 .sp-fam { background: #EEF3FF; border-radius: 14px; padding: 8px 12px; color: #3B5BDB; }
 /* 音标：小、灰、不抢戏 —— 它是给家长和老师看的参考，不是让孩子背的 */
-.word-card .ph { color: #6B7280; font-size: .8rem; letter-spacing: .3px; margin-top: 1px; min-height: 1em; }
+/* F2：原来 .8rem=12.8px，提到 13.6px；颜色 #6B7280 本就 4.83:1 过 AA，不改。 */
+.word-card .ph { color: #6B7280; font-size: .85rem; letter-spacing: .3px; margin-top: 1px; min-height: 1em; }
 .word-card .sp { font-size: .78rem; color: #6B7280; letter-spacing: 2px; margin-top: 3px; }
 .word-card .dec {
   margin-top: 8px; font-size: .8rem; line-height: 1.6; color: var(--ink2);
@@ -646,8 +648,10 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 
 /* ---------- 底部标签栏（移动端 App 风格，桌面隐藏） ---------- */
 .bottom-nav { display: none; }
+/* ★ 2026-11-11.12（F2）这行小标签落在天空渐变上（最深处 #8ED8F8），
+   白底用的 --ink2 在这里只有 3.86:1，必须单独给深色才过 AA。 */
 .tab-label {
-  font-size: .72rem; font-weight: 700; color: #8B93A7;
+  font-size: .72rem; font-weight: 700; color: #3D4459;
   letter-spacing: 1px; margin: 0 2px 8px;
 }
 /* ⚠️ 这里原来写的是 margin: 0 2px -12px —— 负的下边距把下面那行胶囊「拉上来」
@@ -678,7 +682,7 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   .bnav {
     display: flex; flex-direction: column; align-items: center; gap: 2px;
     padding: 5px 0 4px; border-radius: 16px;
-    font-size: .68rem; font-weight: 700; color: #8B93A7;
+    font-size: .68rem; font-weight: 700; color: var(--ink2);
     border: 2px solid transparent; transition: .15s;
     background: none; font-family: inherit; cursor: pointer;
   }

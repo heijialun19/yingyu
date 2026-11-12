@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-11.11",
-  "note": "全站质量审查（20 项）除 3 条误报外全部处理。显示层：A1 emoji 字体加 unicode-range，只接管表情码位，数字不再被 Noto Color Emoji 撑成「1 7 1」；A2 .card h2 允许换行，家长中心标题不再竖排；A3 导航项 nowrap；A4 底栏改不透明并把家长中心放进档案弹窗；F1 按钮白字对比度 1.38~2.78 全部不达标，改深墨蓝文字（6.0~6.8）+ 珊瑚/葡萄提亮；F3 彩带降到 toast 之下并缩短到 0.8 秒。教学层：B1 her/miss/she 三条非法 path 修好（女生角色终于有头发）；B2 拆块拆成两套——拼读按音（去辅音连缀）、拆词按音节（apple→ap·ple、umbrella→um·brel·la）；B3 补 4 关语法（一般过去时 / Where did / 比较级 / be going to），19 关 → 23 关；B5 两处伪造词源改成联想；B6 「999 条词条（含短语）」。状态层：E1 新用户不再「2/3 已完成」，字母任务改为「不计入分母」；E2 今日任务与 Get Smart 三步标题分层。性能与结构：C1 首屏 10 秒超时兜底、C2 表情库拆成 87KB 核心库+860KB 全量按需、C3 首页去掉 246KB 词图库、D1 补齐 canonical 并清理 sitemap、D2 三个内容页加不依赖脚本的静态摘要。app v124 / style v50 / data v43 / pep-points v23 / words-data v45 / getsmart-data v15 / word-svg v5 / emoji-svg v6 / emoji-core v1 / CACHE v178 / BUILD 2026-11-11.11。"
+  "build": "2026-11-11.12",
+  "note": "F2 收尾（外部审查逐条复核后的真错）。音标行颜色与 3.07:1 对比度两条是误报：词卡音标行实际是 #6B7280，白卡上 4.83:1 已过 AA，颜色不动。真改的是：① 年级/说明文字确实用了 #8B93A7（9 处，白底 3.07:1）——白/近白底 8 处改系统色 var(--ink2)=#5C6273（5.48~6.09:1），落在天空渐变上的 .tab-label 单独给 #3D4459（6.14:1）；② 音标字号 .wl-card 11.5px / .word-card 12.8px 提到 13.6px，并补 line-height 防挤行。顺带把落后一轮的 VERSION.md 版本表对齐（style v49→v51、word-svg v4→v5），并补 3 条 F2 防回退断言。音标数据抽查 999 条无 F2 相关错误，B4 美式记法按已拍板口径保留。app v124 / style v51 / CACHE v179 / BUILD 2026-11-11.12，音频零改动。"
 }
