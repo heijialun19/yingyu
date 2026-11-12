@@ -105,14 +105,23 @@ def main():
     for k in sorted(d):
         print('%-15s %s' % (k, json.dumps(d[k], ensure_ascii=False)))
     # 期望 BUILD 从 js/app.js 现读，避免每次发版都要手改这里
-    _exp = re.search(r"const BUILD = '([\d.\-]+)'",
-                     open(os.path.join(ROOT, 'js/app.js'), encoding='utf-8').read()).group(1)
-    ok = (d.get('build') == _exp and d.get('audioVer') == 4
+    _app = open(os.path.join(ROOT, 'js/app.js'), encoding='utf-8').read()
+    _exp = re.search(r"const BUILD = '([\d.\-]+)'", _app).group(1)
+    # ★ 2026-11-12：原来把 sentenceVer==2 / '?v=4' 写死，音频版本一升就假 FAIL。
+    #   四个版本号一律从线上真实实现现读，绝不硬编码。
+    def _ver(n):
+        m = re.search(r'const ' + n + r' = ([0-9]+);', _app)
+        if not m:
+            raise RuntimeError('probe_v3: 找不到常量 ' + n)
+        return int(m.group(1))
+    _av, _sv = _ver('AUDIO_VER'), _ver('SENTENCE_VER')
+    _pv, _phv = _ver('PHRASE_VER'), _ver('PHONICS_VER')
+    ok = (d.get('build') == _exp and d.get('audioVer') == _av
           and d.get('audioStatus') == 200 and d.get('audioBytes', 0) > 2000
-          and '?v=4' in str(d.get('urlPink', ''))
-          and d.get('sentenceVer') == 2 and d.get('phraseVer') == 2
-          and d.get('phonicsVer') == 2
-          and d.get('wpOpts') == 4 and '?v=4' in str(d.get('wpSayUrl', ''))
+          and ('?v=%d' % _av) in str(d.get('urlPink', ''))
+          and d.get('sentenceVer') == _sv and d.get('phraseVer') == _pv
+          and d.get('phonicsVer') == _phv
+          and d.get('wpOpts') == 4 and ('?v=%d' % _av) in str(d.get('wpSayUrl', ''))
           and not d.get('err') and not d.get('ext'))
     print('\n验收：', 'PASS ✅' if ok else 'FAIL ⛔')
 

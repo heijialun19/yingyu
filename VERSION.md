@@ -27,11 +27,11 @@
 | js/pep-points.js | v23 | 人教版知识点讲解（273 张卡）；各页引用版本必须一致 |
 | js/audio-list.js | v5 | 发音清单（2878 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v51 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
-| svg/word-svg.js | v5 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡） |
+| svg/word-svg.js | v6 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡；3 张泄答案图已重画） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v179 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v180 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -1768,3 +1768,81 @@ getsmart-data v14 → v15，word-svg v4 → v5，emoji-svg v5 → v6，
 
 版本链：BUILD .11 → 2026-11-11.12，style v50 → v51，CACHE v178 → v179。
 其余 JS / 数据 / 音频零改动。
+
+## 2026-11-12 · 全站收尾：独立扫描后的 5 类真 bug
+
+这一轮不是接着外部审查清单往下做，而是重新独立扫了一遍：真浏览器逐页运行时、
+资源死链、动态题全量抽样、19 个既有探针回归。**审查报告 20 项的结论不变**
+（除 B4 美式音标是家长已拍板的口径、D3 的 `games.js` 全站零引用属误报），
+以下都是扫描新发现或上一轮遗留的真问题。
+
+### 1. 句子工厂会教「这是一个名字」，还把答案印在图上（最严重）
+
+`GEN.thisIs` 是 20 个自动出题模板里**唯一**没过 `NOT_CONCRETE` + `isObj` 闸门的
+（其余 seeBuild / thereBe / havePlural 等都过了）。线上 23 关批量抽 200 轮，
+关 5「小小 a 和 an」与关 16「综合大闯关」真的抽到了：
+
+| 题面 | 正确英文 |
+|---|---|
+| 「这是一个名字」`NAME` | This is a name. |
+| 「这是一个班级」 | This is a class. |
+| 「这是一个游戏」 | This is a game. |
+
+`name` 的自绘图当时是一块写着 **NAME** 的牌子 —— 题干里直接出现了答案单词，
+违反「题目页不得出现答案」。已给 `thisIs` 补齐两层闸门，三个词一起出池。
+
+### 2. 3 张自绘插画写出本词完整英文拼写
+
+扫 378 张 `WORD_SVG` 的 `<text>`，与 key 比对，命中 3 张：`name→NAME`、
+`spell→S/P/E/L/L`、`thousand→1000 + thousand`。其余 76 张写的是数字、符号或
+提示词（ABC / SLOW / z / $ / 月份数字），不泄露拼写，属数字卡与日历卡的既有设计，保留。
+
+三张重画为：姓名牌（人像 + 横线，不写字）、拼写（5 个空彩色方格 + 铅笔）、
+千（保留阿拉伯数字 `1000` + 小方块阵列）。`svg/word-svg.js` 头部写明是生成产物，
+但原生成入口 `build_svg.py` 已不在仓库，因此用 `_audit/fix_leak_icons.py`
+**幂等脚本**替换，并在 `check_facts` 钉死「全库不得写出本词拼写」，将来任何
+生成器覆盖都会立刻 FAIL。
+
+### 3. 中文量词有个隐性依赖
+
+`measureOf` 原本只认 `themeWords()` 才附加的 `w._theme`。任何直接拿 `THEMES`
+扁平词表调用的生成器都会丢主题，动物量词静默退化成「个」→「一个老鼠」。
+改为一次性建 `词 → 主题` 索引，缺 `_theme` 时按词现查。线上现有 15 个自动出题关
+都走 `themeWords`，所以**这次没有线上病句**，属于防未来回归的加固。
+
+### 4. D3 残留：`/favicon.ico` 线上 404 + 两页漏图标
+
+报告 D3 里 `js/games.js` 404 是误报（全站零引用，不会有真实请求）；但
+`curl /favicon.ico` 确实 404 —— 浏览器与爬虫会自动请求根路径。补一个
+32×32 32bpp BMP ICO（`_audit/make_favicon.py` 纯标准库生成，兼容老浏览器，
+不是 PNG-in-ICO），并进 SW CORE。另发现 `getsmart.html` / `pep.html` 漏了
+`apple-touch-icon`（其余 7 页都有），补齐。
+
+### 5. 验收工具自己有 bug（会造成假 FAIL / 假警报）
+
+- `_audit/probe_v3.py` 把 `SENTENCE_VER == 2` 写死，而实际早已升到 5，
+  每次跑都报 `FAIL ⛔`，但页面一切正常。改为从 `js/app.js` 现读
+  `AUDIO_VER` / `SENTENCE_VER` / `PHRASE_VER` / `PHONICS_VER`。
+- 本轮新增 `_audit/scan_runtime.py`（逐页抓 console/资源失败）、
+  `_audit/dump_dynamic_q.py`（6170 条动态题导出）、
+  `_audit/check_dynamic_q.py`（病句体检）；体检判据里「词性题中文选项」
+  与「一个书包 / 一个鸡蛋」两类误报已修（前者选项本就该是中文，后者是
+  正则缺词边界）。
+
+### 验收
+
+| 项 | 结果 |
+|---|---|
+| 真浏览器 10 页运行时 | 0 console error / 0 资源加载失败 / 加载层全部正常撤掉 / 每页恰好 1 个 h1 |
+| 动态题全量抽样 | 15 关 × 200 轮 + 20 kind × 200 轮 = 6170 条唯一题，生成器 0 异常 |
+| 病句体检 | 答案可达性、a/an、主谓、非法复数、选项唯一性、模板残留 —— 结构性 0 硬伤 |
+| 19 个既有真浏览器探针 | 全绿（修掉 probe_v3 的假 FAIL 后） |
+| 事实门禁 | 见本次提交记录 |
+
+版本链：`word-svg v5→v6`、`CACHE v179→v180`、`BUILD 2026-11-11.12→2026-11-12.1`。
+**音频零改动**，`AUDIO_CACHE` / 四个音频版本号全部未动，老设备不会重下音频包。
+
+**没有动的部分**：B4 美式音标无长音符与 9 条次重音 `ˌ` 是家长 2026-11-09
+拍板的口径；B3 新补 4 关仍是静态题；自动出题关的 themes 白名单没扩，
+探针用全量词池抽出的抽象名词题（「这是一个力量」等）**不是线上路径**，
+不据此改教学口径，只作为未来扩池时的参考。

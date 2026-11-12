@@ -89,7 +89,7 @@
 </main>
 
 <script src="js/words-data.js?v=45"></script>
-<script src="svg/word-svg.js?v=5"></script>
+<script src="svg/word-svg.js?v=6"></script>
 <script src="js/data.js?v=43"></script>
 <script src="js/app.js?v=124"></script>
 <script defer src="js/audio-list.js?v=5"></script>
@@ -185,6 +185,9 @@ const MW_BY_WORD = {
   chair:'把', ruler:'把', eraser:'块', picture:'张', card:'张', sticker:'张',
   teacher:'位', student:'名', fish:'条', swing:'架', slide:'座', classroom:'间', desk:'张',
   blackboard:'块',
+  /* ★ 2026-11-12：这三个词不在动物主题，__THEME_OF 兜底帮不上，按名词逐词钉死。
+     否则全量词池的出题路径会出「一个树叶 / 一个刀 / 一个信」。 */
+  leaf:'片', knife:'把', letter:'封',
   /* 建筑/场所 */
   house:'栋', building:'栋', bridge:'座', mountain:'座', hill:'座', school:'所', hospital:'家', library:'座',
 };
@@ -194,11 +197,18 @@ const NOT_CONCRETE = new Set(['class', 'name', 'game']);
 /* 连「拿来当宾语」都不合适的：班级、名字不是能喜欢/拥有的东西。 */
 const NOT_OBJECT = new Set(['class', 'name']);
 const isObj = w => !NOT_OBJECT.has(String(w.w || w).toLowerCase());
+/* ★ 2026-11-12：原来只认 themeWords() 才附加的 w._theme。任何直接拿 THEMES
+   扁平词表调用的生成器都会丢主题，量词静默退化成「个」→「一个老鼠」。
+   建一次索引，缺 _theme 时按词现查，消除这个隐性依赖。 */
+const __THEME_OF = new Map();
+THEMES.forEach(t => (t.words || []).forEach(w => {
+  if (!__THEME_OF.has(w.w)) __THEME_OF.set(w.w, t.id);
+}));
 const measureOf = w => {
   const key = String(w.w || w);
   if (MW_BY_WORD[key]) return MW_BY_WORD[key];
   if (/^T-shirt$/i.test(key)) return '件';
-  const th = w._theme;
+  const th = w._theme || __THEME_OF.get(key);
   if (th === 'animal1' || th === 'animal2' || th === 'ocean') return '只';
   return '个';
 };
@@ -272,7 +282,14 @@ const GEN = {
     /* 先过词性闸门：sweet / round 这些形容词混在 fruit / food 主题里，
        不筛就会出 "This is a sweet." */
     /* 家庭称谓也不走这个模板：介绍家人是 This is my mom，不是 This is a mom。 */
-    const safe = gxNouns(ws).filter(okArt).filter(w => String(w._theme) !== 'family');
+    /* ★ 2026-11-12（全站收尾）这里原来只挡了 family，是唯一漏掉站内统一名词闸门的
+       模板，于是线上真的会出「这是一个名字 / 班级 / 游戏」；而 name 的自绘图当时
+       还是一块写着 NAME 的牌子，题面直接把答案单词印了出来。与 seeBuild / thereBe
+       等模板保持一致：NOT_CONCRETE + isObj 一起过。 */
+    const safe = gxNouns(ws).filter(okArt)
+      .filter(w => !NOT_CONCRETE.has(String(w.w).toLowerCase()))
+      .filter(isObj)
+      .filter(w => String(w._theme) !== 'family');
     if (!safe.length) return null;
     const w = pick(safe); const a = art(w.w); const m = measureOf(w);
     return { type:'choice', word: w.w,
