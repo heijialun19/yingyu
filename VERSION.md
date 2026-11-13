@@ -28,17 +28,51 @@
 | js/pep-lessons.js | v1 | 人教版单元知识点讲解（273 张卡 / gzip 40.1KB）。**仅 pep.html 引**；`en:` 字段与整句音频对账 |
 | js/pep-mem.js | v1 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
 | js/pep-points.js | v24 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
-| js/audio-list.js | v5 | 发音清单（2878 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
+| js/audio-list.js | v6 | 发音清单（2880 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v53 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
 | svg/word-svg.js | v7 | 379 张自绘词图（346 张卡通 + 33 张数字 / 日历 / 国旗卡；3 张泄答案图已重画，board / blackboard 共用黑板画） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v187 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v188 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
-## 2026-11-13.5 · 独立复检收尾（本次改动）
+## 2026-11-13.6 · 长句朗读补词（tallest / hotter）
+
+**触发**：用户问「长句还有不连贯的么」。用句子工厂全量导出（23 关静态 80 题 +
+GEN 20 个模板 × 全词池 400 轮）逐句跑真实取音链，发现 L22 比较级/最高级有 3 句
+会**整词消失**：
+
+| 句子 | 实际听到 | 缺的词 |
+|---|---|---|
+| He is the tallest in our class. | He is the ___ in our class. | tallest |
+| She is the tallest of the three. | She is the ___ of the three. | tallest |
+| It is hotter today than yesterday. | It is ___ today than yesterday. | hotter |
+
+**根因**：`sentence.js __speakFrom` 取不到音频就跳过继续（设计如此：宁可漏一个词，
+也不在句子中间插机器音）。`tallest` / `hotter` 既没有 `audio/*.mp3`，也不在
+`audio-list` 清单，`localAudioURL()` 返回空 → 直接跳过。`taller` 有音频，所以
+同关的「I am taller than you.」正常 —— 这也解释了为什么只有这 3 句出问题。
+
+**补法**：用本机原 TTS 管道补录，不是换引擎：
+`_tts/bin/piper` + `en_US-libritts-high` / spk 381 / noise 0 / length_scale 1.0 /
+libmp3lame 96k / 22050Hz mono / 裁首尾静音(-70dB, 0.03s)。
+**先验证管道同源**：用同一参数重造已上线的 `taller.mp3`，解码后逐采样比对
+13718 点，maxΔ = 0.000000、相关系数 = 1.000000 → 孩子听不出是新补的。
+
+**版本链**：BUILD .5 → 2026-11-13.6；audio-list 2878 → 2880 条、v5 → v6
+（9 个 HTML + sw.js CORE 同步）；CACHE v187 → v188。
+`AUDIO_VER`(4) / `SENTENCE_VER`(5) / `PHRASE_VER`(2) / `AUDIO_CACHE`(v5) **不动**：
+只新增文件，没有替换任何既有音频，升了反而会逼全站重下 2878 条。
+
+**复检（可复跑 `_audit_long_audio.py`）**：
+本补丁后句子工厂静态 57 句、自动出题 1742 句、Get Smart 224 句、PEP 272 句，
+缺词 0 句。全词池压力测试仍有 22 句缺 `lefts/rights/backs/fronts/middles/ways/mistakes`
+（主题 position/magic/classroom），但这三个主题不进任何出题关的 `gen.themes`，
+玩家碰不到；若日后要放开，先补这批复数音频。
+
+## 2026-11-13.5 · 独立复检收尾
 
 一次只读复检 + 真浏览器点击流 + 题库 fuzz 后修掉 10 类真 bug：
 存档 `daily:null` 或隐私模式禁用 localStorage 会让 `Store.load()` 顶层抛错、全站卡在加载层

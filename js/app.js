@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-13.5';
+const BUILD = '2026-11-13.6';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -584,7 +584,7 @@ function __registerGSAudio() {
     }));
   } catch (e) {}
 }
-/* 全量音频清单：js/audio-list.js 登记包内全部音频 slug（2874 条）。
+/* 全量音频清单：js/audio-list.js 登记包内全部音频 slug（2880 条）。
    PEP 等晚加载数据源的词从此直接命中本地文件，不会被推去兜底语音。
    ★ 2026-11-08 从「fetch audio/manifest.json」改成「defer 脚本」：
      旧做法每翻一页都要多一次网络往返（SW 对它走网络优先），而且 file:// 下
@@ -1745,7 +1745,7 @@ document.addEventListener('keydown', unlockAudioChannels, { capture: true });
 /* 语音环境检测（家长中心诊断用） */
 function speechEnv() {
   return {
-    engine: '站内自带音频（2917 个发音文件 + 502 句整句；单词、整句与词块由 Piper + LibriTTS 声线合成，CC BY 4.0 已署名；字母音与拼读块为母语者录音）',
+    engine: '站内自带音频（2919 个发音文件 + 502 句整句；单词、整句与词块由 Piper + LibriTTS 声线合成，CC BY 4.0 已署名；字母音与拼读块为母语者录音）',
     wechat: /MicroMessenger/i.test(navigator.userAgent),
     online: navigator.onLine
   };
