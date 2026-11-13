@@ -532,7 +532,7 @@ const GRAMMAR_LEVELS = [
         explain:'用 be 动词问，就用 be 动词答；问 is she，答 she is。'} ]},
 
   /* ============ 课本同步：六年级下册的四个核心语法（2026-11-11.11 / B3） ============ */
-  { id:'L20', stage:'s3', title:'昨天的事：一般过去时', emoji:'⏰', formula:'was / were + 动词加 -ed', stars:3,
+  { id:'L20', stage:'s3', title:'昨天的事：一般过去时', emoji:'⏰', formula:'be 动词用 was/were，实义动词加 -ed', stars:3,
     intro:'说"昨天、刚才、上个星期"发生的事，动词要换成过去式。be 动词变成 was / were；其他动词大多直接加 -ed。中文说"了"，英文常常就是过去式。',
     chant:'昨天的事用过去 ⏰\nI am 变 I was\nare 变 were 别忘记\n动词加 ed 就过去！',
     items:[

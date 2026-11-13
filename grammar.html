@@ -18,7 +18,7 @@
 <title>句子工厂 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/grammar.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=52" onerror="this.onerror=null;this.href='css/style.css?v=52&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=53" onerror="this.onerror=null;this.href='css/style.css?v=53&amp;retry=1'">
 <style>
 /* 句子语法解析面板（只在句子工厂用） */
 .parse{margin-top:12px;background:#F7F9FC;border:2px solid #E3E9F2;border-radius:14px;padding:12px 12px 10px}
@@ -88,10 +88,10 @@
   </noscript>
 </main>
 
-<script src="js/words-data.js?v=45"></script>
+<script src="js/words-data.js?v=46"></script>
 <script src="svg/word-svg.js?v=6"></script>
-<script src="js/data.js?v=43"></script>
-<script src="js/app.js?v=125"></script>
+<script src="js/data.js?v=44"></script>
+<script src="js/app.js?v=126"></script>
 <script defer src="js/audio-list.js?v=5"></script>
 <script src="js/sentence.js?v=49"></script>
 <script src="js/grammar-engine.js?v=8"></script>
@@ -102,12 +102,134 @@ const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { c
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const ROLES = ['谁 👦', '干什么 🏃', '什么 📦', '什么 📦'];
 
+/* ============================================================
+   人工校对的句子解析（2026-11-13.2 / 第二轮复检 N1，P0）
+   ------------------------------------------------------------
+   ★ 为什么要这张表：语法引擎 gxAnalyze 是给「谁 + 干什么 + 什么」这套
+     基础句型写的。L20–L23 新增的过去时 / did 疑问句 / 比较级 / be going to
+     超出了它的句型范围：它把 yesterday 兜底成「名词」再当成表语，把 happy
+     降成定语；把 played、bigger、Where 全标成名词，甚至把 tomorrow 标成宾语。
+     ★ 教语法的东西标错一次，孩子会照着记错 —— 比不标更糟。
+   ★ 铁律：这 23 道是**固定句子**，所以逐词人工标注，不靠规则猜。
+     L1–L19 的造句题是动态生成的，仍走 gxAnalyze（句型在它设计范围内）。
+   ★ 每项 [显示文本, 词性, 成分, 说明?]；成分必须是 PARSE_KEY 里的键。
+     允许把介词短语合成一格显示，但拼回去必须与原句逐字相同（门禁校验）。
+   ============================================================ */
+const MANUAL_PARSE = {
+  /* ---- L20 一般过去时 ---- */
+  'I was happy yesterday.': {
+    note: 'be 动词后面说「怎么样」的部分叫表语（happy）；yesterday 说「什么时候」，是时间状语，不是表语。',
+    cells: [['I','代词','主语'],['was','be 动词','谓语'],['happy','形容词','表语'],['yesterday','副词','状语']] },
+  'They were at school yesterday.': {
+    note: 'were 是 are 的过去式；at school 说「在哪儿」，yesterday 说「什么时候」。',
+    cells: [['They','代词','主语'],['were','be 动词','谓语'],['at school','介词短语','表语'],['yesterday','副词','状语']] },
+  'I played football yesterday.': {
+    note: 'played 是 play 的过去式（动作 +ed）；yesterday 是时间状语。',
+    cells: [['I','代词','主语'],['played','动词','谓语'],['football','名词','宾语'],['yesterday','副词','状语']] },
+  'She watched TV yesterday.': {
+    note: 'watched 以 t 结尾，直接加 -ed；过去式不分人称，不用再加 s。',
+    cells: [['She','代词','主语'],['watched','动词','谓语'],['TV','名词','宾语'],['yesterday','副词','状语']] },
+  "I wasn't at home yesterday.": {
+    note: "wasn't = was not。be 动词的否定直接加 not，不用 didn't。",
+    cells: [['I','代词','主语'],["wasn't",'be 动词（否定）','谓语'],['at home','介词短语','表语'],['yesterday','副词','状语']] },
+  'Were you at school yesterday?': {
+    note: '疑问句把 be 动词搬到句子最前面。',
+    cells: [['Were','be 动词','谓语'],['you','代词','主语'],['at school','介词短语','表语'],['yesterday','副词','状语']] },
+
+  /* ---- L21 did 疑问句 ---- */
+  'Where did you go yesterday?': {
+    note: 'Where 问「去哪儿」，是状语；did 后面动词必须用原形 go。',
+    cells: [['Where','疑问词','状语'],['did','助动词','助动词'],['you','代词','主语'],['go','动词','谓语'],['yesterday','副词','状语']] },
+  'What did you see?': {
+    note: 'What 是 see 的宾语；did 已经表示过去，see 用原形。',
+    cells: [['What','疑问词','宾语'],['did','助动词','助动词'],['you','代词','主语'],['see','动词','谓语']] },
+  'Did you go to the zoo?': {
+    note: 'Did 开头的是一般疑问句，to the zoo 说「去哪儿」。',
+    cells: [['Did','助动词','助动词'],['you','代词','主语'],['go','动词','谓语'],['to the zoo','介词短语','状语']] },
+  'When did you get up?': {
+    note: 'When 问「什么时候」；get up 是一个动词短语，不当两个词拆。',
+    cells: [['When','疑问词','状语'],['did','助动词','助动词'],['you','代词','主语'],['get up','动词短语','谓语']] },
+  'I went to Beijing last year.': {
+    note: 'went 是 go 的过去式，不按规则加 -ed；陈述句不用 did。',
+    cells: [['I','代词','主语'],['went','动词','谓语'],['to Beijing','介词短语','状语'],['last year','副词','状语']] },
+  'What did you do last weekend?': {
+    note: '这句两个 do 不一样：前面 did 是助动词，后面 do 是实义动词「做」。',
+    cells: [['What','疑问词','宾语'],['did','助动词','助动词'],['you','代词','主语'],['do','动词','谓语'],['last weekend','副词','状语']] },
+
+  /* ---- L22 比较级 / 最高级 ---- */
+  'I am taller than you.': {
+    note: 'taller 是形容词比较级，作表语；than you 说「跟谁比」。',
+    cells: [['I','代词','主语'],['am','be 动词','谓语'],['taller','形容词','表语'],['than you','比较结构','状语']] },
+  'He is the tallest in our class.': {
+    note: '三者以上比第一名用 the + 最高级；in our class 说范围。',
+    cells: [['He','代词','主语'],['is','be 动词','谓语'],['the tallest','形容词','表语'],['in our class','介词短语','状语']] },
+  'This elephant is bigger than that one.': {
+    note: 'big 是「辅音 + 元音 + 辅音」结尾，双写 g 再加 -er；that one 代替「那头大象」，避免重复。',
+    cells: [['This elephant','名词短语','主语'],['is','be 动词','谓语'],['bigger','形容词','表语'],['than that one','比较结构','状语']] },
+  'This book is more expensive than that one.': {
+    note: '长形容词的比较级前面加 more，不加 -er。',
+    cells: [['This book','名词短语','主语'],['is','be 动词','谓语'],['more expensive','形容词','表语'],['than that one','比较结构','状语']] },
+  'It is hotter today than yesterday.': {
+    note: 'hot 双写 t 加 -er；today 和 than yesterday 都在说时间，是状语。',
+    cells: [['It','代词','主语'],['is','be 动词','谓语'],['hotter','形容词','表语'],['today','副词','状语'],['than yesterday','比较结构','状语']] },
+  'She is the tallest of the three.': {
+    note: 'of the three 说「三个人里面」。',
+    cells: [['She','代词','主语'],['is','be 动词','谓语'],['the tallest','形容词','表语'],['of the three','介词短语','状语']] },
+
+  /* ---- L23 be going to ---- */
+  'I am going to swim tomorrow.': {
+    note: 'be going to 说「打算做」，后面动词用原形；tomorrow 是时间状语。',
+    cells: [['I','代词','主语'],['am going to','将来时结构','助动词'],['swim','动词','谓语'],['tomorrow','副词','状语']] },
+  'She is going to buy a book.': {
+    note: 'be 动词跟着主语走：she 用 is。',
+    cells: [['She','代词','主语'],['is going to','将来时结构','助动词'],['buy','动词','谓语'],['a book','名词短语','宾语']] },
+  'We are going to go to the park.': {
+    note: '两个 go 不重复：going to 是结构，后面的 go 才是「去」。',
+    cells: [['We','代词','主语'],['are going to','将来时结构','助动词'],['go','动词','谓语'],['to the park','介词短语','状语']] },
+  "He isn't going to play football.": {
+    note: "isn't = is not，否定加在 be 动词后面。",
+    cells: [['He','代词','主语'],["isn't going to",'将来时结构（否定）','助动词'],['play','动词','谓语'],['football','名词','宾语']] },
+  'Are you going to visit your grandma?': {
+    note: '疑问句把 be 动词提到句首；your 是物主代词，修饰 grandma。',
+    cells: [['Are','be 动词','助动词'],['you','代词','主语'],['going to','将来时结构','助动词'],['visit','动词','谓语'],['your grandma','名词短语','宾语']] },
+
+  /* ---- 旧关卡里同类误标，一并人工校对 ---- */
+  'The cat is on the bed.': {
+    note: 'on the bed 说「在哪儿」；the 是冠词，只修饰 bed，不是状语。',
+    cells: [['The cat','名词短语','主语'],['is','be 动词','谓语'],['on the bed','介词短语','表语']] },
+  'There is a book on the desk.': {
+    note: 'There be 句型里，be 后面的名词才是真正的主语。',
+    cells: [['There','引导词','引导词'],['is','be 动词','谓语'],['a book','名词短语','主语'],['on the desk','介词短语','状语']] },
+  'There are two pencils in the bag.': {
+    note: 'two 是数词，修饰 pencils。',
+    cells: [['There','引导词','引导词'],['are','be 动词','谓语'],['two pencils','名词短语','主语'],['in the bag','介词短语','状语']] },
+  'He watches TV every day.': {
+    note: 'every day 说「多久一次」，是时间状语，不是宾语。',
+    cells: [['He','代词','主语'],['watches','动词','谓语'],['TV','名词','宾语'],['every day','副词','状语']] },
+  'Yes, she is.': {
+    note: '简略回答：Yes 是感叹词，she 是主语，is 是 be 动词。',
+    cells: [['Yes','感叹词','状语'],['she','代词','主语'],['is','be 动词','谓语']] },
+};
+
 /* ---------------- 句子语法解析面板 ----------------
    每道题答完都要给解析：每个词标词性 + 句子成分（主语/谓语/宾语/表语…）。
    解析由 gxAnalyze 统一产出，认不出的句子只显示词性、不瞎标成分。 */
 const PARSE_KEY = { '主语':'subj','谓语':'pred','宾语':'obj','表语':'comp','状语':'adv',
   '定语':'attr','助动词':'aux','引导词':'lead','否定词':'neg' };
-function parseHTML(sentence) {
+function parseHTML(sentence, it) {
+  /* 人工校对的固定句优先：引擎认不出的新句型不许瞎标成分。 */
+  const m = MANUAL_PARSE[String(sentence || '').trim()];
+  if (m) {
+    const cells = m.cells.map(c => {
+      const k = PARSE_KEY[c[2]] || 'none';
+      return `<div class="pcell r-${k}"><b lang="en">${esc(c[0])}</b>${c[2] ? `<span>${c[2]}</span>` : ''}<small>${c[1]}</small></div>`;
+    }).join('');
+    return `<div class="parse">
+      <div class="parse-h">🧩 句子解析<span class="pf">人工校对</span></div>
+      <div class="parse-row">${cells}</div>
+      ${m.note ? `<div class="parse-note">💡 ${esc(m.note)}</div>` : ''}
+    </div>`;
+  }
   const a = gxAnalyze(sentence);
   if (!a.tokens.length) return '';
   const cells = a.tokens.map(t => {
@@ -593,7 +715,7 @@ function renderLevels() {
       </div>
       <p style="margin:6px 0 0;color:#5C6273;font-size:.88rem;line-height:1.8">
         英语句子有<b>万能公式</b>——记住「谁 + 干什么 + 什么」，记住「一句话只有一个动作王（动词）」，大部分句子都能自己造出来！
-        第二阶段开始，造句题会用<b>单词镇里学过的单词</b>自动生成 🏘️
+        第二阶段开始，造句题会用<b>单词镇里学过的单词</b>自动生成 🏘️；第三阶段最后 4 关是课本同步句型，例句固定
       </p>
     </div>
 
@@ -611,7 +733,7 @@ function renderLevels() {
               <div class="le">${lv.emoji}</div>
               <b>第 ${i + 1} 关 · ${lv.title}</b>
               <span class="formula">${lv.formula}</span>
-              ${lv.gen ? '<div style="margin-top:4px;font-size:.68rem;color:#4E9E59">🏘️ 用单词镇的词造句</div>' : ''}
+              ${lv.gen ? '<div style="margin-top:4px;font-size:.68rem;color:#2F7D3B">🏘️ 用单词镇的词造句</div>' : ''}
               ${st2 ? '<div style="margin-top:6px;font-size:.72rem;color:#4E9E59">✅ 已通过 · 点击重玩</div>' : ''}
             </div>`;
           }).join('')}
@@ -657,9 +779,9 @@ function renderItem() {
   let body = '';
   if (it.type === 'choice') {
     body = `
-      ${it.generated ? `<div style="font-size:.72rem;color:#4E9E59;font-weight:700;margin-bottom:4px">🏘️ 单词镇出题${it.fromTheme ? ' · ' + it.fromTheme : ''}</div>` : ''}
+      ${it.generated ? `<div style="font-size:.72rem;color:#2F7D3B;font-weight:700;margin-bottom:4px">🏘️ 单词镇出题${it.fromTheme ? ' · ' + it.fromTheme : ''}</div>` : ''}
       <div class="quiz-q" style="font-size:1.05rem;line-height:1.8">${it.prompt}</div>
-      <div class="opt-row">
+      <div class="opt-row${it.options.some(o => String(o).length > 14) ? ' long-row' : ''}">
         ${shuffle(it.options.map((o, j) => ({ o, j }))).map(x => `<button class="opt" data-j="${x.j}" style="font-size:${String(x.o).length > 24 ? '.85rem' : '1rem'}" onclick="chooseAns(this,${x.j},${it.options.length})">${esc(x.o)}</button>`).join('')}
       </div>
       <div class="explain" id="iexp"></div>`;
@@ -667,7 +789,7 @@ function renderItem() {
     sess.sels = Array(it.slots.length).fill(null);
     const bank = shuffle([...new Set(it.slots.flat())]);
     body = `
-      ${it.generated ? `<div style="font-size:.72rem;color:#4E9E59;font-weight:700;margin-bottom:4px">🏘️ 单词镇出题${it.fromTheme ? ' · ' + it.fromTheme : ''}</div>` : ''}
+      ${it.generated ? `<div style="font-size:.72rem;color:#2F7D3B;font-weight:700;margin-bottom:4px">🏘️ 单词镇出题${it.fromTheme ? ' · ' + it.fromTheme : ''}</div>` : ''}
       <div class="quiz-q" style="font-size:1.05rem;line-height:1.8">${it.prompt}</div>
       ${it.hint ? `<div class="explain" style="margin:0 0 10px">💡 ${it.hint}</div>` : ''}
       <div class="build-slots" id="slots">
@@ -720,7 +842,7 @@ function checkBuild() {
     lockBuild();
     if (it.word) touchWord(it.word, true); // 造句用到的单词也进入复习计划
     $('#trainResult').innerHTML = `🚂 ${it.read} <span class="ok-mark">✔</span>`;
-    $('#iexp').innerHTML = `✅ <b>${esc(it.read)}</b> ${it.zh}<br>🔎 ${it.answer.join(' + ')} —— 公式用对啦！` + parseHTML(it.read);
+    $('#iexp').innerHTML = `✅ <b>${esc(it.read)}</b> ${it.zh}<br>🔎 ${it.answer.join(' + ')} —— 公式用对啦！` + parseHTML(it.read, it);
     Flow.after(600, () => speakSentence(it.read));   // 等答对音效播完再朗读句子
     showNext(it.read);
   } else {
@@ -736,7 +858,7 @@ function revealBuild(it) {
   sess.answered = true;
   lockBuild();
   $('#trainResult').innerHTML = `🚂 ${it.read}`;
-  $('#iexp').innerHTML = `💡 正确摆法：<b>${esc(it.read)}</b> ${it.zh}<br>🔎 ${it.answer.join(' + ')}` + parseHTML(it.read);
+  $('#iexp').innerHTML = `💡 正确摆法：<b>${esc(it.read)}</b> ${it.zh}<br>🔎 ${it.answer.join(' + ')}` + parseHTML(it.read, it);
   Flow.after(500, () => speakSentence(it.read));
   showNext(it.read);
 }
@@ -779,7 +901,7 @@ function chooseAns(btn, j, total) {
     sfx.correct();
     lockChoices(btn);
     if (it.word) touchWord(it.word, true);
-    $('#iexp').innerHTML = `✅ ${it.zh}<br>🔎 ${it.explain || ''}` + parseHTML(englishOf(it));
+    $('#iexp').innerHTML = `✅ ${it.zh}<br>🔎 ${it.explain || ''}` + parseHTML(englishOf(it), it);
     Flow.after(550, () => speakSentence(englishOf(it)));  // 等音效播完再读句
     showNext(englishOf(it));
   } else {
@@ -795,7 +917,7 @@ function revealChoice(it) {
   const right = it.options[it.answer];
   const keep = document.querySelector('.opt[data-j="' + it.answer + '"]');
   lockChoices(keep);
-  $('#iexp').innerHTML = `💡 正确答案：<b>${esc(right)}</b><br>🔎 ${it.explain || ''}` + parseHTML(englishOf(it));
+  $('#iexp').innerHTML = `💡 正确答案：<b>${esc(right)}</b><br>🔎 ${it.explain || ''}` + parseHTML(englishOf(it), it);
   Flow.after(500, () => speakSentence(englishOf(it)));
   showNext(englishOf(it));
 }

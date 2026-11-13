@@ -189,7 +189,7 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .island p { margin: 0; color: var(--ink2); font-size: .8rem; text-align: center; }
 .island .tag {
   position: absolute; top: 10px; right: 10px; background: #fff; border-radius: 999px;
-  padding: 3px 10px; font-size: .68rem; font-weight: 700; border: 2px solid;
+  padding: 3px 10px; font-size: .68rem; font-weight: 700; border: 2px solid; color: var(--ink2);
 }
 .island .prog { width: 100%; height: 12px; background: #EEF3F8; border-radius: 999px; overflow: hidden; margin-top: 6px; }
 .island .prog > i { display: block; height: 100%; border-radius: 999px; transition: .4s; }
@@ -257,6 +257,10 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .quiz-area { margin-top: 18px; }
 .quiz-q { font-size: 1.05rem; font-weight: 700; margin-bottom: 12px; }
 .opt-row { display: flex; gap: 12px; flex-wrap: wrap; }
+/* N2：整句选项（>14 字符）不能挤成三列。390px 下原来每格 105px、
+   一句断三行，一年级孩子极易点错。长句一律纵向单列，高度自适应。 */
+.opt-row.long-row .opt { flex: 0 0 100%; min-height: 56px; text-align: center; }
+.opt-row.long-row .opt .oe { font-size: 30px; }
 .opt {
   flex: 1; min-width: 120px; min-height: 74px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
   background: #fff; border: 3px solid var(--lake); border-radius: 20px; font-size: 1.05rem; font-weight: 700;
@@ -671,7 +675,7 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
   .bottom-nav {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
-    display: grid; grid-template-columns: repeat(6, 1fr) 1.15fr; gap: 2px;
+    display: grid; grid-template-columns: repeat(7, 1fr) 1.15fr; gap: 2px;
     /* ★ 2026-11-11.11（A4）原 .97 半透明，滚动时下层卡片文字会隐约透出来。
        底栏不需要透出任何东西，直接给不透明白。 */
     background: #fff;
@@ -688,7 +692,8 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   }
   .bnav .nav-emoji { font-size: 24px; }
   .bnav:active { transform: scale(.94); }
-  .bnav.on { color: #E85D5D; background: #FFF1F1; border-color: #FFD9D9; }
+  /* F2：原 #E85D5D 压 #FFF1F1 只有 3.10，低于 AA 4.5。 */
+  .bnav.on { color: #B3261E; background: #FFF1F1; border-color: #FFD9D9; }
   .bnav-me { border-left: 2px solid #EEF0F4; border-radius: 16px; }
   .bnav-me .bnav-stars { font-size: .64rem; font-weight: 700; color: var(--ink2); display: flex; align-items: center; gap: 2px; }
 

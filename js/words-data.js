@@ -44,7 +44,7 @@ const GRADES = [
     W('nine','九','9️⃣','nine 和拉丁 nov- 同源：November 原本是九月'), W('ten','十','🔟','ten 和拉丁 dec- 同源：decade 十年、December 原是十月'), W('count','数数','🧮','count 和 computer 同根（拉丁『算』）：都是算数','v'), W('number','数字','🔢','number 的 numer- 就是『数』：numerous（众多的）同根','n') ]},
   { id: 'color', name: '颜色', emoji: '🎨', color: '#FFD93D', pos: 'adj', words: [
     W('red','红色','','red 和 rust（铁锈）同根：铁锈就是红的','n'), W('yellow','黄色','','yellow 和 gold 同根：金子是黄的','n'),
-    W('blue','蓝色','','blue 蓝天 blue sky；blew（吹过）和它同音不同义','n'), W('green','绿色','','grow（生长）元音降级成 green：草木一生长就是绿的；grass 草同根','n'),
+    W('blue','蓝色','','blue 蓝天 blue sky；blew（吹过）和它同音不同义','n'), W('green','绿色','','green 绿色——想想 green grass 绿草地，画面里记这个词；它不是由 grow 变来的','n'),
     W('white','白色','','white 和 wheat（小麦白面）同根；w 开头常与水有关（wave/wash），水花是白的','n'), W('black','黑色','','bl- 词族带『暗/空』：blind 瞎、blank 空白、bleak 阴沉、blot 污点','n'),
     W('orange','橙色','','orange 橙子——先有橙子这个水果，才有橙色','n'), W('pink','粉色','','pink 原本是一种小花（石竹）的名字，后来成了粉色','n'),
     W('purple','紫色','','紫色染料古代取自海螺，极珍贵，只有帝王穿得起——帝王紫','n'), W('brown','棕色','','brown 和 bruise（瘀青）同根：瘀青是棕黑色的','n'), W('grey','灰色','','grey 是黑白之间；grizzle（灰白头发）同根','n'),
