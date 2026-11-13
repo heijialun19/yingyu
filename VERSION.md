@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v126 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v127 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v44 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -29,11 +29,11 @@
 | js/pep-points.js | v24 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
 | js/audio-list.js | v5 | 发音清单（2878 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v53 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
-| svg/word-svg.js | v6 | 378 张自绘词图（345 张卡通 + 33 张数字 / 日历 / 国旗卡；3 张泄答案图已重画） |
+| svg/word-svg.js | v7 | 379 张自绘词图（346 张卡通 + 33 张数字 / 日历 / 国旗卡；3 张泄答案图已重画，board / blackboard 共用黑板画） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v184 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v185 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -2150,3 +2150,53 @@ L1–L19 动态生成句仍走引擎。人工标注允许把介词短语合成�
 盲区未变：安卓真机数字间距、2878 条音频逐条听音、教材逐词对齐；
 人工标注的语义正确性靠导出逐条读 + 门禁概念级断言，机器证明不了「教得对」。
 `N1` 的 28 条标注是人工校对结果，若后续改题目 `say` 文本，门禁会因「漏标」直接 FAIL。
+
+## 2026-11-13.3 黑板词图重画（board 不再是 🟩 绿方块）
+
+家长反馈：Get Smart 学堂里 `board`（黑板）的配图「确实不大像」——
+截图上就是一块纯绿色圆角矩形，没有任何黑板特征。
+
+### 根因
+
+不是画得差，是**根本没画**。`js/getsmart-data.js` 里这条词是
+`{ w: 'board', zh: '黑板', e: '🟩' }`，🟩 的 Twemoji SVG 本来就是纯色方块。
+`wordIcon()` 的优先级是「emoji 图库 → 自绘 SVG → 色块 → 字母牌」，
+所以课程词 `board` 永远走第一分支；而词库里的 `blackboard` 虽有自绘黑板图，
+却因为 `e` 为空、且两词不同名，从未与它共享。
+
+### 处置
+
+| 项 | 做法 |
+|---|---|
+| 新画 | 100×100 自绘：木框（四角钉 + 内圈高光）、深墨绿板面、四段错落的粉笔擦痕、粉笔槽、白/淡黄粉笔、木背灰毡底板擦、两条腿与脚 |
+| 卡面 | **零文字**。旧 `blackboard` 图上的 `ABC` 一并去掉；擦痕刻意不用两道对称弧线（会看成眉毛 + 嘴，孩子容易认成一张脸） |
+| 两词同图 | `WORD_SVG["board"]` 与 `WORD_SVG["blackboard"]` 逐字节相同 |
+| 自绘优先 | 两词加入 `WORD_SVG_FIRST`（`wordIcon` 与 `iconKey` 共用这个词集，只改一处会图与身份脱节） |
+| 去重归一 | `SVG_SAME_KEY` 加 `blackboard: 'board'`，两者 `iconKey` 同为 `svg:board` |
+| 刻意不动 | 课程数据的 `e:'🟩'` 保留作 emoji 兜底；不删词条、不加 defer、不动题库与进度逻辑 |
+
+产物 `svg/word-svg.js` 由 `_audit/redraw_board_20261113.py --apply` 生成，未手改；
+接线（白名单 + 归一表 + 注释）同脚本幂等写入 `js/app.js`。
+
+### 门禁修正（顺带修掉三条过期断言）
+
+铁律 8.5「全库类门槛不许写死数字」：`check_facts.py` 原写死
+`自绘图库 378 条` / `WORD_SVG_FIRST 恰好 33 个词` / `33 张新卡画面两两不同`。
+加一张图后前两条必然假 FAIL，第三条还会把「board/blackboard 刻意同图」误判成错。
+改成：条数与赋值行数自洽（现算）、白名单每个词都有图（现算）、
+基准 33 张卡两两不同（排除同义词对）、同义词对单独断言「同画 + 已归一」。
+
+### 验收
+
+| 项 | 结果 |
+|---|---|
+| 目视对照图 | 修复前 🟩 纯色块 / 旧 blackboard（带 ABC）/ 新黑板支架，放大 210px 复核两轮，一眼可辨 |
+| `probe_board_icon.py` | **11/11 PASS**：真实 `GS_BOOKS` 词条、emoji 图库已到货（🟩 在图库里，回退路径真实存在）、渲染新画、零文字、DOM 可见、两词同画同 key |
+| 正负对照 | 故意把 `board` 移出白名单 → `iconKey` 退回 `esvg:🟩`、5 项报红；恢复 → 11/11 |
+| `test_icon_key.js` | 73 项通过（全库同图对 10 对，`SVG_SAME_KEY` 名副其实） |
+| 全量回归 | 事实门禁、10 页运行时、16 个 390px 状态、B4 浮层、C3 拆分、更新条、SW、动态题全绿 |
+
+版本链：`word-svg v6→v7`、`app v126→v127`（改了 app.js，必须升）、
+`CACHE v184→v185`、`BUILD 2026-11-13.2→.3`，9 个正式页与 SW CORE/BOOT 同步；
+本地 `_probe_*.html` 一起升，避免同一资源两种版本并存。
+音频四套版本号、`AUDIO_CACHE`、音标与课本数据零改动。

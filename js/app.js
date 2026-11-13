@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-13.2';
+const BUILD = '2026-11-13.3';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1128,7 +1128,8 @@ const WORD_SVG_FIRST = new Set(
   ('eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty ' +
    'monday tuesday wednesday thursday friday saturday sunday ' +
    'january february march april may june july august september ' +
-   'china america england australia canada japan france').split(' '));
+   'china america england australia canada japan france ' +
+   'board blackboard').split(' '));
 function wordSvgFirst(name) { return WORD_SVG_FIRST.has(name); }
 
 /* ---------------- 词图的统一取用口 ----------------
@@ -1176,8 +1177,10 @@ function iconKey(w) {
   if (emo) return 'emoji:' + emo.replace(/\uFE0F/g, '');
   return 'letter:' + name.charAt(0);
 }
-/* 画面相同、词不同：后来者归一到前者（校验脚本 _audit/test_icon_key.js 会核对这张表） */
-const SVG_SAME_KEY = { well: 'correct', everyone: 'everybody' };
+/* board / blackboard 是同一块黑板，共用一张自绘画，必须同 key；
+   画面相同、词不同：后来者归一到前者（校验脚本 _audit/test_icon_key.js 会核对这张表） */
+const SVG_SAME_KEY = { well: 'correct', everyone: 'everybody',
+  blackboard: 'board' };
 
 /* ================= emoji → 内置矢量图 =================
    ★ 2026-10-26：这是「整页显示黑白」的根因修复。
