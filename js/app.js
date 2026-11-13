@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-13.4';
+const BUILD = '2026-11-13.5';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -114,12 +114,16 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>'
      这里只记「导航位置」，绝不记题目和答案（题目页不得出现答案）；
      sessionStorage 只作用于当前标签页，关掉即清，不污染长期进度。
      只有 navigation.type === 'reload' 才恢复：从首页正常点进来仍走默认入口。 */
+/* 2026-11-13.5：导航快照必须按档案隔离，否则哥哥切到妹妹后，
+   sessionStorage 里的旧位置会把妹妹拉回哥哥的那一课。 */
+const __navKey = tag => 'birdie_nav_' + tag + '_' +
+  ((typeof Profiles !== 'undefined' && Profiles.meta && Profiles.meta.activeId) ? Profiles.meta.activeId : 'default');
 window.__navSave = function (tag, data) {
-  try { sessionStorage.setItem('birdie_nav_' + tag, JSON.stringify({ d: data, t: Date.now() })); } catch (e) {}
+  try { sessionStorage.setItem(__navKey(tag), JSON.stringify({ d: data, t: Date.now() })); } catch (e) {}
 };
 window.__navLoad = function (tag, maxAgeMs) {
   try {
-    const o = JSON.parse(sessionStorage.getItem('birdie_nav_' + tag) || 'null');
+    const o = JSON.parse(sessionStorage.getItem(__navKey(tag)) || 'null');
     if (!o || (maxAgeMs && Date.now() - o.t > maxAgeMs)) return null;
     return o.d;
   } catch (e) { return null; }
@@ -155,7 +159,10 @@ const Profiles = {
     if (!this.meta || !Array.isArray(this.meta.list) || !this.meta.list.length) {
       this.meta = { list: [], activeId: null };
       // 旧版单档案自动迁移
-      const legacy = localStorage.getItem(LEGACY_KEY);
+      /* 2026-11-13.5：隐私模式 / 禁用站点数据时 getItem 会抛 SecurityError，
+         原来这行是裸调用，顶层中断 → 整站卡在加载层。 */
+      let legacy = null;
+      try { legacy = localStorage.getItem(LEGACY_KEY); } catch (e) { legacy = null; }
       if (legacy) {
         try {
           const old = JSON.parse(legacy);
@@ -202,7 +209,9 @@ const Profiles = {
     if (!obj || obj.app !== 'birdie-abc' || !obj.profile) throw new Error('格式不对');
     const p = { id: 'p_' + Date.now().toString(36) + Math.floor(Math.random() * 99), name: obj.profile.name || '导入的档案', avatar: obj.profile.avatar || '🐤', grade: obj.profile.grade || '', created: Date.now() };
     this.meta.list.push(p); this.meta.activeId = p.id; this.saveMeta();
-    try { localStorage.setItem(this.dataKey(p.id), JSON.stringify(obj.data || {})); } catch (e) {}
+    /* 导入的 data 也按对象校验，避免把 null / 数组直接落盘 */
+    const raw = (obj.data && typeof obj.data === 'object' && !Array.isArray(obj.data)) ? obj.data : {};
+    try { localStorage.setItem(this.dataKey(p.id), JSON.stringify(raw)); } catch (e) {}
     return p;
   }
 };
@@ -230,6 +239,14 @@ const Store = {
     this.d = Object.assign(this.def(), d || {});
     const def = this.def();
     for (const k of Object.keys(def)) if (this.d[k] === undefined) this.d[k] = def[k];
+    /* 2026-11-13.5：只补 undefined 挡不住 null —— 存档里 daily:null 会让
+       下面的 this.d.daily.date 直接抛 TypeError，整站白屏且家长中心也进不去。
+       这里对所有结构化字段做类型兜底，坏数据一律回退到默认结构。 */
+    for (const k of Object.keys(def)) {
+      const want = def[k], got = this.d[k];
+      if (want && typeof want === 'object' && !Array.isArray(want) &&
+          (!got || typeof got !== 'object' || Array.isArray(got))) this.d[k] = want;
+    }
     // 年级以档案为准
     this.d.grade = Profiles.active().grade || this.d.grade;
     if (this.d.daily.date !== todayStr()) this.d.daily = { date: todayStr(), tasks: { letter: false, words: false, game: false }, bonus: false, studySec: 0, break15: false, break30: false };
@@ -249,7 +266,9 @@ const Store = {
   },
   resetActive() { try { localStorage.removeItem(Profiles.dataKey(Profiles.active().id)); } catch (e) {} }
 };
-Store.load();
+/* 顶层最后一道防线：即使存档或存储本身出了意料之外的错，也不能让后面
+   几百行运行时代码全部不执行（那样页面只会停在「加载中…」）。 */
+try { Store.load(); } catch (e) { try { Store.d = Store.def(); } catch (e2) {} }
 
 /* ---------------- 打卡 + 活动记录 ---------------- */
 function markActivity(type) {
@@ -383,6 +402,9 @@ function learnLetter(L) {
 
 /* 单词进入记忆盒子（艾宾浩斯）；答错记入错题本 */
 function touchWord(word, correct) {
+  /* 2026-11-13.5：语法生成器曾把词对象传进来，写出
+     Store.d.words["[object Object]"] 垃圾键，虚增掌握数与徽章。 */
+  if (!word || typeof word !== 'string') return;
   const rec = Store.d.words[word] || { box: 0, due: 0, wrong: 0 };
   rec.box = correct ? Math.min(rec.box + 1, 5) : 0;
   if (!correct) rec.wrong = (rec.wrong || 0) + 1;
@@ -1472,11 +1494,10 @@ if (window.WORD_EMOJI) window.__emojiSvgReady();    // 图库比 app.js 先到�
   /* ★ 2026-11-11.11（C2）图库拆成两份：
        emoji-core.js（约 87KB）—— 界面装饰 / 导航 / 岛屿 / 弹窗 / 提示语用到的 80 个；
        emoji-svg.js（约 860KB）—— 词库 999 个词的表情，只有真画词卡时才需要。
-     首页 / 家长中心 / 声明 / 404 只取核心库，剩下的按需补：
-     emojiSvgFor() 查不到会调 window.__emojiNeedFull()，全量到货后
-     __emojiSvgReady() 就地升级 —— 不会出现「少图变黑白」。
-     重页面（单词镇 / 课本 / 学堂 / 游戏 / 字母岛 / 语法）在 <body data-emoji="full">
-     上直接声明要全量，避免先下一份核心库再下一份全量。 */
+     首页 / 家长中心 / 声明 / 404 只取核心库（界面装饰全部已收进核心库，
+     2026-11-13.5 补入 🧽）；重页面（单词镇 / 课本 / 学堂 / 游戏 /
+     字母岛 / 语法）在 <body data-emoji="full"> 上直接声明要全量，
+     避免先下一份核心库再下一份全量。核心库是全集的子集，不会缺图。 */
   const inject = src => {
     const el = document.createElement('script');
     el.src = src;
@@ -1499,11 +1520,10 @@ if (window.WORD_EMOJI) window.__emojiSvgReady();    // 图库比 app.js 先到�
     fullLoaded = true;
     inject('svg/emoji-svg.js?v=6');
   };
-  window.__emojiNeedFull = loadFull;                 // 缺图时的补载入口
   const load = () => {
     if (window.WORD_EMOJI && wantFull === false) return;
     if (wantFull) { loadFull(); return; }
-    inject('svg/emoji-core.js?v=2');
+    inject('svg/emoji-core.js?v=3');
   };
   const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
   const slow = !!(conn.saveData || /^(slow-)?2g|3g$/.test(conn.effectiveType || ''));
@@ -2355,7 +2375,6 @@ function copySyncCode() {
   }
 }
 function importFromSyncCode() {
-  const box = document.getElementById('syncCodeBox');
   const go = code => {
     if (!code || !code.trim()) return;
     const t = code.trim();
@@ -2379,7 +2398,9 @@ function importFromSyncCode() {
       toast('❌ 同步码不对，请检查后重试（注意不要漏字符）');
     });
   };
-  if (box && box.value && box.value.trim().length > 20) return go(box.value);
+  /* 2026-11-13.5：syncCodeBox 是只读展示框，导出后里面留着本机码。
+     原来「框里有码就直接用」会让「粘贴短码恢复」把刚导出的码再导一遍，
+     凭空多出一个重复档案。这里始终弹输入框，让「粘贴」名副其实。 */
   askInput('把短码或备份内容粘贴到这里：', '短码是一长串字符，备份是 JSON 文本，整段粘进来', go);
 }
 function importProfileFile(input) {

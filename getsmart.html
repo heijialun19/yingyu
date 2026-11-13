@@ -85,7 +85,7 @@
 <script async src="svg/emoji-svg2.js?v=3"></script>
 <script src="js/ipa.js?v=6"></script>
 <script src="js/data.js?v=44"></script>
-<script src="js/app.js?v=128"></script>
+<script src="js/app.js?v=129"></script>
 <script defer src="js/audio-list.js?v=5"></script>
 <script src="js/sentence.js?v=49"></script>
 <script src="js/getsmart-data.js?v=15"></script>
@@ -482,7 +482,10 @@ function sentBlank(en) {
     if (distract.length >= 2) break;
   }
   if (distract.length < 2) return null;
-  return { text: en.replace(answer, '＿＿＿'), answer, distract };
+  /* 2026-11-13.5：String.replace 只换第一处，答案词在句里出现两次时
+     后半句会原样印着答案（如 These are apples. These are red.），
+     孩子照抄即可。这里把所有出现都挖掉，保证不泄题。 */
+  return { text: en.split(answer).join('＿＿＿'), answer, distract };
 }
 
 /* ---- Step 2/4 答题 ---- */

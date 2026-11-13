@@ -154,7 +154,7 @@
 <script src="js/words-data.js?v=46"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=44"></script>
-<script src="js/app.js?v=128"></script>
+<script src="js/app.js?v=129"></script>
 <script src="js/grammar-engine.js?v=8"></script>
 <script defer src="js/audio-list.js?v=5"></script>
 <script src="js/sentence.js?v=49"></script>
@@ -604,7 +604,14 @@ function makeQuestion(word, pool) {
   const strict = shuffle(pool.filter(w => w.w !== word.w && !sameZh(w) && !sameIpa(w)));
   /* 严格池不够就放宽（先放同音，再放同义）：宁可偶尔有点歧义，也不要退化成 2 个选项 */
   const relax = shuffle(pool.filter(w => w.w !== word.w && !sameZh(w) && !strict.includes(w)));
-  const distract = (strict.length >= 3 ? strict : strict.concat(relax)).slice(0, 3);
+  let distract = (strict.length >= 3 ? strict : strict.concat(relax)).slice(0, 3);
+  /* 2026-11-13.5：错题本 / 我的词单只有 1~3 个词时干扰项凑不满 3 个，
+     选项会只剩 1 个，孩子不用听就能点中。从全词库补足，仍排除同词/同义。 */
+  if (distract.length < 3) {
+    const all = (typeof THEMES !== 'undefined' ? THEMES : []).reduce((a, t) => a.concat(t.words || []), []);
+    const extra = shuffle(all.filter(w => w.w !== word.w && !sameZh(w) && !distract.includes(w)));
+    distract = distract.concat(extra).slice(0, 3);
+  }
   /* ★ 提示不能白送答案：原来 hint 一律写「从 X 开头」，
      但干扰项没排除同首字母的词 —— 选项是 apple / book / cat / dog 时，
      「从 a 开头」直接把答案圈出来了，孩子根本不用听、不用想。

@@ -14,8 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v128 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| svg/emoji-core.js | v2 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
+| js/app.js | v129 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v44 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -34,9 +34,25 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v186 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v187 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
+
+## 2026-11-13.5 · 独立复检收尾（本次改动）
+
+一次只读复检 + 真浏览器点击流 + 题库 fuzz 后修掉 10 类真 bug：
+存档 `daily:null` 或隐私模式禁用 localStorage 会让 `Store.load()` 顶层抛错、全站卡在加载层
+（现按字段类型归一化、顶层 try/catch、`Profiles.load` 裸 getItem 补 try、导入 data 校验）；
+`games.html` 的 `learnedPool()` 把字符串 key 当对象取 `.w`，恒返回空数组使复习池永久不可用；
+导出同步码后点「粘贴短码恢复」会把自己再导一遍（改为始终弹输入框）；
+小词池干扰项凑不满 3 个导致选项只剩 1 个（从全词库补足）；
+`getsmart.html` 句型填空只替换首个答案词造成泄题（改为全部挖空）；
+语法生成器把词对象传给 `touchWord` 写出 `[object Object]` 垃圾键（取词名 + 入参守卫）；
+三单否定干扰项助动词写反并造成近 40% 生成被去重丢弃；
+`__navSave/__navLoad` 的 key 不含档案 id 导致切档案串位置；
+SW CORE 漏了由 app.js 动态注入的 `emoji-svg.js?v=6`（离线冷启动重页面图标退化）；
+核心图库缺 🧽 且注释承诺的 `__emojiNeedFull()` 从未被调用（补图 + 删除死代码、修正注释）。
+验证：事实门禁全绿、10 页运行时零异常、451 次内容遍历零异常零 404、7 个游戏点击流与 390px 窄屏通过。
 
 ## 缓存机制（改版前必读）
 

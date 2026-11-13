@@ -38,7 +38,7 @@
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=44"></script>
 <script src="js/build-data.js?v=3"></script>
-<script src="js/app.js?v=128"></script>
+<script src="js/app.js?v=129"></script>
 <script defer src="js/audio-list.js?v=5"></script>
 <script src="js/sentence.js?v=49"></script>
 <script src="js/grammar-engine.js?v=8"></script>
@@ -52,7 +52,9 @@ const pick = a => a[Math.floor(Math.random() * a.length)];
 /* 全词表映射 + 学过的词 */
 const ALLW = {};
 THEMES.forEach(t => t.words.forEach(w => { if (!ALLW[w.w]) ALLW[w.w] = w; }));
-const learnedPool = () => Object.keys(Store.d.words).map(w => ALLW[w.w]).filter(Boolean);
+/* 2026-11-13.5：Object.keys 给的是字符串 key，原来写成 ALLW[w.w] 恒为
+   undefined，导致「复习我学过的词」永远不可用。 */
+const learnedPool = () => Object.keys(Store.d.words).map(k => ALLW[k]).filter(Boolean);
 
 /* ---------------- 游戏主页 ----------------
    游戏清单提到模块级：页头文案、首页岛屿的数量都对得上，
