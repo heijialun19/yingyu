@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v124 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v125 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/words-data.js | v45 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v43 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -33,7 +33,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v182 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v183 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -2012,3 +2012,55 @@ BOOT 没动，激活不被拖慢，窄带仍整批跳过（那时页面自身的
 版本链：新增 `pep-lessons.js?v=1` / `pep-mem.js?v=1` 并进 CORE，
 `pep-points.js?v=23→v24`、`CACHE v181→v182`、`BUILD 2026-11-12.2→.3`。
 音频四套版本号、`AUDIO_CACHE`、`js/ipa.js` 与 `PEP_IPA` 数据零改动。
+
+## 2026-11-13.1 · 修「底部反复弹版本更新，点一下刷新又出来」
+
+**现象**：家长反馈底部经常出现橙色「有新版本」条，点它刷新后隔几秒又出现，
+反复出现、像是永远更新不完。
+
+**根因不是提示太勤，是发版流程漏项**。四段代码串成一个闭环：
+
+| 环节 | 事实 |
+|---|---|
+| 发版 | 连续 6 次提交（`fe96d5a` 起）都改了 `js/app.js` 的 `BUILD`（`.11`→`.12`→`.1`→`.2`→`.3`），但 `js/app.js?v=124` **一次都没升** |
+| SW 静态资源 | `cache-first`：`c.match(e.request)` 命中就返回；URL 不变就永远拿旧字节 |
+| SW activate | 为防 11-07 白屏会把旧缓存条目搬进新缓存，包含 `js/app.js?v=124` 的旧字节；后台补齐 `todo` 只补 `!c.match(u)` 的 → 同 URL 判定「已有」，**新 app.js 永远不下载** |
+| 页面 | `BUILD` 来自旧 app.js，`version.json` 不进缓存、每次发版都变新；4 秒 / 5 分钟 / 切前台各比对一次，必然不等 → 弹条。`__updShown` 是内存变量，`reload` 清零 → 又弹 |
+
+取证可复算：`git log -6 --format='%h'` 逐个 `git show <sha>:js/app.js` 取 `BUILD`、
+`git show <sha>:index.html` 取 `?v=`，即可看到 6 次 BUILD 变化对应同一个 `v124`。
+`_audit/probe_update_loop.py --expect-loop` 在真浏览器里把 `version.json` hook 成
+「永远更新」，修复前实测：加载 2 次、第二次 `updateBar` 仍在、无幂等标记 → 死循环成立。
+
+**三道防线（缺一不可）**：
+
+1. **止住循环**：`__showUpdateBar` 按版本号查 `sessionStorage` 的
+   `birdie_upd_done`，同一版本在本标签页只提示一次；点击时先落标记再 reload。
+   关掉标签页重开、或又发了新版本，标记不同仍会正常提示 —— 不掩盖真更新。
+2. **让刷新真的生效**：点击时给 SW 发 `FORCE_REFRESH`（MessageChannel 等回执，
+   700ms 超时兜底，旧版 SW 不认识也能照常刷新）。SW 只在内存 `forceNav` 里
+   给当前 pathname 记一次性标记，下一次导航跳过缓存直接回源 —— 拿到的才是
+   引用新 `?v=` 的新 HTML。**一个字节缓存都不删**：11-07 整页白底黑字就是清空
+   旧缓存造成的，弱网/离线时 `same` / `home` 兜底必须留着。
+3. **让新代码进得来**：本次把 `js/app.js?v=124→125` 同步到 9 个正式页、
+   SW `CORE` 与 `BOOT`。新 URL 不在旧缓存里，`cache-first` 自然回源。
+   另加 `_audit/check_facts.py` 的 **git 基线自动断言**：工作区 `js/app.js`
+   内容相对 `HEAD` 有变化却没升 `?v=` 直接 FAIL，不写死任何版本号。
+
+**验收**：
+
+| 项 | 结果 |
+|---|---|
+| `probe_update_loop.py --expect-loop` | 修复前复现成功（第二次加载仍弹条） |
+| `probe_update_loop.py`（默认） | 修复后 PASS：经历 reload、第二次不再弹、`birdie_upd_done` 已落 |
+| `probe_force_refresh.py` | 7/7 PASS：把线上真实 `sw.js` 注入 Node 桩，实证「未 force 命中缓存 → force 后回源 → 再下一次回缓存」，且 `deletes=0`（一个缓存条目都没删） |
+| `check_facts.py` | **352 PASS / 0 FAIL**（新增 4 条事故断言）；故意把 `index.html` 退回 `v124` 做负对照，新断言如预期 FAIL（`changed=True base=124 cur=124`），恢复后全绿 |
+| 10 页运行时 / 16 个窄屏状态 | 0 console error / 0 资源失败 / 0 溢出 |
+| B4 浮层 / C3 拆分探针 / 动态题 | 全绿（6171 条动态题无结构性病句） |
+
+版本链：`js/app.js?v=124→125`、`CACHE v182→v183`、
+`BUILD 2026-11-12.3→2026-11-13.1`、`README.txt` / `VERSION.md` / `version.json` 同步。
+音频四套版本号、`AUDIO_CACHE`、`js/ipa.js` 与课本数据零改动。
+
+⚠️ 以后每次发版**改了 `js/app.js` 就必须升 `?v=`**，门禁会盯着；
+只改 HTML/CSS/数据文件而 `app.js` 未动时不受此约束。

@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-12.3';
+const BUILD = '2026-11-13.1';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -20,12 +20,42 @@ const GAME_COUNT = 7;
      反复发生（本项目已经三次）。靠「请刷新一下」是治不好的，得让页面自己发现。
    做法：每 5 分钟 / 每次切回前台，拉一次 version.json（带唯一查询串，绕过 SW 缓存），
         和当前 BUILD 不一样就在底部浮一条「有新版本 · 点这里刷新」。
-   ⚠️ 发版时**必须同时改 version.json 里的 build**，只改 BUILD 不会提示。 */
+   ⚠️ 发版时**必须同时改 version.json 里的 build**，只改 BUILD 不会提示。
+   ⚠️ 发版时**必须同时升 js/app.js?v=**（门禁里有 git 基线自动断言）：
+     静态资源是 cache-first，URL 不变就永远拿旧字节；version.json 却在变，
+     于是「点刷新 → 还是旧 BUILD → 4 秒后又弹」无限循环（2026-11-13 事故）。
+   ★ 三道防线，缺一不可：
+     ① sessionStorage 幂等：同一版本在本标签页只提示一次，点过就不再弹；
+     ② 点击时让 SW 把「当前页 HTML」缓存失效，reload 才能拿到引用新 ?v= 的新页面；
+     ③ 发版升 ?v=，新 URL 不在旧缓存里，cache-first 自然回源拿新代码。 */
 const UPDATE_CHECK_MS = 5 * 60 * 1000;
+const UPD_DONE_KEY = 'birdie_upd_done';
 let __updChecked = 0;
 let __updShown = false;
+function __updDone() { try { return sessionStorage.getItem(UPD_DONE_KEY) || ''; } catch (e) { return ''; } }
+function __markUpdDone(v) { try { sessionStorage.setItem(UPD_DONE_KEY, String(v || '')); } catch (e) {} }
+function __reloadAfterRefresh() {
+  let fired = false;
+  const go = () => { if (fired) return; fired = true; location.reload(); };
+  try {
+    const ctrl = navigator.serviceWorker && navigator.serviceWorker.controller;
+    if (ctrl && typeof MessageChannel !== 'undefined') {
+      const ch = new MessageChannel();
+      ch.port1.onmessage = go;
+      ctrl.postMessage({ t: 'FORCE_REFRESH', url: location.href }, [ch.port2]);
+      setTimeout(go, 700);      // 旧版 SW 不认识这条消息，也要照常刷新，不能卡住
+      return;
+    }
+  } catch (e) {}
+  setTimeout(go, 120);
+}
 function __showUpdateBar(v) {
   if (__updShown) return;
+  /* ★ 2026-11-13：点过「刷新」后，即使 reload 回来仍因发版漏升 ?v=／网络失败
+     而拿到旧 BUILD，也绝不再反复弹 —— 之前是「点一次 → 4 秒后又弹 → 无限循环」。
+     sessionStorage 只作用于本标签页，关掉重开仍会重新提示，不会掩盖真有新版本；
+     版本号变了（又一次发版）也会重新提示。 */
+  if (__updDone() === String(v || '')) return;
   __updShown = true;
   try {
     const bar = document.createElement('div');
@@ -41,12 +71,14 @@ function __showUpdateBar(v) {
     bar.innerHTML = '<span style="font-size:1.2em">🔄</span><span style="flex:1">有新版本（' +
       String(v || '').replace(/[<>&"]/g, '') + '），点这里刷新</span><span>▶</span>';
     const go = () => {
+      __markUpdDone(v);                 // 先落标记：reload 之后仍然生效
+      try { bar.remove(); } catch (e) {}
       try {
         if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
           navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => { try { r.update(); } catch (e) {} }));
         }
       } catch (e) {}
-      setTimeout(() => location.reload(), 120);
+      __reloadAfterRefresh();
     };
     bar.addEventListener('click', go);
     bar.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });

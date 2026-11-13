@@ -6,7 +6,7 @@
      （听过一次就永久零网络；重建音频时换一个缓存名，activate 里删掉旧的那个）
    - 外站请求：v8 起站内不再有任何第三方发音请求，这里也就不再为它留分支。
      历史遗留的 opaque 缓存会在 activate 时随旧缓存一起清掉。 */
-const CACHE = 'birdie-abc-v182';
+const CACHE = 'birdie-abc-v183';
 const AUDIO_CACHE = 'birdie-audio-v5';   // 每次重做音频换新名，旧的在 activate 里删掉
 /* 两个 async 大图库不进 BOOT（会拖慢激活）。基础库 emoji-svg.js 每个页面
    都会加载，在线首访必然入缓存；课程扩展库只在 getsmart/pep 加载，
@@ -15,7 +15,7 @@ const AUDIO_CACHE = 'birdie-audio-v5';   // 每次重做音频换新名，旧的
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=52', './js/words-data.js?v=45', './svg/word-svg.js?v=6', './js/data.js?v=43', './js/app.js?v=124', './js/sentence.js?v=49', './js/speech.js?v=1', './js/grammar-engine.js?v=8', './js/ipa.js?v=6', './js/build-data.js?v=3', './js/getsmart-data.js?v=15', './js/pep-data.js?v=1', './js/pep-lessons.js?v=1', './js/pep-mem.js?v=1', './js/pep-points.js?v=24', './svg/emoji-core.js?v=1', './svg/emoji-svg2.js?v=3',
+  './css/style.css?v=52', './js/words-data.js?v=45', './svg/word-svg.js?v=6', './js/data.js?v=43', './js/app.js?v=125', './js/sentence.js?v=49', './js/speech.js?v=1', './js/grammar-engine.js?v=8', './js/ipa.js?v=6', './js/build-data.js?v=3', './js/getsmart-data.js?v=15', './js/pep-data.js?v=1', './js/pep-lessons.js?v=1', './js/pep-mem.js?v=1', './js/pep-points.js?v=24', './svg/emoji-core.js?v=1', './svg/emoji-svg2.js?v=3',
   './manifest.json', './js/audio-list.js?v=5', './favicon.ico', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
@@ -24,7 +24,7 @@ const CORE = [
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
   './', './index.html', './css/style.css?v=52',
-  './js/app.js?v=124', './js/data.js?v=43'
+  './js/app.js?v=125', './js/data.js?v=43'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -86,8 +86,27 @@ self.addEventListener('activate', e => {
     }
   })());
 });
-/* 收到新版本激活指令 */
-self.addEventListener('message', e => { if (e.data === 'SKIP_WAITING') self.skipWaiting(); });
+/* 指令：SKIP_WAITING = 旧版兼容；FORCE_REFRESH = 当前页「下一次导航」强制回源。
+   ★ 2026-11-13 更新条死循环：点刷新若只做 location.reload()，导航是
+     stale-while-revalidate，reload 拿到的还是缓存里的旧 HTML，旧 HTML 还引用旧 ?v=
+     的脚本 → BUILD 追不上 version.json → 4 秒后又弹更新条。
+   ★ 刻意「一个字节缓存都不删」：11-07 整页白底黑字就是清空旧缓存造成的。
+     这里只在内存里给当前 pathname 记一次性标记，下一次导航跳过缓存直接走网络；
+     网络失败时下面的 same / home 缓存兜底全部还在，弱网也不会白屏。
+     SW 若在点击与 reload 之间被回收，标记自然消失 —— 最坏只是回到旧行为，
+     而 app.js 的 sessionStorage 幂等仍会挡住反复弹条。 */
+const forceNav = new Set();
+self.addEventListener('message', e => {
+  const d = e.data;
+  if (d === 'SKIP_WAITING') { self.skipWaiting(); return; }
+  if (!d || d.t !== 'FORCE_REFRESH') return;
+  try {
+    const u = new URL(d.url || (e.source && e.source.url) || self.location.href);
+    forceNav.add(u.pathname);
+    setTimeout(() => forceNav.delete(u.pathname), 30000);
+  } catch (err) {}
+  if (e.ports && e.ports[0]) { try { e.ports[0].postMessage('ok'); } catch (err) {} }
+});
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET') return;
@@ -102,6 +121,10 @@ self.addEventListener('fetch', e => {
      ★ 绝不在 controllerchange 里 location.reload()：那是「一加载就弹回上一级」的老 bug。
      ★ 仍然只缓存成功响应——绝不再把 404/5xx 毒进缓存。 */
   if (e.request.mode === 'navigate') {
+    /* 点过「有新版本」后的这一次导航强制回源：缓存里的旧 HTML 引用旧 ?v=，
+       不绕开它就永远追不上新 BUILD。缓存条目本身一个都不删（离线兜底留着）。 */
+    const force = forceNav.has(url.pathname);
+    if (force) forceNav.delete(url.pathname);
     const cacheP = caches.open(CACHE);
     const netP = fetch(e.request).then(res => {
       if (res && res.ok) {
@@ -113,7 +136,7 @@ self.addEventListener('fetch', e => {
     e.waitUntil(netP.then(() => {}).catch(() => {}));   // 刷新缓存的请求要跑完
     e.respondWith((async () => {
       const c = await cacheP;
-      const cached = await c.match(e.request, { ignoreSearch: true });
+      const cached = force ? null : await c.match(e.request, { ignoreSearch: true });
       if (good(cached)) return cached;                  // 秒开，新版本靠更新条
       const res = await netP;
       if (res && res.ok) return res;
