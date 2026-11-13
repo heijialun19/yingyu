@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-13.7';
+const BUILD = '2026-11-13.8';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -499,7 +499,7 @@ function renderGradePicker(sel) {
    不是语音合成，整句一律返 500；而且那是别人家的录音，站里还带着历史抓下来
    的 2000 多个 mp3 —— 既有服务条款问题，音色也杂（男女混搭、音量忽大忽小）。
    现在全站发音都是本站用开源引擎（Piper，MIT）与 en_US-libritts-high
-   一次合成的同源静态文件：一个说话人贯穿 2874 个单词 / 拼读块 / 字母名
+   一次合成的同源静态文件：一个说话人贯穿 2882 个单词 / 拼读块 / 字母名
    与 502 句整句。模型权重 MIT，训练数据 LibriTTS (OpenSLR 60) 为
    CC BY 4.0，署名与许可全文见 THIRD-PARTY-NOTICES.txt。
      · 不跨域、不联网、断网照读
@@ -711,7 +711,7 @@ const sentenceAudioURL = t => {
    （This is a / I have a / I don't like …）一次合成，冠词在语流里自然弱读，
    动态句子也就有了连读。词块只有 44 条、389KB，不用给上千种组合各存一整句。
    ★ PHRASE_VER 独立于 AUDIO_VER / SENTENCE_VER，重做词块只升它。 */
-const PHRASE_VER = 2;
+const PHRASE_VER = 3;
 const PHRASE_AUDIO = new Set([
   "this_is_a","this_is_an","this_is_my","this_is","i_have_a","i_have_an",
   "i_have_two","i_have","i_eat","i_drink","i_see_a","i_see_an","i_see",
@@ -719,7 +719,18 @@ const PHRASE_AUDIO = new Set([
   "we_have","he_likes","she_is","she_can","it_is_a","it_is","there_is_a",
   "there_are","is_this_a","do_you","can_you","what_is","where_is","how_many",
   "my_name_is","every_day","i_run","birds_fly","we_sing","we_drink_milk",
-  "i_am_a_girl","i_am_a_boy","a_boy","a_girl"
+  "i_am_a_girl","i_am_a_boy","a_boy","a_girl",
+  "are_they","can_he","can_i",
+  "can_she","can_they","did_you",
+  "does_he","does_it","does_she",
+  "he_can_t","he_doesn_t","i_can_t",
+  "is_he","is_it","is_on_the",
+  "is_on_the_bed","is_on_the_chair","is_on_the_floor",
+  "is_on_the_sofa","is_on_the_table","is_she",
+  "is_this_an","it_doesn_t","on_the",
+  "over_there","she_can_t","she_doesn_t",
+  "there_is_an","they_can_t","they_don_t",
+  "you_can_t"
 ]);
 const phraseAudioURL = t => {
   const k = audioSlug(t);

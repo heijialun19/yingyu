@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v130 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v131 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v44 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -34,9 +34,47 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v189 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v190 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
+
+## 2026-11-13.8 · 连读词块扩容（语法页不再一个词一个词念）
+
+**现象**：语法页（句子工厂）动态生成的句子朗读是「一个词一个词」蹦。
+
+**量化**（按 sentence.js 真实取音链：整句 → 最长 4 词连读块 → 单词）：
+- 语法页真实出题 1791 句，只有 3 句有整句音频，1788 句逐词接龙
+- 其中 **68.1% 段数 = 词数**（完全一词一段），平均 0.87 段/词
+- 真实关卡 ≥5 词长句 147 句，**79 句一词一段**
+- 对照：PEP 绘本 272 句、Get Smart 224 句全部有整句音频，零逐词
+
+**根因**：整句音频只做了 502 条固定例句；词块库 44 条全是旧题型
+（`this_is_a` / `i_have_a` / `my_name_is`），而 2026-11 新加的**否定句、
+疑问句、方位句**模板一条词块都没有，所以这些题型 100% 逐词。
+`The X is on the Y.` 一个句式就占 59 句（6 段/6 词）。
+
+**改动**：补 31 条词块（44 → 75 条）
+- 否定：`it/he/she doesn't`、`they don't`
+- 疑问：`does he/she/it`、`did you`、`is he/she/it`、`are they`、`can i/he/she/they`
+- `can't`：`i/he/she/you/they can't`
+- 方位：`is on the` + `is on the table/bed/chair/sofa/floor`（地点只有这 5 个）
+- 其余：`there is an`、`is this an`、`over there`、`on the`
+
+**效果**：段/词 0.87 → 0.68；纯逐词 68.1% → **7.1%**；
+长句纯逐词 79/147 → **10/147**；`The cat is on the bed.` 6 段 → 3 段
+（`The` + `cat` + `is on the bed`）。剩余 10 句属长尾（各出现 1–2 次）。
+
+**音频**：31 条 270.7KB，`en_US-libritts-high` + speaker 381 +
+`length_scale 1.1` / `noise_scale 0` / `noise_w 0` / 64k / 22050 mono / 不裁静音
+（同 build_c2.py 的 phrases 段）。**同源校验**：重造已上线的 `this_is_a`、`do_you`，
+md5 与线上文件逐字节相同、maxΔ = 0.000000、corr = 1.000000。
+
+**版本链**：`PHRASE_VER` 2 → 3（词块独立版本号，不动 AUDIO_VER / SENTENCE_VER，
+避免逼用户重下 2882 条单词音频）；`app.js` v130 → v131（9 页 + sw.js 两处）；
+`CACHE` v189 → v190。文案「44 段/个连读词块」→ 75（parents / README.md / README.txt）。
+音频总数 2921 不变（口径 = 词音频 2882 + 39 字母音，词块不计入）。
+词块不进 SW 的 CORE 预热（同既有 44 条，按需加载），首装体积不变。
+
 
 ## 2026-11-13.7 · 派生词两个根问题（方位词 / 词性守卫）
 

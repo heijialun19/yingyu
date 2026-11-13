@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-13.7",
-  "note": "2026-11-13.7 派生词收尾：① 相对方位 left/right/front/back/middle 原来没进NO_ARTICLE，生成过 \"There is a left over there.\" / \"I like lefts.\" / \"We like middles.\"，现已与 north/south/east/west 同类挡掉（不加 a/an、不加 s）；② pluralSafe() 只查拼写不查词性，全词库有 212 条 beautifuls/fasts/agains 这类垃圾复数形，已加词性守卫，契约改为\"只对真名词返回 true\"；③ 合法复数 ways / mistakes 缺音频，用原 TTS 管道补录（同源 maxΔ=0），audio-list 2880→2882 条、v6→v7，grammar-engine v8→v9，app v129→v130，CACHE v188→v189。压力测试缺词 23 句 → 0 句。"
+  "build": "2026-11-13.8",
+  "note": "2026-11-13.8 连读词块扩容：语法页动态句子原来只靠 44 条词块（全是旧题型 this is a / i have a / my name is 这类），2026-11 新加的否定句、疑问句、方位句一条都没有，于是 \"The cat is on the bed.\" 是 6 段 6 词、\"Does he like apples?\" 逐词蹦——实测 1788/1791 句逐词拼接，68.1% 段数等于词数。现补 31 条词块（否定 doesn't/don't ×4、疑问 does/did/is/are/can ×12、can't ×5、方位 is on the + 5 个地点、there is an / is this an / over there / on the），词块 44 → 75 条，PHRASE_VER 2→3、app v130→v131、CACHE v189→v190。纯逐词占比 68.1% → 7.1%，长句（≥5 词）纯逐词 79/147 → 10/147，\"The cat is on the bed.\" 6 段 → 3 段。音频同源校验 md5 与线上逐字节相同。"
 }
