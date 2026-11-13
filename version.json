@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-13.6",
-  "note": "2026-11-13.6 长句朗读补词：L22 比较级/最高级的 tallest、hotter 缺音频，逐词接龙会静默跳过，整句听成「He is the ___ in our class.」。用原 TTS 管道（en_US-libritts-high spk381，与线上同源，逐采样 maxΔ=0）补录两个词，audio-list 2878→2880 条，audio-list v5→v6，CACHE v187→v188。其余长句链路复检：句子工厂静态 57 句 / 自动出题 1742 句 / Get Smart 224 句 / PEP 272 句，除这 3 句外零缺词。"
+  "build": "2026-11-13.7",
+  "note": "2026-11-13.7 派生词收尾：① 相对方位 left/right/front/back/middle 原来没进NO_ARTICLE，生成过 \"There is a left over there.\" / \"I like lefts.\" / \"We like middles.\"，现已与 north/south/east/west 同类挡掉（不加 a/an、不加 s）；② pluralSafe() 只查拼写不查词性，全词库有 212 条 beautifuls/fasts/agains 这类垃圾复数形，已加词性守卫，契约改为\"只对真名词返回 true\"；③ 合法复数 ways / mistakes 缺音频，用原 TTS 管道补录（同源 maxΔ=0），audio-list 2880→2882 条、v6→v7，grammar-engine v8→v9，app v129→v130，CACHE v188→v189。压力测试缺词 23 句 → 0 句。"
 }

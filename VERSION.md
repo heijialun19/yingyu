@@ -14,13 +14,13 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v129 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v130 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v44 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
-| js/grammar-engine.js | v8 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
+| js/grammar-engine.js | v9 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v6 | 音标 |
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v15 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
@@ -28,15 +28,85 @@
 | js/pep-lessons.js | v1 | 人教版单元知识点讲解（273 张卡 / gzip 40.1KB）。**仅 pep.html 引**；`en:` 字段与整句音频对账 |
 | js/pep-mem.js | v1 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
 | js/pep-points.js | v24 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
-| js/audio-list.js | v6 | 发音清单（2880 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
+| js/audio-list.js | v7 | 发音清单（2882 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v53 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
 | svg/word-svg.js | v7 | 379 张自绘词图（346 张卡通 + 33 张数字 / 日历 / 国旗卡；3 张泄答案图已重画，board / blackboard 共用黑板画） |
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v188 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v189 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
+
+## 2026-11-13.7 · 派生词两个根问题（方位词 / 词性守卫）
+
+**触发**：2026-11-13.6 结尾留了一句「全词池压力测试还有 23 句缺 lefts / rights /
+backs / fronts / middles / ways / mistakes」，用户要求一并收掉。这次不靠模板抽样，
+直接穷举派生形。
+
+**第一步：把"缺词"查成全集，而不是抽样**
+`_audit_derived.py` 在真浏览器里调站点自己的 `pluralSafe()` / `pluralOf()`，
+穷举全词库 999 词条 → 714 个可复数形，逐条对 `__LOCAL_AUDIO` 核对：
+
+| 项 | 数 |
+|---|---|
+| 词库去重词条 | 999 |
+| 可复数形 | 714 |
+| 基础词缺音频 | 0 |
+| 复数形缺音频 | 219 |
+| 其中「词性是名词」（模板真能取到） | **7** |
+| 其中「词性不是名词」（当前调用方已过滤） | 212 |
+
+**第二步：7 个缺口分两类，只有一类该补音频**
+
+- `back / front / left / middle / right`（方位词，zh 后面/前面/左边/中间/右边）——
+  `*lefts` / `*middles` / `*fronts` 不是英语，给它们配音等于把病句固化成
+  「能念出来的正确答案」。正确处理是**不生成**：`grammar-engine.js` 的
+  `NO_ARTICLE` 早就挡住了 `north/south/east/west`（注释写明"方位词本身没有单数形式，
+  也没有复数"），相对方位是同一类词却漏了。本次把 5 个词补进同一张表，
+  `takesArticle()` 与 `pluralSafe()` 都读这张表，一处改动同时关掉：
+  `There is a left over there.` ✗ / `I like lefts.` ✗ / `Is this a middle?` ✗
+- `way / mistake` —— 合法可数名词，`ways` / `mistakes` 是正常复数，只是音频库缺文件。
+  用原 TTS 管道补两条（`_tts_fix_words2.py`，参数同 .6，重造 `taller` 逐采样
+  maxΔ = 0.000000 后再合成），`audio-list` 2880 → 2882 条。
+
+**第三步：顺手堵掉函数级的坑（212 条垃圾形的来源）**
+`pluralSafe()` 原实现只查拼写规则（结尾是不是 s/x/z/sh/ch/o/f/fe、辅音+y、不规则表），
+**完全不查词性**。形容词、副词只要拼写过关就被判成"可加 s"：
+
+```
+beautiful → beautifuls   fast → fasts   sad → sads
+again → agains           maybe → maybes   often → oftens
+```
+
+全词库 212 条。线上没漏出病句，是因为每个调用方都自己先写了
+`gxPosCode(w) === 'n'`（`grammar.html` 5 处、`gxNouns()`、`words.html` 跟读筛选）。
+但这是"靠调用方记得"的契约，谁少写一道过滤，孩子就会看到 `I like beautifuls.`。
+本次把词性判断收进函数本身：
+
+```js
+const pluralSafe = w => {
+  const x = wordOf(w).toLowerCase();
+  if (gxPosCode(w) !== 'n') return false;   // ★ 2026-11-13.7
+  ...
+```
+
+契约变为"只对真名词返回 true"，`可复数形` 714 → 502，行为对现有调用方不变
+（它们本来就已经过滤过），但函数从此自证安全。
+
+**版本链**：BUILD .6 → 2026-11-13.7；`js/grammar-engine.js` v8 → v9
+（games / grammar / words + sw.js CORE 四处）；`js/audio-list.js` v6 → v7
+（2880 → 2882 条，9 个 HTML + sw.js CORE）；`js/app.js` v129 → v130
+（9 个 HTML + sw.js CORE/BOOT）；CACHE v188 → v189。
+`AUDIO_VER`(4) / `SENTENCE_VER`(5) / `PHRASE_VER`(2) / `AUDIO_CACHE`(v5) **不动**：
+只新增两个文件，没有替换任何既有音频，升了会逼全站重下 2880 条。
+
+**用户可见文案**：披露页 / 家长中心 / README.md / `speechEnv()` 的
+「2919 个发音文件」→ **2921**（口径 = 词音频 2882 + 39 字母音）。
+
+**复检**：`_audit_long_audio.py` 压力测试缺词 23 句 → **0 句**；
+`_audit_derived.py` 复数形缺音频 219 → **0 条**（阻挡后方位词不再进池，不再产生该形）；
+事实门禁 PASS；线上真浏览器取音链零缺词。
 
 ## 2026-11-13.6 · 长句朗读补词（tallest / hotter）
 
@@ -115,7 +185,7 @@ SW CORE 漏了由 app.js 动态注入的 `emoji-svg.js?v=6`（离线冷启动重
 - 整句发音：课本 273 句 + Get Smart 227 句共 497 个 slug 的自合成整句 MP3 在 audio/sentences/，
   清单 SENTENCE_AUDIO 在 app.js，命中就一次播完；不命中才走逐词连读
 - 单词发音：**只用站内 audio/{slug}.mp3，一个外网请求都不发**（v8，2026-11-08）。
-  全站发音目标共 2878 个（单词 + 拼读块 + 字母名 + 复数/三单/进行时派生词），清单是 `js/audio-list.js`；
+  全站发音目标共 2882 个（单词 + 拼读块 + 字母名 + 复数/三单/进行时派生词），清单是 `js/audio-list.js`；
   另有 26 个字母音在 `audio/phonics/`（不进清单，用 `PHONICS_VER` 独立版本号）
   （`window.__AUDIO_LIST`，defer 加载，不挡首屏、file:// 也能用）；
   清单没落地前对单个词按本地文件乐观解析，`__registerGSAudio()` 另做兜底。

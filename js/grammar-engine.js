@@ -516,8 +516,14 @@ const NO_ARTICLE = new Set([
   'monday','tuesday','wednesday','thursday','friday','saturday','sunday',
   'january','february','march','april','may','june','july','august',
   'september','october','november','december','christmas','new year',
-  // 方位
+  /* 方位：north/south/east/west 是绝对方位，left/right/front/back/middle 是相对方位。
+     ★ 2026-11-13.7 修的 bug：原来只挡了绝对方位，相对方位被当普通可数名词，于是
+         thereBe / isQuestion 出过 "There is a left over there."
+         I-like 模板出过 "I like lefts." / "We like middles." / "I have two backs."
+       *lefts / *middles / *fronts 不是英语，加 s 就错；加 a/an 同样错（a left ✗）。
+       同一类词必须一起挡 —— 这两个判断（takesArticle / pluralSafe）都读这张表。 */
   'north','south','east','west',
+  'left','right','front','back','middle',
   // 学科 / 抽象
   'music','art','science','math','maths','pe','chinese','english',
   /* 时间副词被标成了名词：This is a today. / a tomorrow. / a late. 都是错句。
@@ -555,6 +561,12 @@ function artOf(w) {
    其余才放行（giraffe 这种 -ffe 结尾是安全的，单独放行）。 */
 const pluralSafe = w => {
   const x = wordOf(w).toLowerCase();
+  /* ★ 2026-11-13.7：原来只查拼写规则，不查词性。形容词/副词只要不以
+     s/x/z/sh/ch/o/f/fe 结尾，就被判成"可加 s"，pluralOf 给出
+     beautifuls / fasts / sads / agains / maybes（全词库 212 条这种垃圾形）。
+     现有调用方都先过了 gxPosCode()==='n'，线上没漏出去，但这个函数本身不安全：
+     谁少写一道过滤，孩子就会看到 "I like beautifuls."。契约改成"只对真名词返回 true"。 */
+  if (gxPosCode(w) !== 'n') return false;
   /* NO_ARTICLE 那批（国名 / 星期 / 月份 / 方位 / 学科）既不能加 a/an，也不能加 s：
      I don't like Canadas. ✗ —— 2026-11-01 实测确实生成过这句。 */
   if (!countable(w) || IRREG_PLURAL[x] || NO_ARTICLE.has(x)) return false;
