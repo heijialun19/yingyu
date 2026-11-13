@@ -14,7 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v127 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v128 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| svg/emoji-core.js | v2 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v44 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
@@ -33,7 +34,7 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v185 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v186 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
@@ -2200,3 +2201,45 @@ L1–L19 动态生成句仍走引擎。人工标注允许把介词短语合成�
 `CACHE v184→v185`、`BUILD 2026-11-13.2→.3`，9 个正式页与 SW CORE/BOOT 同步；
 本地 `_probe_*.html` 一起升，避免同一资源两种版本并存。
 音频四套版本号、`AUDIO_CACHE`、音标与课本数据零改动。
+
+## 2026-11-13.4 家长图标黑块修复（轻页面 emoji 不再回退成系统字体黑色剪影）
+
+家长反馈：轻页面（首页 / 家长中心 / 声明页 / 404）底部的「家长」导航图标
+**有时候渲染成一个黑色的人形剪影**，而不是彩色矢量图。
+
+### 根因
+
+不是图标画错，是**替换根本没发生**。轻页面只引核心表情库 `svg/emoji-core.js`
+（首页 / 家长中心 / 声明页 / 404 不声明 `data-emoji="full"`，走这套 ~80 条的小库），
+而它有两个缺陷：
+
+1. 生成脚本 `_audit/gen_emoji_core.py` 按**单个码点**扫描 emoji，把 ZWJ 组合
+   `👨‍👩‍👧`（家长中心正是这个图标）拆成 3 个孤立的人，整串没进库；
+2. 拆分出核心库时漏掉了 `emoji-svg.js` / `emoji-svg2.js` 末尾的
+   `try { if (window.__emojiSvgReady) window.__emojiSvgReady(); } catch(e){}` 回调。
+
+结果：轻页面加载 emoji 库后没有触发 `paintEmoji` 替换，`👨‍👩‍👧` 等留在 DOM 里
+由系统字体渲染——部分平台 / 字体下 ZWJ 组合没有彩色字形，就退化成黑色剪影。
+年级切换按钮（`🌱🌿🍀🌻🍁🎓`）也有同样的隐患。
+
+### 处置
+
+| 项 | 做法 |
+|---|---|
+| 重新收集 | `gen_emoji_core.py` 改成**视觉簇扫描**（按 ZWJ / VS16 把组合收成整串），`👨‍👩‍👧` 与 6 个年级 emoji 一起进库 |
+| 补回调 | 核心库末尾补回 `__emojiSvgReady()` 回调，替换时机与全量库一致 |
+| 双保险 | `app.js` 的 `inject()` 给动态注入的 `<script>` 加 `onload` 兜底，即便库的回调缺失也会触发替换 |
+| 不降级重页 | 重页（data-emoji=full）走全量库，本来就正常，这次零改动 |
+
+### 验收
+
+| 项 | 结果 |
+|---|---|
+| `probe_nav_icons.py` | 8/8 PASS：家长 tab 渲染成 `<svg>`（非文本字形）、年级按钮也解析成矢量图 |
+| 正负对照 | 故意删回调 / 删 onload 各自仍能靠另一道防御过关；两道同时删才复现黑块 → 证明两道防御各自独立必要 |
+| 全量回归 | 事实门禁、10 页运行时、16 个 390px 状态、B4 浮层、C3 拆分、更新条、SW、动态题全绿 |
+
+版本链：`emoji-core v1→v2`、`app v127→v128`（改了 app.js，必须升）、
+`CACHE v185→v186`、`BUILD 2026-11-13.3→.4`，9 个正式页与 SW CORE/BOOT 同步；
+本地 `_probe_*.html` 一起升，避免同一资源两种版本并存。
+黑板重画（.3）的其余资源零改动。

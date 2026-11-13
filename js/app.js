@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-13.3';
+const BUILD = '2026-11-13.4';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1482,6 +1482,14 @@ if (window.WORD_EMOJI) window.__emojiSvgReady();    // 图库比 app.js 先到�
     el.src = src;
     el.async = true;
     el.onerror = () => {};                           // 拉不到就保持字体字形，不影响功能
+    /* ★ 2026-11-13.4：图库到货必须通知 app.js 去替换，否则整页图标一直用系统字形。
+       三份库的末尾本来都有 __emojiSvgReady() 调用，但 emoji-core.js 是脚本重拼的，
+       那行被丢了 —— 轻页（首页 / 家长中心 / 声明 / 404）于是从不替换，
+       ZWJ 组合如 👨‍👩‍👧 在部分机型被画成黑色剪影。
+       这里再挂一道 onload：不依赖产物里有没有那行，重复调用也是幂等的。 */
+    el.onload = () => {
+      try { if (window.__emojiSvgReady) window.__emojiSvgReady(); } catch (e) {}
+    };
     (document.head || document.documentElement).appendChild(el);
   };
   const wantFull = /\bfull\b/.test((document.body && document.body.getAttribute('data-emoji')) || '');
@@ -1495,7 +1503,7 @@ if (window.WORD_EMOJI) window.__emojiSvgReady();    // 图库比 app.js 先到�
   const load = () => {
     if (window.WORD_EMOJI && wantFull === false) return;
     if (wantFull) { loadFull(); return; }
-    inject('svg/emoji-core.js?v=1');
+    inject('svg/emoji-core.js?v=2');
   };
   const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
   const slow = !!(conn.saveData || /^(slow-)?2g|3g$/.test(conn.effectiveType || ''));
