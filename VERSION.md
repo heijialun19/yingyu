@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v137 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v138 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v44 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -26,7 +26,7 @@
 | js/getsmart-data.js | v15 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
 | js/pep-lessons.js | v1 | 人教版单元知识点讲解（273 张卡 / gzip 40.1KB）。**仅 pep.html 引**；`en:` 字段与整句音频对账 |
-| js/pep-mem.js | v3 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
+| js/pep-mem.js | v4 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
 | js/pep-points.js | v24 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
 | js/audio-list.js | v7 | 发音清单（2882 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v53 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
@@ -34,11 +34,71 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v196 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v197 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 
+## 2026-11-14.2 · 人教课本页音标：按课本词表核对（不再说成笼统「英式 RP」）
+
+家长纠正：「人教教材以他们教材的音标为准，不是以英式为准。」上一轮把课本音标
+等同于「英式 DJ/RP 通行式」，这不够——课本怎么印才作数。
+
+### 做法
+1. 抓 7 份公开人教版 PEP 词表（2024 新版为主；含 2025 三下、2025 四上、2026 五上），
+   官方站与资料站混采，存 `_ipa_src/`。
+2. 归一化后逐条比对：`ː`/`:`、`ɡ`/`g`、`'`/`ˈ`、`ɔ`/`ɒ`、`e`/`ɛ`、`(ə)`/成音节。
+3. 判定规则：≥3 份词表写法一致才改；只差成音节写法按教材写法改；
+   教材标法自相矛盾（词表漏标重音、明显错字如 `kŋgəruː`）一律保留本站。
+
+### 结果（894 条）
+| 类别 | 条数 |
+|---|---|
+| 与公开教材词表一致（不动） | 534 |
+| 教材标法自相矛盾，保留本站 | 35 |
+| 无公开词表可比（五下 / 六上等新册） | 289 |
+| 本轮实际修改 | 36 |
+
+### 改了哪些（举例）
+| 词 | 改前 | 改后 |
+|---|---|---|
+| apple | /ˈæpəl/ | /ˈæpl/ |
+| beautiful | /ˈbjuːtɪfəl/ | /ˈbjuːtɪfl/ |
+| bottle | /ˈbɒtəl/ | /ˈbɒtl/ |
+| colourful | /ˈkʌləfəl/ | /ˈkʌləfl/ |
+| eleven | /ɪˈlevən/ | /ɪˈlevn/ |
+| garden | /ˈɡɑːdən/ | /ˈɡɑːdn/ |
+| hospital | /ˈhɒspɪtəl/ | /ˈhɒspɪtl/ |
+| lesson | /ˈlesən/ | /ˈlesn/ |
+| listen | /ˈlɪsən/ | /ˈlɪsn/ |
+| little | /ˈlɪtəl/ | /ˈlɪtl/ |
+| people | /ˈpiːpəl/ | /ˈpiːpl/ |
+| plant | /plænt/ | /plɑːnt/ |
+| purple | /ˈpɜːpəl/ | /ˈpɜːpl/ |
+| season | /ˈsiːzən/ | /ˈsiːzn/ |
+| travel | /ˈtrævəl/ | /ˈtrævl/ |
+| uncle | /ˈʌŋkəl/ | /ˈʌŋkl/ |
+| Chinese | /tʃaɪˈniːz/ | /ˌtʃaɪˈniːz/ |
+| National Day | /ˈnæʃənəl deɪ/ | /ˈnæʃnəl deɪ/ |
+
+- 成音节写法按教材统一：`apple /ˈæpl/`、`pencil /ˈpensl/`、`seven /ˈsevn/`。
+- 真错 1 处：`plant /plænt/ → /plɑːnt/`（5 份词表一致，原值是美式）。
+- 重音位置错 2 处：`magazine`（重音在 zine）、`sometimes`（首重音）。
+- `-teen` 家族补次重音：`thirteen /ˌθɜːˈtiːn/`、`sixteen /ˌsɪksˈtiːn/`（原值还丢了 six 的 s）。
+
+### 顺手改掉的过度声明
+`pep.html` 原写「每单元词表与课本附录**完全一致**」。核对时发现三下 Unit 2/3/5 的单元名
+与已出版教材不一致（教材为 *Expressing yourself* / *Learning better* / *Old toys*，
+站内为 *My words and actions* / *Tools and senses for learning* / *Old things*），
+这句话站不住，改为「词表按课本附录**逐单元整理**」，并注明音标里可核对的 605 条已核。
+
+### 未做（留待确认）
+- 三下单元名与词表是否整册替换 —— 需要纸质课本或更多公开词表，属内容迁移不是音标问题。
+- `(r)` 标记：公开词表一半印 `teacher /ˈtiːtʃə(r)/`、一半不印，教材印法不统一，本站不印。
+
 ## 2026-11-14.1 · 音标分两套口径：课本页英式、其余美式；Get Smart 补齐 650 处
+ 音标分两套口径：课本页英式、其余美式；Get Smart 补齐 650 处
+
+
 
 家长要求：「人教教材的那里面的用英式，其他的全部都用美式，但是音标不能有任何的错误。
 就算同一个单词前后不一致也没关系，只要是正确的就可以。」
