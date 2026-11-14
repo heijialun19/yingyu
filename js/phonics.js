@@ -221,7 +221,73 @@ function phBlendableWord(f, w) {
   return !!(seg && seg.length) && seg.every(b => !!phBlockURL(b));
 }
 
+/* ================= 视觉词 / 可解码短文 / 听音能写（2026-11-14.10） =================
+   ★ 全部自研：词表按「不规则、或用到还没教的规则」自行挑选并自写解析；
+     短文全部自编句，不搬运任何教材、词表品牌或竞品的原文与编排。
+   ★ 音频策略与全站一致：优先站内 mp3，缺文件走设备语音（绝不静默失败）；
+     字母音 / 拼读块仍只走 audio/phonics/ 母语者录音（发音铁律不变）。 */
+
+/* 视觉词（高频整体认读词）：先整体认住，学到对应规则再回头「认领」。
+   ipa 为常用读音（弱读另行注明）；note 讲清「为什么不按字母直接拼」。 */
+const SIGHT_WORDS = [
+  { w: 'the',  ipa: '/ðə/',  zh: '这个；那个', note: 'th 是浊音 /ð/；a 弱读 /ə/（元音前读 /ði/）' },
+  { w: 'said', ipa: '/sed/', zh: '说',        note: 'ai 在这里不读 /eɪ/，读 /e/——不规则' },
+  { w: 'you',  ipa: '/juː/', zh: '你；你们',   note: 'ou 在这里读 /uː/' },
+  { w: 'one',  ipa: '/wʌn/', zh: '一',        note: 'o 读 /ʌ/，还多了个 w 的音' },
+  { w: 'two',  ipa: '/tuː/', zh: '二',        note: 'w 不发音，o 读 /uː/' },
+  { w: 'was',  ipa: '/wʌz/', zh: '是（过去）',  note: 'a 读 /ʌ/，不是 /æ/也不是本名' },
+  { w: 'were', ipa: '/wɜːr/', zh: '是（过去）', note: 'e 不读 /e/，整词读 /wɜːr/' },
+  { w: 'come', ipa: '/kʌm/', zh: '来',        note: '魔法 e 例外！o 读 /ʌ/，不读本名' },
+  { w: 'some', ipa: '/sʌm/', zh: '一些',      note: '魔法 e 例外！o 读 /ʌ/，不读本名' },
+  { w: 'have', ipa: '/hæv/', zh: '有',        note: '魔法 e 例外！a 读 /æ/，不读本名' },
+  { w: 'do',   ipa: '/duː/', zh: '做',        note: 'o 读 /uː/，不是 /ɑ/' },
+  { w: 'does', ipa: '/dʌz/', zh: '做（三单）',  note: 'o 读 /ʌ/，词尾 es 读 /z/' },
+  { w: 'of',   ipa: '/ʌv/',  zh: '……的',      note: 'o 读 /ʌ/，f 读 /v/！' },
+  { w: 'to',   ipa: '/tuː/', zh: '到；向',     note: 'o 读 /uː/（弱读时是 /tə/）' },
+  { w: 'are',  ipa: '/ɑːr/', zh: '是',        note: 'a 读 /ɑːr/，整体认读' },
+  { w: 'they', ipa: '/ðeɪ/', zh: '他们',      note: 'th 是浊音 /ð/，ey 读 /eɪ/' },
+  { w: 'them', ipa: '/ðem/', zh: '他们（宾格）', note: 'th 是浊音 /ð/，不是轻轻吐舌的 /θ/' },
+  { w: 'this', ipa: '/ðɪs/', zh: '这个',      note: 'th 是浊音 /ð/，不是 /θ/' },
+  { w: 'that', ipa: '/ðæt/', zh: '那个',      note: 'th 是浊音 /ð/，不是 /θ/' },
+  { w: 'there', ipa: '/ðer/', zh: '那里',     note: 'th 是浊音 /ð/，ere 整体认读' },
+  { w: 'what', ipa: '/wʌt/', zh: '什么',      note: 'a 读 /ʌ/，不是 /æ/' },
+  { w: 'where', ipa: '/wer/', zh: '哪里',     note: 'wh 读 /w/，ere 不按字母音读' },
+  { w: 'who',  ipa: '/huː/', zh: '谁',        note: 'wh 在这里读 /h/！' },
+  { w: 'why',  ipa: '/waɪ/', zh: '为什么',     note: 'y 在词尾当元音读 /aɪ/（还没学 y）' },
+  { w: 'he',   ipa: '/hiː/', zh: '他',        note: 'e 在词尾读本名 /iː/（开音节）' },
+  { w: 'she',  ipa: '/ʃiː/', zh: '她',        note: 'sh 读 /ʃ/，e 在词尾读本名 /iː/' },
+  { w: 'we',   ipa: '/wiː/', zh: '我们',      note: 'e 在词尾读本名 /iː/（开音节）' },
+  { w: 'my',   ipa: '/maɪ/', zh: '我的',      note: 'y 在词尾当元音读 /aɪ/（还没学 y）' },
+  { w: 'out',  ipa: '/aʊt/', zh: '外面',      note: 'ou 读 /aʊ/（还没学这个组合）' },
+  { w: 'now',  ipa: '/naʊ/', zh: '现在',      note: 'ow 读 /aʊ/（还没学这个组合）' },
+  { w: 'all',  ipa: '/ɔːl/', zh: '全部',      note: 'a 在这里读 /ɔː/，不是 /æ/' },
+  { w: 'her',  ipa: '/hɜːr/', zh: '她的',     note: 'er 读 /ɜːr/（卷舌，还没学 er）' },
+];
+
+/* 可解码短文（全部自编句）：只用「已教规则可拼的词 + 上面的视觉词」。
+   tags 标注用到的规则，便于家长知道这句在练什么。 */
+const DECODE_SENTENCES = [
+  { s: 'The fish can swim.',        zh: '这条鱼会游泳。',    tags: '视觉词 the/can · 短元音 i · sh' },
+  { s: 'A frog can jump.',          zh: '一只青蛙会跳。',    tags: '视觉词 a/can · 连缀 fr · 短元音 u' },
+  { s: 'The bird can sing.',        zh: '这只鸟会唱歌。',    tags: '视觉词 the/can · 卷舌音 ir · ng' },
+  { s: 'My dog can run.',           zh: '我的狗会跑。',      tags: '视觉词 my/can · 短元音 o、u' },
+  { s: 'We play in the rain.',      zh: '我们在雨里玩。',    tags: '视觉词 we/the · 连缀 pl · ai' },
+  { s: 'The sun is hot.',           zh: '太阳很热。',        tags: '视觉词 the · 短元音 u、o' },
+  { s: 'See the green tree.',       zh: '看那棵绿树。',      tags: '视觉词 the · ee · 连缀 gr' },
+  { s: 'He can see the moon.',      zh: '他能看见月亮。',    tags: '视觉词 he/can/the · oo' },
+  { s: 'She has a red hen.',        zh: '她有一只红母鸡。',  tags: '视觉词 she/a · sh · 短元音 e' },
+  { s: 'The cake is on the plate.', zh: '蛋糕在盘子上。',    tags: '视觉词 the/on · 魔法 e' },
+];
+
+/* 听音能写（拼写编码）词表：3-4 个字母、站内有音频、字母级可拼。
+   含少量 4 字母词（milk/fish/ship/duck/desk/frog/drum/flag/plan/jump）。 */
+const SPELL_WORDS = ['cat','hat','man','pen','hen','ten','pig','big','six','dog','hot','fox','bus','sun','run','cup','map','van','bag','leg','bed','red','milk','fish','ship','shop','duck','desk','frog','drum','flag','plan','jump'];
+
 window.PHONICS = PHONICS;
 window.PH_EXTRA = PH_EXTRA;
 window.PH_BLOCKS = PH_BLOCKS;
 window.PH_BLEND_OK = PH_BLEND_OK;
+window.SIGHT_WORDS = SIGHT_WORDS;
+window.DECODE_SENTENCES = DECODE_SENTENCES;
+window.SPELL_WORDS = SPELL_WORDS;
+

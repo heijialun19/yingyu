@@ -14,8 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v145 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/phonics.js | v2 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
+| js/app.js | v146 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/phonics.js | v3 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -37,7 +37,27 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v204 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v205 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+---
+
+## 2026-11-14.10 · 三大练习：视觉词 + 可解码短文 + 听音能写
+
+用户：「3 项都做，去吧，不能有错误，不能侵权」——即补齐瑞格叔叔体系里我们缺的
+视觉词 / 可解码阅读 / 听音能写（编码方向）三块，全部自研、零搬运。
+
+- **⑨ 视觉词**：32 个高频整体认读词（the/said/you/come/some/have/of/who/why/her…），
+  每词 IPA + 中文 +「为什么不按字母拼」自写解析（said 的 ai 读 /e/、come/some/have 的
+  魔法 e 例外、who 的 wh 读 /h/、of 的 f 读 /v/）。词表按「不规则或用到未教规则」自选自排，
+  不搬运 Dolch/Fry 等词表品牌的编排与文案。
+- **⑩ 可解码短文**：10 句自编短文（The fish can swim. / The cake is on the plate. …），
+  只用「已教规则可拼的词 + 视觉词」，标签注明练什么规则；点词听单字，
+  「读整句」走 speakSentenceWords 逐词连读（站内音频优先）。
+- **⑪ 听音能写**：拼写编码游戏——听音 → 看字母数 → 点字母块拼词 → 自动判卷，
+  答错退回重来；35 词池（CVC + 少量 4 字母词）每轮随机 10 题。
+- 正确性口径：视觉词 IPA 逐条核对常用读音；短文逐句人工核对语法与可解码性；
+  mat/sat/I 等无站内音频的词不进句子。发音铁律不变，音频零新增。
+- 版本链：app v145→v146、js/phonics.js v2→v3、CACHE v204→v205、BUILD 2026-11-14.10。
+
 ---
 
 ## 2026-11-14.9 · 拼读课科学化增补：连缀站 + ng/u_e/ir 补齐（24 族八站）

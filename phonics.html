@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
 <meta name="keywords" content="小学英语,英语启蒙,自然拼读,拼读规则,字母音,免费" />
-<meta name="description" content="系统自然拼读课：26 个字母音、13 个拼读块、24 个词族八大站。点按听母语者录音，从逐音拼读到整词，和「拼读闯关」游戏同一套发音，断网也能学。">
+<meta name="description" content="系统自然拼读课：26 个字母音、13 个拼读块、24 个词族八大站，加视觉词、可解码短文、听音能写三大练习。点按听母语者录音，从逐音拼读到整词，和「拼读闯关」游戏同一套发音，断网也能学。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="自然拼读课 · 见词能读 · 小鸟英语乐园">
-<meta property="og:description" content="26 个字母音、13 个拼读块、24 个词族八大站：点按听母语者录音，逐音拼读到整词，和拼读闯关同一套发音。">
+<meta property="og:description" content="26 个字母音、13 个拼读块、24 个词族八大站 + 视觉词、可解码短文、听音能写：点按听母语者录音，逐音拼读到整词，和拼读闯关同一套发音。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/phonics.html">
 <meta name="twitter:card" content="summary_large_image">
@@ -77,6 +77,30 @@
 .pw-go{padding:7px 12px;font-size:.8rem;min-height:0}
 .pw-full{padding:7px 12px;font-size:.8rem;min-height:0}
 .ph-foot{margin:26px 0 8px;font-size:.76rem;color:var(--ink2);line-height:1.8;text-align:center}
+/* 视觉词 / 可解码短文 / 听音能写（2026-11-14.10） */
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px}
+.sw-card{background:#fff;border:3px solid #D8E6F2;border-radius:16px;padding:12px 10px;text-align:center}
+.sw-word{font-size:1.3rem;font-weight:800;background:none;border:0;color:var(--ink);cursor:pointer;padding:2px 8px;border-radius:10px}
+.sw-word:hover{background:#EDF6FF}
+.sw-ipa{font-size:.8rem;color:var(--lake);font-weight:700}
+.sw-zh{font-size:.84rem;color:var(--ink2);margin:3px 0 6px}
+.sw-note{font-size:.72rem;color:#8A6D1F;background:#FFF6DC;border-radius:10px;padding:6px 8px;line-height:1.55;text-align:left}
+.sd-text{font-size:1.32rem;font-weight:800;line-height:2.2;letter-spacing:.5px}
+.sd-w{background:#F2F8FF;border:2px solid #C9DEF5;border-radius:12px;padding:4px 10px;margin:2px;font-size:1.12rem;font-weight:700;color:var(--ink);cursor:pointer;min-height:40px}
+.sd-w:hover{background:#E2EFFD}
+.sd-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:.82rem;color:var(--ink2)}
+.sd-tag{background:#EDFAF0;border:2px solid var(--mint);border-radius:999px;padding:3px 11px;font-size:.74rem;color:#2F7B52}
+.sp-head{display:flex;justify-content:space-between;font-size:.86rem;color:var(--ink2);margin:4px 2px 12px}
+.sp-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sp-len{font-size:.82rem;color:var(--ink2)}
+.sp-slots{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 12px}
+.sp-slot{width:54px;height:60px;border:3px dashed #C3D2E0;border-radius:14px;background:#fff;font-size:1.55rem;font-weight:800;color:var(--ink);cursor:default}
+.sp-slot.filled{border-style:solid;border-color:var(--lake);background:#EFF6FF;cursor:pointer}
+.sp-pool{display:flex;gap:8px;flex-wrap:wrap;min-height:58px}
+.sp-tile{width:54px;height:58px;border:3px solid var(--peach);border-radius:14px;background:#FFF3E8;font-size:1.45rem;font-weight:800;color:var(--ink);cursor:pointer;min-height:0}
+.sp-tile.used{visibility:hidden}
+.sp-msg{min-height:26px;font-size:.98rem;font-weight:700;margin-top:12px}
+.sp-done{text-align:center;font-size:1.2rem;font-weight:800;padding:22px 8px;line-height:2}
 </style>
 </head>
 <!-- data-emoji="full"：词卡要画全量表情库的图（和游戏乐园同规格） -->
@@ -111,6 +135,9 @@
         <a href="#s6">⑥ 元音组合词族</a>
         <a href="#s7">⑦ 魔法 e</a>
         <a href="#s8">⑧ 卷舌音词族</a>
+        <a href="#s9">⑨ 视觉词</a>
+        <a href="#s10">⑩ 可解码短文</a>
+        <a href="#s11">⑪ 听音能写</a>
       </div>
       <p style="margin:10px 4px 2px;font-size:.82rem;color:var(--ink2);line-height:1.7">
       🎧 <b>先热耳朵</b>：拼读之前先练「听得出音」——去 <a href="games.html" style="color:var(--lake)">游戏乐园 → 拼读闯关</a> 听音辨音（音素意识）。<br>
@@ -209,6 +236,45 @@
     </div>
   </section>
 
+  <!-- 第 9 站：视觉词（2026-11-14.10） -->
+  <section class="ph-station" id="s9">
+    <div class="ph-station-head">
+      <span class="ph-num">⑨</span><h2>视觉词 · 高频整体认读</h2>
+      <p>这些词太常用了，而且<b>不按规则出牌</b>（或用到还没学的规则）——先整个认住、
+      听音就懂，学到对应规则再回头「认领」它们。点词听音，📌 提示讲「为什么不按字母拼」。</p>
+    </div>
+    <div class="card"><div class="sw-grid" id="sSight"></div></div>
+  </section>
+
+  <!-- 第 10 站：可解码短文（2026-11-14.10） -->
+  <section class="ph-station" id="s10">
+    <div class="ph-station-head">
+      <span class="ph-num">⑩</span><h2>可解码短文 · 用规则读句子</h2>
+      <p>每句<b>全部用学过的规则拼</b>（只有绿色标签里的视觉词是整体认读）。
+      点单词听一个词，点「🔊 读整句」逐词连读——先自己拼，再听答案。</p>
+    </div>
+    <div id="sSents"></div>
+  </section>
+
+  <!-- 第 11 站：听音能写（2026-11-14.10） -->
+  <section class="ph-station" id="s11">
+    <div class="ph-station-head">
+      <span class="ph-num">⑪</span><h2>听音能写 · 拼写小挑战</h2>
+      <p>反过来练：<b>听声音，把字母按顺序点出来</b>。词都来自前面的词族——
+      会拼读了，拼写也会。点错了点字母格可以退回去。</p>
+    </div>
+    <div class="card">
+      <div class="sp-head"><span id="spProg">第 1 / 10 题</span><span id="spScore">得分 0</span></div>
+      <div class="sp-row">
+        <button class="btn mint" onclick="spAgain()">🔊 再听一遍</button>
+        <span class="sp-len" id="spLen"></span>
+      </div>
+      <div class="sp-slots" id="spSlots"></div>
+      <div class="sp-pool" id="spPool"></div>
+      <div class="sp-msg" id="spMsg"></div>
+    </div>
+  </section>
+
   <div class="ph-foot">
     🔈 字母音与拼读块 = 母语者录音（开源项目 s5s5/phonics，MIT，见《第三方素材与许可说明》）；单词多数为站内音频，
     vest / king / gum / hut / thumb / gate 六词包内暂无、由设备语音补位。字母音与块音全站断网可读。<br>
@@ -222,9 +288,9 @@
 <script src="js/words-data.js?v=46"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=145"></script>
+<script src="js/app.js?v=146"></script>
 <script defer src="js/audio-list.js?v=7"></script>
-<script src="js/phonics.js?v=2"></script>
+<script src="js/phonics.js?v=3"></script>
 <script>
 renderNav('phonics'); renderDecor();
 
@@ -320,6 +386,121 @@ Object.keys(STATIONS).forEach(k => {
     return f ? famHTML(f) : `<div class="card">词族 ${esc(id)} 缺失</div>`;
   }).join('');
 });
+
+/* ---------------- ⑨ 视觉词 ---------------- */
+document.getElementById('sSight').innerHTML = SIGHT_WORDS.map(o =>
+  `<div class="sw-card">
+    <button class="sw-word" onclick="speakWord('${esc(o.w)}')" title="点我听 ${esc(o.w)}">🔊 ${esc(o.w)}</button>
+    <div class="sw-ipa">${esc(o.ipa)}</div>
+    <div class="sw-zh">${esc(o.zh)}</div>
+    <div class="sw-note">📌 ${esc(o.note)}</div>
+  </div>`).join('');
+
+/* ---------------- ⑩ 可解码短文 ---------------- */
+document.getElementById('sSents').innerHTML = DECODE_SENTENCES.map(o => {
+  const words = o.s.split(' ');
+  return `<div class="card" style="margin:12px 4px">
+    <div class="sd-text">${words.map((w, j) => {
+      const clean = w.replace(/[^A-Za-z']/g, '');
+      return `<button class="sd-w" onclick="speakWord('${esc(clean)}')" title="点我听 ${esc(clean)}">${esc(w)}</button>`;
+    }).join(' ')}</div>
+    <div class="sd-meta">
+      <span>${esc(o.zh)}</span>
+      <span class="sd-tag">${esc(o.tags)}</span>
+      <button class="btn mint" style="margin-left:auto" onclick="speakSentenceWords('${esc(o.s)}')">🔊 读整句</button>
+    </div>
+  </div>`;
+}).join('');
+
+/* ---------------- ⑪ 听音能写（拼写编码） ---------------- */
+const SP = { words: [], idx: 0, total: 10, score: 0, cur: '', tiles: [], built: [], msg: '' };
+function spShuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function spAgain() { if (SP.cur) speakWord(SP.cur); }
+function spPaint() {
+  document.getElementById('spProg').textContent = '第 ' + Math.min(SP.idx + 1, SP.total) + ' / ' + SP.total + ' 题';
+  document.getElementById('spScore').textContent = '得分 ' + SP.score;
+  document.getElementById('spLen').textContent = '这个词有 ' + SP.cur.length + ' 个字母';
+  document.getElementById('spSlots').innerHTML = SP.cur.split('').map((_, i) => {
+    const t = SP.built[i];
+    return `<button class="sp-slot ${t ? 'filled' : ''}" ${t ? `onclick="spSlot(${i})"` : 'disabled'}>${t ? esc(t.ch) : ''}</button>`;
+  }).join('');
+  document.getElementById('spPool').innerHTML = SP.tiles.map((t, i) =>
+    t.used ? `<span class="sp-tile used">·</span>`
+           : `<button class="sp-tile" onclick="spTile(${i})">${esc(t.ch)}</button>`).join('');
+  document.getElementById('spMsg').textContent = SP.msg;
+}
+function spLoad() {
+  if (SP.idx >= SP.total) {
+    document.getElementById('spSlots').innerHTML = '';
+    document.getElementById('spPool').innerHTML = '';
+    document.getElementById('spLen').textContent = '';
+    document.getElementById('spMsg').innerHTML =
+      `<div class="sp-done">🎉 一轮完成！${SP.score} / ${SP.total} 拼对<br><button class="btn coral" style="margin-top:10px" onclick="spStart()">再来一轮</button></div>`;
+    return;
+  }
+  SP.cur = SP.words[SP.idx];
+  SP.built = []; SP.msg = '';
+  const letters = SP.cur.split('');
+  const pool = letters.map((ch, i) => ({ ch: ch, used: false }));
+  const alpha = 'abcdefghijklmnopqrstuvwxyz';
+  let guard = 0;
+  const extras = [];
+  while (extras.length < 3 && guard++ < 200) {
+    const ch = alpha[Math.floor(Math.random() * 26)];
+    if (letters.indexOf(ch) < 0 && !extras.some(e => e.ch === ch)) extras.push({ ch: ch, used: false });
+  }
+  SP.tiles = spShuffle(pool.concat(extras));
+  spPaint();
+  setTimeout(() => speakWord(SP.cur), 120);
+}
+function spStart() {
+  SP.words = spShuffle(SPELL_WORDS.slice()).slice(0, SP.total);
+  SP.idx = 0; SP.score = 0;
+  spLoad();
+}
+function spTile(i) {
+  if (SP.built.length >= SP.cur.length) return;
+  const t = SP.tiles[i];
+  if (!t || t.used) return;
+  t.used = true;
+  SP.built.push(t);
+  if (SP.built.length === SP.cur.length) {
+    const s = SP.built.map(x => x.ch).join('');
+    if (s === SP.cur) {
+      SP.score++;
+      SP.msg = '✅ 拼对了！';
+      spPaint();
+      setTimeout(() => { SP.idx++; spLoad(); }, 850);
+    } else {
+      SP.msg = '❌ 顺序不对，退回去再试';
+      spPaint();
+      setTimeout(() => {
+        SP.built.forEach(x => { x.used = false; });
+        SP.built = []; SP.msg = '';
+        spPaint();
+        setTimeout(() => speakWord(SP.cur), 150);
+      }, 1050);
+    }
+    return;
+  }
+  spPaint();
+}
+function spSlot(i) {
+  const t = SP.built[i];
+  if (!t) return;
+  t.used = false;
+  SP.built.splice(i, 1);
+  SP.msg = '';
+  spPaint();
+}
+window.spStart = spStart; window.spTile = spTile; window.spSlot = spSlot; window.spAgain = spAgain;
+spStart();
 
 /* 预热 39 个音素（每个 3-5KB）：首屏画完再拉，点按零延迟 */
 window.addEventListener('load', () => {
