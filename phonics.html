@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
 <meta name="keywords" content="小学英语,英语启蒙,自然拼读,拼读规则,字母音,自然拼读分级,免费" />
-<meta name="description" content="自然拼读分级闯关课：9 关从字母音到卷舌音，学→拼→读句→听音挑战一关一屏，另有视觉词、可解码句、听音能写与拼读块工具箱。点按听母语者录音，和「拼读闯关」游戏同一套发音，断网也能学。">
+<meta name="description" content="自然拼读分级闯关课：9 关从字母音到卷舌音，学→拼→读句→听音挑战一关一屏；定级测找起点，答满能量条才亮星（蒙不过去），过关收集彩蛋，家长学习报告。点按听母语者录音，断网也能学。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="自然拼读课 · 分级闯关 · 小鸟英语乐园">
-<meta property="og:description" content="9 关分级闯关：字母音 → 短元音 → 双辅音 → 连缀 → 元音组合 → 魔法 e → 卷舌音，加视觉词、可解码句、听音能写。一关一屏，点按听母语者录音。">
+<meta property="og:description" content="9 关分级闯关：字母音 → 短元音 → 双辅音 → 连缀 → 元音组合 → 魔法 e → 卷舌音，加视觉词、可解码句、听音能写。定级测 + 能量挑战 + 彩蛋收集 + 家长报告。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/phonics.html">
 <meta name="twitter:card" content="summary_large_image">
@@ -140,6 +140,36 @@
 .ph-nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:22px 4px 6px}
 .ph-done-row{display:flex;justify-content:center;margin:18px 4px 4px}
 .ph-foot{margin:26px 0 8px;font-size:.76rem;color:var(--ink2);line-height:1.8;text-align:center}
+/* ---- P2：能量条 / 彩蛋 / 定级 / 家长报告 ---- */
+.ph-bar{display:flex;gap:6px;flex-wrap:wrap;margin:10px 2px 4px}
+.ph-cell{width:38px;height:38px;border-radius:12px;border:3px solid #E8EAF0;background:#F7F9FC;
+  display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+.ph-cell.on{border-color:var(--mint);background:#E5F9E9;animation:phpop .35s}
+.ph-eggs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 2px 6px}
+.ph-egg{width:66px;text-align:center;padding:8px 4px;border-radius:14px;border:3px solid #E8EAF0;
+  background:#F7F9FC;font-size:1.5rem;opacity:.55}
+.ph-egg.got{opacity:1;border-color:var(--lemon);background:#FFF8E1}
+.ph-egg small{display:block;font-size:.66rem;color:var(--ink2);font-weight:700}
+.ph-streak{font-size:.84rem;color:var(--ink2);margin:6px 2px 2px;line-height:1.7}
+.ph-star-hint{display:inline-block;font-size:.86rem;font-weight:700;color:#7A5B00;background:#FFF3C4;
+  border:2px solid var(--lemon);border-radius:999px;padding:9px 18px;margin:18px 4px 4px}
+.ph-celebrate{position:fixed;inset:0;background:rgba(30,40,60,.35);display:flex;align-items:center;
+  justify-content:center;z-index:9998;cursor:pointer}
+.ph-celebrate-box{background:#fff;border-radius:22px;padding:26px 34px;text-align:center;
+  box-shadow:0 12px 0 rgba(45,49,66,.12);animation:phpop .45s}
+.ph-celebrate-icon{font-size:3.2rem}
+.ph-celebrate-text{font-size:1.12rem;font-weight:800;margin-top:8px;line-height:1.7;color:var(--ink)}
+.ph-celebrate-text small{font-size:.82rem;color:var(--ink2);font-weight:600}
+.ph-report-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:12px 2px}
+.ph-metric{background:#F5F8FC;border-radius:14px;padding:10px 12px;text-align:center}
+.ph-metric span{display:block;font-size:.72rem;color:var(--ink2)}
+.ph-metric b{font-size:1.25rem;color:var(--ink)}
+.ph-table{width:100%;border-collapse:collapse;margin:12px 2px;font-size:.84rem}
+.ph-table th,.ph-table td{border:2px solid #E8EAF0;padding:8px 10px;text-align:left;color:var(--ink)}
+.ph-table th{background:#F5F8FC}
+.ph-tips{margin:12px 2px;font-size:.84rem;color:var(--ink2);line-height:1.85}
+.ph-tips ul{margin:6px 0 12px 18px}
+.ph-place-note{margin:8px 4px 2px;font-size:.78rem;color:var(--ink2);line-height:1.7}
 </style>
 </head>
 <!-- data-emoji="full"：词卡要画全量表情库的图（和游戏乐园同规格） -->
@@ -152,7 +182,8 @@
   <div class="page-title">
     <h1>🔤 自然拼读课 · 分级闯关</h1>
     <p><b>9 关 + 工具箱</b>，一关一屏：字母音 → 短元音 → 双辅音 → 连缀 → 元音组合 → 魔法 e → 卷舌音。
-    每关都是<b>学 → 拼 → 读句 → 听音挑战</b>，学完点亮星星。发音和「拼读闯关」是<b>同一套母语者录音</b>，断网也能学</p>
+    每关都是<b>学 → 拼 → 读句 → 能量挑战</b>：答满 7 格能量自动亮星得彩蛋（答错重来，蒙不过去）。
+    先做<b>定级测</b>找到起点，家长可随时看<b>学习报告</b>。发音和「拼读闯关」是<b>同一套母语者录音</b>，断网也能学</p>
   </div>
 
   <!-- 交叉入口 -->
@@ -167,15 +198,24 @@
     <div class="card">
       <h2>🗺️ 拼读闯关地图 <small>点关卡进入，一次只学一关</small></h2>
       <div class="ph-map" id="phMap"></div>
+      <div class="ph-eggs" id="phEggs"></div>
+      <div class="ph-streak" id="phStreak"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 4px 4px">
+        <button class="btn orange" onclick="plStart()">🎯 先测一测，定个起点</button>
+        <button class="btn ghost" onclick="phGo('report')">👨‍👩‍👧 家长学习报告</button>
+      </div>
       <p class="ph-map-note">
       🎧 <b>先热耳朵</b>：拼读之前先练「听得出音」——去 <a href="games.html" style="color:var(--lake)">游戏乐园 → 拼读闯关</a> 听音辨音（音素意识）。<br>
       📌 <b>推荐顺序</b>：L1 字母音 → L2 短元音 → L3 双辅音 → L4 连缀 → L5 元音组合 → L6 魔法 e → L7 卷舌音 → L8 视觉词 → L9 听音能写。
-      顺序按国际主流分级体系编排（先学最能拼出词的音），也支持自由跳关。</p>
+      顺序按国际主流分级体系编排（先学最能拼出词的音），也支持自由跳关。定级测 8 题只找起点，答错没关系。</p>
     </div>
   </section>
 
   <!-- 关卡舞台：一次只显示一关 -->
   <section class="section" id="phStage"></section>
+
+  <!-- 家长学习报告 -->
+  <section class="section" id="phReport"></section>
 
   <div class="ph-foot">
     🔈 字母音与拼读块 = 母语者录音（开源项目 s5s5/phonics，MIT，见《第三方素材与许可说明》）；单词与例句全部为站内音频，全站断网可读。<br>
@@ -189,7 +229,7 @@
 <script src="js/words-data.js?v=46"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=150"></script>
+<script src="js/app.js?v=151"></script>
 <script defer src="js/audio-list.js?v=8"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/phonics.js?v=7"></script>
@@ -224,7 +264,7 @@ DECODE_SENTENCES.forEach(o => { sentByText[o.s] = o; });
 const sightByW = {};
 SIGHT_WORDS.forEach(o => { sightByW[o.w] = o; });
 
-/* ---------------- 进度（星星） ---------------- */
+/* ---------------- 进度（星星，key: phlv1） ---------------- */
 const phProg = {
   done: {},
   load() { try { this.done = JSON.parse(localStorage.getItem('phlv1') || '{}') || {}; } catch (e) { this.done = {}; } },
@@ -232,6 +272,56 @@ const phProg = {
   mark(id) { this.done[id] = 1; this.save(); }
 };
 phProg.load();
+
+/* ---------------- P2 学情与奖励（key: phstat2） ---------------- */
+const phStat = {
+  data: { place: null, stat: {}, eggs: {}, streak: { last: '', days: 0, best: 0 } },
+  load() {
+    try {
+      const d = JSON.parse(localStorage.getItem('phstat2') || '{}') || {};
+      this.data = Object.assign({ place: null, stat: {}, eggs: {}, streak: { last: '', days: 0, best: 0 } }, d);
+      if (!this.data.streak) this.data.streak = { last: '', days: 0, best: 0 };
+    } catch (e) {}
+    /* 旧进度迁移：老用户已点亮的星星补发彩蛋 */
+    Object.keys(phProg.done).forEach(id => {
+      if (/^L[1-9]$/.test(id) && !this.data.eggs[id]) this.data.eggs[id] = 0;
+    });
+  },
+  save() { try { localStorage.setItem('phstat2', JSON.stringify(this.data)); } catch (e) {} },
+  rec(id, r, w) {
+    const s = this.data.stat[id] || (this.data.stat[id] = { r: 0, w: 0 });
+    s.r += r; s.w += w; this.save();
+  },
+  touchDay() {
+    const now = new Date();
+    const key = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    const st = this.data.streak;
+    if (st.last === key) return;
+    const y = new Date(now.getTime() - 86400000);
+    const yk = y.getFullYear() + '-' + String(y.getMonth() + 1).padStart(2, '0') + '-' + String(y.getDate()).padStart(2, '0');
+    st.days = (st.last === yk) ? (st.days || 0) + 1 : 1;
+    st.best = Math.max(st.best || 0, st.days);
+    st.last = key; this.save();
+  }
+};
+phStat.load();
+
+function celebrate(levelId) {
+  const lv = PH_LEVELS.find(l => l.id === levelId);
+  try { sfx && sfx.good && sfx.good(); } catch (e) {}
+  const d = document.createElement('div');
+  d.className = 'ph-celebrate';
+  d.innerHTML = `<div class="ph-celebrate-box"><div class="ph-celebrate-icon">${lv ? lv.icon : '🎉'}</div>
+    <div class="ph-celebrate-text">🎉 获得 ${esc(levelId)} 彩蛋！<br><small>${lv ? esc(lv.name) : ''} · 点一下关闭</small></div></div>`;
+  d.addEventListener('click', () => { try { d.remove(); } catch (e) {} });
+  document.body.appendChild(d);
+  setTimeout(() => { try { d.remove(); } catch (e) {} }, 2600);
+}
+function eggReward(id) {
+  if (!phStat.data.eggs[id]) { phStat.data.eggs[id] = Date.now(); phStat.save(); }
+  phStat.touchDay();
+  celebrate(id);
+}
 
 /* ---------------- 组件渲染 ---------------- */
 function letterHTML(ch) {
@@ -308,10 +398,28 @@ function sentCardHTML(o) {
   </div>`;
 }
 
-/* ---------------- 听音挑一挑（每关 3 题） ---------------- */
-const MG = { pool: [], qs: [], idx: 0, score: 0, cur: null, opts: [], mode: 'word' };
+/* ---------------- 听音挑一挑（能量条 7 格：答满才亮星，答错重来蒙不过去） ---------------- */
+const MG = { pool: [], qs: [], idx: 0, right: 0, wrong: 0, cur: null, opts: [], mode: 'word', need: 7, fired: false };
+function mgBuildQs() {
+  MG.qs = [];
+  const targets = [];
+  const copy = MG.pool.slice();
+  while (targets.length < MG.need + 3 && copy.length) {
+    targets.push(copy.splice(Math.floor(Math.random() * copy.length), 1)[0]);
+  }
+  if (targets.length < 3) return;
+  targets.forEach(t => {
+    const others = MG.pool.filter(x => x !== t);
+    const opts = [t];
+    while (opts.length < 3 && others.length) {
+      const c = others.splice(Math.floor(Math.random() * others.length), 1)[0];
+      if (opts.indexOf(c) < 0) opts.push(c);
+    }
+    if (opts.length === 3) MG.qs.push({ t: t, opts: opts.sort(() => Math.random() - .5) });
+  });
+}
 function mgReset(lv) {
-  MG.qs = []; MG.idx = 0; MG.score = 0; MG.cur = null; MG.opts = [];
+  MG.qs = []; MG.idx = 0; MG.right = 0; MG.wrong = 0; MG.cur = null; MG.opts = []; MG.fired = false;
   if (!lv || lv.kind === 'spell' || lv.kind === 'toolbox') return;
   if (lv.kind === 'letters') {
     MG.mode = 'letter';
@@ -326,20 +434,7 @@ function mgReset(lv) {
     MG.pool = ws;
   }
   if (MG.pool.length < 3) return;
-  const picked = [];
-  const copy = MG.pool.slice();
-  while (picked.length < 3 && copy.length) {
-    picked.push(copy.splice(Math.floor(Math.random() * copy.length), 1)[0]);
-  }
-  picked.forEach(t => {
-    const others = MG.pool.filter(x => x !== t);
-    const opts = [t];
-    while (opts.length < 3 && others.length) {
-      const c = others.splice(Math.floor(Math.random() * others.length), 1)[0];
-      if (opts.indexOf(c) < 0) opts.push(c);
-    }
-    MG.qs.push({ t: t, opts: opts.sort(() => Math.random() - .5) });
-  });
+  mgBuildQs();
 }
 function mgPlaySound() {
   if (!MG.cur) return;
@@ -352,18 +447,29 @@ function mgPaint() {
   if (!box) return;
   if (!MG.qs.length) { box.style.display = 'none'; return; }
   box.style.display = '';
-  if (MG.idx >= MG.qs.length) {
-    const pass = MG.score >= 2;
+  const bar = document.getElementById('mgBar');
+  if (bar) {
+    let h = '';
+    for (let i = 0; i < MG.need; i++) h += `<span class="ph-cell ${i < MG.right ? 'on' : ''}">${i < MG.right ? '⭐' : ''}</span>`;
+    bar.innerHTML = h;
+  }
+  if (MG.right >= MG.need) {
     document.getElementById('mgProg').textContent = '';
     document.getElementById('mgOpts').innerHTML = '';
-    document.getElementById('mgMsg').innerHTML = pass
-      ? `🎉 挑对 ${MG.score} / ${MG.qs.length}！⭐ 星星已点亮<br><button class="btn coral" style="margin-top:10px" onclick="mgRestart()">再玩一轮</button>`
-      : `挑对 ${MG.score} / ${MG.qs.length}，再来一轮试试<br><button class="btn orange" style="margin-top:10px" onclick="mgRestart()">再来一轮</button>`;
-    if (pass) { phProg.mark(CUR); renderMap(); }
+    document.getElementById('mgMsg').innerHTML =
+      `🎉 能量满格！⭐ 星星点亮 · 🥚 彩蛋 +1<br><button class="btn coral" style="margin-top:10px" onclick="mgRestart()">再玩一轮</button>`;
+    if (!MG.fired) {
+      MG.fired = true;
+      phProg.mark(CUR);
+      phStat.rec(CUR, 0, 0);
+      eggReward(CUR);
+      renderMap(); renderReward(); renderReport();
+    }
     return;
   }
+  if (MG.idx >= MG.qs.length) { mgBuildQs(); MG.idx = 0; if (!MG.qs.length) return; }
   MG.cur = MG.qs[MG.idx];
-  document.getElementById('mgProg').textContent = '第 ' + (MG.idx + 1) + ' / ' + MG.qs.length + ' 题';
+  document.getElementById('mgProg').textContent = '能量 ' + MG.right + ' / ' + MG.need + ' 格';
   document.getElementById('mgOpts').innerHTML = MG.cur.opts.map(o => {
     const label = MG.mode === 'letter' ? o.toUpperCase() + ' ' + o : (MG.mode === 'sight' ? '🔊 ' + o : wEmoji(o) + ' ' + o);
     return `<button class="ph-mg-opt" onclick="mgPick('${esc(o)}')" id="mgo-${esc(o)}">${esc(label)}</button>`;
@@ -372,16 +478,19 @@ function mgPaint() {
   setTimeout(mgPlaySound, 150);
 }
 function mgPick(o) {
-  if (!MG.cur) return;
+  if (!MG.cur || MG.right >= MG.need) return;
   const btn = document.getElementById('mgo-' + o);
   if (o === MG.cur.t) {
-    MG.score++;
+    MG.right++;
+    phStat.rec(CUR, 1, 0);
     if (btn) btn.classList.add('good');
-    document.getElementById('mgMsg').textContent = '✅ 挑对了！';
-    setTimeout(() => { MG.idx++; mgPaint(); }, 750);
+    document.getElementById('mgMsg').textContent = '✅ 对了！能量 +1';
+    setTimeout(() => { MG.idx++; mgPaint(); }, 700);
   } else {
+    MG.wrong++;
+    phStat.rec(CUR, 0, 1);
     if (btn) btn.classList.add('bad');
-    document.getElementById('mgMsg').textContent = '❌ 再听一遍试试';
+    document.getElementById('mgMsg').textContent = '❌ 不对哦，再听一遍这题会重来';
     setTimeout(mgPlaySound, 350);
   }
 }
@@ -392,13 +501,95 @@ function mgRestart() {
 }
 window.mgPick = mgPick; window.mgRestart = mgRestart;
 
+/* ---------------- 定级测（8 题摸底 L1→L8，算起点） ---------------- */
+const PL = { qs: [], idx: 0, wrongAt: null, right: 0 };
+function plPoolOf(lv) {
+  if (lv.kind === 'letters') return PH_L1_BATCHES.reduce((a, b) => a.concat(b.letters), []);
+  if (lv.kind === 'sight') return lv.sightBatches.reduce((a, b) => a.concat(b.words), []);
+  const ws = [];
+  (lv.fams || []).forEach(id => { const f = byId(id); if (f) f.words.forEach(w => { if (ws.indexOf(w) < 0) ws.push(w); }); });
+  return ws;
+}
+function plStart() {
+  PL.qs = []; PL.idx = 0; PL.wrongAt = null; PL.right = 0;
+  PH_LEVELS.filter(l => l.kind !== 'spell' && l.kind !== 'toolbox').forEach(lv => {
+    const pool = plPoolOf(lv);
+    if (pool.length < 3) return;
+    const t = pool[Math.floor(Math.random() * pool.length)];
+    const others = pool.filter(x => x !== t);
+    const opts = [t];
+    while (opts.length < 3 && others.length) {
+      const c = others.splice(Math.floor(Math.random() * others.length), 1)[0];
+      if (opts.indexOf(c) < 0) opts.push(c);
+    }
+    if (opts.length === 3) {
+      PL.qs.push({
+        lv: lv.id, lvName: lv.name, lvIcon: lv.icon,
+        mode: lv.kind === 'letters' ? 'letter' : (lv.kind === 'sight' ? 'sight' : 'word'),
+        t: t, opts: opts.sort(() => Math.random() - .5)
+      });
+    }
+  });
+  renderPlace();
+  const stage = document.getElementById('phStage');
+  if (stage) window.scrollTo({ top: Math.max(0, stage.offsetTop - 12), behavior: 'smooth' });
+}
+function plSound() {
+  const q = PL.qs[PL.idx];
+  if (!q) return;
+  if (q.mode === 'letter') phPlayBlock(q.t);
+  else if (q.mode === 'sight') phSpeakWord(q.t);
+  else phPlayWord(q.t);
+}
+function renderPlace() {
+  const el = document.getElementById('phStage');
+  if (!el) return;
+  if (PL.idx >= PL.qs.length) {
+    const rec = PL.wrongAt || 'L9';
+    const recLv = PH_LEVELS.find(l => l.id === rec) || PH_LEVELS.find(l => l.id === 'L9');
+    phStat.data.place = { rec: rec, right: PL.right, total: PL.qs.length, ts: Date.now() };
+    phStat.save(); phStat.touchDay(); renderReport();
+    el.innerHTML = `<div class="card"><div class="sp-done">🎯 定级完成：答对 ${PL.right} / ${PL.qs.length}<br>
+      推荐从 <b style="color:var(--lake)">${esc(recLv.id)} · ${esc(recLv.name)}</b> 开始<br>
+      <button class="btn mint big" style="margin-top:12px" onclick="phGo('${recLv.id}')">从这里开始 →</button>
+      <button class="btn ghost" style="margin-top:12px;margin-left:8px" onclick="render()">回地图</button></div></div>`;
+    return;
+  }
+  const q = PL.qs[PL.idx];
+  el.innerHTML = `<div class="card">
+    <h2>🎯 定级测 <small>第 ${PL.idx + 1} / ${PL.qs.length} 题 · 摸底「${esc(q.lvName)}」</small></h2>
+    <div class="sp-row" style="margin-top:8px">
+      <button class="btn mint" onclick="plSound()">🔊 听一听</button>
+      <span class="sp-len">听声音，点出你听到的那个</span>
+    </div>
+    <div class="ph-mg-opts">${q.opts.map(o => {
+      const label = q.mode === 'letter' ? (o.toUpperCase() + ' ' + o) : ((q.mode === 'sight' ? '🔊 ' : (wEmoji(o) ? wEmoji(o) + ' ' : '')) + o);
+      return `<button class="ph-mg-opt" onclick="plPick('${esc(o)}')">${esc(label)}</button>`;
+    }).join('')}</div>
+    <div class="ph-mg-msg" id="plMsg">定级只为找到合适的起点，答错也没关系 🙂</div>
+    <p class="ph-place-note">每关摸底 1 题：从第一道做错的题对应的关卡开始学；全对就从 L9 听音能写开始。</p>
+  </div>`;
+  setTimeout(plSound, 150);
+}
+function plPick(o) {
+  const q = PL.qs[PL.idx];
+  if (!q) return;
+  if (o === q.t) { PL.right++; phStat.rec('place-' + q.lv, 1, 0); }
+  else { if (!PL.wrongAt) PL.wrongAt = q.lv; phStat.rec('place-' + q.lv, 0, 1); }
+  PL.idx++;
+  setTimeout(renderPlace, o === q.t ? 450 : 650);
+}
+window.plStart = plStart; window.plSound = plSound; window.plPick = plPick;
+
 /* ---------------- 关卡舞台 ---------------- */
 function levelHTML(lv) {
   const idx = PH_LEVELS.indexOf(lv);
   const done = !!phProg.done[lv.id];
-  const starBtn = lv.id === 'TX' ? '' : `<div class="ph-done-row">
-      <button class="btn ${done ? 'mint' : 'orange'} big" onclick="phMarkDone('${lv.id}')">
-      ${done ? '⭐ 本关已通关' : '⭐ 我会了，点亮星星'}</button></div>`;
+  const starBox = lv.id === 'TX' ? '' : (done
+    ? `<div class="ph-done-row"><button class="btn mint big" disabled>⭐ 本关已通关 · 彩蛋已收集</button></div>`
+    : `<div class="ph-done-row"><span class="ph-star-hint">${lv.kind === 'spell'
+        ? '⭐ 拼写一轮对 8 题以上，自动点亮星星、领取彩蛋'
+        : '⭐ 完成下方听音挑战（能量 7 格），自动点亮星星、领取彩蛋'}</span></div>`);
   const nav = `<div class="ph-nav">
       ${idx > 0 ? `<button class="btn ghost" onclick="phGo('${PH_LEVELS[idx - 1].id}')">◀ 上一关</button>` : ''}
       ${idx < PH_LEVELS.length - 1 ? `<button class="btn coral" onclick="phGo('${PH_LEVELS[idx + 1].id}')">下一关：${esc(PH_LEVELS[idx + 1].name)} ▶</button>` : ''}
@@ -476,7 +667,8 @@ function levelHTML(lv) {
 
   const mgBox = (lv.kind === 'spell' || lv.kind === 'toolbox') ? '' : `
     <div class="card" id="mgBox" style="margin:18px 4px 8px">
-      <h2>🎮 听音挑一挑 <small>3 题小挑战：听声音，点出你听到的那个</small></h2>
+      <h2>🎮 听音挑一挑 · 能量条 <small>答满 7 格亮星得彩蛋；答错这题会重来，蒙不过去</small></h2>
+      <div class="ph-bar" id="mgBar"></div>
       <div class="sp-row" style="margin-top:8px">
         <button class="btn mint" onclick="mgPlaySound()">🔊 再听一遍</button>
         <span class="sp-len" id="mgProg"></span>
@@ -485,7 +677,7 @@ function levelHTML(lv) {
       <div class="ph-mg-msg" id="mgMsg"></div>
     </div>`;
 
-  return head + body + mgBox + starBtn + nav;
+  return head + body + mgBox + starBox + nav;
 }
 
 function renderMap() {
@@ -508,10 +700,79 @@ function renderMap() {
   }).join('');
 }
 
+function renderReward() {
+  const eggsEl = document.getElementById('phEggs');
+  const streakEl = document.getElementById('phStreak');
+  if (!eggsEl) return;
+  const levels = PH_LEVELS.filter(l => /^L[1-9]$/.test(l.id));
+  eggsEl.innerHTML = levels.map(l => {
+    const has = !!(phProg.done[l.id] || phStat.data.eggs[l.id]);
+    return `<div class="ph-egg ${has ? 'got' : ''}" title="${esc(l.id + ' ' + l.name)}"><span>${has ? l.icon : '🥚'}</span><small>${esc(l.id)}</small></div>`;
+  }).join('');
+  const got = levels.filter(l => phProg.done[l.id] || phStat.data.eggs[l.id]).length;
+  const st = phStat.data.streak;
+  if (streakEl) {
+    streakEl.innerHTML = `🔥 连续学习 <b>${st.days || 0}</b> 天（最佳 ${st.best || 0}） · 彩蛋 <b>${got}</b> / 9`
+      + (phStat.data.place ? ` · 定级：从 <b>${esc(phStat.data.place.rec)}</b> 开始` : ' · 还没做定级测');
+  }
+}
+
+function renderReport() {
+  const el = document.getElementById('phReport');
+  if (!el) return;
+  const stat = phStat.data.stat;
+  let tr = 0, tw = 0;
+  Object.keys(stat).forEach(k => {
+    if (/^L\d/.test(k)) { tr += stat[k].r; tw += stat[k].w; }
+  });
+  const rate = (tr + tw) ? Math.round(tr / (tr + tw) * 100) : 0;
+  const doneN = PH_LEVELS.filter(l => /^L[1-9]$/.test(l.id) && phProg.done[l.id]).length;
+  const place = phStat.data.place;
+  const st = phStat.data.streak;
+  const rows = PH_LEVELS.filter(l => /^L[1-9]$/.test(l.id)).map(l => {
+    const s = stat[l.id] || { r: 0, w: 0 };
+    const n = s.r + s.w;
+    const pct = n ? Math.round(s.r / n * 100) + '%' : '—';
+    const state = phProg.done[l.id] ? '⭐ 已通关' : (n ? '🐣 学习中' : '未开始');
+    return `<tr><td>${esc(l.id)} ${esc(l.name)}</td><td>${state}</td><td>${s.r} / ${s.w}</td><td>${pct}</td></tr>`;
+  }).join('');
+  const tips = [];
+  if (!place) tips.push('还没做定级测：点地图上方「🎯 先测一测」，8 题找到合适的起点。');
+  else tips.push('定级推荐从 <b>' + esc(place.rec) + '</b> 开始（摸底答对 ' + place.right + '/' + place.total + '）。');
+  PH_LEVELS.filter(l => /^L[1-9]$/.test(l.id)).forEach(l => {
+    const s = stat[l.id];
+    if (s && (s.r + s.w) >= 4 && s.r / (s.r + s.w) < 0.7) {
+      tips.push('「' + esc(l.name) + '」正确率 ' + Math.round(s.r / (s.r + s.w) * 100) + '% 偏低，建议回这关再练一轮。');
+    }
+  });
+  const next = PH_LEVELS.find(l => /^L[1-9]$/.test(l.id) && !phProg.done[l.id]);
+  tips.push(next
+    ? '当前进度：<b>' + esc(next.id + ' ' + next.name) + '</b>，按顺序继续就好。'
+    : '9 关全部通关！去「拼读闯关」游戏巩固，或用 L9 听音能写保持手感。');
+  el.innerHTML = `<div class="card">
+    <h2>👨‍👩‍👧 家长学习报告 <small>数据只存在本机浏览器，不上传</small></h2>
+    <div class="ph-report-grid">
+      <div class="ph-metric"><span>通关进度</span><b>${doneN} / 9</b></div>
+      <div class="ph-metric"><span>连续学习</span><b>${st.days || 0} 天</b></div>
+      <div class="ph-metric"><span>累计答题</span><b>${tr + tw} 题</b></div>
+      <div class="ph-metric"><span>正确率</span><b>${rate}%</b></div>
+    </div>
+    <table class="ph-table"><thead><tr><th>关卡</th><th>状态</th><th>对 / 错</th><th>正确率</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="ph-tips">📌 <b>学习建议</b><ul>${tips.map(t => '<li>' + t + '</li>').join('')}</ul></div>
+    <button class="btn ghost" onclick="phClear()">🧹 清空本机学习记录</button>
+  </div>`;
+}
+function phClear() {
+  if (!confirm('确定清空本机的星星、彩蛋和答题记录吗？此操作不可恢复。')) return;
+  try { localStorage.removeItem('phlv1'); localStorage.removeItem('phstat2'); } catch (e) {}
+  location.reload();
+}
+window.phClear = phClear;
+
 function render() {
   const lv = PH_LEVELS.find(l => l.id === CUR) || PH_LEVELS[0];
   CUR = lv.id;
-  renderMap();
+  renderMap(); renderReward(); renderReport();
   PHR.length = 0;
   document.getElementById('phStage').innerHTML = levelHTML(lv);
   if (lv.kind === 'spell') { if (!SP.words.length) spStart(); else spPaint(); }
@@ -519,6 +780,11 @@ function render() {
 }
 
 function phGo(id) {
+  if (id === 'report') {
+    const el = document.getElementById('phReport');
+    if (el) window.scrollTo({ top: Math.max(0, el.offsetTop - 12), behavior: 'smooth' });
+    return;
+  }
   if (!PH_LEVELS.some(l => l.id === id)) id = 'L1';
   CUR = id;
   try { history.replaceState(null, '', '#' + id); } catch (e) { location.hash = id; }
@@ -526,17 +792,7 @@ function phGo(id) {
   const stage = document.getElementById('phStage');
   if (stage) window.scrollTo({ top: Math.max(0, stage.offsetTop - 12), behavior: 'smooth' });
 }
-function phMarkDone(id) {
-  phProg.mark(id);
-  render();
-  const next = PH_LEVELS[PH_LEVELS.findIndex(l => l.id === id) + 1];
-  const msg = next ? `⭐ 已点亮！继续下一关：${next.name}` : '⭐ 全部通关，太棒了！';
-  try { sfx && sfx.good && sfx.good(); } catch (e) {}
-  const box = document.querySelector('.ph-done-row');
-  if (box) box.insertAdjacentHTML('beforebegin',
-    `<div class="ph-mg-msg" style="text-align:center">${esc(msg)}</div>`);
-}
-window.phGo = phGo; window.phMarkDone = phMarkDone; window.mgPlaySound = mgPlaySound;
+window.phGo = phGo; window.mgPlaySound = mgPlaySound;
 
 /* 旧锚点兼容（#s1…#s11 → 新关卡） */
 const LEGACY = { s1: 'L1', s2: 'TX', s3: 'L2', s4: 'L3', s5: 'L4', s6: 'L5', s7: 'L6', s8: 'L7', s9: 'L8', s10: 'L2', s11: 'L9' };
@@ -585,7 +841,13 @@ function spLoad() {
     document.getElementById('spLen').textContent = '';
     document.getElementById('spMsg').innerHTML =
       `<div class="sp-done">🎉 一轮完成！${SP.score} / ${SP.total} 拼对<br><button class="btn coral" style="margin-top:10px" onclick="spStart()">再来一轮</button></div>`;
-    if (SP.score >= 8) phProg.mark('L9');
+    phStat.rec('L9', SP.score, SP.total - SP.score);
+    phStat.touchDay();
+    if (SP.score >= 8 && !phProg.done['L9']) {
+      phProg.mark('L9');
+      eggReward('L9');
+    }
+    renderMap(); renderReward(); renderReport();
     return;
   }
   SP.cur = SP.words[SP.idx];

@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v150 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v151 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/phonics.js | v7 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
@@ -37,8 +37,26 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v209 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v210 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
+
+## 2026-11-14.15 · 拼读课评测 + 趣味升级（定级测 / 掌握门槛 / 彩蛋 / 家长报告）
+
+用户：「这个自然拼读体系做到市面上最优秀了么？」→ 对标 Reading Eggs / Starfall / 斑马 / 叽里呱啦，
+评测与趣味是最大短板，本轮补 P2（对标 Reading Eggs 的「蒙不过去」设计）。
+
+### 改了什么（全部在 phonics.html，phonics.js 数据形状不动）
+- **定级测**：8 题摸底（L1→L8 各 1 题，听音三选一），第一道做错的题对应关 = 起点；
+  全对从 L9 开始。结果存 `phstat2`，家长报告与地图可见。答错不惩罚。
+- **掌握门槛（能量条 7 格）**：听音挑一挑从「3 题对 2」改为「答对 7 格才亮星」——
+  答错本题重来（蒙不过去），逐关记录对/错计数。星星改为能量满格自动点亮，
+  撤掉旧的「我会了」手点按钮（L9 拼写 ≥8/10 同理）。
+- **奖励收集**：9 关各 1 枚彩蛋（过关点亮，地图蛋格展示，弹窗 + sfx 庆祝）；
+  连续学习天数 streak（本地日期去重，记最佳）。老用户已点亮的星星自动补发彩蛋。
+- **家长学习报告**：通关进度 / 连续天数 / 累计答题 / 正确率 + 逐关对错表 +
+  动态学习建议（定级结果、正确率 <70% 的关提醒重练、下一关指引）+ 清空本机记录。
+  数据只存 localStorage（`phlv1` 星星 + `phstat2` 学情），不上传。
+- 版本链：app v151（BUILD 2026-11-14.15）/ CACHE v210；**零音频变更**，phonics.js 仍 v7。
 
 ## 2026-11-14.14 · 自然拼读专栏分级闯关重构（9 关 + 工具箱，一关一屏）
 
