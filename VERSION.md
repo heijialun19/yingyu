@@ -14,11 +14,11 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v131 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v132 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v44 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
-| js/sentence.js | v49 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
+| js/sentence.js | v50 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v9 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v6 | 音标 |
@@ -34,9 +34,38 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v190 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v191 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
+
+## 2026-11-13.9 · 语法页 51 条固定例句补整句音频
+
+**现象**：上一版把动态句逐词率从 68.1% 压到 7.1%，但静态门禁里仍有 10 句长句
+一词一段（`This book is more expensive than that one.` 8 段/8 词）。核查发现它们
+**不是动态句，而是 23 关里的固定例句**——2026-11 新加的 L20–L23 从上线起就没有整句 mp3。
+
+**量化**（只算 23 关静态题，按 sentence.js 真实取音链）：
+- 静态题 80 条 → 去重英文句 57 句，其中只有 6 句有整句音频
+- 剩 51 句全靠「词块 + 单词」接龙：201 段 / 241 词 = 0.83 段每词
+- ≥5 词长句 23 句，**10 句一词一段**（8 段/8 词 ×2、7 段/7 词 ×3、6 段/6 词 ×3、5 段/5 词 ×3）
+- 另有 11 句只差 1~2 段（`There are | two | pencils | in | the | bag`）
+
+**决定**：不再往词块表里堆长尾组合，直接给这 51 句补整句音频（630.5KB）。
+
+**音频规格**：与线上 502 句同一管道 `en_US-libritts-high` + speaker 381 +
+`length_scale 1.1` / `noise_scale 0` / `noise_w 0` / 64k / 22050 mono / 不裁首尾静音。
+**同源校验**：重造已上线的 `i_like_apples`、`it_is_cold_today`、`we_sing`，
+md5 与线上逐字节相同、maxΔ = 0.000000（同源才允许补录，避免音色分层）。
+
+**为什么不升 SENTENCE_VER**：既有 502 条一个字节没动，升版本会让每个老用户重下
+6MB 整句（跨境窄带代价极大）；新增的 51 个 slug 本来就没有缓存条目，
+URL 天然是新的，AUDIO_CACHE 按完整 URL 精确匹配，自然只下这 51 条。
+只升 app.js 的 `?v=`（集合内容变了）、sentence.js 的 `?v=`（注释句数同步）与 `CACHE`。
+
+**效果**：51 句从 0.83 段每词 → **1 段整句**；23 关固定例句整句覆盖率 6/57 → **57/57**。
+
+版本链：`app v131→v132`、`sentence v49→v50`、`CACHE v190→v191`、
+`BUILD 2026-11-13.8→.9`；整句库 502 → **553**。
 
 ## 2026-11-13.8 · 连读词块扩容（语法页不再一个词一个词念）
 
