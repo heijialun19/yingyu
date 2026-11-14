@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v154 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v155 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/books-data.js | v2 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
 | js/phonics.js | v7 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
@@ -38,8 +38,45 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v213 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v214 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
+
+## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
+
+用户：「听读本的时候有一点电流声」「其他长句子也有，感觉有一点啫啫声音」。
+
+### 根因（四路测量交叉验证，非猜测）
+
+| 证据 | 测量 | 结论 |
+|---|---|---|
+| 分带编解码误差 | 64k 的 4-10kHz 余量仅 **10-12dB**（96k +7dB / 128k +14~16dB） | 量化噪声骑在摩擦音 / 高次谐波上 = 「啫啫」主因 |
+| 真峰值 | WAV 母版 0dBFS 仅 1-3 采样点削波；64k/128k 解码真峰值 -0.4dB | 顶满削波是偶发 tick，不是蜂鸣来源；不降增益（保响度一致） |
+| 蜂鸣指数 | piper(381) 6-26dB vs 母语者 15-22dB | 合成声源本身不比真人差，排除声线 |
+| 真词间隙噪声底 | WAV/MP3 均 < -56dB | 静音段干净 → 噪声只随语音段出现（编码噪声特征，非电噪声） |
+
+相关性：单词 96kbps 无抱怨、整句 64kbps 有抱怨 —— 码率是主变量。
+
+### 处置
+
+| 项 | 做法 |
+|---|---|
+| 重编规格 | 128kbps / 22050Hz / mono / 不裁静音 / 不降增益（与单词 96k 响度一致）；934 整句 + 137 词块全量 |
+| 母版 | 全部 libritts-high / speaker 381 / length 1.1 / noise=0 确定性 WAV 母版（c2/fix_1114/books/fix4/fix_sent 五目录互斥分区 + c2ph/fix3/fix5/fix6 四目录互斥分区）；picsent 与 out/phrases 的 ljspeech 旧声源候选一律不用 |
+| 缺母版 1 条 | `did_you_wake_up_at_ten_o_clock_yes_i_did` 按 js/getsmart-data.js 反查文本重合成（同管道） |
+| 版本 | SENTENCE_VER 5→6 / PHRASE_VER 3→4（老用户按需重下，预取 MAXQ=24 低优先级限流，非一次性全量）；单词 96k 零改动、AUDIO_VER 不升 |
+
+### 验收
+
+| 项 | 结果 |
+|---|---|
+| 重烘 QC | 1071/1071 PASS（时长与母版差 <80ms、抽样真峰值均 < -0.3dB、无空文件） |
+| 确定性 | 同 WAV 重编两次逐字节一致（PASS） |
+| 降噪效果 | 抽 4 句同口径对比：4-10kHz 余量 10-12dB → 24-28dB（**+14~16dB**），300-7k 余量 29-32dB → 46-48dB |
+| 体积 | 整句+词块 14MB → 30.75MB（+16.75MB，按需下载） |
+
+版本链：SENTENCE_VER 5→6、PHRASE_VER 3→4、app v154→v155、CACHE v213→v214、
+BUILD 2026-11-14.18→.19，11 个正式页与 SW CORE/BOOT 同步。AUDIO_VER / WEAK_VER /
+PHONICS_VER 零改动，2912 条单词与母语者字母音字节不动。
 
 ## 2026-11-14.18 · 读书馆热修复（页面打不开）
 

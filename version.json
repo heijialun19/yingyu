@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-14.18",
-  "note": "2026-11-14.18 读书馆热修复（页面打不开）：read.html 内联脚本自声明 function esc 与 app.js 的 const esc 冲突 → 整段脚本 SyntaxError 不执行（书架空白/点不开书）；且漏加载 words-data.js → data.js 的 GRADES.reduce 抛错、数据层报废。已删本地 esc 用全局版、补 words-data.js?v=46。无头浏览器回归：15 本全部渲染、无脚本错误。零音频变更。app v154 / BUILD 2026-11-14.18 / CACHE v213（强制刷新缓存的坏页面）。"
+  "build": "2026-11-14.19",
+  "note": "2026-11-14.19 整句/词块电流声修复：全量 934 条整句 + 137 条词块音频 64kbps → 128kbps 重编（WAV 母版 381 声线逐字节同源，只改编码）。根因：64k 的 4-10kHz 编解码误差余量仅 ~10dB，量化噪声骑在摩擦音/高次谐波上，听感即「轻微啫啫/电流声」；128k 后余量 ~26dB（实测 +14~16dB），长句子噪声底降 4-5 倍。缺母版的 did_you_wake_up_at_ten_o_clock_yes_i_did 按文本补合成；SENTENCE_VER 5→6 / PHRASE_VER 3→4（老用户按需重下，预取低优先级限流）；单词 96k 零改动、AUDIO_VER 不升。app v155 / BUILD 2026-11-14.19 / CACHE v214。"
 }

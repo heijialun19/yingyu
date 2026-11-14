@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-14.18';
+const BUILD = '2026-11-14.19';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -612,8 +612,13 @@ __registerAudioList();          /* audio-list.js 比 app.js 先执行时直接�
      混进 audio/ 会互相覆盖。 */
 /* 2026-11-13.9：只新增 51 条、既有 502 条一个字节没动，故**不升版本**——
    升了会让每个老用户把 6MB 整句全部重下；新 slug 本来没有缓存条目，
-   AUDIO_CACHE 按完整 URL 精确匹配，自然只下新增的这 51 条。 */
-const SENTENCE_VER = 5;
+   AUDIO_CACHE 按完整 URL 精确匹配，自然只下新增的这 51 条。
+   2026-11-14.19 v6：全量 934 条 64kbps → 128kbps 重编，修「长句子轻微啫啫/电流声」。
+   根因是 64k 的 4-10kHz 编解码误差余量仅 ~10dB（量化噪声骑在摩擦音与高次谐波上）；
+   128k 后余量 ~26dB（实测 +14~16dB）。934 条字节全变，必须升版本——老用户按需
+   重下（预取每页最多 24 条、低优先级，不是一次性全量 20MB）。词音频 96k 不动，
+   AUDIO_VER 不升；本条只影响 audio/sentences/。 */
+const SENTENCE_VER = 6;
 const SENTENCE_AUDIO = new Set([
   "a_bee_is_in_the_tree", "a_big_day_for_my_duck_and_pig", "a_big_fish_a_big_fish", "a_bird_is_on_the_car", "a_cake_on_a_plate", "a_car_is_on_the_farm",
   "a_cat_a_hat", "a_cheetah_can_run_fast", "a_chick_is_on_the_duck", "a_crab_a_crab", "a_dish_on_the_ship", "a_duck_and_a_pig",
@@ -785,8 +790,10 @@ const sentenceAudioURL = t => {
    —— 这就是家长说的「句子读得不对」。把句子里固定不变的前半段
    （This is a / I have a / I don't like …）一次合成，冠词在语流里自然弱读，
    动态句子也就有了连读。词块 137 条、约 961KB，不用给上千种组合各存一整句。
-   ★ PHRASE_VER 独立于 AUDIO_VER / SENTENCE_VER，重做词块只升它。 */
-const PHRASE_VER = 3;
+   ★ PHRASE_VER 独立于 AUDIO_VER / SENTENCE_VER，重做词块只升它。
+   2026-11-14.19 v4：137 条 64kbps → 128kbps 重编（同整句降噪，词块是
+   整句缺失时的连读兜底，码率必须与整句同规格才没有音质断层）。 */
+const PHRASE_VER = 4;
 const PHRASE_AUDIO = new Set([
   "a_boy","a_girl","are_these","are_they","birds_fly","can_he",
   "can_i","can_she","can_they","can_you","did_you","do_you",
