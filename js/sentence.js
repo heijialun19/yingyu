@@ -39,7 +39,11 @@ function prewarmSentence(text, gapMs) {
         if (phraseAudioURL(chunk)) { items.push(chunk); jumped = n - 1; break; }
       }
     }
-    if (!jumped) items.push(toks[i]);
+    if (!jumped) {
+      /* 预热也要走弱读文件：否则白下一个字母名 a.mp3，真播时又得再取一次 */
+      const low = toks[i].toLowerCase();
+      items.push((low === 'a' || low === 'an') ? 'weak_' + low : toks[i]);
+    }
     i += jumped;
   }
   let k = 0;
@@ -85,9 +89,10 @@ function __speakFrom(tokens, spans, i, fails, voice) {
   const text = __spokenToken(tokens[i]);
   /* 小写冠词 a / an 必须弱读。audio/a.mp3 是字母岛的**字母名** /eɪ/，
      直接拿它进句子就成了 "This is A cat."。词块命中时已经连读过了，
-     这里是没命中词块时的兜底：换专门的弱读文件（uh / un 合成）。
-     大写 A 是字母名，走 speakWord('A')，不经过这里。 */
-  const audioKey = (text === 'a' || text === 'an') ? 'weak_' + text : text;
+     这里是没命中词块时的兜底：换专门的弱读文件（同一说话人的 schwa 音素）。
+     2026-11-13.10 起**不分大小写**：句首 "A cat is on the bed." 的 A 也是冠词。 */
+  const low = text.toLowerCase();
+  const audioKey = (low === 'a' || low === 'an') ? 'weak_' + low : text;
   __hiWord(spans, i);
   /* 包内没有这个词（理论上不会：全站词表都已烘焙）：
      跳过它继续念，宁可漏一个词，也不在一句话中间插机器音。 */

@@ -14,11 +14,11 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v132 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v133 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v44 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
-| js/sentence.js | v50 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
+| js/sentence.js | v51 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v9 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v6 | 音标 |
@@ -34,9 +34,67 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v191 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v192 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
+
+## 2026-11-13.10 · 句子火车员词组扩表 + 冠词 a 不再读成字母名
+
+**现象（用户报）**：句子火车员里"中间的 a 读 A 不读 a"，句子还是一个个词蹦。
+
+**根因 1：`speak()` 的多词分支走的是逐词朗读**
+`speak(text)` 只要文本含空格、又没有整句 mp3，就走 `speakSentenceWords()`：
+按单词拆开、逐个取 `audio/<词>.mp3`。而 `audio/a.mp3` 是**字母岛的字母名 /eɪ/**
+（`weak_a` 只有 `speakSentence` 的逐词链在用）。所以"protect the earth"这类短语
+被读成三个孤立词，含 a 的短语那个 a 就是"诶"。
+
+**根因 2：`weak_a` / `weak_an` 本身是错的**
+旧文件用 `en_US-ljspeech-medium` —— 和全站 `libritts-high` speaker 381 **不是同一副嗓子**，
+载体词还是 "uh" / "un"，即 /ʌ/、/ʌn/ 的重读开音节，不是弱读 schwa /ə/。
+句子里一旦出现单独一段的 a，听起来就是"啊/阿"，而不是轻轻带过。
+
+**改法**：
+- `weak_a` / `weak_an` 用 espeak 音素输入 `[[@]]`、`[[@]]+[[n]]` 重做，
+  同一模型/同一 speaker 381/同 length_scale 1.1，帧能量裁切 + 12ms 淡出，
+  时长压到 0.20s / 0.26s（孤立音素被模型拉到 0.35~0.68s 会像"念了一个字"）。
+  频谱指纹：新文件 F2 落在 1.5~2kHz（中央元音），旧文件能量全压在 0.5~1kHz（/ʌ/），
+  字母名则是 2~3kHz 的滑音 —— 三者可区分。
+- 冠词判断**不分大小写**：句首 "A cat is on the bed." 的 A 也是冠词。
+- `speak()` 多词文本改走 `speakSentence()`（整句 → 词块 → 弱读冠词）。
+- `prewarmSentence()` 预热也映射到弱读文件，别再白下字母名。
+
+**词块扩表 75 → 100（+25 条 / 218.8KB）**
+选词依据是合并语料 2585 句（句子火车员 910 + 语法页 1770）的真实省段数：
+| 词块 | 省段 | 词块 | 省段 |
+|---|---|---|---|
+| do_you_have | 69 | is_this | 31 |
+| do_you_want_to | 60 | want_to | 30 |
+| are_these | 36 | do_you_want | 30 |
+| there_are_some | 35 | he_is | 24 |
+| they_don_t_like | 32 | does_she_have / does_he_have | 23 / 22 |
+
+另有用户点名的常用组：`they_are` `we_are` `i_was` `he_was` `she_was` `they_were`
+`was_at` `were_at` `has_a` `is_going_to` `going_to` `she_is_not` `he_doesn_t_like` `i_don_t_want`。
+
+**效果**（同一套切段逻辑，词块 75 → 100）：
+| 语料 | 段/词 | 纯逐词句 |
+|---|---|---|
+| 句子火车员 910 句 | 0.643 → **0.569** | 91 (10.0%) → **0** |
+| 语法页 1770 句 | 0.680 → **0.661** | 106 → 106 |
+| 合并 2585 句 | 0.670 → **0.630** | 197 (7.6%) → **106 (4.1%)** |
+
+句子火车员**一句逐词的都没有了**（那 91 句正是 "Do you have X?" / "Are these X?" /
+"Whose X is this?" 这几个模板）。
+
+**音频**：25 条 218.8KB，规格与既有 75 条一致（libritts-high / 381 / 1.1 / noise 0 /
+64k / 22050 mono / 不裁静音）。同源校验：重造 `this_is_a`、`do_you`、`is_on_the_bed`，
+md5 与线上**逐字节相同**。
+
+**版本链**：`app v132→v133`、`sentence v50→v51`（冠词判定与预热改了）、
+`CACHE v191→v192`、`BUILD 2026-11-13.9→.10`；词块 75 → **100**。
+`PHRASE_VER` 不升：25 条全是新文件，新 URL 本来就没有缓存条目。
+`AUDIO_VER` 不升：weak_a / weak_an 走独立的 `WEAK_VER`（v1 → v2），
+否则 2882 条单词音频会跟着全部作废。
 
 ## 2026-11-13.9 · 语法页 51 条固定例句补整句音频
 

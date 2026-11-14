@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-13.9';
+const BUILD = '2026-11-13.10';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -721,28 +721,35 @@ const sentenceAudioURL = t => {
    /eɪ/（语音识别听成 "Hey"），于是 "This is a cat." 变成 "This is A cat."
    —— 这就是家长说的「句子读得不对」。把句子里固定不变的前半段
    （This is a / I have a / I don't like …）一次合成，冠词在语流里自然弱读，
-   动态句子也就有了连读。词块只有 44 条、389KB，不用给上千种组合各存一整句。
+   动态句子也就有了连读。词块 100 条、约 610KB，不用给上千种组合各存一整句。
    ★ PHRASE_VER 独立于 AUDIO_VER / SENTENCE_VER，重做词块只升它。 */
 const PHRASE_VER = 3;
 const PHRASE_AUDIO = new Set([
-  "this_is_a","this_is_an","this_is_my","this_is","i_have_a","i_have_an",
-  "i_have_two","i_have","i_eat","i_drink","i_see_a","i_see_an","i_see",
-  "i_like","i_can","i_am","i_don_t_like","i_don_t","we_like","we_drink",
-  "we_have","he_likes","she_is","she_can","it_is_a","it_is","there_is_a",
-  "there_are","is_this_a","do_you","can_you","what_is","where_is","how_many",
-  "my_name_is","every_day","i_run","birds_fly","we_sing","we_drink_milk",
-  "i_am_a_girl","i_am_a_boy","a_boy","a_girl",
-  "are_they","can_he","can_i",
-  "can_she","can_they","did_you",
-  "does_he","does_it","does_she",
-  "he_can_t","he_doesn_t","i_can_t",
-  "is_he","is_it","is_on_the",
-  "is_on_the_bed","is_on_the_chair","is_on_the_floor",
-  "is_on_the_sofa","is_on_the_table","is_she",
-  "is_this_an","it_doesn_t","on_the",
-  "over_there","she_can_t","she_doesn_t",
-  "there_is_an","they_can_t","they_don_t",
-  "you_can_t"
+  "a_boy","a_girl","are_these","are_they",
+  "birds_fly","can_he","can_i","can_she",
+  "can_they","can_you","did_you","do_you",
+  "do_you_have","do_you_want","do_you_want_to","does_he",
+  "does_he_have","does_it","does_she","does_she_have",
+  "every_day","going_to","has_a","he_can_t",
+  "he_doesn_t","he_doesn_t_like","he_is","he_likes",
+  "he_was","how_many","i_am","i_am_a_boy",
+  "i_am_a_girl","i_can","i_can_t","i_don_t",
+  "i_don_t_like","i_don_t_want","i_drink","i_eat",
+  "i_have","i_have_a","i_have_an","i_have_two",
+  "i_like","i_run","i_see","i_see_a",
+  "i_see_an","i_was","is_going_to","is_he",
+  "is_it","is_on_the","is_on_the_bed","is_on_the_chair",
+  "is_on_the_floor","is_on_the_sofa","is_on_the_table","is_she",
+  "is_this","is_this_a","is_this_an","it_doesn_t",
+  "it_is","it_is_a","my_name_is","on_the",
+  "over_there","she_can","she_can_t","she_doesn_t",
+  "she_is","she_is_not","she_was","there_are",
+  "there_are_some","there_is_a","there_is_an","they_are",
+  "they_can_t","they_don_t","they_don_t_like","they_were",
+  "this_is","this_is_a","this_is_an","this_is_my",
+  "want_to","was_at","we_are","we_drink",
+  "we_drink_milk","we_have","we_like","we_sing",
+  "were_at","what_is","where_is","you_can_t"
 ]);
 const phraseAudioURL = t => {
   const k = audioSlug(t);
@@ -750,11 +757,18 @@ const phraseAudioURL = t => {
     ? `audio/phrases/${k}.mp3?v=${PHRASE_VER}` : '';
 };
 
+/* 弱读冠词 a / an 的文件（句子里单独成段时用）。
+   ★ 独立版本号：只重做这两个文件时，不必让 2882 条单词音频一起作废。
+   2026-11-13.10 v2：旧文件是 ljspeech 另一副嗓子 + /ʌ/ 重读（"啊/阿"），
+   换成同一说话人(381)的真 schwa 音素，与词块里的 a 完全一个音色。 */
+const WEAK_VER = 2;
 const localAudioURL = t => {
   const k = audioSlug(t);
   if (!k) return '';
   /* 整句自有音频优先：命中就一次播完，不再逐词拼接。
      speak() 里那句「含空格就走接龙」的判断正是看这里有没有命中。 */
+  /* 弱读冠词走自己的版本号，别被 AUDIO_VER 带着全站重下 */
+  if (k === 'weak_a' || k === 'weak_an') return `audio/${k}.mp3?v=${WEAK_VER}`;
   const whole = sentenceAudioURL(t);
   if (whole) return whole;
   /* 连读词块：句子接龙里命中就一次播完这一整块（含弱读冠词） */
@@ -1675,7 +1689,14 @@ function speak(text, lang = 'en-US', rate = 0.85) {
   stopAllSpeech();
   /* 句子（含空格）：整句丢给有道必 500，改成按词用本地真人音频接龙。
      将来若给某句烘焙了整句离线音频，localAudioURL 命中就照旧一次播完。 */
-  if (/\s/.test(t) && !localAudioURL(t)) { speakSentenceWords(t); return; }
+  /* ★ 2026-11-13.10：多词文本一律交给句子朗读链（整句 mp3 → 连读词块 → 单词）。
+     原来这里走 speakSentenceWords：逐词念、而且冠词 a 直接取 audio/a.mp3 ——
+     那是字母岛的**字母名 /eɪ/**，于是 "protect the earth" 读成三个孤立词、
+     "a pair of shoes" 里那个 a 变成 "诶"。这就是家长说的「中间的 a 读 A」。 */
+  if (/\s/.test(t) && !localAudioURL(t)) {
+    if (typeof speakSentence === 'function') { speakSentence(t); return; }
+    speakSentenceWords(t); return;
+  }
   playDictAudio(t, rate, null, null);
 }
 
