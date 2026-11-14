@@ -14,8 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v152 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/books-data.js | v1 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
+| js/app.js | v153 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/books-data.js | v2 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
 | js/phonics.js | v7 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
@@ -38,8 +38,23 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v211 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v212 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
+
+## 2026-11-14.17 · 读书馆质检修订（测验答案分布 / 歧义 / 发音注记）
+
+用户：「这几本书足够好了吗？有没有语法错误？有没有单词错误？」→ 全文重审 15 本书。
+结论：**拼写与语法硬错误 0 处**（逐句人工复核 + 校验器），但抓到 3 类质量问题并修复：
+
+- **测验答案分布**（最严重）：b5/b6/b8/b10/b12/b14/b15 七本书 3 题正确答案全在第 1 项，
+  孩子蒙「A」即可全对。已打散 8 本书选项顺序（含 b3 双 0），全站答案位置 17/17/11，
+  且逐题复核答案内容无一错位。
+- **b1 测验歧义**：「猫坐在哪里？」猫既坐过垫子又坐过老鼠 → 改「故事开头，猫坐在哪里？」
+- **发音/词义注记**（英文句与音频不动）：away / today 首音节弱读 /ə/（音素直拼会教错音）→
+  标注「整体认读」；horse 词尾 e 不发音；pen 注明「围栏（养动物的）」以区分钢笔。
+- 复核确认不改：无谓语的片段句（A dish on the ship! 等）是 Bob Books 式图说体，合规；
+  b9「Three green feet!」偏无厘头但不算错（改动需重合成音频，收益低）。
+- 可解码校验 _check_books.py 重跑 15/15 全过。零音频变更，books-data.js v2。
 
 ## 2026-11-14.16 · 读书馆上线（15 本分级拼读小书）
 
