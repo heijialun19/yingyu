@@ -186,9 +186,19 @@ function phPlayBlock(b) {
   if (u) playAudioChain([u]);
 }
 
-/* 整词发音：站内单词 mp3（和拼读闯关「🔊 听这个词」同一标准音） */
+/* 整词发音：站内单词 mp3（和拼读闯关「🔊 听这个词」同一标准音）。
+   ★ 视觉词 a / an 必须走弱读文件：audio/a.mp3 是字母岛的字母名 /eɪ/，
+   直接读就成了「诶」。weak_a / weak_an 是同一说话人的 schwa 音素。 */
 function phPlayWord(w) {
-  speak(String(w).trim());
+  const t = String(w).trim();
+  const low = t.toLowerCase();
+  speak((low === 'a' || low === 'an') ? 'weak_' + low : t);
+}
+
+/* 卡片点击发音：比 phPlayWord 多一个按压音效（沿用 speakWord 的手感） */
+function phSpeakWord(w) {
+  sfx.pop();
+  phPlayWord(w);
 }
 
 /* 逐音拼读：块音一个一个来（中间留空隙），最后一个音落下后用整词标准音收尾。

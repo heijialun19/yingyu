@@ -251,7 +251,7 @@
     <div class="ph-station-head">
       <span class="ph-num">⑩</span><h2>可解码短文 · 用规则读句子</h2>
       <p>每句<b>全部用学过的规则拼</b>（只有绿色标签里的视觉词是整体认读）。
-      点单词听一个词，点「🔊 读整句」逐词连读——先自己拼，再听答案。</p>
+      点单词听一个词，点「🔊 读整句」听整句连读——先自己拼，再听答案。</p>
     </div>
     <div id="sSents"></div>
   </section>
@@ -276,8 +276,7 @@
   </section>
 
   <div class="ph-foot">
-    🔈 字母音与拼读块 = 母语者录音（开源项目 s5s5/phonics，MIT，见《第三方素材与许可说明》）；单词多数为站内音频，
-    vest / king / gum / hut / thumb / gate 六词包内暂无、由设备语音补位。字母音与块音全站断网可读。<br>
+    🔈 字母音与拼读块 = 母语者录音（开源项目 s5s5/phonics，MIT，见《第三方素材与许可说明》）；单词与例句全部为站内音频，全站断网可读。<br>
     <a href="games.html" style="color:var(--ink2)">🎡 拼读闯关</a> ·
     <a href="letters.html" style="color:var(--ink2)">🏝️ 字母岛</a> ·
     <a href="index.html" style="color:var(--ink2)">🏠 首页</a> ·
@@ -288,9 +287,10 @@
 <script src="js/words-data.js?v=46"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=148"></script>
-<script defer src="js/audio-list.js?v=7"></script>
-<script src="js/phonics.js?v=5"></script>
+<script src="js/app.js?v=149"></script>
+<script defer src="js/audio-list.js?v=8"></script>
+<script src="js/sentence.js?v=52"></script>
+<script src="js/phonics.js?v=6"></script>
 <script>
 renderNav('phonics'); renderDecor();
 
@@ -390,7 +390,7 @@ Object.keys(STATIONS).forEach(k => {
 /* ---------------- ⑨ 视觉词 ---------------- */
 document.getElementById('sSight').innerHTML = SIGHT_WORDS.map(o =>
   `<div class="sw-card">
-    <button class="sw-word" onclick="speakWord('${esc(o.w)}')" title="点我听 ${esc(o.w)}">🔊 ${esc(o.w)}</button>
+    <button class="sw-word" onclick="phSpeakWord('${esc(o.w)}')" title="点我听 ${esc(o.w)}">🔊 ${esc(o.w)}</button>
     <div class="sw-ipa">${esc(o.ipa)}</div>
     <div class="sw-zh">${esc(o.zh)}</div>
     <div class="sw-note">📌 ${esc(o.note)}</div>
@@ -402,12 +402,12 @@ document.getElementById('sSents').innerHTML = DECODE_SENTENCES.map(o => {
   return `<div class="card" style="margin:12px 4px">
     <div class="sd-text">${words.map((w, j) => {
       const clean = w.replace(/[^A-Za-z']/g, '');
-      return `<button class="sd-w" onclick="speakWord('${esc(clean)}')" title="点我听 ${esc(clean)}">${esc(w)}</button>`;
+      return `<button class="sd-w" onclick="phSpeakWord('${esc(clean)}')" title="点我听 ${esc(clean)}">${esc(w)}</button>`;
     }).join(' ')}</div>
     <div class="sd-meta">
       <span>${esc(o.zh)}</span>
       <span class="sd-tag">${esc(o.tags)}</span>
-      <button class="btn mint" style="margin-left:auto" onclick="speakSentenceWords('${esc(o.s)}')">🔊 读整句</button>
+      <button class="btn mint" style="margin-left:auto" onclick="speak('${esc(o.s)}')">🔊 读整句</button>
     </div>
   </div>`;
 }).join('');

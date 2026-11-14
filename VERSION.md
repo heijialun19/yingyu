@@ -14,12 +14,12 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v148 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/phonics.js | v5 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
+| js/app.js | v149 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/phonics.js | v6 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
-| js/sentence.js | v51 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
+| js/sentence.js | v52 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v9 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v9 | 音标 |
@@ -31,13 +31,44 @@
 | js/pep-points-more.js | v1 | 人教版单元知识点「拓展篇」282 张卡（2026-11-14.6 新增）。每单元 +6 条，全站 273 → 555；只写课本主线之外的角度，与基础篇零撞题 |
 | js/pep-mem.js | v5 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
 | js/pep-points.js | v24 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
-| js/audio-list.js | v7 | 发音清单（2882 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
+| js/audio-list.js | v8 | 发音清单（2903 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v53 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
 | svg/word-svg.js | v7 | 379 张自绘词图（346 张卡通 + 33 张数字 / 日历 / 国旗卡；3 张泄答案图已重画，board / blackboard 共用黑板画） |
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v207 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v208 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+---
+
+## 2026-11-14.13 · 知识点例句整句朗读修复：277 句补整句音频 + 拼读页连带问题
+
+用户：「课本新增的一些知识点里面有例句，他们的句子都是一个一个蹦的，并不是长的读出来的。」
+
+### 根因
+2026-11-14.6 拓展知识点 282 条的 `en` 例句**几乎都没有整句 mp3**（命中率 5%），
+点朗读只能走逐词接龙 → 一个一个蹦。同批内容还有三处连带 bug。
+
+### 改了什么
+- **277 句整句音频**（267 条知识点例句 + 10 条可解码句）：Piper + LibriTTS 说话人 381，
+  与既有 553 句同声线同规格（md5 探针 i_like_apples / it_is_cold_today / cat 逐字节一致；
+  句长 1.02–2.46s、词长 0.48–0.87s、无削波）。登记 SENTENCE_AUDIO **553 → 830**；
+  SENTENCE_VER 不升（只新增文件，老用户不重下 6MB）。
+- **21 个词级音频**：15 个例句缺词（men / wang / times / piggy / li / moved / hiking /
+  bottles / feels / sent / sang / walked / seen / noticed / cells）+ 拼读页脚承认缺失的
+  6 词（vest / king / gum / hut / thumb / gate）。登记 audio-list.js **2882 → 2903**。
+- **视觉词 a 发音错误**：卡片点击原来读 `audio/a.mp3`（字母岛字母名 /eɪ/，教错音），
+  改走 `weak_a`（真 schwa /ə/）；可解码句的词按钮同样处理（新增 `phSpeakWord`）。
+- **「🔊 读整句」逐词蹦**：原来调 `speakSentenceWords`（无弱读替换），
+  改走 `speak()` → 命中整句 mp3 一次播完；phonics.html 补引 sentence.js，
+  兜底逐词链也带 a/an 弱读。页脚删「六词暂无」，导语改「听整句连读」。
+- **计数文案**：README.txt / README.md / THIRD-PARTY-NOTICES / disclaimer / parents /
+  app.js / sentence.js / audio-list.js 头注释，553→830 句、2882→2903 词、2921→2942 发音文件。
+
+### 版本链
+app v148→v149、sentence.js v51→v52、phonics.js v5→v6、audio-list v7→v8、
+CACHE v207→v208、BUILD 2026-11-14.12→.13。SENTENCE_VER=5 / AUDIO_VER=4 /
+AUDIO_CACHE=v5 / WEAK_VER=2 都不动（音频只增不改，老用户零重下）。
+
 ---
 
 ## 2026-11-14.12 · th 提示语修正：「轻轻吐舌」→「轻咬舌尖不振动」
