@@ -78,7 +78,7 @@ const IPA_GS = {
   "go hiking":"/ɡoʊ ˈhaɪkɪŋ/", "go sailing":"/ɡoʊ ˈseɪlɪŋ/", "go skiing":"/ɡoʊ ˈskiɪŋ/", "go straight":"/ɡoʊ streɪt/",
   "go to bed":"/ɡoʊ tə bed/", "go to school":"/ɡoʊ tə skul/", "go trick-or-treating":"/ɡoʊ trɪk ɔr ˈtritɪŋ/", "go windsurfing":"/ɡoʊ ˈwɪndsɜrfɪŋ/",
   "go-carting":"/ɡoʊ ˈkɑrtɪŋ/", "goggles":"/ˈɡɑɡəlz/", "gold":"/ɡoʊld/", "gorilla":"/ɡərˈɪlə/",
-  "government":"/ˈɡʌvərmənt/", "grandfather":"/ˈɡrænfɑðər/", "grandmother":"/ˈɡrænmʌðər/", "grapes":"/ɡreɪps/",
+  "government":"/ˈɡʌvərnmənt/", "grandfather":"/ˈɡrænfɑðər/", "grandmother":"/ˈɡrænmʌðər/", "grapes":"/ɡreɪps/",
   "greenhouse":"/ˈɡrinhaʊs/", "grocery store":"/ˈɡroʊsəri stɔr/", "guide":"/ɡaɪd/", "Gym":"/dʒɪm/",
   "hands":"/hændz/", "hang out":"/hæŋ aʊt/", "harmful":"/ˈhɑrmfəl/", "headphones":"/ˈhedfoʊnz/",
   "hear":"/hir/", "heat":"/hit/", "height":"/haɪt/", "helmet":"/ˈhelmət/",

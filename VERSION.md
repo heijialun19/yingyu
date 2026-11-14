@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v143 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v144 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/phonics.js | v1 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
@@ -23,7 +23,7 @@
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v9 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
 | js/ipa.js | v9 | 音标 |
-| js/ipa-gs.js | v2 | Get Smart 学堂页补充美式音标 646 条（2026-11-14.1 新增；仅 getsmart.html 引，末尾 Object.assign 并入主表） |
+| js/ipa-gs.js | v3 | Get Smart 学堂页补充美式音标 646 条（2026-11-14.1 新增；仅 getsmart.html 引，末尾 Object.assign 并入主表） |
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v16 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v2 | 人教版 8 册 47 单元词表 |
@@ -37,7 +37,23 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v202 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v203 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+---
+
+## 2026-11-14.8 · 音标修正：government 少一个 n
+
+用户：「继续」（.14.7 发版复验收尾）。线上复验全绿后跑音标回归，抽样对照发现 2 项不一致，逐项裁决：
+
+- **ipa-gs.js government**：`/ˈɡʌvərmənt/` → `/ˈɡʌvərnmənt/`。IPA_GS 全表口径是辅音簇写满
+  （iron `/ˈaɪərn/`、furniture `/ˈfɜrnɪtʃər/`、performance `/pərˈfɔrməns/`），government 少写了 -ern- 里的 n，
+  词典主音也是 ˈɡʌvərnmənt（MW 另收 ˈɡʌvərmənt 变体，但表内口径不取省音）。**数据笔误，改数据**。
+- **pep-mem.js apple**：测试预期 `ˈæpəl` 与数据 `ˈæpl` 不一致。查证人教版词表写法：people `/ˈpiːpl/`、
+  hospital `/ˈhɒspɪtl/`、beautiful `/ˈbjuːtɪfl/` 均为无 schwa 音节辅音记法，与表内一致；教习网 2023-2024
+  人教 PEP 全册词表作 `/ˈæp(ə)l/`，去可选 schwa 即 `ˈæpl`。**数据正确，改测试预期**。
+
+版本链：`app v143→v144`、`ipa-gs v2→v3`（getsmart.html + sw CORE）、`CACHE v202→v203`、`BUILD 2026-11-14.8`。
+音频零改动。
+
 ---
 
 ## 2026-11-14.7 · 自然拼读专栏：phonics.html 七站课程 + 首页专栏
