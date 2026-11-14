@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-13.10';
+const BUILD = '2026-11-13.11';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -721,35 +721,33 @@ const sentenceAudioURL = t => {
    /eɪ/（语音识别听成 "Hey"），于是 "This is a cat." 变成 "This is A cat."
    —— 这就是家长说的「句子读得不对」。把句子里固定不变的前半段
    （This is a / I have a / I don't like …）一次合成，冠词在语流里自然弱读，
-   动态句子也就有了连读。词块 100 条、约 610KB，不用给上千种组合各存一整句。
+   动态句子也就有了连读。词块 137 条、约 961KB，不用给上千种组合各存一整句。
    ★ PHRASE_VER 独立于 AUDIO_VER / SENTENCE_VER，重做词块只升它。 */
 const PHRASE_VER = 3;
 const PHRASE_AUDIO = new Set([
-  "a_boy","a_girl","are_these","are_they",
-  "birds_fly","can_he","can_i","can_she",
-  "can_they","can_you","did_you","do_you",
-  "do_you_have","do_you_want","do_you_want_to","does_he",
-  "does_he_have","does_it","does_she","does_she_have",
-  "every_day","going_to","has_a","he_can_t",
-  "he_doesn_t","he_doesn_t_like","he_is","he_likes",
-  "he_was","how_many","i_am","i_am_a_boy",
-  "i_am_a_girl","i_can","i_can_t","i_don_t",
-  "i_don_t_like","i_don_t_want","i_drink","i_eat",
-  "i_have","i_have_a","i_have_an","i_have_two",
-  "i_like","i_run","i_see","i_see_a",
-  "i_see_an","i_was","is_going_to","is_he",
-  "is_it","is_on_the","is_on_the_bed","is_on_the_chair",
-  "is_on_the_floor","is_on_the_sofa","is_on_the_table","is_she",
-  "is_this","is_this_a","is_this_an","it_doesn_t",
-  "it_is","it_is_a","my_name_is","on_the",
-  "over_there","she_can","she_can_t","she_doesn_t",
-  "she_is","she_is_not","she_was","there_are",
-  "there_are_some","there_is_a","there_is_an","they_are",
-  "they_can_t","they_don_t","they_don_t_like","they_were",
-  "this_is","this_is_a","this_is_an","this_is_my",
-  "want_to","was_at","we_are","we_drink",
-  "we_drink_milk","we_have","we_like","we_sing",
-  "were_at","what_is","where_is","you_can_t"
+  "a_boy","a_girl","are_these","are_they","birds_fly","can_he",
+  "can_i","can_she","can_they","can_you","did_you","do_you",
+  "do_you_have","do_you_want","do_you_want_to","does_he","does_he_eat","does_he_have",
+  "does_he_like","does_he_see","does_he_want","does_it","does_it_eat","does_it_have",
+  "does_it_like","does_it_see","does_it_want","does_she","does_she_eat","does_she_have",
+  "does_she_like","does_she_see","does_she_want","every_day","going_to","has_a",
+  "he_can_t","he_doesn_t","he_doesn_t_eat","he_doesn_t_have","he_doesn_t_like","he_doesn_t_see",
+  "he_doesn_t_want","he_is","he_isn_t","he_likes","he_was","how_many",
+  "i_am","i_am_a_boy","i_am_a_girl","i_can","i_can_t","i_don_t",
+  "i_don_t_eat","i_don_t_have","i_don_t_like","i_don_t_see","i_don_t_want","i_drink",
+  "i_eat","i_have","i_have_a","i_have_an","i_have_two","i_like",
+  "i_run","i_see","i_see_a","i_see_an","i_was","is_going_to",
+  "is_he","is_it","is_on_the","is_on_the_bed","is_on_the_chair","is_on_the_floor",
+  "is_on_the_sofa","is_on_the_table","is_she","is_this","is_this_a","is_this_an",
+  "it_doesn_t","it_doesn_t_eat","it_doesn_t_have","it_doesn_t_like","it_doesn_t_see","it_doesn_t_want",
+  "it_is","it_is_a","it_isn_t","my_name_is","on_the","over_there",
+  "she_can","she_can_t","she_doesn_t","she_doesn_t_have","she_doesn_t_like","she_doesn_t_see",
+  "she_doesn_t_want","she_is","she_is_not","she_isn_t","she_was","the_cat_is",
+  "there_are","there_are_some","there_is_a","there_is_an","they_are","they_aren_t",
+  "they_can_t","they_don_t","they_don_t_have","they_don_t_like","they_don_t_see","they_don_t_want",
+  "they_were","this_is","this_is_a","this_is_an","this_is_my","want_to",
+  "was_at","we_are","we_drink","we_drink_milk","we_have","we_like",
+  "we_sing","were_at","what_is","where_is","you_can_t"
 ]);
 const phraseAudioURL = t => {
   const k = audioSlug(t);

@@ -17,7 +17,7 @@
 2. 仓库 Settings → Pages → 选择 main 分支 → Save
 3. 一分钟后得到公网网址 `https://你的用户名.github.io/仓库名/`，发给谁都能打开
 
-> 发音**全部是站内自带的静态音频**：2921 个单词/拼读块/字母名/派生词/字母音 + 553 句整句 + 100 个连读词块（单词、整句与词块用开源引擎 Piper + <code>en_US-libritts-high</code> 合成，模型权重 MIT、训练数据 LibriTTS / OpenSLR 60 为 CC BY 4.0 并已署名；字母音与拼读块中 38 个为开源项目 s5s5/phonics 的母语者录音、字母 U 因源库缺 /ʌ/ 由本站自合成，MIT），**不联网、断网可读、不请求任何第三方服务**。每个小伙伴的学习进度独立保存在本机浏览器（按档案隔离），不上传任何数据；支持导出/导入备份换设备；可「添加到主屏幕」像 App 一样全屏离线使用。
+> 发音**全部是站内自带的静态音频**：2921 个单词/拼读块/字母名/派生词/字母音 + 553 句整句 + 137 个连读词块（单词、整句与词块用开源引擎 Piper + <code>en_US-libritts-high</code> 合成，模型权重 MIT、训练数据 LibriTTS / OpenSLR 60 为 CC BY 4.0 并已署名；字母音与拼读块中 38 个为开源项目 s5s5/phonics 的母语者录音、字母 U 因源库缺 /ʌ/ 由本站自合成，MIT），**不联网、断网可读、不请求任何第三方服务**。每个小伙伴的学习进度独立保存在本机浏览器（按档案隔离），不上传任何数据；支持导出/导入备份换设备；可「添加到主屏幕」像 App 一样全屏离线使用。
 
 ## 📁 文件结构
 
@@ -36,7 +36,7 @@ js/data.js      字母故事 / 语法关卡 / 徽章
 getsmart.html   Get Smart 学堂：6 册 237 课，学单词→闯关→句型
 pep.html        人教课本：8 册 47 单元知识点 + 拼词
 js/pep-data.js / js/pep-points.js  人教版课程数据与知识点讲解
-audio/          2882 个单词/字母/派生词 MP3 + audio/sentences/ 下 553 句整句音频 + audio/phrases/ 下 100 个连读词块
+audio/          2882 个单词/字母/派生词 MP3 + audio/sentences/ 下 553 句整句音频 + audio/phrases/ 下 137 个连读词块
 audio/phonics/  26 个字母音 + 13 个拼读块（自然拼读 letter sound / blend；38 个母语者录音，字母 U 自合成）
 svg/            word-svg.js 自绘图 + emoji-svg.js / emoji-svg2.js 内置矢量图库
 js/app.js       共享运行时（进度存储 / 语音 / 音效 / 星星徽章 / 打卡 / 安装引导）
