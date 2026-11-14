@@ -229,8 +229,8 @@
 <script src="js/words-data.js?v=46"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=151"></script>
-<script defer src="js/audio-list.js?v=8"></script>
+<script src="js/app.js?v=152"></script>
+<script defer src="js/audio-list.js?v=9"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/phonics.js?v=7"></script>
 <script>
@@ -590,8 +590,14 @@ function levelHTML(lv) {
     : `<div class="ph-done-row"><span class="ph-star-hint">${lv.kind === 'spell'
         ? '⭐ 拼写一轮对 8 题以上，自动点亮星星、领取彩蛋'
         : '⭐ 完成下方听音挑战（能量 7 格），自动点亮星星、领取彩蛋'}</span></div>`);
+  /* 关卡 → 小书映射：学完一关立刻读对应小书（read.html#bN 直开） */
+  const BOOK_OF = { L2: 'b1', L3: 'b6', L4: 'b8', L5: 'b9', L6: 'b11', L7: 'b12', L8: 'b13', L9: 'b14' };
+  const bookBtn = BOOK_OF[lv.id]
+    ? `<button class="btn ghost" onclick="location.href='read.html#${BOOK_OF[lv.id]}'">📚 去读小书</button>`
+    : (lv.id === 'L1' ? `<button class="btn ghost" onclick="location.href='read.html#b1'">📚 读第一本小书</button>` : '');
   const nav = `<div class="ph-nav">
       ${idx > 0 ? `<button class="btn ghost" onclick="phGo('${PH_LEVELS[idx - 1].id}')">◀ 上一关</button>` : ''}
+      ${bookBtn}
       ${idx < PH_LEVELS.length - 1 ? `<button class="btn coral" onclick="phGo('${PH_LEVELS[idx + 1].id}')">下一关：${esc(PH_LEVELS[idx + 1].name)} ▶</button>` : ''}
     </div>`;
   const head = `<div class="ph-stage-head">

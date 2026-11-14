@@ -14,7 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v151 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v152 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/books-data.js | v1 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
 | js/phonics.js | v7 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
@@ -37,8 +38,33 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v210 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v211 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
+
+## 2026-11-14.16 · 读书馆上线（15 本分级拼读小书）
+
+用户：「增加一下读书馆吧。Starfall 15 本循序拼读书。不需要太多，只要求优质。」
+
+### 学了谁的做法（调研结论）
+- **Starfall Learn to Read**：15 本序列拼读书（Zac the Rat 起步），每本聚焦一个元音/规则，
+  点词听音素拼合、点句听整句、读完配活动——「书序 = 教学序」。
+- **Bob Books**：每本 12 页仅 8-25 个不重复词、极简句（Bud has a box.）、极少视觉词、
+  幽默插画与荒诞收尾（"I read the whole book!" 成就感）。
+
+### 本站实现（宁少而精，15 本封顶）
+- **内容铁律**：每页每词必须「已教音素可拼」（单字母→sh/ch/th/ck/ng→连缀→ee/oo/ai/ay/oa→
+  魔法 e→ar/or/ir）或为显式视觉词；_check_books.py 强制校验（含复数还原、胶水词表），
+  15 本全部通过。每本 4-25 个不重复词、句长 ≤8 词、重复句式 + 荒诞小笑点收尾。
+- **级别映射**：B1-B5=L2 短元音 → B6-B7=L3 双辅音 → B8=L4 连缀 → B9-B10=L5 元音组合
+  → B11=L6 魔法 e → B12=L7 卷舌音 → B13=L8 视觉词（16 个视觉词小书）→ B14-B15=L9 毕业读物。
+- **交互**：书架（分级分组）→ 阅读器（点句整句朗读+词高亮、点词听音、中文开关、生词表点读、
+  翻页预热）→ 读后 3 题 → ⭐+2 奖励与彩蛋式庆祝；进度存 localStorage bk1；
+  read.html#bN 直开某书（拼读关卡收尾「去读小书」按钮按关卡映射跳转）。
+- **音频**：104 条整句（length 1.1 / 64k / 22050 mono）+ 9 个缺词（sat/mat/pit/hop/pup/mud/
+  dish/grab/dark）词级 mp3，C2 声线 speaker 381、noise 0/0 确定性合成，QA 全过（句 1.08-2.54s、
+  词 0.47-0.65s、无削波）。SENTENCE_VER 不升（纯新增），SENTENCE_AUDIO 830→934，audio-list 2903→2912。
+- **版本链**：app v152（BUILD .14.16）/ CACHE v211 / books-data.js v1 新增 / audio-list v9；
+  CORE 加 read.html + books-data.js；首页岛屿、拼读关卡收尾、家长中心计数同步。
 
 ## 2026-11-14.15 · 拼读课评测 + 趣味升级（定级测 / 掌握门槛 / 彩蛋 / 家长报告）
 

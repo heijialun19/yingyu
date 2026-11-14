@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#534AB7">
+<meta name="keywords" content="小学英语,英语阅读,拼读小书,分级阅读,可解码读物,免费" />
+<meta name="description" content="读书馆 · 分级拼读小书：15 本循序渐进的可解码小书，每本只用已学拼读规则写成，点句整句朗读、点词听发音、读后小测。对标 Starfall Learn to Read / Bob Books。免费、无广告、断网也能读。">
+<link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
+<meta property="og:title" content="读书馆 · 分级拼读小书 · 小鸟英语乐园">
+<meta property="og:description" content="15 本可解码拼读小书：短元音 → 双辅音 → 连缀 → 元音组合 → 魔法 e → 卷舌音 → 视觉词 → 毕业读物。点句听整句、点词听发音、读后 3 题小测。">
+<meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
+<meta property="og:url" content="https://heijialun19.github.io/yingyu/read.html">
+<meta name="twitter:card" content="summary_large_image">
+<title>读书馆 · 分级拼读小书 · 小鸟英语乐园</title>
+<link rel="canonical" href="https://heijialun19.github.io/yingyu/read.html">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/style.css?v=53" onerror="this.onerror=null;this.href='css/style.css?v=53&amp;retry=1'">
+<style>
+/* 读书馆页内样式（只有这一页用） */
+.bk-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px;margin-top:12px}
+.bk-card{position:relative;background:#fff;border:3px solid #E8EAF0;border-radius:18px;padding:14px 12px 12px;
+  cursor:pointer;transition:.15s;text-align:center;font-family:inherit;box-shadow:0 4px 0 rgba(45,49,66,.08)}
+.bk-card:hover{transform:translateY(-3px);border-color:var(--lemon)}
+.bk-card.done{border-color:var(--mint);background:#F2FCF4}
+.bk-card.lock{opacity:.55}
+.bk-emoji{font-size:2.1rem;line-height:1.2}
+.bk-card b{display:inline-block;font-size:.68rem;font-weight:700;color:#fff;background:var(--lake);
+  border-radius:999px;padding:2px 9px;margin:6px 0 3px}
+.bk-card.done b{background:var(--mint)}
+.bk-title{display:block;font-size:.86rem;font-weight:800;color:var(--ink);line-height:1.35}
+.bk-card small{display:block;font-size:.68rem;color:var(--ink2);margin-top:3px;line-height:1.45}
+.bk-star{position:absolute;top:6px;right:8px;font-size:.95rem}
+/* 阅读器 */
+.bk-stage{margin-top:6px}
+.bk-page{background:#fff;border:3px solid #E8EAF0;border-radius:22px;padding:18px 16px 16px;text-align:center;
+  box-shadow:0 4px 0 rgba(45,49,66,.08)}
+.bk-page .bk-art{font-size:clamp(56px,12vw,88px);line-height:1.25;min-height:1.2em}
+.bk-sent{margin:14px 4px 6px;font-size:clamp(1.35rem,4.6vw,2rem);font-weight:800;line-height:1.75;color:var(--ink)}
+.bk-sent .w{cursor:pointer;border-radius:8px;padding:1px 3px;transition:.12s}
+.bk-sent .w:hover{background:#FFF3C4}
+.bk-sent .w.said{background:#DFF3E4}
+.bk-sent .w.hl{background:#FFE28A}
+.bk-zh{margin:2px 4px 10px;font-size:.92rem;color:var(--ink2)}
+.bk-tools{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0 2px}
+.bk-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px 2px 2px}
+.bk-dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;flex:1}
+.bk-dot{width:9px;height:9px;border-radius:50%;background:#DDE2EC}
+.bk-dot.on{background:var(--grape)}
+.bk-quiz{background:#fff;border:3px solid var(--grape);border-radius:22px;padding:18px 16px 16px;box-shadow:0 4px 0 rgba(45,49,66,.08)}
+.bk-quiz h3{margin:0 0 4px;font-size:1.15rem}
+.bk-q{margin:14px 4px;font-size:1.02rem;font-weight:700;color:var(--ink);line-height:1.6}
+.bk-opts{display:flex;flex-direction:column;gap:8px;margin:8px 4px 4px}
+.bk-opt{background:#fff;border:3px solid #E8EAF0;border-radius:14px;padding:11px 14px;font-size:.98rem;
+  cursor:pointer;text-align:left;font-family:inherit;transition:.12s;color:var(--ink)}
+.bk-opt:hover{border-color:var(--sky2,#B9E2FA)}
+.bk-opt.right{border-color:var(--mint);background:#EDFAF0}
+.bk-opt.wrong{border-color:#F5B7B1;background:#FDF2F1}
+.bk-opt[disabled]{cursor:default}
+.bk-wordlist{display:flex;flex-wrap:wrap;gap:7px;margin:8px 4px 4px}
+.bk-wchip{background:#F4F2FF;border:2px solid var(--grape);border-radius:999px;padding:5px 11px;
+  font-size:.82rem;font-weight:700;cursor:pointer;color:#3C3489;font-family:inherit}
+.bk-wchip small{font-weight:600;color:var(--ink2);margin-left:4px}
+.bk-back{margin:2px 4px 8px}
+.bk-level-label{margin:18px 4px 8px;font-size:.92rem;font-weight:800;color:var(--ink)}
+.bk-level-label small{font-weight:600;color:var(--ink2);font-size:.78rem;margin-left:6px}
+</style>
+</head>
+<body>
+<div id="decor" aria-hidden="true"></div>
+<nav id="nav"></nav>
+<main class="wrap">
+  <header class="hero">
+    <h1>📚 读书馆 · 分级拼读小书</h1>
+    <p class="sub">15 本小书 · 只用学过的拼读规则写成 · 点句子听整句，点单词听发音</p>
+  </header>
+
+  <!-- 书架 -->
+  <section id="shelf">
+    <div class="card" style="text-align:center">
+      <div style="font-size:40px">🎯</div>
+      <b style="font-size:1.02rem">怎么读？</b>
+      <p style="margin:6px 4px 2px;font-size:.86rem;color:var(--ink2);line-height:1.75">
+        从第一本开始按顺序读。每本书<b>只用你学过的拼读规则</b>写成——遇到不会的词，点一下就能听。
+        读完每一本都有 3 道小题，答完收集 ⭐。读不懂也没关系，先听一遍再自己读！
+      </p>
+    </div>
+    <div id="bkShelf"></div>
+    <div class="ph-map-note" style="margin:12px 4px 2px;font-size:.78rem;color:var(--ink2);line-height:1.7">
+      💡 编写标准对标 Starfall Learn to Read 与 Bob Books：每本 4-25 个不重复词、短句、重复句式 + 一个小笑点；
+      每个词都通过「已教音素可拼」校验，生词表可点读。进度只存在你自己的浏览器里。
+    </div>
+  </section>
+
+  <!-- 阅读器 -->
+  <section id="reader" style="display:none">
+    <div class="bk-back"><button class="btn ghost" id="bkBack">← 回书架</button></div>
+    <div class="ph-stage-head">
+      <span class="ph-num" id="bkNum"></span>
+      <h2 id="bkTitle"></h2>
+      <div class="ph-goal" id="bkMeta"></div>
+    </div>
+    <div class="bk-stage" id="bkStage"></div>
+    <div class="bk-nav" id="bkNav"></div>
+    <div class="card" id="bkWordCard" style="margin-top:14px">
+      <div class="ph-sec-label" style="margin:2px 2px 8px">📖 本册生词 <small>点一点听发音</small></div>
+      <div class="bk-wordlist" id="bkWords"></div>
+    </div>
+  </section>
+
+  <!-- 读后小测 -->
+  <section id="quiz" style="display:none">
+    <div class="bk-back"><button class="btn ghost" id="qBack">← 继续读书</button></div>
+    <div class="bk-quiz" id="qBox"></div>
+  </section>
+
+  <div class="foot-links">
+    <a href="phonics.html">🔤 拼读课</a>·<a href="words.html">🏘️ 单词镇</a>·<a href="parents.html">👨‍👩‍👧 家长中心</a>
+  </div>
+</main>
+<div id="toast"></div>
+<div id="confetti"></div>
+
+<script src="js/data.js?v=45"></script>
+<script src="js/app.js?v=152"></script>
+<script src="js/books-data.js?v=1"></script>
+<script defer src="js/audio-list.js?v=9"></script>
+<script src="js/sentence.js?v=52"></script>
+<script>
+renderNav('read'); renderDecor();
+
+/* 读书馆进度：{done:{b1:ts}, stars:{b1:2}} 按档案存储 */
+const BK_KEY = 'bk1';
+function bkProg() {
+  try { return JSON.parse(localStorage.getItem(BK_KEY)) || {}; } catch (e) { return {}; }
+}
+function bkSave(p) { try { localStorage.setItem(BK_KEY, JSON.stringify(p)); } catch (e) {} }
+
+let CUR = null;      // 当前书
+let PAGE = 0;        // 当前页码
+let QUIZI = 0;       // 当前题号
+let QUIZ_OK = 0;     // 答对数
+
+function esc(x) { return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ============ 书架 ============ */
+function renderShelf() {
+  const prog = bkProg();
+  const order = ['L2','L3','L4','L5','L6','L7','L8','L9'];
+  const lvName = { L2:'第 1 站 · 短元音', L3:'第 2 站 · 双辅音', L4:'第 3 站 · 辅音连缀',
+                   L5:'第 4 站 · 元音组合', L6:'第 5 站 · 魔法 e', L7:'第 6 站 · 卷舌音',
+                   L8:'第 7 站 · 视觉词', L9:'毕业 · 综合阅读' };
+  let html = '';
+  for (const lv of order) {
+    const books = BOOKS.filter(b => b.lv === lv);
+    if (!books.length) continue;
+    html += `<div class="bk-level-label">${esc(lvName[lv] || lv)}<small>${books.length} 本</small></div>`;
+    html += '<div class="bk-map">' + books.map(b => `
+      <button class="bk-card ${prog.done && prog.done[b.id] ? 'done' : ''}" data-b="${b.id}">
+        <span class="bk-star">${prog.done && prog.done[b.id] ? '⭐' : ''}</span>
+        <div class="bk-emoji">${b.emoji}</div>
+        <b>${esc(b.tag)}</b>
+        <span class="bk-title">${esc(b.title)}</span>
+        <small>${esc(b.zh)}</small>
+      </button>`).join('') + '</div>';
+  }
+  const doneN = Object.keys(prog.done || {}).length;
+  html += `<div class="ph-map-note">已读 <b>${doneN}</b> / ${BOOKS.length} 本${doneN === BOOKS.length ? ' —— 全部读完啦，真棒！🎉' : ''}</div>`;
+  document.getElementById('bkShelf').innerHTML = html;
+  document.querySelectorAll('.bk-card').forEach(c => c.onclick = () => { sfx.pop(); openBook(c.dataset.b); });
+}
+
+/* ============ 阅读器 ============ */
+function openBook(id) {
+  CUR = BOOKS.find(b => b.id === id);
+  if (!CUR) return;
+  PAGE = 0;
+  document.getElementById('shelf').style.display = 'none';
+  document.getElementById('reader').style.display = '';
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('bkNum').textContent = CUR.emoji;
+  document.getElementById('bkTitle').textContent = CUR.title + ' · ' + CUR.zh;
+  document.getElementById('bkMeta').innerHTML =
+    `🎯 练习：<b>${esc(CUR.tag)}</b> · 共 ${CUR.pages.length} 页 · 读后 3 题 · ` +
+    `点句子听整句，点<span style="background:#FFE28A;border-radius:6px;padding:0 4px">单词</span>听发音`;
+  document.getElementById('bkWords').innerHTML =
+    CUR.newWords.map(w => `<button class="bk-wchip" data-w="${esc(w.w)}">${esc(w.w)}<small>${esc(w.zh)}</small></button>`).join('') +
+    CUR.sight.map(w => `<button class="bk-wchip" data-w="${esc(w)}" style="border-color:var(--lemon);background:#FFF9E3">${esc(w)}<small>视觉词</small></button>`).join('');
+  document.querySelectorAll('.bk-wchip').forEach(c => c.onclick = () => { speak(c.dataset.w, 'en-US', 1); });
+  paintPage();
+  window.scrollTo(0, 0);
+}
+
+function paintPage() {
+  const p = CUR.pages[PAGE];
+  const stage = document.getElementById('bkStage');
+  stage.innerHTML = `
+    <div class="bk-page">
+      <div class="bk-art">${p.art}</div>
+      <div class="bk-sent" id="bkSent"></div>
+      <div class="bk-zh">${esc(p.zh)}</div>
+      <div class="bk-tools">
+        <button class="btn coral" id="bkPlay">🔊 听整句</button>
+        <button class="btn ghost" id="bkZh">👀 看/藏中文</button>
+      </div>
+    </div>`;
+  /* 逐词 span：点词发音 + 整句高亮容器 */
+  const sentEl = document.getElementById('bkSent');
+  sentEl.innerHTML = p.en.split(/\s+/).map(t => {
+    const bare = t.replace(/^[^A-Za-z']+|[^A-Za-z']+$/g, '');
+    return `<span class="w" data-w="${esc(bare)}">${esc(t)}</span>`;
+  }).join(' ');
+  sentEl.querySelectorAll('.w').forEach(w => w.onclick = () => {
+    speakWord(w.dataset.w); w.classList.add('said'); setTimeout(() => w.classList.remove('said'), 600);
+  });
+  document.getElementById('bkPlay').onclick = () => speakSentence(p.en, sentEl);
+  const zhEl = stage.querySelector('.bk-zh');
+  document.getElementById('bkZh').onclick = () => { zhEl.style.display = zhEl.style.display === 'none' ? '' : 'none'; };
+  /* 翻页点 */
+  document.getElementById('bkNav').innerHTML = `
+    <button class="btn ghost" id="bkPrev" ${PAGE === 0 ? 'disabled' : ''}>← 上一页</button>
+    <div class="bk-dots">${CUR.pages.map((_, i) => `<span class="bk-dot ${i === PAGE ? 'on' : ''}"></span>`).join('')}</div>
+    <button class="btn grape" id="bkNext">${PAGE === CUR.pages.length - 1 ? '读后小测 →' : '下一页 →'}</button>`;
+  document.getElementById('bkPrev').onclick = () => { if (PAGE > 0) { PAGE--; paintPage(); prewarm(); } };
+  document.getElementById('bkNext').onclick = () => {
+    if (PAGE < CUR.pages.length - 1) { PAGE++; paintPage(); prewarm(); sfx.pop(); }
+    else { startQuiz(); }
+  };
+}
+
+function prewarm() {
+  const p = CUR.pages[PAGE + 1];
+  if (p && typeof prewarmSentence === 'function') prewarmSentence(p.en);
+}
+
+/* ============ 读后小测 ============ */
+function startQuiz() {
+  QUIZI = 0; QUIZ_OK = 0;
+  document.getElementById('reader').style.display = 'none';
+  document.getElementById('quiz').style.display = '';
+  paintQuiz();
+  window.scrollTo(0, 0);
+}
+
+function paintQuiz() {
+  const q = CUR.quiz[QUIZI];
+  document.getElementById('qBox').innerHTML = `
+    <h3>📝 读后小测 · ${QUIZI + 1} / ${CUR.quiz.length}</h3>
+    <div class="bk-q">${esc(q.q)}</div>
+    <div class="bk-opts">${q.opts.map((o, i) => `<button class="bk-opt" data-i="${i}">${esc(o)}</button>`).join('')}</div>
+    <div id="qFeed" style="min-height:28px;margin:10px 4px 2px;font-size:.92rem;font-weight:700"></div>`;
+  document.querySelectorAll('.bk-opt').forEach(btn => btn.onclick = () => {
+    const i = +btn.dataset.i, right = i === q.a;
+    document.querySelectorAll('.bk-opt').forEach((b, j) => {
+      b.disabled = true;
+      if (j === q.a) b.classList.add('right');
+    });
+    if (!right) btn.classList.add('wrong');
+    if (right) { QUIZ_OK++; sfx.good ? sfx.good() : sfx.pop(); }
+    else sfx.no && sfx.no();
+    document.getElementById('qFeed').textContent = right ? '✅ 答对啦！' : '❌ 没关系，记住答案，下次一定行！';
+    setTimeout(() => {
+      if (QUIZI < CUR.quiz.length - 1) { QUIZI++; paintQuiz(); }
+      else finishBook();
+    }, 900);
+  });
+}
+
+function finishBook() {
+  const prog = bkProg();
+  prog.done = prog.done || {};
+  const first = !prog.done[CUR.id];
+  prog.done[CUR.id] = Date.now();
+  prog.stars = prog.stars || {};
+  prog.stars[CUR.id] = Math.max(prog.stars[CUR.id] || 0, QUIZ_OK);
+  bkSave(prog);
+  if (first) addStars(2);
+  document.getElementById('qBox').innerHTML = `
+    <div style="text-align:center;padding:12px 4px 6px">
+      <div style="font-size:64px">${QUIZ_OK === CUR.quiz.length ? '🏆' : '📖'}</div>
+      <h3>${QUIZ_OK === CUR.quiz.length ? '太棒了，全对！' : '读完啦！'}</h3>
+      <p style="margin:8px 4px;color:var(--ink2);line-height:1.7">
+        《${esc(CUR.title)}》· 答对 <b>${QUIZ_OK}</b> / ${CUR.quiz.length} 题
+        ${first ? ' · 奖励 ⭐+2' : ''}
+      </p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0 4px">
+        <button class="btn coral" id="qNextBook">下一本书 →</button>
+        <button class="btn ghost" id="qShelf">回书架</button>
+      </div>
+    </div>`;
+  if (QUIZ_OK === CUR.quiz.length) { sfx.win && sfx.win(); confetti(); }
+  document.getElementById('qNextBook').onclick = () => {
+    const i = BOOKS.findIndex(b => b.id === CUR.id);
+    const nxt = BOOKS[i + 1];
+    if (nxt) openBook(nxt.id); else backShelf();
+  };
+  document.getElementById('qShelf').onclick = backShelf;
+}
+
+function backShelf() {
+  document.getElementById('shelf').style.display = '';
+  document.getElementById('reader').style.display = 'none';
+  document.getElementById('quiz').style.display = 'none';
+  renderShelf();
+  window.scrollTo(0, 0);
+}
+
+document.getElementById('bkBack').onclick = backShelf;
+document.getElementById('qBack').onclick = () => {
+  document.getElementById('reader').style.display = '';
+  document.getElementById('quiz').style.display = 'none';
+};
+
+/* ============ 启动：支持 read.html#bN 直开某本书 ============ */
+renderShelf();
+(function () {
+  const m = (location.hash || '').match(/^#(b\d+)$/);
+  if (m && BOOKS.some(b => b.id === m[1])) openBook(m[1]);
+})();
+</script>
+</body>
+</html>
