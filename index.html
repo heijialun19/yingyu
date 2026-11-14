@@ -150,8 +150,8 @@
      所以不引 246KB 的 svg/word-svg.js。没图时会自动回退到表情 SVG，
      真要画词卡的页面（单词镇/课本/学堂/游戏/字母岛/语法）都还在引。 -->
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=149"></script>
-<script src="js/phonics.js?v=6"></script>
+<script src="js/app.js?v=150"></script>
+<script src="js/phonics.js?v=7"></script>
 <script defer src="js/audio-list.js?v=8"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/getsmart-data.js?v=16"></script>
@@ -296,8 +296,9 @@ function showHome() {
 
 /* ---------------- 自然拼读专栏（首页） ----------------
    18 个音素 chip：5 个短元音 + 13 个拼读块，点按走 audio/phonics/ 母语者录音
-   （和拼读闯关同一套文件、同一个 phonicsURL()）。数字 26 / 13 / 18 分别等于
-   LETTERS.length / PH_BLOCKS.length / PHONICS.length，改数据要一起改文案。 */
+   （和拼读闯关同一套文件、同一个 phonicsURL()）。数字 26 / 13 / 24 分别等于
+   LETTERS.length / PH_BLOCKS.length / PHONICS.length，改数据要一起改文案。
+   2026-11-14.14：拼读课改 9 关分级闯关（PH_LEVELS），本专栏仍是速查入口。 */
 function renderPhonicsColumn() {
   const el = document.getElementById('phCol');
   if (!el || typeof PH_BLOCKS === 'undefined') return;
@@ -310,7 +311,7 @@ function renderPhonicsColumn() {
     `<button class="phc-chip blk" onclick="phPlayBlock('${b.b}')" title="点我听 ${b.b} 的音"><b>${esc(b.b)}</b><small>${esc(b.ipa)}</small></button>`).join('');
   el.innerHTML =
     `<div class="phc-head"><b>🔤 自然拼读专栏</b><small>点一点就发音 · 和「拼读闯关」同一套母语者录音</small></div>
-     <div class="phc-steps"><span>① 26 个字母音</span><span>→</span><span>② 13 个拼读块</span><span>→</span><span>③ 24 个词族拼读</span></div>
+     <div class="phc-steps"><span>① 字母音</span><span>→</span><span>② 短元音</span><span>→</span><span>③ 双辅音/连缀</span><span>→</span><span>④ 元音组合/魔法 e</span><span>→</span><span>⑤ 视觉词/拼写</span></div>
      <div class="phc-chips">${vowels}${blocks}</div>
      <div class="phc-cta"><button class="btn coral big" onclick="location.href='phonics.html'">进入拼读课 →</button></div>`;
 }

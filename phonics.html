@@ -4,32 +4,59 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#4EC5F1">
-<meta name="keywords" content="小学英语,英语启蒙,自然拼读,拼读规则,字母音,免费" />
-<meta name="description" content="系统自然拼读课：26 个字母音、13 个拼读块、24 个词族八大站，加视觉词、可解码短文、听音能写三大练习。点按听母语者录音，从逐音拼读到整词，和「拼读闯关」游戏同一套发音，断网也能学。">
+<meta name="keywords" content="小学英语,英语启蒙,自然拼读,拼读规则,字母音,自然拼读分级,免费" />
+<meta name="description" content="自然拼读分级闯关课：9 关从字母音到卷舌音，学→拼→读句→听音挑战一关一屏，另有视觉词、可解码句、听音能写与拼读块工具箱。点按听母语者录音，和「拼读闯关」游戏同一套发音，断网也能学。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
-<meta property="og:title" content="自然拼读课 · 见词能读 · 小鸟英语乐园">
-<meta property="og:description" content="26 个字母音、13 个拼读块、24 个词族八大站 + 视觉词、可解码短文、听音能写：点按听母语者录音，逐音拼读到整词，和拼读闯关同一套发音。">
+<meta property="og:title" content="自然拼读课 · 分级闯关 · 小鸟英语乐园">
+<meta property="og:description" content="9 关分级闯关：字母音 → 短元音 → 双辅音 → 连缀 → 元音组合 → 魔法 e → 卷舌音，加视觉词、可解码句、听音能写。一关一屏，点按听母语者录音。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/phonics.html">
 <meta name="twitter:card" content="summary_large_image">
-<title>自然拼读课 · 小鸟英语乐园</title>
+<title>自然拼读课 · 分级闯关 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/phonics.html">
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="css/style.css?v=53" onerror="this.onerror=null;this.href='css/style.css?v=53&amp;retry=1'">
 <style>
 /* 拼读课页内样式（不进 style.css：只有这一页用） */
-.ph-toc-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.ph-toc-links a{padding:8px 13px;border-radius:999px;border:3px solid #E8EAF0;background:#fff;
-  font-weight:700;font-size:.85rem;color:var(--ink);text-decoration:none}
-.ph-toc-links a:hover{border-color:var(--lemon);background:#FFF7DA}
-.ph-station{margin:30px 0 10px}
-.ph-station-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 4px 12px}
-.ph-station-head .ph-num{font-size:1.6rem;font-weight:800;color:var(--lake)}
-.ph-station-head h2{margin:0;font-size:1.25rem}
-.ph-station-head p{flex:1 1 100%;margin:2px 0 0;color:var(--ink2);font-size:.86rem;line-height:1.6}
+/* ---- 关卡地图 ---- */
+.ph-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px}
+.ph-lv{position:relative;background:#fff;border:3px solid #E8EAF0;border-radius:18px;padding:12px 10px 10px;
+  cursor:pointer;transition:.15s;text-align:center;font-family:inherit;box-shadow:0 4px 0 rgba(45,49,66,.08)}
+.ph-lv:hover{transform:translateY(-3px);border-color:var(--lemon)}
+.ph-lv.cur{border-color:var(--lake);background:#EFF8FF;outline:3px solid rgba(78,197,241,.25)}
+.ph-lv.done{border-color:var(--mint);background:#F2FCF4}
+.ph-lv-icon{font-size:1.7rem;line-height:1.2}
+.ph-lv b{display:inline-block;font-size:.72rem;color:#fff;background:var(--lake);border-radius:999px;padding:2px 9px;margin:4px 0 2px}
+.ph-lv.done b{background:var(--mint)}
+.ph-lv-name{display:block;font-size:.88rem;font-weight:800;color:var(--ink)}
+.ph-lv small{display:block;font-size:.68rem;color:var(--ink2);margin-top:2px;line-height:1.45}
+.ph-lv-star{position:absolute;top:6px;right:8px;font-size:.95rem}
+.ph-map-note{margin:10px 4px 2px;font-size:.8rem;color:var(--ink2);line-height:1.7}
+/* ---- 关卡舞台 ---- */
+.ph-stage-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:2px 4px 10px}
+.ph-stage-head .ph-num{font-size:1.7rem;font-weight:800;color:var(--lake)}
+.ph-stage-head h2{margin:0;font-size:1.28rem}
+.ph-stage-head .ph-goal{flex:1 1 100%;margin:2px 0 0;color:var(--ink2);font-size:.86rem;line-height:1.6}
+.ph-goals{display:flex;flex-wrap:wrap;gap:8px;margin:10px 4px 4px}
+.ph-goals span{font-size:.78rem;font-weight:700;color:#2F7B52;background:#EDFAF0;border:2px solid var(--mint);
+  border-radius:999px;padding:5px 12px}
+.ph-sec-label{margin:18px 4px 8px;font-size:.92rem;font-weight:800;color:var(--ink)}
+.ph-sec-label small{font-weight:600;color:var(--ink2);font-size:.78rem;margin-left:6px}
+/* 折叠卡（一屏只展开一个） */
+.ph-fold{margin:10px 4px;background:#fff;border:3px solid #E8EAF0;border-radius:18px;overflow:hidden}
+.ph-fold[open]{border-color:var(--sky2,#B9E2FA)}
+.ph-fold > summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:800;font-size:.98rem;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--ink);background:#FAFCFF}
+.ph-fold > summary::-webkit-details-marker{display:none}
+.ph-fold > summary::before{content:'▸';color:var(--lake);font-size:1rem;transition:.15s}
+.ph-fold[open] > summary::before{content:'▾'}
+.ph-fold > summary small{font-size:.76rem;font-weight:600;color:var(--ink2)}
+.ph-fold .ph-fold-body{padding:4px 14px 14px}
+.ph-fold .ph-fold-hint{font-size:.76rem;color:var(--ink2);margin:0 4px 8px;line-height:1.6}
+/* 字母卡 / 词族行沿用旧样式 */
 .ph-letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
 .ph-letter{background:#fff;border:3px solid var(--lake);border-radius:18px;padding:10px 6px 8px;
   cursor:pointer;transition:.15s;text-align:center;box-shadow:0 4px 0 rgba(45,49,66,.08)}
@@ -54,8 +81,6 @@
 .ph-w-chip{padding:4px 10px;border-radius:999px;border:2px solid #E8EAF0;background:#fff;
   font-family:inherit;font-size:.78rem;cursor:pointer}
 .ph-w-chip:hover{border-color:var(--lemon)}
-.ph-fam h2{justify-content:space-between}
-.ph-fam h2 small{font-size:.82rem;font-weight:600}
 .ph-fam-sounds{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 10px}
 .ph-snd{padding:7px 14px;border-radius:999px;border:3px solid var(--mint);background:#EDFAF0;
   font-family:inherit;font-weight:800;font-size:.9rem;cursor:pointer}
@@ -76,8 +101,7 @@
 .pw-tag{font-size:.72rem;color:#7A5B00;background:#FFF3C4;border-radius:999px;padding:4px 10px}
 .pw-go{padding:7px 12px;font-size:.8rem;min-height:0}
 .pw-full{padding:7px 12px;font-size:.8rem;min-height:0}
-.ph-foot{margin:26px 0 8px;font-size:.76rem;color:var(--ink2);line-height:1.8;text-align:center}
-/* 视觉词 / 可解码短文 / 听音能写（2026-11-14.10） */
+/* 视觉词 / 可解码句 */
 .sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px}
 .sw-card{background:#fff;border:3px solid #D8E6F2;border-radius:16px;padding:12px 10px;text-align:center}
 .sw-word{font-size:1.3rem;font-weight:800;background:none;border:0;color:var(--ink);cursor:pointer;padding:2px 8px;border-radius:10px}
@@ -90,6 +114,17 @@
 .sd-w:hover{background:#E2EFFD}
 .sd-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:.82rem;color:var(--ink2)}
 .sd-tag{background:#EDFAF0;border:2px solid var(--mint);border-radius:999px;padding:3px 11px;font-size:.74rem;color:#2F7B52}
+/* 听音挑一挑 */
+.ph-mg-opts{display:flex;flex-wrap:wrap;gap:10px;margin:12px 2px}
+.ph-mg-opt{min-width:104px;background:#fff;border:3px solid #E8EAF0;border-radius:16px;padding:10px 14px;
+  font-family:inherit;font-size:1.05rem;font-weight:800;cursor:pointer;color:var(--ink);transition:.12s}
+.ph-mg-opt:hover{border-color:var(--lemon)}
+.ph-mg-opt.good{border-color:var(--mint);background:#E5F9E9;animation:phpop .35s}
+.ph-mg-opt.bad{border-color:var(--coral);background:#FFE9E9;animation:phshake .35s}
+.ph-mg-msg{min-height:28px;font-size:.98rem;font-weight:700;margin:10px 4px 2px}
+@keyframes phpop{0%{transform:scale(1)}50%{transform:scale(1.07)}100%{transform:scale(1)}}
+@keyframes phshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+/* 听音能写 */
 .sp-head{display:flex;justify-content:space-between;font-size:.86rem;color:var(--ink2);margin:4px 2px 12px}
 .sp-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .sp-len{font-size:.82rem;color:var(--ink2)}
@@ -101,6 +136,10 @@
 .sp-tile.used{visibility:hidden}
 .sp-msg{min-height:26px;font-size:.98rem;font-weight:700;margin-top:12px}
 .sp-done{text-align:center;font-size:1.2rem;font-weight:800;padding:22px 8px;line-height:2}
+/* 底部导航 */
+.ph-nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:22px 4px 6px}
+.ph-done-row{display:flex;justify-content:center;margin:18px 4px 4px}
+.ph-foot{margin:26px 0 8px;font-size:.76rem;color:var(--ink2);line-height:1.8;text-align:center}
 </style>
 </head>
 <!-- data-emoji="full"：词卡要画全量表情库的图（和游戏乐园同规格） -->
@@ -111,8 +150,9 @@
   </div>
 <main>
   <div class="page-title">
-    <h1>🔤 自然拼读课 · 见词能读</h1>
-    <p>字母音 → 拼读块 → 词族拼读，<b>八大站系统学</b>。发音和「拼读闯关」是<b>同一套母语者录音</b>——点哪里读哪里，断网也能学</p>
+    <h1>🔤 自然拼读课 · 分级闯关</h1>
+    <p><b>9 关 + 工具箱</b>，一关一屏：字母音 → 短元音 → 双辅音 → 连缀 → 元音组合 → 魔法 e → 卷舌音。
+    每关都是<b>学 → 拼 → 读句 → 听音挑战</b>，学完点亮星星。发音和「拼读闯关」是<b>同一套母语者录音</b>，断网也能学</p>
   </div>
 
   <!-- 交叉入口 -->
@@ -122,158 +162,20 @@
     <button class="btn mint" onclick="location.href='games.html'" style="padding:8px 16px;font-size:.85rem">去「拼读闯关」→</button>
   </div>
 
-  <!-- 课程地图 -->
+  <!-- 关卡地图 -->
   <section class="section">
-    <div class="card ph-toc">
-      <h2>📚 课程地图 <small>按顺序学，每站都可以点着听</small></h2>
-      <div class="ph-toc-links">
-        <a href="#s1">① 26 个字母音</a>
-        <a href="#s2">② 13 个拼读块</a>
-        <a href="#s3">③ 短元音拼一拼</a>
-        <a href="#s4">④ 双辅音词族</a>
-        <a href="#s5">⑤ 辅音连缀</a>
-        <a href="#s6">⑥ 元音组合词族</a>
-        <a href="#s7">⑦ 魔法 e</a>
-        <a href="#s8">⑧ 卷舌音词族</a>
-        <a href="#s9">⑨ 视觉词</a>
-        <a href="#s10">⑩ 可解码短文</a>
-        <a href="#s11">⑪ 听音能写</a>
-      </div>
-      <p style="margin:10px 4px 2px;font-size:.82rem;color:var(--ink2);line-height:1.7">
-      🎧 <b>先热耳朵</b>：拼读之前先练「听得出音」——去 <a href="games.html" style="color:var(--lake)">游戏乐园 → 拼读闯关</a> 听音辨音（音素意识）。<br>
-      📌 <b>推荐顺序</b>：① 字母音 → ③ 短元音 → ④ 双辅音 → ⑤ 连缀 → ⑥ 元音组合 → ⑦ 魔法 e → ⑧ 卷舌音。
-      ② 拼读块是<b>随查随听的工具表</b>，学到哪查到哪即可。</p>
-    </div>
-  </section>
-
-  <!-- 第 1 站：字母音 -->
-  <section class="ph-station" id="s1">
-    <div class="ph-station-head">
-      <span class="ph-num">①</span><h2>26 个字母音</h2>
-      <p>字母<b>名</b>是它的名字（A 读 /eɪ/），字母<b>音</b>是它在单词里的声音（a 读 /æ/）——自然拼读学的是<b>声音</b>。
-      点字母卡听音，点小词听例词。想看象形小故事去 <a href="letters.html" style="color:var(--lake)">字母岛 →</a></p>
-    </div>
-    <div class="ph-letters" id="sLetters"></div>
-  </section>
-
-  <!-- 第 2 站：拼读块 -->
-  <section class="ph-station" id="s2">
-    <div class="ph-station-head">
-      <span class="ph-num">②</span><h2>13 个拼读块</h2>
-      <p>两个字母合作发<b>一个</b>音：sh 不是「s + h」，就是一声「嘘」。
-      不在下面清单里的字母组合，这里<b>不发声</b>——宁可不响，也不教错。</p>
-    </div>
-    <div class="ph-blocks2" id="sBlocks"></div>
-  </section>
-
-  <!-- 第 3 站：短元音词族 -->
-  <section class="ph-station" id="s3">
-    <div class="ph-station-head">
-      <span class="ph-num">③</span><h2>短元音拼一拼</h2>
-      <p>元音发短音，一个一个音拼起来就是词：c + a + t → cat。
-      点<b>蓝块</b>听单个音，点「🔊 拼一拼」先逐音、后整词——整词发音是唯一的标准音。</p>
-    </div>
-    <div id="famS3"></div>
-  </section>
-
-  <!-- 第 4 站：双辅音词族 -->
-  <section class="ph-station" id="s4">
-    <div class="ph-station-head">
-      <span class="ph-num">④</span><h2>双辅音词族</h2>
-      <p>sh / ch / th / ck / ng 都是「两个字母，<b>一个音</b>」。把它们当<b>一整块</b>拼进词里。
-      （下一站的「连缀」正好相反：两个字母<b>两个音</b>，都出声。）</p>
-    </div>
-    <div id="famS4"></div>
-  </section>
-
-  <!-- 第 5 站：辅音连缀（2026-11-14.9 新增） -->
-  <section class="ph-station" id="s5">
-    <div class="ph-station-head">
-      <span class="ph-num">⑤</span><h2>辅音连缀</h2>
-      <p>fl / pl / bl、cr / dr / fr、st / sw / sk……和第④站<b>正好相反</b>：
-      两个辅音<b>各自出声</b>、连着读（f-l、c-r、s-t），中间不停。逐块听一遍再连读。</p>
-    </div>
-    <div id="famS5"></div>
-  </section>
-
-  <!-- 第 6 站：元音组合词族 -->
-  <section class="ph-station" id="s6">
-    <div class="ph-station-head">
-      <span class="ph-num">⑥</span><h2>元音组合词族</h2>
-      <p>两个元音字母手拉手发一个长音：ee 长「衣」、oo 长「乌」、ai / ay 都是 /eɪ/、oa 是 o 的本名。</p>
-    </div>
-    <div id="famS6"></div>
-  </section>
-
-  <!-- 第 7 站：魔法 e -->
-  <section class="ph-station" id="s7">
-    <div class="ph-station-head">
-      <span class="ph-num">⑦</span><h2>魔法 e</h2>
-      <p>结尾的 e <b>不出声</b>，它像个小魔法师，让前面的元音念自己的<b>本名</b>：
-      a_e 读 /eɪ/、i_e 读 /aɪ/、o_e 读 /oʊ/、u_e 读 /uː/（或 /juː/）。这些词先<b>整体认读</b>（硬拆成 c-a-k-e 会读错）。</p>
-    </div>
-    <div id="famS7"></div>
-  </section>
-
-  <!-- 第 8 站：卷舌音词族 -->
-  <section class="ph-station" id="s8">
-    <div class="ph-station-head">
-      <span class="ph-num">⑧</span><h2>卷舌音词族</h2>
-      <p>r 跟着元音一起卷舌头：ar /ɑːr/、or /ɔːr/，还有 ir /ɜːr/（bird、girl、third）。</p>
-    </div>
-    <div id="famS8"></div>
-  </section>
-
-  <!-- 规则彩蛋（纯文字，不造音） -->
-  <section class="ph-station">
-    <div class="card" style="margin:26px 4px 8px">
-      <h2>🎁 规则彩蛋 <small>先记着，以后会遇到</small></h2>
-      <p style="font-size:.86rem;color:var(--ink2);line-height:1.9;margin:8px 2px 4px">
-      · <b>c 的软音</b>：c 在 e / i / y 前常读 /s/ —— city、nice、cycle；其他时候读 /k/（cat）。<br>
-      · <b>g 的软音</b>：g 在 e / i 前常读 /dʒ/ —— gentle、giant；但 get、give 仍读 /g/。<br>
-      · <b>不发音的字母</b>：knife / knee 的 k，comb 的 b，hour 的 h——见到它们，跳过去。<br>
-      · <b>th 的两种声音</b>：think 里是 /θ/（轻咬舌尖、不振动）；the、this 里是浊音 /ð/（咬舌、声带振动），那些词先整体认读。</p>
-    </div>
-  </section>
-
-  <!-- 第 9 站：视觉词（2026-11-14.10） -->
-  <section class="ph-station" id="s9">
-    <div class="ph-station-head">
-      <span class="ph-num">⑨</span><h2>视觉词 · 高频整体认读</h2>
-      <p>这些词太常用了，而且<b>不按规则出牌</b>（或用到还没学的规则）——先整个认住、
-      听音就懂，学到对应规则再回头「认领」它们。点词听音，📌 提示讲「为什么不按字母拼」。</p>
-    </div>
-    <div class="card"><div class="sw-grid" id="sSight"></div></div>
-  </section>
-
-  <!-- 第 10 站：可解码短文（2026-11-14.10） -->
-  <section class="ph-station" id="s10">
-    <div class="ph-station-head">
-      <span class="ph-num">⑩</span><h2>可解码短文 · 用规则读句子</h2>
-      <p>每句<b>全部用学过的规则拼</b>（只有绿色标签里的视觉词是整体认读）。
-      点单词听一个词，点「🔊 读整句」听整句连读——先自己拼，再听答案。</p>
-    </div>
-    <div id="sSents"></div>
-  </section>
-
-  <!-- 第 11 站：听音能写（2026-11-14.10） -->
-  <section class="ph-station" id="s11">
-    <div class="ph-station-head">
-      <span class="ph-num">⑪</span><h2>听音能写 · 拼写小挑战</h2>
-      <p>反过来练：<b>听声音，把字母按顺序点出来</b>。词都来自前面的词族——
-      会拼读了，拼写也会。点错了点字母格可以退回去。</p>
-    </div>
     <div class="card">
-      <div class="sp-head"><span id="spProg">第 1 / 10 题</span><span id="spScore">得分 0</span></div>
-      <div class="sp-row">
-        <button class="btn mint" onclick="spAgain()">🔊 再听一遍</button>
-        <span class="sp-len" id="spLen"></span>
-      </div>
-      <div class="sp-slots" id="spSlots"></div>
-      <div class="sp-pool" id="spPool"></div>
-      <div class="sp-msg" id="spMsg"></div>
+      <h2>🗺️ 拼读闯关地图 <small>点关卡进入，一次只学一关</small></h2>
+      <div class="ph-map" id="phMap"></div>
+      <p class="ph-map-note">
+      🎧 <b>先热耳朵</b>：拼读之前先练「听得出音」——去 <a href="games.html" style="color:var(--lake)">游戏乐园 → 拼读闯关</a> 听音辨音（音素意识）。<br>
+      📌 <b>推荐顺序</b>：L1 字母音 → L2 短元音 → L3 双辅音 → L4 连缀 → L5 元音组合 → L6 魔法 e → L7 卷舌音 → L8 视觉词 → L9 听音能写。
+      顺序按国际主流分级体系编排（先学最能拼出词的音），也支持自由跳关。</p>
     </div>
   </section>
+
+  <!-- 关卡舞台：一次只显示一关 -->
+  <section class="section" id="phStage"></section>
 
   <div class="ph-foot">
     🔈 字母音与拼读块 = 母语者录音（开源项目 s5s5/phonics，MIT，见《第三方素材与许可说明》）；单词与例句全部为站内音频，全站断网可读。<br>
@@ -287,10 +189,10 @@
 <script src="js/words-data.js?v=46"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=149"></script>
+<script src="js/app.js?v=150"></script>
 <script defer src="js/audio-list.js?v=8"></script>
 <script src="js/sentence.js?v=52"></script>
-<script src="js/phonics.js?v=6"></script>
+<script src="js/phonics.js?v=7"></script>
 <script>
 renderNav('phonics'); renderDecor();
 
@@ -316,8 +218,25 @@ const wIcon = word => {
 const wZh = word => wInfo(word).zh || '';
 const wEmoji = word => wInfo(word).e || '';
 
-/* ---------------- ① 26 个字母音 ---------------- */
-document.getElementById('sLetters').innerHTML = LETTERS.map(l => {
+const byId = id => PHONICS.find(f => f.id === id);
+const sentByText = {};
+DECODE_SENTENCES.forEach(o => { sentByText[o.s] = o; });
+const sightByW = {};
+SIGHT_WORDS.forEach(o => { sightByW[o.w] = o; });
+
+/* ---------------- 进度（星星） ---------------- */
+const phProg = {
+  done: {},
+  load() { try { this.done = JSON.parse(localStorage.getItem('phlv1') || '{}') || {}; } catch (e) { this.done = {}; } },
+  save() { try { localStorage.setItem('phlv1', JSON.stringify(this.done)); } catch (e) {} },
+  mark(id) { this.done[id] = 1; this.save(); }
+};
+phProg.load();
+
+/* ---------------- 组件渲染 ---------------- */
+function letterHTML(ch) {
+  const l = LETTERS.find(x => x.L.toLowerCase() === ch);
+  if (!l) return '';
   const ipa = l.szh.split(' ')[0];
   const zh = l.szh.split(' ').slice(1).join(' ');
   const ex = l.words[0];
@@ -330,22 +249,9 @@ document.getElementById('sLetters').innerHTML = LETTERS.map(l => {
     <button class="pl-ex" onclick="event.stopPropagation();phRowWord(${i})" title="听例词 ${esc(ex.w)}">${esc(ex.e || '')} ${esc(ex.w)}</button>
     ${l.tipSame ? `<div class="pl-note">📌 ${l.tipSame}</div>` : ''}
   </div>`;
-}).join('');
+}
 
-/* ---------------- ② 13 个拼读块 ---------------- */
-document.getElementById('sBlocks').innerHTML = PH_BLOCKS.map(bl => {
-  const exs = phBlockExamples(bl.b).slice(0, 5);
-  return `<div class="ph-block ${bl.g === 'v' ? 'v' : ''}">
-    <div class="pb-b">${esc(bl.b)} <small>${esc(bl.ipa)}</small></div>
-    <div class="pb-tip">${esc(bl.tip)}</div>
-    ${bl.note ? `<div class="pb-note">📌 ${esc(bl.note)}</div>` : ''}
-    <button class="btn ghost" style="padding:7px 14px;font-size:.82rem;min-height:0" onclick="phPlayBlock('${bl.b}')">🔊 听块音</button>
-    <div class="pb-ex">${exs.map(w => { const i = reg(w, null); return `<button class="ph-w-chip" onclick="phRowWord(${i})" title="听整词 ${esc(w)}">${esc(wEmoji(w))} ${esc(w)}</button>`; }).join('')}</div>
-  </div>`;
-}).join('');
-
-/* ---------------- ③-⑦ 词族 ---------------- */
-function famHTML(f) {
+function famInnerHTML(f) {
   const sounds = (f.sounds || []).map(s =>
     `<button class="ph-snd" onclick="phPlayBlock('${s}')" title="点我听 ${esc(s)} 的音">🔊 ${esc(s)}</button>`).join('');
   const rows = f.words.map(w => {
@@ -365,42 +271,32 @@ function famHTML(f) {
       <button class="btn ghost pw-full" onclick="phRowWord(${i})">🔊 整词</button>
     </div>`;
   }).join('');
-  return `<div class="card ph-fam" id="fam-${esc(f.id)}">
-    <h2>🧩 ${esc(f.name)} <small>${esc(f.tip)}</small></h2>
-    <div class="ph-fam-sounds">${sounds}${(f.sounds && f.sounds.length) ? '' : `<span class="ph-rule">${esc(f.rule || '规则卡：没有单块录音，先记规则、听整词')}</span>`}</div>
-    <div class="ph-rows">${rows}</div>
-  </div>`;
+  return `<div class="ph-fam-sounds">${sounds}${(f.sounds && f.sounds.length) ? '' : `<span class="ph-rule">${esc(f.rule || '规则卡：没有单块录音，先记规则、听整词')}</span>`}</div>
+    <div class="ph-rows">${rows}</div>`;
 }
-const byId = id => PHONICS.find(f => f.id === id);
-const STATIONS = {
-  famS3: ['short-a', 'short-e', 'short-i', 'short-o', 'short-u'],
-  famS4: ['sh', 'ch', 'th', 'ck', 'ng'],
-  famS5: ['blends-l', 'blends-r', 'blends-s'],
-  famS6: ['ee', 'oo', 'ai-ay', 'oa'],
-  famS7: ['a_e', 'i_e', 'o_e', 'u_e'],
-  famS8: ['ar', 'or', 'ir'],
-};
-Object.keys(STATIONS).forEach(k => {
-  document.getElementById(k).innerHTML = STATIONS[k].map(id => {
-    const f = byId(id);
-    return f ? famHTML(f) : `<div class="card">词族 ${esc(id)} 缺失</div>`;
-  }).join('');
-});
 
-/* ---------------- ⑨ 视觉词 ---------------- */
-document.getElementById('sSight').innerHTML = SIGHT_WORDS.map(o =>
-  `<div class="sw-card">
+function foldsHTML(items) {
+  /* items: [{title, small, hint, body}] —— 一屏只展开第一个 */
+  return items.map((it, idx) => `
+    <details class="ph-fold" ${idx === 0 ? 'open' : ''}>
+      <summary>${it.title}${it.small ? ` <small>${it.small}</small>` : ''}</summary>
+      <div class="ph-fold-body">${it.hint ? `<p class="ph-fold-hint">${it.hint}</p>` : ''}${it.body}</div>
+    </details>`).join('');
+}
+
+function sightCardHTML(o) {
+  return `<div class="sw-card">
     <button class="sw-word" onclick="phSpeakWord('${esc(o.w)}')" title="点我听 ${esc(o.w)}">🔊 ${esc(o.w)}</button>
     <div class="sw-ipa">${esc(o.ipa)}</div>
     <div class="sw-zh">${esc(o.zh)}</div>
     <div class="sw-note">📌 ${esc(o.note)}</div>
-  </div>`).join('');
+  </div>`;
+}
 
-/* ---------------- ⑩ 可解码短文 ---------------- */
-document.getElementById('sSents').innerHTML = DECODE_SENTENCES.map(o => {
+function sentCardHTML(o) {
   const words = o.s.split(' ');
   return `<div class="card" style="margin:12px 4px">
-    <div class="sd-text">${words.map((w, j) => {
+    <div class="sd-text">${words.map(w => {
       const clean = w.replace(/[^A-Za-z']/g, '');
       return `<button class="sd-w" onclick="phSpeakWord('${esc(clean)}')" title="点我听 ${esc(clean)}">${esc(w)}</button>`;
     }).join(' ')}</div>
@@ -410,7 +306,252 @@ document.getElementById('sSents').innerHTML = DECODE_SENTENCES.map(o => {
       <button class="btn mint" style="margin-left:auto" onclick="speak('${esc(o.s)}')">🔊 读整句</button>
     </div>
   </div>`;
-}).join('');
+}
+
+/* ---------------- 听音挑一挑（每关 3 题） ---------------- */
+const MG = { pool: [], qs: [], idx: 0, score: 0, cur: null, opts: [], mode: 'word' };
+function mgReset(lv) {
+  MG.qs = []; MG.idx = 0; MG.score = 0; MG.cur = null; MG.opts = [];
+  if (!lv || lv.kind === 'spell' || lv.kind === 'toolbox') return;
+  if (lv.kind === 'letters') {
+    MG.mode = 'letter';
+    MG.pool = PH_L1_BATCHES.reduce((a, b) => a.concat(b.letters), []);
+  } else if (lv.kind === 'sight') {
+    MG.mode = 'sight';
+    MG.pool = lv.sightBatches.reduce((a, b) => a.concat(b.words), []);
+  } else {
+    MG.mode = 'word';
+    const ws = [];
+    (lv.fams || []).forEach(id => { const f = byId(id); if (f) f.words.forEach(w => { if (ws.indexOf(w) < 0) ws.push(w); }); });
+    MG.pool = ws;
+  }
+  if (MG.pool.length < 3) return;
+  const picked = [];
+  const copy = MG.pool.slice();
+  while (picked.length < 3 && copy.length) {
+    picked.push(copy.splice(Math.floor(Math.random() * copy.length), 1)[0]);
+  }
+  picked.forEach(t => {
+    const others = MG.pool.filter(x => x !== t);
+    const opts = [t];
+    while (opts.length < 3 && others.length) {
+      const c = others.splice(Math.floor(Math.random() * others.length), 1)[0];
+      if (opts.indexOf(c) < 0) opts.push(c);
+    }
+    MG.qs.push({ t: t, opts: opts.sort(() => Math.random() - .5) });
+  });
+}
+function mgPlaySound() {
+  if (!MG.cur) return;
+  if (MG.mode === 'letter') phPlayBlock(MG.cur.t);
+  else if (MG.mode === 'sight') phSpeakWord(MG.cur.t);
+  else phPlayWord(MG.cur.t);
+}
+function mgPaint() {
+  const box = document.getElementById('mgBox');
+  if (!box) return;
+  if (!MG.qs.length) { box.style.display = 'none'; return; }
+  box.style.display = '';
+  if (MG.idx >= MG.qs.length) {
+    const pass = MG.score >= 2;
+    document.getElementById('mgProg').textContent = '';
+    document.getElementById('mgOpts').innerHTML = '';
+    document.getElementById('mgMsg').innerHTML = pass
+      ? `🎉 挑对 ${MG.score} / ${MG.qs.length}！⭐ 星星已点亮<br><button class="btn coral" style="margin-top:10px" onclick="mgRestart()">再玩一轮</button>`
+      : `挑对 ${MG.score} / ${MG.qs.length}，再来一轮试试<br><button class="btn orange" style="margin-top:10px" onclick="mgRestart()">再来一轮</button>`;
+    if (pass) { phProg.mark(CUR); renderMap(); }
+    return;
+  }
+  MG.cur = MG.qs[MG.idx];
+  document.getElementById('mgProg').textContent = '第 ' + (MG.idx + 1) + ' / ' + MG.qs.length + ' 题';
+  document.getElementById('mgOpts').innerHTML = MG.cur.opts.map(o => {
+    const label = MG.mode === 'letter' ? o.toUpperCase() + ' ' + o : (MG.mode === 'sight' ? '🔊 ' + o : wEmoji(o) + ' ' + o);
+    return `<button class="ph-mg-opt" onclick="mgPick('${esc(o)}')" id="mgo-${esc(o)}">${esc(label)}</button>`;
+  }).join('');
+  document.getElementById('mgMsg').textContent = '听声音，点出你听到的那个 👇';
+  setTimeout(mgPlaySound, 150);
+}
+function mgPick(o) {
+  if (!MG.cur) return;
+  const btn = document.getElementById('mgo-' + o);
+  if (o === MG.cur.t) {
+    MG.score++;
+    if (btn) btn.classList.add('good');
+    document.getElementById('mgMsg').textContent = '✅ 挑对了！';
+    setTimeout(() => { MG.idx++; mgPaint(); }, 750);
+  } else {
+    if (btn) btn.classList.add('bad');
+    document.getElementById('mgMsg').textContent = '❌ 再听一遍试试';
+    setTimeout(mgPlaySound, 350);
+  }
+}
+function mgRestart() {
+  const lv = PH_LEVELS.find(l => l.id === CUR);
+  mgReset(lv);
+  mgPaint();
+}
+window.mgPick = mgPick; window.mgRestart = mgRestart;
+
+/* ---------------- 关卡舞台 ---------------- */
+function levelHTML(lv) {
+  const idx = PH_LEVELS.indexOf(lv);
+  const done = !!phProg.done[lv.id];
+  const starBtn = lv.id === 'TX' ? '' : `<div class="ph-done-row">
+      <button class="btn ${done ? 'mint' : 'orange'} big" onclick="phMarkDone('${lv.id}')">
+      ${done ? '⭐ 本关已通关' : '⭐ 我会了，点亮星星'}</button></div>`;
+  const nav = `<div class="ph-nav">
+      ${idx > 0 ? `<button class="btn ghost" onclick="phGo('${PH_LEVELS[idx - 1].id}')">◀ 上一关</button>` : ''}
+      ${idx < PH_LEVELS.length - 1 ? `<button class="btn coral" onclick="phGo('${PH_LEVELS[idx + 1].id}')">下一关：${esc(PH_LEVELS[idx + 1].name)} ▶</button>` : ''}
+    </div>`;
+  const head = `<div class="ph-stage-head">
+      <span class="ph-num">${lv.icon}</span><h2>${esc(lv.id)} · ${esc(lv.name)}</h2>
+      <p class="ph-goal">${lv.intro}</p>
+    </div>
+    <div class="ph-goals">${(lv.goals || []).map(g => `<span>✅ ${esc(g)}</span>`).join('')}</div>`;
+
+  let body = '';
+  if (lv.kind === 'letters') {
+    body = foldsHTML(PH_L1_BATCHES.map(b => ({
+      title: `🅰️ ${esc(b.title)}`, small: b.letters.length + ' 个音',
+      hint: esc(b.hint),
+      body: `<div class="ph-letters">${b.letters.map(letterHTML).join('')}</div>`
+    })));
+  } else if (lv.kind === 'words') {
+    const famItems = (lv.fams || []).map(id => {
+      const f = byId(id);
+      if (!f) return { title: '词族 ' + esc(id) + ' 缺失', body: '' };
+      return {
+        title: `🧩 ${esc(f.name)}`,
+        small: f.words.length + ' 个词 · ' + esc(f.tip),
+        body: famInnerHTML(f)
+      };
+    });
+    body = `<div class="ph-sec-label">🧩 拼一拼 <small>点开词族，一个一个练</small></div>` + foldsHTML(famItems);
+    if (lv.sents && lv.sents.length) {
+      body += `<div class="ph-sec-label">📖 读句子 <small>先自己拼，再点「读整句」听答案</small></div>`
+        + lv.sents.map(s => sentByText[s] ? sentCardHTML(sentByText[s]) : '').join('');
+    }
+    if (lv.sight && lv.sight.length) {
+      body += `<div class="ph-sec-label">📌 本关视觉词 <small>整体认读，句子里用得到</small></div>
+        <div class="card"><div class="sw-grid">${lv.sight.map(w => sightByW[w] ? sightCardHTML(sightByW[w]) : '').join('')}</div></div>`;
+    }
+  } else if (lv.kind === 'sight') {
+    body = foldsHTML(lv.sightBatches.map(b => ({
+      title: `⭐ ${esc(b.title)}`, small: b.words.length + ' 个词',
+      body: `<div class="sw-grid">${b.words.map(w => sightByW[w] ? sightCardHTML(sightByW[w]) : '').join('')}</div>`
+    })));
+  } else if (lv.kind === 'spell') {
+    body = `<div class="card">
+      <div class="sp-head"><span id="spProg">第 1 / 10 题</span><span id="spScore">得分 0</span></div>
+      <div class="sp-row">
+        <button class="btn mint" onclick="spAgain()">🔊 再听一遍</button>
+        <span class="sp-len" id="spLen"></span>
+      </div>
+      <div class="sp-slots" id="spSlots"></div>
+      <div class="sp-pool" id="spPool"></div>
+      <div class="sp-msg" id="spMsg"></div>
+    </div>`;
+  } else if (lv.kind === 'toolbox') {
+    const blocks = PH_BLOCKS.map(bl => {
+      const exs = phBlockExamples(bl.b).slice(0, 5);
+      return `<div class="ph-block ${bl.g === 'v' ? 'v' : ''}">
+        <div class="pb-b">${esc(bl.b)} <small>${esc(bl.ipa)}</small></div>
+        <div class="pb-tip">${esc(bl.tip)}</div>
+        ${bl.note ? `<div class="pb-note">📌 ${esc(bl.note)}</div>` : ''}
+        <button class="btn ghost" style="padding:7px 14px;font-size:.82rem;min-height:0" onclick="phPlayBlock('${bl.b}')">🔊 听块音</button>
+        <div class="pb-ex">${exs.map(w => { const i = reg(w, null); return `<button class="ph-w-chip" onclick="phRowWord(${i})" title="听整词 ${esc(w)}">${esc(wEmoji(w))} ${esc(w)}</button>`; }).join('')}</div>
+      </div>`;
+    }).join('');
+    body = `<div class="ph-sec-label">🧰 13 个拼读块速查 <small>两个字母合作发一个音</small></div>
+      <div class="ph-blocks2">${blocks}</div>
+      <div class="card" style="margin:18px 4px 8px">
+        <h2>🎁 规则彩蛋 <small>先记着，以后会遇到</small></h2>
+        <p style="font-size:.86rem;color:var(--ink2);line-height:1.9;margin:8px 2px 4px">
+        · <b>c 的软音</b>：c 在 e / i / y 前常读 /s/ —— city、nice、cycle；其他时候读 /k/（cat）。<br>
+        · <b>g 的软音</b>：g 在 e / i 前常读 /dʒ/ —— gentle、giant；但 get、give 仍读 /g/。<br>
+        · <b>不发音的字母</b>：knife / knee 的 k，comb 的 b，hour 的 h——见到它们，跳过去。<br>
+        · <b>th 的两种声音</b>：think 里是 /θ/（轻咬舌尖、不振动）；the、this 里是浊音 /ð/（咬舌、声带振动），那些词先整体认读。</p>
+      </div>`;
+  }
+
+  const mgBox = (lv.kind === 'spell' || lv.kind === 'toolbox') ? '' : `
+    <div class="card" id="mgBox" style="margin:18px 4px 8px">
+      <h2>🎮 听音挑一挑 <small>3 题小挑战：听声音，点出你听到的那个</small></h2>
+      <div class="sp-row" style="margin-top:8px">
+        <button class="btn mint" onclick="mgPlaySound()">🔊 再听一遍</button>
+        <span class="sp-len" id="mgProg"></span>
+      </div>
+      <div class="ph-mg-opts" id="mgOpts"></div>
+      <div class="ph-mg-msg" id="mgMsg"></div>
+    </div>`;
+
+  return head + body + mgBox + starBtn + nav;
+}
+
+function renderMap() {
+  document.getElementById('phMap').innerHTML = PH_LEVELS.map(lv => {
+    const done = !!phProg.done[lv.id];
+    const cur = lv.id === CUR;
+    let meta = lv.goal;
+    if (lv.kind === 'words') meta = lv.fams.length + ' 词族 · ' + (lv.sents || []).length + ' 句';
+    else if (lv.kind === 'letters') meta = '26 个字母音 · 分 4 批';
+    else if (lv.kind === 'sight') meta = '35 个视觉词 · 分 3 批';
+    else if (lv.kind === 'spell') meta = '拼写挑战 · 10 题一轮';
+    else if (lv.kind === 'toolbox') meta = '13 块速查 · 规则彩蛋';
+    return `<button class="ph-lv ${done ? 'done' : ''} ${cur ? 'cur' : ''}" onclick="phGo('${lv.id}')">
+      <span class="ph-lv-star">${done ? '⭐' : (lv.id === 'TX' ? '🧰' : '☆')}</span>
+      <div class="ph-lv-icon">${lv.icon}</div>
+      <b>${esc(lv.id)}</b>
+      <span class="ph-lv-name">${esc(lv.name)}</span>
+      <small>${esc(meta)}</small>
+    </button>`;
+  }).join('');
+}
+
+function render() {
+  const lv = PH_LEVELS.find(l => l.id === CUR) || PH_LEVELS[0];
+  CUR = lv.id;
+  renderMap();
+  PHR.length = 0;
+  document.getElementById('phStage').innerHTML = levelHTML(lv);
+  if (lv.kind === 'spell') { if (!SP.words.length) spStart(); else spPaint(); }
+  else { mgReset(lv); mgPaint(); }
+}
+
+function phGo(id) {
+  if (!PH_LEVELS.some(l => l.id === id)) id = 'L1';
+  CUR = id;
+  try { history.replaceState(null, '', '#' + id); } catch (e) { location.hash = id; }
+  render();
+  const stage = document.getElementById('phStage');
+  if (stage) window.scrollTo({ top: Math.max(0, stage.offsetTop - 12), behavior: 'smooth' });
+}
+function phMarkDone(id) {
+  phProg.mark(id);
+  render();
+  const next = PH_LEVELS[PH_LEVELS.findIndex(l => l.id === id) + 1];
+  const msg = next ? `⭐ 已点亮！继续下一关：${next.name}` : '⭐ 全部通关，太棒了！';
+  try { sfx && sfx.good && sfx.good(); } catch (e) {}
+  const box = document.querySelector('.ph-done-row');
+  if (box) box.insertAdjacentHTML('beforebegin',
+    `<div class="ph-mg-msg" style="text-align:center">${esc(msg)}</div>`);
+}
+window.phGo = phGo; window.phMarkDone = phMarkDone; window.mgPlaySound = mgPlaySound;
+
+/* 旧锚点兼容（#s1…#s11 → 新关卡） */
+const LEGACY = { s1: 'L1', s2: 'TX', s3: 'L2', s4: 'L3', s5: 'L4', s6: 'L5', s7: 'L6', s8: 'L7', s9: 'L8', s10: 'L2', s11: 'L9' };
+(function initRoute() {
+  let h = (location.hash || '').replace(/^#/, '');
+  if (LEGACY[h]) h = LEGACY[h];
+  if (!PH_LEVELS.some(l => l.id === h)) {
+    /* 默认停在「第一关未通关处」，全通关则 L1 */
+    h = 'L1';
+    for (const lv of PH_LEVELS) {
+      if (lv.id !== 'TX' && !phProg.done[lv.id]) { h = lv.id; break; }
+    }
+  }
+  CUR = h;
+})();
 
 /* ---------------- ⑪ 听音能写（拼写编码） ---------------- */
 const SP = { words: [], idx: 0, total: 10, score: 0, cur: '', tiles: [], built: [], msg: '' };
@@ -423,7 +564,9 @@ function spShuffle(a) {
 }
 function spAgain() { if (SP.cur) speakWord(SP.cur); }
 function spPaint() {
-  document.getElementById('spProg').textContent = '第 ' + Math.min(SP.idx + 1, SP.total) + ' / ' + SP.total + ' 题';
+  const el = document.getElementById('spProg');
+  if (!el) return;
+  el.textContent = '第 ' + Math.min(SP.idx + 1, SP.total) + ' / ' + SP.total + ' 题';
   document.getElementById('spScore').textContent = '得分 ' + SP.score;
   document.getElementById('spLen').textContent = '这个词有 ' + SP.cur.length + ' 个字母';
   document.getElementById('spSlots').innerHTML = SP.cur.split('').map((_, i) => {
@@ -442,12 +585,13 @@ function spLoad() {
     document.getElementById('spLen').textContent = '';
     document.getElementById('spMsg').innerHTML =
       `<div class="sp-done">🎉 一轮完成！${SP.score} / ${SP.total} 拼对<br><button class="btn coral" style="margin-top:10px" onclick="spStart()">再来一轮</button></div>`;
+    if (SP.score >= 8) phProg.mark('L9');
     return;
   }
   SP.cur = SP.words[SP.idx];
   SP.built = []; SP.msg = '';
   const letters = SP.cur.split('');
-  const pool = letters.map((ch, i) => ({ ch: ch, used: false }));
+  const pool = letters.map(ch => ({ ch: ch, used: false }));
   const alpha = 'abcdefghijklmnopqrstuvwxyz';
   let guard = 0;
   const extras = [];
@@ -500,7 +644,14 @@ function spSlot(i) {
   spPaint();
 }
 window.spStart = spStart; window.spTile = spTile; window.spSlot = spSlot; window.spAgain = spAgain;
-spStart();
+
+/* 首绘 */
+render();
+window.addEventListener('hashchange', () => {
+  let h = (location.hash || '').replace(/^#/, '');
+  if (LEGACY[h]) h = LEGACY[h];
+  if (h && h !== CUR && PH_LEVELS.some(l => l.id === h)) { CUR = h; render(); }
+});
 
 /* 预热 39 个音素（每个 3-5KB）：首屏画完再拉，点按零延迟 */
 window.addEventListener('load', () => {

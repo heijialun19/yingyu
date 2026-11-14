@@ -14,8 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v149 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/phonics.js | v6 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
+| js/app.js | v150 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/phonics.js | v7 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -37,8 +37,44 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v208 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v209 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
+
+## 2026-11-14.14 · 自然拼读专栏分级闯关重构（9 关 + 工具箱，一关一屏）
+
+用户：「自然拼读专栏设计的还是不大好，从上到下太长了，小孩子都不想翻了，能优化体系么，分级一下。
+对照网上市面上所有的优秀的自然拼读体系，继续优化。」
+
+### 对标结论（方法论，内容仍全部自研、零搬运）
+- **Jolly Phonics**：42 音素按 7 组教（s a t i p/n 起步——首组就能拼出最多词）；5 技能线
+  （字母音→书写→拼合→拆音→tricky words）；视觉词按需分批引入。
+- **Letters and Sounds**（英国 DfE）：6 阶段递进，每阶段配 tricky words + 可解码读物。
+- **Oxford Phonics World**：5 级（字母→短元音→长元音/魔法e→辅音组合→字母组合），
+  每级 8 单元 + 复习单元 + 故事，单元内「音→词→句」闭环。
+- 共同点：**分级短单元、学→拼→读句→测闭环、视觉词与读物随级引入、进度感**。
+  原页面 11 站从头滚到底（一屏 ~15000px），正是缺这四条。
+
+### 改了什么
+- **phonics.html 全量重构为「关卡地图 + 一关一屏」**：
+  L1 字母音启蒙（26 音按 Jolly 式顺序分 4 批，s a t i p/n 起步、b/d 分批）
+  → L2 短元音（5 词族）→ L3 双辅音（5 词族）→ L4 辅音连缀（3 词族）
+  → L5 元音组合（4 词族）→ L6 魔法 e（4 词族）→ L7 卷舌音（3 词族）
+  → L8 视觉词（35 词分 3 批）→ L9 听音能写 → TX 工具箱（13 块速查 + 规则彩蛋）。
+  一次只渲染一关；词族/批次用 details 折叠，一屏只展开一个。
+- **每关四段闭环**：🎯目标条 → 学/拼（折叠词族）→ 📖读句子 → 🎮听音挑一挑（3 题）。
+- **可解码句按「用到的最难规则」挂进对应关**：L2×2 / L3×1 / L4×2 / L5×3 / L6×1 / L7×1
+  （原 10 句全部保留）。视觉词早批（the/a/is/my/he/she/has/we）随 L2/L3/L5 句子先认，
+  L8 全表 35 词螺旋复习——对标 Jolly tricky words / Letters and Sounds 阶段词表。
+- **进度系统**：localStorage `phlv1`，每关「⭐我会了」或小挑战 ≥2/3 点亮星星；
+  地图显示 ⭐/当前关；默认落在第一关未通关处。
+- **听音挑一挑**：L1 听音找字母、L2-L7 听音找词、L8 听音找视觉词——全部走既有站内音频
+  （phPlayBlock / phPlayWord / phSpeakWord，发音铁律不变，weak_a 弱读链保留）。
+- **旧锚点兼容**：#s1…#s11 自动映射到新关卡（s3→L2、s9→L8……）。
+- phonics.js **只新增** PH_L1_BATCHES + PH_LEVELS（PHONICS / SIGHT_WORDS /
+  DECODE_SENTENCES 原形状不动，games.html / index.html 零影响）。
+- 版本链：app v150（BUILD .14.14）/ phonics.js v7 / sw.js CACHE v209；
+  无音频变更，AUDIO_VER / SENTENCE_VER / PHONICS_VER 均不动。
+
 
 ## 2026-11-14.13 · 知识点例句整句朗读修复：277 句补整句音频 + 拼读页连带问题
 

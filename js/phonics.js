@@ -296,6 +296,87 @@ const DECODE_SENTENCES = [
    含少量 4 字母词（milk/fish/ship/duck/desk/frog/drum/flag/plan/jump）。 */
 const SPELL_WORDS = ['cat','hat','man','pen','hen','ten','pig','big','six','dog','hot','fox','bus','sun','run','cup','map','van','bag','leg','bed','red','milk','fish','ship','shop','duck','desk','frog','drum','flag','plan','jump'];
 
+/* ================= 分级闯关体系（2026-11-14.14） =================
+   对标国际主流 SSP 分级思路（Jolly Phonics 七组音素顺序 / Letters and Sounds
+   六阶段 / Oxford Phonics World 五级）：学 → 拼 → 读句 → 小挑战，一关一屏。
+   · 字母音按「最能先拼出词」分 4 批（s a t i p n 起步，b / d 分批不打架）；
+   · 可解码句按「用到的最难规则」挂到对应关卡，视觉词随句早批引入、第 8 关全表认读；
+   · 仅新增数据，PHONICS / SIGHT_WORDS / DECODE_SENTENCES 原形状不动
+     （games.html / index.html 共用，向后兼容）。 */
+
+const PH_L1_BATCHES = [
+  { title: '第 1 批 · 起步六音', hint: 's a t i p n——学完这 6 个，sat / pin / tap 就能拼！', letters: ['s', 'a', 't', 'i', 'p', 'n'] },
+  { title: '第 2 批 · 再来七个', hint: 'cat / red / hen 都会拼了', letters: ['c', 'k', 'e', 'h', 'r', 'm', 'd'] },
+  { title: '第 3 批 · 又是六个', hint: 'dog / sun / bag / frog 出场', letters: ['g', 'o', 'u', 'l', 'f', 'b'] },
+  { title: '第 4 批 · 收尾七个', hint: 'b 和 d 分开学，不打架', letters: ['j', 'v', 'w', 'y', 'z', 'x', 'q'] },
+];
+
+const PH_LEVELS = [
+  { id: 'L1', icon: '🔤', name: '字母音启蒙', kind: 'letters',
+    goal: '26 个字母在单词里的声音——见字母就想音',
+    intro: '字母<b>名</b>是它的名字（A 读 /eɪ/），字母<b>音</b>是它在单词里的声音（a 读 /æ/）——自然拼读学的是<b>声音</b>。分 4 批学，点字母卡听音，点小词听例词。想看象形小故事去 <a href="letters.html" style="color:var(--lake)">字母岛 →</a>',
+    goals: ['听得出 26 个字母音', '分清字母名和字母音', '听例词找到开头音'] },
+  { id: 'L2', icon: '🧱', name: '短元音拼读', kind: 'words',
+    goal: '元音发短音，c-a-t 一拼就会',
+    intro: '元音发短音，一个一个音拼起来就是词：c + a + t → cat。点<b>蓝块</b>听单个音，点「🔊 拼一拼」先逐音、后整词——整词发音是唯一的标准音。',
+    goals: ['听出 5 个短元音', '拼出 cat / hen / pig 这样的词', '读 2 句可解码小句'],
+    fams: ['short-a', 'short-e', 'short-i', 'short-o', 'short-u'],
+    sight: ['the', 'a', 'is', 'my'],
+    sents: ['My dog can run.', 'The sun is hot.'] },
+  { id: 'L3', icon: '🧩', name: '双辅音', kind: 'words',
+    goal: '两个字母一个音：sh 不是 s+h，就是一声「嘘」',
+    intro: 'sh / ch / th / ck / ng 都是「两个字母，<b>一个音</b>」，把它们当<b>一整块</b>拼进词里。（连缀正好相反：两个字母<b>两个音</b>，都出声——下一关见。）',
+    goals: ['把 sh/ch/th/ck/ng 当一整块认', '拼 fish / chick 这类词', '读 1 句可解码小句'],
+    fams: ['sh', 'ch', 'th', 'ck', 'ng'],
+    sight: ['he', 'she', 'has'],
+    sents: ['She has a red hen.'] },
+  { id: 'L4', icon: '🔗', name: '辅音连缀', kind: 'words',
+    goal: '两个辅音各自出声、连着读',
+    intro: 'fl / pl / bl、cr / dr / fr、st / sw / sk……和双辅音<b>正好相反</b>：两个辅音<b>各自出声</b>、连着读（f-l、c-r、s-t），中间不停。逐块听一遍再连读。',
+    goals: ['分清「一个音」和「两个音」', '连读 fl / pl / cr / st', '读 2 句可解码小句'],
+    fams: ['blends-l', 'blends-r', 'blends-s'],
+    sight: [],
+    sents: ['The fish can swim.', 'A frog can jump.'] },
+  { id: 'L5', icon: '🌈', name: '元音组合', kind: 'words',
+    goal: '两个元音手拉手，发一个长音',
+    intro: '两个元音字母手拉手发一个长音：ee 长「衣」、oo 长「乌」、ai / ay 都是 /eɪ/、oa 是 o 的本名。',
+    goals: ['认出 ee/oo/ai-ay/oa 的长音', '拼 rain / moon / boat', '读 3 句可解码小句'],
+    fams: ['ee', 'oo', 'ai-ay', 'oa'],
+    sight: ['we'],
+    sents: ['See the green tree.', 'He can see the moon.', 'We play in the rain.'] },
+  { id: 'L6', icon: '🪄', name: '魔法 e', kind: 'words',
+    goal: '结尾的 e 不出声，让元音念本名',
+    intro: '结尾的 e <b>不出声</b>，它像个小魔法师，让前面的元音念自己的<b>本名</b>：a_e 读 /eɪ/、i_e 读 /aɪ/、o_e 读 /oʊ/、u_e 读 /uː/（或 /juː/）。这些词先<b>整体认读</b>（硬拆成 c-a-k-e 会读错）。',
+    goals: ['知道「哑巴 e」的魔法', '整体认读 cake / kite / nose', '读 1 句可解码小句'],
+    fams: ['a_e', 'i_e', 'o_e', 'u_e'],
+    sight: [],
+    sents: ['The cake is on the plate.'] },
+  { id: 'L7', icon: '🐻', name: '卷舌音', kind: 'words',
+    goal: 'r 跟着元音一起卷舌头',
+    intro: 'r 跟着元音一起卷舌头：ar /ɑːr/、or /ɔːr/，还有 ir /ɜːr/（bird、girl、third）。',
+    goals: ['听出 ar/or/ir 的卷舌音', '拼 car / horse / bird', '读 1 句可解码小句'],
+    fams: ['ar', 'or', 'ir'],
+    sight: [],
+    sents: ['The bird can sing.'] },
+  { id: 'L8', icon: '⭐', name: '视觉词', kind: 'sight',
+    goal: '35 个高频词，先整体认住',
+    intro: '这些词太常用了，而且<b>不按规则出牌</b>（或用到还没学的规则）——先整个认住、听音就懂，学到对应规则再回头「认领」它们。点词听音，📌 提示讲「为什么不按字母拼」。',
+    goals: ['整体认读 35 个视觉词', '知道「为什么不按字母拼」', '听音就能认词'],
+    sightBatches: [
+      { title: '第 1 批 · 最先认', words: ['the', 'a', 'is', 'my', 'he', 'she', 'we', 'you', 'are', 'they', 'this', 'that'] },
+      { title: '第 2 批 · 很常用', words: ['said', 'one', 'two', 'was', 'has', 'were', 'come', 'some', 'have', 'do', 'does', 'of', 'to'] },
+      { title: '第 3 批 · 也要会', words: ['them', 'there', 'what', 'where', 'who', 'why', 'out', 'now', 'all', 'her'] },
+    ] },
+  { id: 'L9', icon: '✍️', name: '听音能写', kind: 'spell',
+    goal: '反过来练：听声音，把字母按顺序点出来',
+    intro: '反过来练：<b>听声音，把字母按顺序点出来</b>。词都来自前面的词族——会拼读了，拼写也会。点错了点字母格可以退回去。',
+    goals: ['听音拆出字母', '按顺序拼出 3-4 字母词', '拿下拼写小达人'] },
+  { id: 'TX', icon: '🧰', name: '工具箱', kind: 'toolbox',
+    goal: '拼读块速查 + 规则彩蛋，随查随听',
+    intro: '13 个拼读块的<b>速查表</b>，学到哪查到哪。不在清单里的字母组合这里<b>不发声</b>——宁可不响，也不教错。',
+    goals: ['查任意拼读块的音', '记住 c/g 软音等彩蛋规则'] },
+];
+
 window.PHONICS = PHONICS;
 window.PH_EXTRA = PH_EXTRA;
 window.PH_BLOCKS = PH_BLOCKS;
@@ -303,4 +384,6 @@ window.PH_BLEND_OK = PH_BLEND_OK;
 window.SIGHT_WORDS = SIGHT_WORDS;
 window.DECODE_SENTENCES = DECODE_SENTENCES;
 window.SPELL_WORDS = SPELL_WORDS;
+window.PH_L1_BATCHES = PH_L1_BATCHES;
+window.PH_LEVELS = PH_LEVELS;
 
