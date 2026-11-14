@@ -236,6 +236,8 @@ const SIGHT_WORDS = [
   { w: 'one',  ipa: '/wʌn/', zh: '一',        note: 'o 读 /ʌ/，还多了个 w 的音' },
   { w: 'two',  ipa: '/tuː/', zh: '二',        note: 'w 不发音，o 读 /uː/' },
   { w: 'was',  ipa: '/wʌz/', zh: '是（过去）',  note: 'a 读 /ʌ/，不是 /æ/也不是本名' },
+  { w: 'is',   ipa: '/ɪz/',  zh: '是',        note: '词尾 s 在这里读 /z/，不是 /s/！' },
+  { w: 'has',  ipa: '/hæz/', zh: '有（三单）',  note: '词尾 s 在这里读 /z/，不是 /s/！' },
   { w: 'were', ipa: '/wɜːr/', zh: '是（过去）', note: 'e 不读 /e/，整词读 /wɜːr/' },
   { w: 'come', ipa: '/kʌm/', zh: '来',        note: '魔法 e 例外！o 读 /ʌ/，不读本名' },
   { w: 'some', ipa: '/sʌm/', zh: '一些',      note: '魔法 e 例外！o 读 /ʌ/，不读本名' },
@@ -244,6 +246,7 @@ const SIGHT_WORDS = [
   { w: 'does', ipa: '/dʌz/', zh: '做（三单）',  note: 'o 读 /ʌ/，词尾 es 读 /z/' },
   { w: 'of',   ipa: '/ʌv/',  zh: '……的',      note: 'o 读 /ʌ/，f 读 /v/！' },
   { w: 'to',   ipa: '/tuː/', zh: '到；向',     note: 'o 读 /uː/（弱读时是 /tə/）' },
+  { w: 'a',    ipa: '/ə/',   zh: '一（个）',   note: '不定冠词弱读 /ə/，不是字母音 /æ/，也不是本名 /eɪ/' },
   { w: 'are',  ipa: '/ɑːr/', zh: '是',        note: 'a 读 /ɑːr/，整体认读' },
   { w: 'they', ipa: '/ðeɪ/', zh: '他们',      note: 'th 是浊音 /ð/，ey 读 /eɪ/' },
   { w: 'them', ipa: '/ðem/', zh: '他们（宾格）', note: 'th 是浊音 /ð/，不是轻轻吐舌的 /θ/' },
@@ -267,16 +270,16 @@ const SIGHT_WORDS = [
 /* 可解码短文（全部自编句）：只用「已教规则可拼的词 + 上面的视觉词」。
    tags 标注用到的规则，便于家长知道这句在练什么。 */
 const DECODE_SENTENCES = [
-  { s: 'The fish can swim.',        zh: '这条鱼会游泳。',    tags: '视觉词 the/can · 短元音 i · sh' },
-  { s: 'A frog can jump.',          zh: '一只青蛙会跳。',    tags: '视觉词 a/can · 连缀 fr · 短元音 u' },
-  { s: 'The bird can sing.',        zh: '这只鸟会唱歌。',    tags: '视觉词 the/can · 卷舌音 ir · ng' },
-  { s: 'My dog can run.',           zh: '我的狗会跑。',      tags: '视觉词 my/can · 短元音 o、u' },
-  { s: 'We play in the rain.',      zh: '我们在雨里玩。',    tags: '视觉词 we/the · 连缀 pl · ai' },
-  { s: 'The sun is hot.',           zh: '太阳很热。',        tags: '视觉词 the · 短元音 u、o' },
+  { s: 'The fish can swim.',        zh: '这条鱼会游泳。',    tags: '视觉词 the · 短元音 a、i · sh · 连缀 sw' },
+  { s: 'A frog can jump.',          zh: '一只青蛙会跳。',    tags: '视觉词 a · 连缀 fr · 短元音 o、u' },
+  { s: 'The bird can sing.',        zh: '这只鸟会唱歌。',    tags: '视觉词 the · 卷舌音 ir · ng · 短元音 a、i' },
+  { s: 'My dog can run.',           zh: '我的狗会跑。',      tags: '视觉词 my · 短元音 a、o、u' },
+  { s: 'We play in the rain.',      zh: '我们在雨里玩。',    tags: '视觉词 we/the · 连缀 pl · ai · 短元音 i' },
+  { s: 'The sun is hot.',           zh: '太阳很热。',        tags: '视觉词 the/is · 短元音 u、o' },
   { s: 'See the green tree.',       zh: '看那棵绿树。',      tags: '视觉词 the · ee · 连缀 gr' },
-  { s: 'He can see the moon.',      zh: '他能看见月亮。',    tags: '视觉词 he/can/the · oo' },
-  { s: 'She has a red hen.',        zh: '她有一只红母鸡。',  tags: '视觉词 she/a · sh · 短元音 e' },
-  { s: 'The cake is on the plate.', zh: '蛋糕在盘子上。',    tags: '视觉词 the/on · 魔法 e' },
+  { s: 'He can see the moon.',      zh: '他能看见月亮。',    tags: '视觉词 he/the · oo · 短元音 a' },
+  { s: 'She has a red hen.',        zh: '她有一只红母鸡。',  tags: '视觉词 she/has/a · sh · 短元音 e' },
+  { s: 'The cake is on the plate.', zh: '蛋糕在盘子上。',    tags: '视觉词 the/is · 魔法 e · 短元音 o' },
 ];
 
 /* 听音能写（拼写编码）词表：3-4 个字母、站内有音频、字母级可拼。

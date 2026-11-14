@@ -14,8 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v146 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/phonics.js | v3 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
+| js/app.js | v147 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/phonics.js | v4 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -37,7 +37,29 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v205 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v206 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+---
+
+## 2026-11-14.11 · 内容自审纠错：视觉词补 a/is/has + 标签纠错
+
+用户：「拼读课侵权吗？体系完整了吗？还有错误吗？」自审三条线（侵权/完整性/错误回归），
+句词归属审计揪出 4 处内容错误，当日订正：
+
+1. **视觉词缺 a / is / has**：短文里 a（不定冠词 /ə/）、is（/ɪz/，s=/z/）、has（/hæz/，s=/z/）
+   当整体认读用（标签也这么标），但 SIGHT_WORDS 表里没有——孩子去表里找不到。
+   补 3 词并自写解析（ipa.js 口径 is=/ɪz/、has=/hæz/ 一致）。32→35 词。
+2. **短文标签把 can/on 误标成视觉词**：can（c-a-n）、on（o-n）是规则 CVC 短元音词，
+   逐块可拼，不是整体认读——与正文「只有绿色标签里的视觉词是整体认读」自相矛盾。
+   10 句标签逐条改准（如「视觉词 the/can · 短元音 i · sh」→「视觉词 the · 短元音 a、i · sh · 连缀 sw」）。
+3. **「35 词池」记述有误**：SPELL_WORDS 实际 33 词（测试断言 ≥30 未暴露）。version.json/VERSION.md 订正。
+4. 标签口径现与正文一致：句中每个词 ∈ 视觉词表 ∪ 词族 ∪ 规则 CVC，逐词可验证（新增测试断言把关）。
+
+侵权审查结论：10 句与站内 301 句课本句零雷同（编辑距离≤2 零命中）；32+3 条解析文案
+在 phonics.js 之外零出现；视觉词编排与 Dolch/Fry 顺序 LCS 仅 2-6/32（自创按拼读特征分组）；
+中文译文零搬运。完整性结论见 .14.9/.14.10 章节，已知缺口：音节划分、词缀、成篇读物。
+
+版本链：app v146→v147、js/phonics.js v3→v4、CACHE v205→v206、BUILD 2026-11-14.11。音频零改动。
+
 ---
 
 ## 2026-11-14.10 · 三大练习：视觉词 + 可解码短文 + 听音能写
@@ -53,7 +75,7 @@
   只用「已教规则可拼的词 + 视觉词」，标签注明练什么规则；点词听单字，
   「读整句」走 speakSentenceWords 逐词连读（站内音频优先）。
 - **⑪ 听音能写**：拼写编码游戏——听音 → 看字母数 → 点字母块拼词 → 自动判卷，
-  答错退回重来；35 词池（CVC + 少量 4 字母词）每轮随机 10 题。
+  答错退回重来；33 词池（CVC + 少量 4 字母词）每轮随机 10 题。（.14.11 自审订正：原记 35 有误）
 - 正确性口径：视觉词 IPA 逐条核对常用读音；短文逐句人工核对语法与可解码性；
   mat/sat/I 等无站内音频的词不进句子。发音铁律不变，音频零新增。
 - 版本链：app v145→v146、js/phonics.js v2→v3、CACHE v204→v205、BUILD 2026-11-14.10。
