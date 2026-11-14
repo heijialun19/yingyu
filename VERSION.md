@@ -14,7 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v142 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v143 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/phonics.js | v1 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -36,9 +37,31 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v201 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
-
+| sw.js | birdie-abc-v202 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
+
+## 2026-11-14.7 · 自然拼读专栏：phonics.html 七站课程 + 首页专栏
+
+用户：「拼读闯关每个字母都能发音非常好。但是这个网站里没有系统学习自然拼读的地方，
+能在首页里系统加一个自然拼读的专栏么？要和拼读闯关里读音一致。当然，前提是正确。」
+
+- 新增 **phonics.html（拼读课）**七站：① 26 字母音 ② 13 拼读块 ③ 短元音词族 ④ 双辅音词族
+  ⑤ 元音组合词族 ⑥ 魔法 e ⑦ 卷舌音词族。字母音 / 块音点按走 `audio/phonics/` 母语者录音
+  （与拼读闯关同一个 `phonicsURL()`，同一个 PHONICS_VER）；词族行「🔊 拼一拼」= 逐块音
+  （gap 420ms）+ 整词标准音收尾。无 segs 的词（rabbit / egg / shoe / 魔法 e 系）只做**整体认读**——
+  硬拆会把 cake 读成 /kæke/，与游戏同口径（「宁可不响，也不放错音」）。
+- 新增 **js/phonics.js（唯一真相源）**：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 +
+  发音助手（phBlockURL / phBlendWord / phBlockExamples）。games.html 的内联 PHONICS / PH_BLEND_OK
+  删除、改为引用；**拼读闯关 / 拼读课 / 首页专栏三方同源**，改一处三边一起变。
+- **首页专栏**：「🔤 自然拼读 · 见词能读」（18 个音素 chip 点按发音 + 课程三步 + 进入拼读课按钮），
+  两套岛屿列表各加「自然拼读」卡（8 张），noscript 站点地图补链接。letters.html 加「去拼读课」入口。
+- **顺手修一处数据不一致**：king 的分块 ['k','i','n','g'] → ['k','i','ng']。morning 用 ng 块而 king
+  把 /ŋ/ 拆成 n+g 两块逐音读；判卷按字母串，游戏行为不受影响（3 块代替 4 块）。
+- 魔法 e 是规则不是音素，a_e 没有对应 mp3 —— 不硬凑单块音，规则卡标「没有单块录音，先记规则、听整词」。
+
+- 版本链：`app v142→v143`、`js/phonics.js v1（新）`、`CACHE v201→v202`、`BUILD 2026-11-14.7`；
+  音频零改动（audio/phonics/ 39 个文件原样）。
+- 课程顺序按系统拼读的通用次序：字母音 → CVC 短元音 → 辅音 digraph → 元音组合 → 魔法 e → r 控制元音。
 
 ## 2026-11-14.6 · 课本知识点扩容：每单元 6 条 → 12 条
 

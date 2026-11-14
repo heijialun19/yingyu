@@ -38,11 +38,13 @@
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=45"></script>
 <script src="js/build-data.js?v=3"></script>
-<script src="js/app.js?v=142"></script>
+<script src="js/app.js?v=143"></script>
 <script defer src="js/audio-list.js?v=7"></script>
 <script src="js/sentence.js?v=51"></script>
 <script src="js/grammar-engine.js?v=9"></script>
 <script src="js/ipa.js?v=9"></script>
+<script src="js/phonics.js?v=1"></script>
+<!-- 2026-11-14.7：词族与拼读块数据移到 js/phonics.js（拼读课 / 首页专栏 / 本游戏三方同源） -->
 <script>
 renderNav('games'); renderDecor();
 
@@ -858,57 +860,6 @@ function themeWordsById(ids) {
         不自动连播逐音：整词发音始终是唯一标准音，逐音由孩子自己点。
      ② 听词选图（辅）：拼写与读音对不上、硬拼会教错的词（rabbit / egg / shoe / a_e 系…），
         只播整词、只给图，选出来就行。 */
-const PHONICS = [
-  { name: 'short a · /æ/', tip: 'a 发 /æ/（大嘴「哎」）', words: ['cat','hat','man','van','bag','ant','map','hand','fan','rabbit','sand','camp'],
-    segs: { cat:['c','a','t'], hat:['h','a','t'], man:['m','a','n'], van:['v','a','n'], bag:['b','a','g'],
-            ant:['a','n','t'], map:['m','a','p'], hand:['h','a','n','d'], fan:['f','a','n'],
-            sand:['s','a','n','d'], camp:['c','a','m','p'] } },
-  { name: 'short e · /e/', tip: 'e 发 /e/（小嘴「哎」）', words: ['pen','hen','ten','desk','bed','leg','egg','tent','vest','red'],
-    segs: { pen:['p','e','n'], hen:['h','e','n'], ten:['t','e','n'], desk:['d','e','s','k'], bed:['b','e','d'],
-            leg:['l','e','g'], tent:['t','e','n','t'], vest:['v','e','s','t'], red:['r','e','d'] } },
-  { name: 'short i · /ɪ/', tip: 'i 发 /ɪ/（短「衣」）', words: ['pig','big','six','fish','milk','ship','sit','fin','pink','king'],
-    segs: { pig:['p','i','g'], big:['b','i','g'], six:['s','i','x'], fish:['f','i','sh'],
-            milk:['m','i','l','k'], ship:['sh','i','p'], sit:['s','i','t'], fin:['f','i','n'],
-            pink:['p','i','n','k'], king:['k','i','n','g'] } },
-  { name: 'short o · /ɑ/', tip: 'o 发 /ɑ/（张嘴「啊」）', words: ['box','fox','dog','hot','stop','clock','rock','shop','doctor'],
-    segs: { box:['b','o','x'], fox:['f','o','x'], dog:['d','o','g'], hot:['h','o','t'], stop:['s','t','o','p'],
-            clock:['c','l','o','ck'], rock:['r','o','ck'], shop:['sh','o','p'] } },
-  { name: 'short u · /ʌ/', tip: 'u 发 /ʌ/（短「啊」）', words: ['bus','sun','run','duck','cup','jump','truck','gum','hut'],
-    segs: { bus:['b','u','s'], sun:['s','u','n'], run:['r','u','n'], duck:['d','u','ck'], cup:['c','u','p'],
-            jump:['j','u','m','p'], truck:['t','r','u','ck'], gum:['g','u','m'], hut:['h','u','t'] } },
-  { name: 'sh · /ʃ/', tip: 'sh 发 /ʃ/（「嘘——」）', words: ['ship','fish','sheep','shelf','brush','wash','shop','shoe'],
-    segs: { ship:['sh','i','p'], fish:['f','i','sh'], sheep:['sh','ee','p'], shelf:['sh','e','l','f'],
-            brush:['b','r','u','sh'], shop:['sh','o','p'] } },
-  { name: 'ch · /tʃ/', tip: 'ch 发 /tʃ/（「吃——」）', words: ['chair','peach','lunch','catch','teacher','chess'],
-    segs: { lunch:['l','u','n','ch'], catch:['c','a','t','ch'], chess:['ch','e','s','s'] } },
-  { name: 'th · /θ/', tip: 'th 轻轻吐舌', words: ['teeth','thumb','third','thin','birthday'],
-    segs: { teeth:['t','ee','th'], thin:['th','i','n'], third:['th','ir','d'], birthday:['b','ir','th','d','ay'] } },
-  { name: 'a_e · /eɪ/', tip: 'a 加哑巴 e，a 念本名', words: ['cake','lake','name','plate','grape','whale','gate','game'] },
-  { name: 'i_e · /aɪ/', tip: 'i 加哑巴 e，i 念本名', words: ['kite','bike','nine','white','ice','five','rice','time'] },
-  { name: 'o_e · /oʊ/', tip: 'o 加哑巴 e，o 念本名', words: ['nose','rose','home','bone','stone','rope'] },
-  { name: 'ee · /iː/', tip: 'ee 发 /iː/（长「衣」）', words: ['see','tree','bee','three','green','sleep','feet','week'],
-    segs: { see:['s','ee'], tree:['t','r','ee'], bee:['b','ee'], three:['th','r','ee'],
-            green:['g','r','ee','n'], sleep:['s','l','ee','p'], feet:['f','ee','t'], week:['w','ee','k'] } },
-  { name: 'oo · /uː/', tip: 'oo 发 /uː/（长「乌」）', words: ['moon','food','zoo','spoon','room','afternoon'],
-    segs: { moon:['m','oo','n'], food:['f','oo','d'], zoo:['z','oo'], spoon:['s','p','oo','n'], room:['r','oo','m'] } },
-  { name: 'ai/ay · /eɪ/', tip: 'ai / ay 都发 /eɪ/', words: ['rain','tail','train','paint','day','play','away','today'],
-    segs: { rain:['r','ai','n'], tail:['t','ai','l'], train:['t','r','ai','n'], paint:['p','ai','n','t'],
-            day:['d','ay'], play:['p','l','ay'] } },
-  { name: 'oa · /oʊ/', tip: 'oa 发 /oʊ/', words: ['boat','coat','goat','road'],
-    segs: { boat:['b','oa','t'], coat:['c','oa','t'], goat:['g','oa','t'], road:['r','oa','d'] } },
-  { name: 'ar · /ɑːr/', tip: 'ar 发 /ɑːr/（卷舌）', words: ['car','star','farm','arm','garden','market'],
-    segs: { car:['c','ar'], star:['s','t','ar'], farm:['f','ar','m'], arm:['ar','m'] } },
-  { name: 'or · /ɔːr/', tip: 'or 发 /ɔːr/（卷舌）', words: ['fork','horse','short','sport','morning'],
-    segs: { fork:['f','or','k'], sport:['s','p','or','t'], morning:['m','or','n','i','ng'] } },
-  { name: 'ck · /k/', tip: 'ck 发 /k/（和字母 k 一样）', words: ['duck','clock','rock','black','chicken'],
-    segs: { duck:['d','u','ck'], clock:['c','l','o','ck'], rock:['r','o','ck'], black:['b','l','a','ck'] } },
-];
-
-/* 哪些块的录音在 audio/phonics/ 里且读音正确（母语者录音，见文件头注释）。
-   不在集合里的多字母块一律不发声 —— 宁可不响，也不放错音。
-   ⚠️ 绝不要给不在 audio/phonics/ 里的字符串走 localAudioURL()：
-      TTS 会把 "sh" 念成字母名 "S H"（2026-11-08 踩过）。 */
-const PH_BLEND_OK = new Set(['sh', 'ch', 'th', 'ai', 'ay', 'oa', 'ck', 'ee', 'oo', 'ar', 'or', 'ir', 'ng']);
 function phBlockAudio(b) {
   const k = String(b).toLowerCase();
   if (!k) return '';

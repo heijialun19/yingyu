@@ -60,6 +60,20 @@
 .mini-grade button{padding:7px 13px;border-radius:999px;border:3px solid #E8EAF0;background:#fff;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer}
 .mini-grade button.on{border-color:var(--lemon);background:#FFF7DA}
 .review-banner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(135deg,#FFE9F3,#FFF0D6);border:3px solid var(--pink);border-radius:22px;padding:14px 18px;margin:14px auto 0;max-width:680px;box-shadow:var(--shadow)}
+
+.phc-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 6px}
+.phc-head b{font-size:1.12rem}
+.phc-head small{color:#6B7280;font-size:.78rem}
+.phc-steps{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:.78rem;color:#5C6273;margin:2px 0 12px}
+.phc-steps span{background:#F5F6FA;border-radius:999px;padding:5px 11px;font-weight:700}
+.phc-chips{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:4px 0 14px}
+.phc-chip{width:56px;padding:7px 0 5px;border-radius:15px;border:3px solid var(--sky2,#B9E2FA);background:#fff;
+  font-family:inherit;cursor:pointer;transition:.13s;line-height:1.15}
+.phc-chip:hover{transform:translateY(-3px);border-color:var(--lemon)}
+.phc-chip b{font-size:1.12rem;color:var(--ink)}
+.phc-chip small{display:block;font-size:.62rem;color:#6B7280;font-weight:700}
+.phc-chip.blk{border-color:var(--grape);background:#F8F5FF}
+.phc-cta{display:flex;justify-content:center}
 </style>
 </head>
 <body>
@@ -81,7 +95,7 @@
       <p>全部发音是站内音频，不依赖外网；学习进度只保存在本机浏览器，不上传、不注册。
       本站与人教社、MM Publications 无隶属或授权关系。</p>
       <p><b>站点地图：</b>
-        <a href="letters.html">字母岛</a> · <a href="words.html">单词镇</a> ·
+        <a href="letters.html">字母岛</a> · <a href="phonics.html">自然拼读</a> · <a href="words.html">单词镇</a> ·
         <a href="grammar.html">句子工厂</a> · <a href="games.html">游戏乐园</a> ·
         <a href="pep.html">人教课本</a> · <a href="getsmart.html">Get Smart</a> ·
         <a href="parents.html">家长中心</a> · <a href="disclaimer.html">声明</a></p>
@@ -121,6 +135,8 @@
       <div style="flex:1;min-width:180px"><b>有单词到复习时间啦</b><div style="font-size:.8rem;color:#5C6273" id="revText"></div></div>
       <button class="btn coral" onclick="location.href='words.html?mode=review'">去复习</button>
     </div>
+    <div class="section-label">—— 🔤 自然拼读 · 见词能读 ——</div>
+    <div class="card" id="phCol" style="text-align:center"></div>
     <div class="section-label">—— 或者去逛逛 ——</div>
     <div class="big-islands" id="bigIslands"></div>
     <div class="foot-links">
@@ -134,7 +150,8 @@
      所以不引 246KB 的 svg/word-svg.js。没图时会自动回退到表情 SVG，
      真要画词卡的页面（单词镇/课本/学堂/游戏/字母岛/语法）都还在引。 -->
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=142"></script>
+<script src="js/app.js?v=143"></script>
+<script src="js/phonics.js?v=1"></script>
 <script defer src="js/audio-list.js?v=7"></script>
 <script src="js/sentence.js?v=51"></script>
 <script src="js/getsmart-data.js?v=16"></script>
@@ -254,6 +271,7 @@ function showHome() {
     { e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html' },
     { e:'🏫', n:'人教课本', d:'3-6 年级同步', href:'pep.html' },
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
+    { e:'🔤', n:'自然拼读', d:'见词能读', href:'phonics.html' },
     { e:'🚂', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
     { e:'🎡', n:'游戏乐园', d:GAME_COUNT+'个游戏', href:'games.html' },
     { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
@@ -263,6 +281,7 @@ function showHome() {
        学完（lettersFinished）后它自动退到最后一位，让位给课本与语法。 */
     { e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html' },
     { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
+    { e:'🔤', n:'自然拼读', d:'见词能读', href:'phonics.html' },
     { e:'🏫', n:'人教课本', d:'3-6 年级同步', href:'pep.html' },
     { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
     { e:'🚂', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
@@ -271,7 +290,29 @@ function showHome() {
   ];
   document.getElementById('bigIslands').innerHTML = islands.map(i =>
     `<button type="button" class="big-island" onclick="location.href='${i.href}'"><span class="bi-emoji" aria-hidden="true">${i.e}</span><b>${i.n}</b><small>${i.d}</small></button>`).join('');
+  renderPhonicsColumn();
   maybeShowInstallHint(); // 手机浏览器：引导「添加到主屏幕」（可永久关闭）
+}
+
+/* ---------------- 自然拼读专栏（首页） ----------------
+   18 个音素 chip：5 个短元音 + 13 个拼读块，点按走 audio/phonics/ 母语者录音
+   （和拼读闯关同一套文件、同一个 phonicsURL()）。数字 26 / 13 / 18 分别等于
+   LETTERS.length / PH_BLOCKS.length / PHONICS.length，改数据要一起改文案。 */
+function renderPhonicsColumn() {
+  const el = document.getElementById('phCol');
+  if (!el || typeof PH_BLOCKS === 'undefined') return;
+  const vowels = ['a', 'e', 'i', 'o', 'u'].map(v => {
+    const l = (typeof LETTERS !== 'undefined') ? LETTERS.find(x => x.L.toLowerCase() === v) : null;
+    const ipa = l ? l.szh.split(' ')[0] : '';
+    return `<button class="phc-chip" onclick="phPlayBlock('${v}')" title="点我听 ${v} 的音"><b>${v}</b><small>${esc(ipa)}</small></button>`;
+  }).join('');
+  const blocks = PH_BLOCKS.map(b =>
+    `<button class="phc-chip blk" onclick="phPlayBlock('${b.b}')" title="点我听 ${b.b} 的音"><b>${esc(b.b)}</b><small>${esc(b.ipa)}</small></button>`).join('');
+  el.innerHTML =
+    `<div class="phc-head"><b>🔤 自然拼读专栏</b><small>点一点就发音 · 和「拼读闯关」同一套母语者录音</small></div>
+     <div class="phc-steps"><span>① 26 个字母音</span><span>→</span><span>② 13 个拼读块</span><span>→</span><span>③ 18 个词族拼读</span></div>
+     <div class="phc-chips">${vowels}${blocks}</div>
+     <div class="phc-cta"><button class="btn coral big" onclick="location.href='phonics.html'">进入拼读课 →</button></div>`;
 }
 </script>
 </body>
