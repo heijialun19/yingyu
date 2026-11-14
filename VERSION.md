@@ -14,8 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v147 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/phonics.js | v4 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
+| js/app.js | v148 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/phonics.js | v5 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -37,7 +37,24 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v206 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v207 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+---
+
+## 2026-11-14.12 · th 提示语修正：「轻轻吐舌」→「轻咬舌尖不振动」
+
+用户：「th 的发音对么？总感觉很奇怪」。先取证再改文案：
+
+- **声学验证（CDP + OfflineAudioContext）**：th.mp3 基音强度 0.13（清音，对照 ng 0.65 / m 0.60）、
+  过零率 11705（擦音，对照 sh 10790 / f 12375）、频谱重心 5767Hz（介于 f 5511 与 s 6857 之间）、
+  0.38s 单段——**是标准清齿擦音 /θ/**，不是 /s/、不是浊音 /ð/、不是字母名。录音正确。
+- **「奇怪」的真因是提示语**：「th 轻轻吐舌」有两个问题——①「吐舌」会让口型过度外伸、发出来就怪；
+  ②只讲口型没讲振动，而 /θ/ 和 /ð/ 的舌尖位置一样、区别恰在声带振不振动。
+  正确口径：**轻咬舌尖（舌尖夹在上下牙之间）吐气，声带不振动 = /θ/**。
+- 修改 5 处：PH_BLOCKS th tip+note（补 thin/think/three 例词锚点）、PHONICS 族 tip（三方同源）、
+  视觉词 them 解析、phonics.html 规则彩蛋、PH_BLOCKS 头注释。清浊两音在块注里讲透：
+  /θ/ 咬舌不振动（think/thin）；/ð/ 咬舌但声带振动（the/this），走整体认读。
+- 版本链：app v147→v148、js/phonics.js v4→v5、CACHE v206→v207、BUILD .14.12。音频零改动。
+
 ---
 
 ## 2026-11-14.11 · 内容自审纠错：视觉词补 a/is/has + 标签纠错

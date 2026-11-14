@@ -32,13 +32,13 @@ const PH_BLEND_OK = new Set(['sh', 'ch', 'th', 'ai', 'ay', 'oa', 'ck', 'ee', 'oo
 /* 13 个拼读块的讲解（拼读课「第 2 站」用）。
    tip 与下面 PHONICS 词族里的同名块逐字一致；ng / ir 在词族里只当分块出现，
    这里给它们单独的讲解。example 词全部在 999 词库（有图有声）。
-   th 补充说明：/θ/ 是轻轻吐舌的清音；the / this 里的 th 是浊音 /ð/，
+   th 补充说明：/θ/ 是轻咬舌尖、声带不振动的清音；the / this 里的 th 是浊音 /ð/，
    那些词在词族里走整体认读，不教错。 */
 const PH_BLOCKS = [
   { b: 'sh', ipa: '/ʃ/',  tip: 'sh 发 /ʃ/（「嘘——」）',       g: 'c', words: [] },
   { b: 'ch', ipa: '/tʃ/', tip: 'ch 发 /tʃ/（「吃——」）',      g: 'c', words: ['chair', 'peach', 'teacher'] },
-  { b: 'th', ipa: '/θ/',  tip: 'th 轻轻吐舌',                  g: 'c', words: [],
-    note: 'th 在 the、this 里是另一种声音（浊音 /ð/），那些词先整体认读。' },
+  { b: 'th', ipa: '/θ/',  tip: 'th 发 /θ/（轻咬舌尖吐气，声带不振动）', g: 'c', words: ['thin','think','three'],
+    note: 'th 有两种声音：这里的 /θ/ 轻咬舌尖、声带不振动（think、thin）；the、this 里是浊音 /ð/（舌尖位置一样，但声带振动），那些词先整体认读。' },
   { b: 'ck', ipa: '/k/',  tip: 'ck 发 /k/（和字母 k 一样）',   g: 'c', words: ['chicken'] },
   { b: 'ng', ipa: '/ŋ/',  tip: 'ng 发 /ŋ/（鼻子哼「嗯」）',    g: 'c', words: ['sing', 'long', 'young'] },
   { b: 'ee', ipa: '/iː/', tip: 'ee 发 /iː/（长「衣」）',       g: 'v', words: [] },
@@ -90,7 +90,7 @@ const PHONICS = [
             brush:['b','r','u','sh'], shop:['sh','o','p'] } },
   { name: 'ch · /tʃ/', id: 'ch', sounds: ['ch'], tip: 'ch 发 /tʃ/（「吃——」）', words: ['chair','peach','lunch','catch','teacher','chess'],
     segs: { lunch:['l','u','n','ch'], catch:['c','a','t','ch'], chess:['ch','e','s','s'] } },
-  { name: 'th · /θ/', id: 'th', sounds: ['th'], tip: 'th 轻轻吐舌', words: ['teeth','thumb','third','thin','birthday'],
+  { name: 'th · /θ/', id: 'th', sounds: ['th'], tip: 'th 发 /θ/（轻咬舌尖吐气，声带不振动）', words: ['teeth','thumb','third','thin','birthday'],
     segs: { teeth:['t','ee','th'], thin:['th','i','n'], third:['th','ir','d'], birthday:['b','ir','th','d','ay'] } },
   { name: 'a_e · /eɪ/', id: 'a_e', sounds: [], tip: 'a 加哑巴 e，a 念本名', words: ['cake','lake','name','plate','grape','whale','gate','game'] },
   { name: 'i_e · /aɪ/', id: 'i_e', sounds: [], tip: 'i 加哑巴 e，i 念本名', words: ['kite','bike','nine','white','ice','five','rice','time'] },
@@ -249,7 +249,7 @@ const SIGHT_WORDS = [
   { w: 'a',    ipa: '/ə/',   zh: '一（个）',   note: '不定冠词弱读 /ə/，不是字母音 /æ/，也不是本名 /eɪ/' },
   { w: 'are',  ipa: '/ɑːr/', zh: '是',        note: 'a 读 /ɑːr/，整体认读' },
   { w: 'they', ipa: '/ðeɪ/', zh: '他们',      note: 'th 是浊音 /ð/，ey 读 /eɪ/' },
-  { w: 'them', ipa: '/ðem/', zh: '他们（宾格）', note: 'th 是浊音 /ð/，不是轻轻吐舌的 /θ/' },
+  { w: 'them', ipa: '/ðem/', zh: '他们（宾格）', note: 'th 是浊音 /ð/，不是咬舌不振动的 /θ/' },
   { w: 'this', ipa: '/ðɪs/', zh: '这个',      note: 'th 是浊音 /ð/，不是 /θ/' },
   { w: 'that', ipa: '/ðæt/', zh: '那个',      note: 'th 是浊音 /ð/，不是 /θ/' },
   { w: 'there', ipa: '/ðer/', zh: '那里',     note: 'th 是浊音 /ð/，ere 整体认读' },
