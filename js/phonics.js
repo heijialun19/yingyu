@@ -111,6 +111,38 @@ const PHONICS = [
     segs: { fork:['f','or','k'], sport:['s','p','or','t'], morning:['m','or','n','i','ng'] } },
   { name: 'ck · /k/', id: 'ck', sounds: ['ck'], tip: 'ck 发 /k/（和字母 k 一样）', words: ['duck','clock','rock','black','chicken'],
     segs: { duck:['d','u','ck'], clock:['c','l','o','ck'], rock:['r','o','ck'], black:['b','l','a','ck'] } },
+  /* ---- 2026-11-14.9 增补（科学次序补齐，追加在末尾不打乱旧索引） ----
+     对标系统拼读标准次序（CVC → 双辅音 → 连缀 → 元音组合 → 魔法 e → r 控制元音，
+     同 NRP / Rose Report / 瑞格叔叔五级体系）：
+     · ng 补进双辅音（两个字母一个音）；
+     · 辅音连缀 l/r/s 新开第 ⑤ 站：两个辅音**各自出声**连着读——与双辅音正好相反。
+       元音必须与字母音吻合才给 segs：from/front 的 o 实读 /ʌ/、blue 的 ue、
+       snow 的 ow、snake/smile 的魔法 e 都拼不出正确音——宁可不进词族，也不给错音；
+       young（ou 不是短 u）、along（首音 schwa）走整体认读。
+     · u_e 补齐魔法 e；ir 补齐卷舌音。 */
+  { name: 'ng · /ŋ/', id: 'ng', sounds: ['ng'], tip: 'ng 发 /ŋ/（鼻子哼「嗯」）',
+    words: ['sing','king','thing','bring','spring','young','along'],
+    segs: { sing:['s','i','ng'], king:['k','i','ng'], thing:['th','i','ng'], bring:['b','r','i','ng'],
+            spring:['s','p','r','i','ng'] } },
+  { name: 'l 连缀 · 两个音', id: 'blends-l', sounds: [], rule: '连缀没有「一块」的音——每个字母都出声，连着读',
+    tip: 'fl / pl / bl / cl：l 和前面的辅音连着读，两个音都出声',
+    words: ['flag','plan','black','clock','play'],
+    segs: { flag:['f','l','a','g'], plan:['p','l','a','n'], black:['b','l','a','ck'],
+            clock:['c','l','o','ck'], play:['p','l','ay'] } },
+  { name: 'r 连缀 · 两个音', id: 'blends-r', sounds: [], rule: '连缀没有「一块」的音——每个字母都出声，连着读',
+    tip: 'cr / dr / fr / gr / tr：r 和前面的辅音连着读，两个音都出声',
+    words: ['crab','drum','dress','frog','fresh','trip','truck','grass'],
+    segs: { crab:['c','r','a','b'], drum:['d','r','u','m'], dress:['d','r','e','s','s'], frog:['f','r','o','g'],
+            fresh:['f','r','e','sh'], trip:['t','r','i','p'], truck:['t','r','u','ck'], grass:['g','r','a','s','s'] } },
+  { name: 's 连缀 · 两个音', id: 'blends-s', sounds: [], rule: '连缀没有「一块」的音——每个字母都出声，连着读',
+    tip: 'st / sw / sk：s 和后面的辅音连着读，两个音都出声',
+    words: ['stop','swim','swing','skirt','strong'],
+    segs: { stop:['s','t','o','p'], swim:['s','w','i','m'], swing:['s','w','i','ng'],
+            skirt:['s','k','ir','t'], strong:['s','t','r','o','ng'] } },
+  { name: 'u_e · /uː/、/juː/', id: 'u_e', sounds: [], tip: 'u 加哑巴 e，u 念本名', words: ['cute','use','rule'] },
+  { name: 'ir · /ɜːr/', id: 'ir', sounds: ['ir'], tip: 'ir 发 /ɜːr/（卷舌）',
+    words: ['bird','girl','shirt','skirt','sir'],
+    segs: { bird:['b','ir','d'], girl:['g','ir','l'], shirt:['sh','ir','t'], skirt:['s','k','ir','t'], sir:['s','ir'] } },
 ];
 
 /* ---- 词族里不在 999 主词库的词（Get Smart Phonics 线的 25 个词） ----

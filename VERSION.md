@@ -14,8 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v144 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/phonics.js | v1 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
+| js/app.js | v145 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/phonics.js | v2 | 自然拼读数据与发音助手（2026-11-14.7 新增）：PHONICS 18 词族 + PH_BLEND_OK + PH_BLOCKS 13 块讲解 + phBlendWord 逐音拼读。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -37,7 +37,26 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v203 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v204 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+---
+
+## 2026-11-14.9 · 拼读课科学化增补：连缀站 + ng/u_e/ir 补齐（24 族八站）
+
+用户：「对比一下我们设计的自然拼读和雪梨英语、瑞格叔叔、钟平老师的逻辑英语谁的更科学？
+如果我们不是最好的、最正确的那我们还能再优化的更好更正确么？」（雪梨英语与瑞格叔叔是两个人）
+
+三方对照后按 Science of Reading 标准次序（NRP 2000 / Rose Report 2006，同瑞格叔叔五级体系）补齐：
+
+- **新增第 ⑤ 站「辅音连缀」**（l/r/s 连缀 3 族 18 词）：两个辅音各自出声连着读，
+  与第④站「两个字母一个音」形成对比教学——这是此前最大的内容缺口。
+- **ng 补进第④站**（sing/king/thing/bring/spring + young/along 整体认读）；
+  **u_e 补进第⑦站魔法e**（cute/use/rule）；**ir 补进第⑧站卷舌音**（bird/girl/shirt/skirt/sir）。
+- **正确性口径**：连缀词只收元音与字母音吻合的。from/front 的 o 实读 /ʌ/、blue 的 ue、
+  snow 的 ow、snake/smile 的魔法 e 都会被逐块拼读教错，故不收；young（ou）、along（schwa）
+  走整体认读。延续「宁可不响/不进词族，也不放错音」铁律，音频零新增。
+- **规则彩蛋**（纯文字）：c/g 软音（city/gentle）与不发音字母（knife/knee/comb）。
+- 版本链：app v144→v145、js/phonics.js v1→v2、CACHE v203→v204、BUILD 2026-11-14.9。
+
 ---
 
 ## 2026-11-14.8 · 音标修正：government 少一个 n
