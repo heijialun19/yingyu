@@ -124,8 +124,9 @@
 <div id="toast"></div>
 <div id="confetti"></div>
 
+<script src="js/words-data.js?v=46"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=153"></script>
+<script src="js/app.js?v=154"></script>
 <script src="js/books-data.js?v=2"></script>
 <script defer src="js/audio-list.js?v=9"></script>
 <script src="js/sentence.js?v=52"></script>
@@ -144,7 +145,7 @@ let PAGE = 0;        // 当前页码
 let QUIZI = 0;       // 当前题号
 let QUIZ_OK = 0;     // 答对数
 
-function esc(x) { return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+/* esc 使用 app.js 的全局版本（本地重复声明会与 app.js 的 const esc 冲突导致整段脚本解析失败） */
 
 /* ============ 书架 ============ */
 function renderShelf() {

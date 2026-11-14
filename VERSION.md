@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v153 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v154 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/books-data.js | v2 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
 | js/phonics.js | v7 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
@@ -38,8 +38,22 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v212 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v213 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
+
+## 2026-11-14.18 · 读书馆热修复（页面打不开）
+
+用户：「打开读书馆，根本没法读」→ 无头 Edge 加载线上页面抓到两个真实错误：
+
+- **致命**：read.html 内联脚本自声明 `function esc(x)` 与 app.js 的 `const esc` 冲突，
+  浏览器抛 `SyntaxError: Identifier 'esc' has already been declared`——**整段内联脚本
+  解析失败、一行业务代码都不执行**，书架空白、点书无反应。冒烟桩自定义了 esc 把这个
+  冲突盖住了（教训：冒烟桩不得声明与 app.js 同名的全局）。
+- **连带**：read.html 漏加载 `words-data.js`（其它页都在 data.js 之前加载），
+  data.js 第 12 行 `GRADES.reduce` 抛 `GRADES is not defined`，THEMES/LETTERS 数据层报废。
+- 修复：删本地 esc（用 app.js 全局版）+ 补 `js/words-data.js?v=46` 引链。
+  无头 Edge 回归：15 本书卡全部渲染、分级标签正常、控制台无脚本错误。
+- 零音频变更。app v154 / BUILD .14.18 / CACHE v213（换名强制废弃缓存的坏 read.html）。
 
 ## 2026-11-14.17 · 读书馆质检修订（测验答案分布 / 歧义 / 发音注记）
 
