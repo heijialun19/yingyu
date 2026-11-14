@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v141 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v142 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -26,7 +26,8 @@
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v16 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v2 | 人教版 8 册 47 单元词表 |
-| js/pep-lessons.js | v2 | 人教版单元知识点讲解（273 张卡 / gzip 40.1KB）。**仅 pep.html 引**；`en:` 字段与整句音频对账 |
+| js/pep-lessons.js | v3 | 人教版单元知识点「基础篇」273 张卡。**仅 pep.html 引**；`en:` 字段与整句音频对账；v3 起 `pepPointsOf()` 会把 js/pep-points-more.js 的拓展条拼在后面 |
+| js/pep-points-more.js | v1 | 人教版单元知识点「拓展篇」282 张卡（2026-11-14.6 新增）。每单元 +6 条，全站 273 → 555；只写课本主线之外的角度，与基础篇零撞题 |
 | js/pep-mem.js | v5 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
 | js/pep-points.js | v24 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
 | js/audio-list.js | v7 | 发音清单（2882 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
@@ -35,7 +36,44 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v200 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v201 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+
+---
+
+## 2026-11-14.6 · 课本知识点扩容：每单元 6 条 → 12 条
+
+用户原话：「课本不可能一个单元就 6 个知识点，不科学啊。」
+
+### 改了什么
+- 新增 **js/pep-points-more.js（282 条 / 47 个单元，每单元 +6 条）**，全站知识点 **273 → 555**。
+- 原有 273 条**一个字未动**（零回归风险）；`pepPointsOf()` 改成「基础篇 → 拓展篇」拼接，
+  没加载新文件的页面按基础条返回，单词镇 / 学堂页不受影响。
+- 页面显示随之变成「11-12 个知识点」，卡片顺序是「先课本主线，再思维拓展」，读起来是递进而不是堆砌。
+
+### 拓展篇写的是什么角度
+统一口径：**中文这么说，英语为什么那么说**（不写作者名、不引任何原书例句，全部自己组织语言）。
+
+| 支柱 | 举例 |
+|---|---|
+| 名词的边界 | 数得清才加 s；water/bread/homework/grass/bamboo 数不清要装箱子；fish/sheep 不改样；person→people、man→men、mouse→mice |
+| 空间隐喻 | in 是包住、on 是贴面、under 是正下方；over there 是隔一段；再把空间词借去说时间（before/after/ago/till） |
+| 形合与意合 | 中文靠意思连，英语靠记号：s 标数量、ed 标时间、be 标状态、the 标「你知道的那个」 |
+| 词尾定词性 | -er 干这活的人、-ful 装满、-less 没有、re- 再来一次、un- 不、kilo/micro/tele 一串单位与仪器 |
+| 词源画面 | breakfast 是「打破禁食」、robot 本是「苦工」、dinosaur 是「可怕的蜥蜴」、blog 是 web+log、satellite 是「随从」、library 是「放书的地方」 |
+| 英美差异 | film/movie、autumn/fall、holiday/vacation、clothes 永远复数 |
+| 一词多职 | power 力量也电力、part 部分也角色、country 国家也乡下、tip 小费也提示、line 线也队、can 能也罐头 |
+
+### 质量把关
+- **逐单元比对旧 273 条**，发现 75 条讲的是同一件事（如旧有「also 也——住在动词旁」，新写「also 贴着动词站」），
+  全部换成真正未覆盖的点；最终 282 条与旧 273 条**零撞题**（脚本逐条校验）。
+- 12 条与旧条目共用同一课本例句（同一句话从两个角度讲），保留——课本核心句复用是合理的。
+- 282 条 kid 字段长度 61-130 字，平均 93 字，与旧条目（80-130）同一档。
+- 英文例句过 a/an、be+动词原形、句首大写、句末标点四类检查：0 条问题。
+- `en` 例句优先取课本词表能拼出的句子；不在 audio/sentences 预生成清单里的，播放退回逐词接龙 / 本机语音，
+  不会 404（与原有 20 条同处理）。
+
+### 版本链
+`app v141→v142`、`pep-lessons v2→v3`、`pep-points-more v1（新）`、`CACHE v200→v201`、`BUILD 2026-11-14.6`；音频零改动。
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
 

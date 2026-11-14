@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-14.5",
-  "note": "2026-11-14.5 单元名与课本逐条核对：8 册 47 个单元全查了一遍，修掉 2 处。① 四下 Unit 6 站内写「From farm to table」，课本 Contents 是「On the farm」（21 世纪教育网课本扫描件、当当/孔夫子两种教辅、Unit 6 知识清单四源一致），已改；该单元词表 feed/pick/milk/knife/fork/set the table/salad 本来就对应 On the farm，只有标题被带错。② 六下仍是旧版标题，标签却写「现行版」→ 改为「旧版」，并注明 2027 春起换新（Happy together / Our traditions / Then and now / Great inventions），词表待补。另：上一版 VERSION.md 说「三下 Unit 2/3/5 与已出版教材不一致」，这句话是错的——那三条来自电子课本网的 2025 春送审稿（Expressing yourself / Learning better / Old toys），而 2026 春起实际印的是 My words and actions / Tools and senses for learning / Old things，站内一直是对的。同轮更正了这段记录，并补上八册逐条核对表与来源。"
+  "build": "2026-11-14.6",
+  "note": "2026-11-14.6 课本知识点扩容：每单元 5-6 条 → 11-12 条（273 → 555 条）。新增的 282 条独立成 js/pep-points-more.js，原有 273 条一个字未动，pepPointsOf 做「基础 → 拓展」拼接。内容视角统一为「中文这么说，英语为什么那么说」：名词边界（数得清才加 s）、空间隐喻（介词画位置、再借去说时间）、形合与意合（中文靠意思连，英语靠 s/ed/be 做记号）、词尾定词性（-er/-ful/-less/re-/un-）、词源画面（breakfast 是打破禁食、robot 本是苦工、dinosaur 是可怕的蜥蜴、blog 是 web+log）、英美差异（film/movie、autumn/fall、holiday/vacation）。写作时逐单元比对旧 273 条，把 75 条讲重复的全部换掉，保证一条一个点、条条不撞题。例句优先取课本词表能拼出的句子，不写作者名、不引原书例句。"
 }

@@ -391,11 +391,17 @@ const PEP_POINTS = {
   },
 };
 
-/* 按单元 id 取讲解要点，id 形如 pep3a-u1 */
+/* 按单元 id 取讲解要点，id 形如 pep3a-u1
+   ★ 2026-11-14.6：拓展条独立成 js/pep-points-more.js（PEP_POINTS_MORE），
+     这里做「基础 → 拓展」拼接：先讲课本主线（旧 273 条），再接思维拓展（新 282 条）。
+     没加载该文件的页面按基础条返回，所以单词镇/学堂页不会因缺数据报错。 */
 function pepPointsOf(unitId) {
   const dash = unitId.lastIndexOf('-');
   if (dash < 0) return [];
-  const lv = PEP_POINTS[unitId.slice(0, dash)];
-  return lv ? (lv[unitId.slice(dash + 1)] || []) : [];
+  const lvKey = unitId.slice(0, dash), uKey = unitId.slice(dash + 1);
+  const base = (PEP_POINTS[lvKey] || {})[uKey] || [];
+  const more = (typeof PEP_POINTS_MORE !== 'undefined' && PEP_POINTS_MORE[lvKey])
+    ? (PEP_POINTS_MORE[lvKey][uKey] || []) : [];
+  return base.length ? base.concat(more) : more;
 }
 
