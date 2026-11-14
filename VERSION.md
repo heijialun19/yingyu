@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v139 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v140 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -24,7 +24,7 @@
 | js/ipa.js | v9 | 音标 |
 | js/ipa-gs.js | v2 | Get Smart 学堂页补充美式音标 646 条（2026-11-14.1 新增；仅 getsmart.html 引，末尾 Object.assign 并入主表） |
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
-| js/getsmart-data.js | v15 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
+| js/getsmart-data.js | v16 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
 | js/pep-lessons.js | v2 | 人教版单元知识点讲解（273 张卡 / gzip 40.1KB）。**仅 pep.html 引**；`en:` 字段与整句音频对账 |
 | js/pep-mem.js | v5 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
@@ -35,9 +35,27 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v198 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v199 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
+
+## 2026-11-14.4 · 静态文案复核：修掉 6 处英文 / 中文错误
+
+上一轮（.14.3）修的是内容和数据，这一轮专门盯「用户能看到的字」。新写两个扫描器：一个只看静态英文串
+（助动词拼写、a/an 冠词、重复词、标点后缺空格），一个只看可见中文（占位符泄漏、乱码、标点粘连、括号配对）。
+查出并修掉 6 处，全部在 Get Smart 模块卡的 `modTip` 里：
+
+| # | 原文 | 问题 | 改为 |
+|---|---|---|---|
+| 1-3 | `Don not judge by appearance` / `Don not play tricks on your friends` / `Don not make hasty judgments` | 英语里没有「Don not」，是 Do not 与 Don't 混写 | `Do not ...` |
+| 4 | `Ask before using others things` | others 是代词，不能直接修饰名词 | `other people's things` |
+| 5 | `品德: 做个好友谊` | 中文不通 | `品德: 做个好朋友` |
+| 6 | `Phonics: 三单词尾` | 漏空格（同文件另两处是「三单 -s」「三单 -es」） | `Phonics: 三单 词尾` |
+
+另有一处搭配不通顺带改掉：`善行再小也不浪费` → `善行再小也算数`。
+
+**没改的**：`js/data.js` 里「元音音 / 辅音音」是站内一贯的儿童向说法（和「第一个音是元音音」对称），
+不是笔误；Get Smart 1-2 册的品德提示用英文、3-6 册用中文，是两套教材目录的原始写法，保持原样。
 
 ## 2026-11-14.3 · 第二轮全站体检：修掉 18 处内容与文档错误
 

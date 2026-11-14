@@ -108,7 +108,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs1-m01r', mod: 1, kind: 'review', title: 'Module 1 复习闯关', zh: '打招呼 · 数字 · 启蒙词',
         from: ['gs1-m01l1', 'gs1-m01l2', 'gs1-m01l3'], count: 8 },
-      { id: 'gs1-m02l1', mod: 2, modName: 'Module 2 · School 学校', modEmoji: '🏫', modTip: 'Phonics: b bag, c cat · 品德: Ask before using others things', kind: 'unit',
+      { id: 'gs1-m02l1', mod: 2, modName: 'Module 2 · School 学校', modEmoji: '🏫', modTip: 'Phonics: b bag, c cat · 品德: Ask before using other people\'s things', kind: 'unit',
         title: 'M2-L1 · Colors', zh: '颜色',
         words: [
           { w: 'red', zh: '红色', e: '🔴' }, { w: 'blue', zh: '蓝色', e: '🔵' },
@@ -225,7 +225,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs1-m06r', mod: 6, kind: 'review', title: 'Module 6 复习闯关', zh: '动作 · 玩具',
         from: ['gs1-m06l1', 'gs1-m06l2'], count: 8 },
-      { id: 'gs1-m07l1', mod: 7, modName: 'Module 7 · My body 我的身体', modEmoji: '🧍', modTip: 'Phonics: th thumb · 品德: Don not judge by appearance', kind: 'unit',
+      { id: 'gs1-m07l1', mod: 7, modName: 'Module 7 · My body 我的身体', modEmoji: '🧍', modTip: 'Phonics: th thumb · 品德: Do not judge by appearance', kind: 'unit',
         title: 'M7-L1 · My Body', zh: '身体（一）',
         words: [
           { w: 'eyes', zh: '眼睛', e: '👀' }, { w: 'ears', zh: '耳朵', e: '👂' },
@@ -769,7 +769,7 @@ const GS_LEVELS = [
     id: 'gs3', name: 'Get Smart 3', zh: '第三册 · 官方目录对齐', emoji: '🐓', color: '#3B82F6',
     desc: '与课本逐字对齐：10 个 Module（Welcome! → The world around us），词汇与句型全部来自官方目录。',
     units: [
-      { id: 'gs3-m01l1', mod: 1, modName: 'Module 1 · Welcome! 欢迎', modEmoji: '🎉', modTip: 'Phonics: l- blends · 品德: Don not play tricks on your friends', kind: 'unit',
+      { id: 'gs3-m01l1', mod: 1, modName: 'Module 1 · Welcome! 欢迎', modEmoji: '🎉', modTip: 'Phonics: l- blends · 品德: Do not play tricks on your friends', kind: 'unit',
         title: 'M1-L1 · Appearance', zh: '外貌',
         words: [
           { w: 'pretty', zh: '漂亮的', e: '😊' }, { w: 'ugly', zh: '丑的', e: '🙈' },
@@ -827,7 +827,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs3-m02r', mod: 2, kind: 'review', title: 'Module 2 复习闯关', zh: '日常 · 职业',
         from: ['gs3-m02l1', 'gs3-m02l2'], count: 8 },
-      { id: 'gs3-m03l1', mod: 3, modName: 'Module 3 · Right now 正在进行', modEmoji: '🏃', modTip: 'Phonics: s- blends · 品德: Don not make hasty judgments', kind: 'unit',
+      { id: 'gs3-m03l1', mod: 3, modName: 'Module 3 · Right now 正在进行', modEmoji: '🏃', modTip: 'Phonics: s- blends · 品德: Do not make hasty judgments', kind: 'unit',
         title: 'M3-L1 · Sports', zh: '正在运动',
         words: [
           { w: 'playing the guitar', zh: '弹吉他', e: '🎸' }, { w: 'playing volleyball', zh: '打排球', e: '🏐' },
@@ -1276,7 +1276,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs4-m08r', mod: 8, kind: 'review', title: 'Module 8 复习闯关', zh: '动物 · 比较',
         from: ['gs4-m08l1', 'gs4-m08l2', 'gs4-m08l3'], count: 10 },
-      { id: 'gs4-m09l1', mod: 9, modName: 'Module 9 · Get active! 动起来', modEmoji: '🏅', modTip: 'Phonics: or/ar · 品德: 善行再小也不浪费', kind: 'unit',
+      { id: 'gs4-m09l1', mod: 9, modName: 'Module 9 · Get active! 动起来', modEmoji: '🏅', modTip: 'Phonics: or/ar · 品德: 善行再小也算数', kind: 'unit',
         title: 'M9-L1 · Sports', zh: '运动会',
         words: [
           { w: 'cycling', zh: '骑行', e: '🚴' }, { w: 'race', zh: '赛跑', e: '🏁' },
@@ -1703,7 +1703,7 @@ const GS_LEVELS = [
     id: 'gs6', name: 'Get Smart 6', zh: '第六册 · 官方目录对齐', emoji: '🦖', color: '#DC2626',
     desc: '与课本逐字对齐：10 个 Module（School and work → Healthy body, healthy mind），词汇与句型全部来自官方目录。',
     units: [
-      { id: 'gs6-m01l1', mod: 1, modName: 'Module 1 · School and work 学业与工作', modEmoji: '🏫', modTip: 'Phonics: 三单词尾 · 品德: 做个好友谊', kind: 'unit',
+      { id: 'gs6-m01l1', mod: 1, modName: 'Module 1 · School and work 学业与工作', modEmoji: '🏫', modTip: 'Phonics: 三单 词尾 · 品德: 做个好朋友', kind: 'unit',
         title: 'M1-L1 · Spare Time', zh: '业余时间',
         words: [
           { w: 'spare time', zh: '空闲时间', e: '🛋️' }, { w: 'hobby', zh: '爱好', e: '🎯' },

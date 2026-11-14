@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-14.3",
-  "note": "2026-11-14.3 第二轮全站体检：修掉 18 处内容与文档错误。① 字母页 I 组首词 ice cream 是 /aɪ/，页面却让孩子对比 /ɪ/ → 换 in/pig/six；O 组 nose 是 /oʊ/ 且与 N 组重复 → 换 octopus/hot/orange。② 课本知识点两处中文病句（「住…住得」「去…去」）。③ government 音标多一个 n → /ˈɡʌvərmənt/。④ graduate 词性 n → v。⑤ 三条记忆法词源编错（nest×network、sugar×cane、feather×fly）已改。⑥ dancing/amazing 补「去 e 加 -ing」。⑦ kangaroo 补次重音。⑧ VERSION.md 补登记 ipa-gs.js。⑨ THIRD-PARTY 章节顺序重排。另逐条复核了音标与 ipa-dict 的 48 处差异、999 条词性、1897 条动态句、273 条中英对照，均无新问题。⑦ 字母页 X 的「同一个音」说明本来不成立（X 的 /ks/ 在词尾，X-ray 读 /eks/），改成单独文案。⑧ 三条短语补主重音（French fries / good night / hot dog）。⑨ VERSION.md 自身有两节重复、两处标题重复，已合并。"
+  "build": "2026-11-14.4",
+  "note": "2026-11-14.4 静态英文与中文文案复核：修掉 6 处。① Get Smart 模块卡的品德提示里有 3 处「Don not」，英语里没有这种写法，改为 Do not（judge by appearance / play tricks on your friends / make hasty judgments）。② 「Ask before using others things」——others 是代词不能直接修饰名词，改为 other people's things。③ 「品德: 做个好友谊」中文不通，改为「做个好朋友」。④ 「Phonics: 三单词尾」漏空格，同文件另两处写作「三单 -s」「三单 -es」，统一为「三单 词尾」。⑤ 「善行再小也不浪费」搭配不通，改为「善行再小也算数」。另用脚本扫了全站 9 页 + 9 个数据文件的静态英文串（助动词拼写 / a-an 冠词 / 重复词 / 标点空格）与可见中文文案（占位符泄漏 / 乱码 / 标点粘连 / 括号配对），除上述外无新问题。"
 }
