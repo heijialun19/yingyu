@@ -289,7 +289,7 @@ const PEP_POINTS = {
       { t: "地名、人名、景点名都要抬头", kid: "Mount Taishan 泰山、Beijing opera 京剧、Confucius 孔子、Cairo 开罗——中文靠「泰山」两个字看得出是名字，英语得靠大写标出来。由普通词组成的名字，每个主要词都大写。", tip: "名字靠大写标出来", en: "I want to see Beijing opera one day.", zh: "我想有一天去看京剧。" },
     ],
     u5: [
-      { t: "by 后面直接跟车，不加 a 或 the", kid: "by plane、by ship、by bike、by underground——说的是「用哪种方式去」，交通工具被当成方式，不是数一件东西，所以不加冠词。偏偏「走路」是 on foot，因为用的是身体部位，不是工具。", tip: "方式不加冠词，走路例外", en: "We go by plane, but go to the museum on foot.", zh: "我们坐飞机去，去博物馆走路。" },
+      { t: "by 后面直接跟车，不加 a 或 the", kid: "by plane、by ship、by bike、by underground——说的是「用哪种方式去」，交通工具被当成方式，不是数一件东西，所以不加冠词。偏偏「走路」是 on foot，因为用的是身体部位，不是工具。", tip: "方式不加冠词，走路例外", en: "We go by plane, but go to the museum on foot.", zh: "我们坐飞机去，去博物馆则走路。" },
       { t: "句子不能没有动词", kid: "We go by plane. 里的 go 是骨架；只写 We by plane. 就不成句。by plane 只是「怎么去」的附加说明，不能当谓语。中文「我们坐飞机去」动词很显眼，英语写成 We by plane 就少了半句，这是写作常犯的错。", tip: "介词短语不能当谓语", en: "We go to the island by ship.", zh: "我们坐船去那座岛。" },
       { t: "hurt 的三单加 s，过去却不变", kid: "My foot hurts.（现在疼，第三人称单数加 s）；I hurt my foot yesterday.（昨天弄伤了，过去式还是 hurt）。少数常用动词三个样子长得一样，见一个记一个，别硬给它加 ed。", tip: "三单变，过去不变", en: "My foot hurts when I walk.", zh: "我走路时脚疼。" },
       { t: "everyday 和 every day 不是一个词", kid: "everyday 是形容词，「每天的」：everyday exercise 日常锻炼；every day 是两词短语，「每天」：I walk every day.。判断办法：后面跟名词就用连着的一个词，单独说时间就分开写。", tip: "跟名词连写，说时间分开", en: "Walking is good for everyday health.", zh: "散步对日常健康有好处。" },
@@ -370,7 +370,7 @@ const PEP_POINTS = {
       { t: "last 加时间，就是把事情钉在过去", kid: "last weekend 上周末、last night 昨晚、last year 去年——看到 last，动词立刻换过去式。它和 yesterday、ago 是同一组信号灯，做题先圈时间，再检查动词，最不容易漏。", tip: "看到 last，动词换装", en: "Last weekend I cleaned my room.", zh: "上周末我打扫了房间。" },
       { t: "read 的过去式长得一样，读法却变了", kid: "现在读 I read /riːd/，过去读 I read /red/——拼写没变，元音短了。英语有时靠读音区分时间，光看字会以为是现在。听力和朗读遇到它，先看句子里有没有 yesterday、last，再决定怎么读。", tip: "字不变，音变了", en: "I read a magazine yesterday afternoon.", zh: "昨天下午我读了一本杂志。" },
       { t: "before 能自己站，ago 要跟着时间", kid: "I saw it before.（我以前见过）——before 可以单独放句尾；three days ago 必须带着一段时间，而且站在这段时间的后面。两个词都能说「以前」，位置和搭档不一样，写句子别对调。", tip: "一个能单站，一个带时间", en: "I fixed the broken lamp before.", zh: "我以前修过那盏坏台灯。" },
-      { t: "enjoy 后面接 doing", kid: "I enjoyed reading the magazine. 不能写 enjoyed to read.——enjoy 说的是「从这件事里得到乐趣」，后面要跟已经当成一件事的 -ing 形式。和前面学过的 suggest doing 是同一类，遇到就归到一队里。", tip: "后面认 ing，不认 to", en: "We enjoyed staying at the hotel.", zh: "我们住那家旅馆住得很开心。" },
+      { t: "enjoy 后面接 doing", kid: "I enjoyed reading the magazine. 不能写 enjoyed to read.——enjoy 说的是「从这件事里得到乐趣」，后面要跟已经当成一件事的 -ing 形式。和前面学过的 suggest doing 是同一类，遇到就归到一队里。", tip: "后面认 ing，不认 to", en: "We enjoyed staying at the hotel.", zh: "我们住那家旅馆很开心。" },
     ],
     u3: [
       { t: "did 已经说了过去，动词就用原形", kid: "Where did you go? 不能写 Where did you went?——did 一个人把「过去」扛走了，后面的 go 保持原样。特殊疑问句、一般疑问句、否定句都守这一条，一个句子只标一次时间。", tip: "一句只标一次过去", en: "Where did you go last Sunday?", zh: "上周日你去哪儿了？" },
