@@ -14,19 +14,19 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v136 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v137 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v44 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v51 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v9 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
-| js/ipa.js | v7 | 音标 |
+| js/ipa.js | v8 | 音标 |
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v15 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
 | js/pep-lessons.js | v1 | 人教版单元知识点讲解（273 张卡 / gzip 40.1KB）。**仅 pep.html 引**；`en:` 字段与整句音频对账 |
-| js/pep-mem.js | v2 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
+| js/pep-mem.js | v3 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
 | js/pep-points.js | v24 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
 | js/audio-list.js | v7 | 发音清单（2882 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v53 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
@@ -34,9 +34,66 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v195 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v196 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
+
+## 2026-11-14.1 · 音标分两套口径：课本页英式、其余美式；Get Smart 补齐 650 处
+
+家长要求：「人教教材的那里面的用英式，其他的全部都用美式，但是音标不能有任何的错误。
+就算同一个单词前后不一致也没关系，只要是正确的就可以。」
+
+### 一、人教版课本页 → 课本口径（英式 DJ / RP），894 条全覆盖
+`js/pep-mem.js` 的 `PEP_IPA` 原先是 328 条美式补充表，现整表换成 894 条英式：
+
+| 词 | 改前（美式） | 改后（课本写法） |
+|---|---|---|
+| teacher | /ˈtitʃər/ | /ˈtiːtʃə/ |
+| dog | /dɔɡ/ | /dɒɡ/ |
+| tomato | /təˈmeɪtoʊ/ | /təˈmɑːtəʊ/ |
+| student | /ˈstudənt/ | /ˈstjuːdənt/ |
+| tomato 之外，water /ˈwɔtər/ → /ˈwɔːtə/、family /ˈfæməli/ → /ˈfæmɪli/ 等同样按课本 |
+
+**不能机械转换**（原注释早就警告过）。实际做法：
+- 音素取 ipa-dict `en_UK`（MIT），**重音位置改用美式主表定** —— 词典的重音标记位置不可靠
+  （`expensive` 记成 `eˈkspensɪv`，`information` 记成 `ɪnfəmˈeɪʃən`）。
+- **长音符必须保留**：第一版把 `ː` 当标记一起剥掉，`father` 变成 /ˈfɑðə/，是硬错。
+- 单音节不标重音（`name /neɪm/`、`eye /aɪ/`）。
+- 动态规划对齐，只放行已知的英美对应关系（ɑ↔ɒ、oʊ↔əʊ、ɜr↔ɜː、词尾 r 脱落…），
+  对不上的 **143 条逐条人工核定**（其中 73 条是词典根本没收录的高频词：
+  he / have / nice / Monday / Wednesday / T-shirt / maths …）。
+- 反向校验：`_verify_uk.py` 查重音个数、音节数、非法字符 —— **894 条 0 异常**。
+
+### 二、Get Smart 学堂页补齐 650 处空音标（新增 js/ipa-gs.js，共 646 条）
+学堂页 1026 个词条里，650 处在主表查不到音标（其中 190 处是含空格的短语），音标位一直是空的
+（thirty / meat / salad 这些都没标）。新文件写 646 条（456 词 + 190 短语），只有 getsmart.html 引，
+加载后 `Object.assign(IPA, IPA_GS)` 并入主表，`ipaOf()` 不用改。
+剩 5 个词条（Art / Music / Math / Science / miss）主表本身有全小写键，`ipaOf()` 按原样查不到、
+按小写能查到 —— 实测 1026 个词条 **0 空缺**。
+
+来源 ipa-dict `en_US`，但词典本身有三类毛病，不改就是错音标：
+
+| 毛病 | 例子 | 处理 |
+|---|---|---|
+| 重读音节也写 schwa | honey=ˈhəni、puppy=ˈpəpi、customs=ˈkəstəmz | 重读位置的 ə 一律改 ʌ |
+| ɝ/ɚ 换成 ɜ/ə 会丢 r | butter 变 /ˈbʌtɜ/、government 变 /ˈɡʌvəmənt/ | 改写成 ɜr/ər，非重读 ɜr → ər |
+| 一个词两个主重音 | downstairs=ˈdaʊnˈsterz | 前一个降为 ˌ |
+
+又用英式词典交叉比对**辅音骨架**，抓出「少一个字母」的硬伤并手工改正：
+`printer /ˈprɪnɜr/ → /ˈprɪntər/`、`softly /ˈsɔfli/ → /ˈsɔftli/`、
+`sandwiches /ˈsæmwɪtʃɪz/ → /ˈsænwɪtʃɪz/`、`entertainment` 少 t、`government` 少 n、
+`Korean /kriən/ → /kəˈriən/`。短语里的虚词用弱读式（`a cup of tea` = /ə kʌp əv ti/，
+不是按词典的 /eɪ … ʌv/）。
+
+### 三、顺手修的
+- 主表 `of` = `/ʌv/` → **`/əv/`**（`of` 的美式弱读就是 /əv/，/ʌv/ 是错的）。
+- `words.html` 词卡弹窗、`parents.html` 口径说明改写为「两套口径怎么分工」，
+  不再宣称「本站不逐词提供课本音标」——现在人教课本页逐词提供了。
+- `disclaimer.html` 与 `THIRD-PARTY-NOTICES.txt` 补 ipa-dict（MIT）署名与两批音标的数量。
+
+版本链：`app v136→v137`（9 页 + SW 两处）、`ipa v7→v8`（4 页 + SW）、
+`pep-mem v2→v3`（2 页 + SW）、`ipa-gs v1`（新文件，已进 CORE）、`CACHE v195→v196`、
+`BUILD 2026-11-13.13→2026-11-14.1`。**音频零改动。**
 
 ## 2026-11-13.13 · 内容审计：音标错误 / 两页两套音标 / 声明数字
 

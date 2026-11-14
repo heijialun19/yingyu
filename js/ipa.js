@@ -177,7 +177,7 @@ const IPA = {
   "already":"/ɔlˈredi/", "then":"/ðen/", "first":"/fɜrst/", "slowly":"/ˈsloʊli/", "quickly":"/ˈkwɪkli/",
   "what":"/wʌt/", "who":"/hu/", "where":"/wer/", "when":"/wen/", "why":"/waɪ/",
   "which":"/wɪtʃ/", "whose":"/huz/", "how":"/haʊ/", "everyone":"/ˈevriwʌn/", "anyone":"/ˈeniwʌn/",
-  "at":"/æt/", "of":"/ʌv/", "for":"/fɔr/", "with":"/wɪð/", "about":"/əˈbaʊt/",
+  "at":"/æt/", "of":"/əv/", "for":"/fɔr/", "with":"/wɪð/", "about":"/əˈbaʊt/",
   "to":"/tu/", "from":"/frʌm/", "into":"/ˈɪntu/", "out":"/aʊt/", "up":"/ʌp/",
   "down":"/daʊn/", "off":"/ɔf/", "and":"/ænd/", "or":"/ɔr/", "but":"/bʌt/",
   "so":"/soʊ/", "because":"/bɪˈkɔz/", "if":"/ɪf/", "between":"/bɪˈtwin/", "among":"/əˈmʌŋ/",
