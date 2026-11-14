@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-14.4",
-  "note": "2026-11-14.4 静态英文与中文文案复核：修掉 6 处。① Get Smart 模块卡的品德提示里有 3 处「Don not」，英语里没有这种写法，改为 Do not（judge by appearance / play tricks on your friends / make hasty judgments）。② 「Ask before using others things」——others 是代词不能直接修饰名词，改为 other people's things。③ 「品德: 做个好友谊」中文不通，改为「做个好朋友」。④ 「Phonics: 三单词尾」漏空格，同文件另两处写作「三单 -s」「三单 -es」，统一为「三单 词尾」。⑤ 「善行再小也不浪费」搭配不通，改为「善行再小也算数」。另用脚本扫了全站 9 页 + 9 个数据文件的静态英文串（助动词拼写 / a-an 冠词 / 重复词 / 标点空格）与可见中文文案（占位符泄漏 / 乱码 / 标点粘连 / 括号配对），除上述外无新问题。"
+  "build": "2026-11-14.5",
+  "note": "2026-11-14.5 单元名与课本逐条核对：8 册 47 个单元全查了一遍，修掉 2 处。① 四下 Unit 6 站内写「From farm to table」，课本 Contents 是「On the farm」（21 世纪教育网课本扫描件、当当/孔夫子两种教辅、Unit 6 知识清单四源一致），已改；该单元词表 feed/pick/milk/knife/fork/set the table/salad 本来就对应 On the farm，只有标题被带错。② 六下仍是旧版标题，标签却写「现行版」→ 改为「旧版」，并注明 2027 春起换新（Happy together / Our traditions / Then and now / Great inventions），词表待补。另：上一版 VERSION.md 说「三下 Unit 2/3/5 与已出版教材不一致」，这句话是错的——那三条来自电子课本网的 2025 春送审稿（Expressing yourself / Learning better / Old toys），而 2026 春起实际印的是 My words and actions / Tools and senses for learning / Old things，站内一直是对的。同轮更正了这段记录，并补上八册逐条核对表与来源。"
 }

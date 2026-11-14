@@ -1,7 +1,7 @@
 /* 人教版 PEP 英语课本专栏数据 v1
    词表依据：人民教育出版社现行教材各册附录「Words in each unit」逐词对齐。
    - 三上～六上：2022 课标修订版（2024-2026 学年陆续启用的新版教材）
-   - 六下：现行版教材（4 个单元 + Recycle）
+   - 六下：仍按旧版教材整理（4 个单元 + Recycle）。2027 春起换用 2024 审定新版（Happy together / Our traditions / Then and now / Great inventions），词表待补
    单元顺序与释义与人教版课本词表一致；四下附录的数字总表单独列为「附录·数字」。
    本文件只含课本词表（事实性数据），不包含课本课文/图片等受版权内容。 */
 const PEP_LEVELS = [
@@ -218,7 +218,7 @@ const PEP_LEVELS = [
         { w: 'potato', zh: '土豆', e: '🥔' }, { w: 'green bean', zh: '青刀豆；四季豆' }, { w: 'can', zh: '（盛食品或饮料的）金属罐' },
         { w: 'a box of', zh: '一盒，一箱（东西）' },
       ] },
-      { id: 'pep4b-u6', mod: 6, title: 'Unit 6 · From farm to table', zh: '从农场到餐桌', words: [
+      { id: 'pep4b-u6', mod: 6, title: 'Unit 6 · On the farm', zh: '在农场', words: [
         { w: 'feed', zh: '给（人或动物）食物；饲养' }, { w: 'pass', zh: '给；递' }, { w: 'pick', zh: '采；摘' },
         { w: 'milk', zh: '挤奶' }, { w: 'knife', zh: '刀', e: '🔪' }, { w: 'fork', zh: '餐叉' },
         { w: 'chopstick', zh: '（常用复数）筷子' }, { w: 'waste', zh: '浪费；废品' }, { w: 'food', zh: '菜肴；食物' },
@@ -427,7 +427,7 @@ const PEP_LEVELS = [
     ],
   },
   {
-    id: 'pep6b', name: '六年级下册', tag: '现行版', zh: 'PEP 六下', emoji: '🎓',
+    id: 'pep6b', name: '六年级下册', tag: '旧版', zh: 'PEP 六下', emoji: '🎓',
     units: [
       { id: 'pep6b-u1', mod: 1, title: 'Unit 1 · How tall are you?', zh: '你有多高？', words: [
         { w: 'younger', zh: '更年轻的（young 的比较级）' }, { w: 'older', zh: '更年长的（old 的比较级）' }, { w: 'taller', zh: '更高的（tall 的比较级）' },

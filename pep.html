@@ -152,10 +152,10 @@
 <script async src="svg/emoji-svg2.js?v=3"></script>
 <script src="js/ipa.js?v=9"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=140"></script>
+<script src="js/app.js?v=141"></script>
 <script defer src="js/sentence.js?v=51"></script>
 <script defer src="js/audio-list.js?v=7"></script>
-<script src="js/pep-data.js?v=1"></script>
+<script src="js/pep-data.js?v=2"></script>
 <!-- 2026-11-12.3：课本页是唯一用到全部三块的页面；数据先载、工具后载。 -->
 <script src="js/pep-lessons.js?v=2"></script>
 <script src="js/pep-mem.js?v=5"></script>
@@ -272,7 +272,7 @@ function renderLevels() {
     const [c1, c2] = COVER[lv.id] || ['#7C5CFF', '#5B3FBF'];
     const gName = lv.name.replace('年级', '年级<br>');
     return `<div class="pep-book ${on ? 'on' : ''}" onclick="pepPickLevel('${lv.id}')">
-      ${lv.tag === '新版' ? '<span class="pep-tag">新版</span>' : '<span class="pep-tag old">现行</span>'}
+      ${lv.tag === '新版' ? '<span class="pep-tag">新版</span>' : '<span class="pep-tag old">旧版</span>'}
       <div class="pb-cover" style="background:linear-gradient(160deg,${c1},${c2})">
         <span class="pb-pub">人教 PEP</span>
         <span class="pb-g">${gName}</span>
@@ -285,7 +285,7 @@ function renderLevels() {
     <button class="btn ghost" style="margin-bottom:12px" onclick="location.href='index.html'">← 回首页</button>
     <div class="card" style="padding:16px 18px">
       <b>选一册课本</b>
-      <div style="color:#6B7280;font-size:.82rem;margin-top:2px">配套<b>人教版 PEP 英语教材</b>使用：三 ~ 五年级与六上为新课标版，六下为现行版。词表按课本附录「分单元单词表」整理；音标用<b>课本写法</b>（英式 DJ），其中 605 条已与公开的人教版词表逐条交叉核对，其余按同一套转写规则推定。</div>
+      <div style="color:#6B7280;font-size:.82rem;margin-top:2px">配套<b>人教版 PEP 英语教材</b>使用：三 ~ 五年级与六上为 2024 审定新课标版；六下仍按旧版整理（2027 春起换新）。单元名按课本 Contents 逐条核对，词表按附录「分单元单词表」整理；音标用<b>课本写法</b>（英式 DJ），其中 605 条已与公开的人教版词表逐条交叉核对，其余按同一套转写规则推定。</div>
       <div class="pep-grid" style="margin-top:10px">${cards}</div>
       <div style="text-align:center;margin-top:12px"><a href="getsmart.html" style="color:#78909C;font-size:.8rem">学国际教材？去 Get Smart 学堂 →</a></div>
     </div>`;

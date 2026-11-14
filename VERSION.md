@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v140 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v141 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -25,7 +25,7 @@
 | js/ipa-gs.js | v2 | Get Smart 学堂页补充美式音标 646 条（2026-11-14.1 新增；仅 getsmart.html 引，末尾 Object.assign 并入主表） |
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v16 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
-| js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
+| js/pep-data.js | v2 | 人教版 8 册 47 单元词表 |
 | js/pep-lessons.js | v2 | 人教版单元知识点讲解（273 张卡 / gzip 40.1KB）。**仅 pep.html 引**；`en:` 字段与整句音频对账 |
 | js/pep-mem.js | v5 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
 | js/pep-points.js | v24 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
@@ -35,9 +35,46 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v199 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v200 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
+
+## 2026-11-14.5 · 单元名与课本逐条核对（8 册 47 个单元）
+
+起点是一个误会：上一版记着「三下 Unit 2/3/5 的单元名与已出版教材不一致」。这次把八册单元名**全查了一遍**，
+结论是那条记录本身错了，但顺手查出另一处真错。
+
+### 逐册核对结果
+
+| 册次 | 站内单元名 | 课本 | 来源 | 结论 |
+|---|---|---|---|---|
+| 三上 (2024秋) | Making friends / Different families / Amazing animals / Plants around us / The colourful world / Useful numbers | 同 | 人教社官网音频页、电子课本网 2024秋版 | 一致 |
+| 三下 (2026春) | Meeting new people / My words and actions / Tools and senses for learning / Healthy food / Old things / Numbers in life | 同 | 课本 Contents 扫描（页码 2/14/26/38/50/62）、出卷网 2026 单元卷、当当 26春教辅 | 一致 |
+| 四上 (2025秋) | Helping at home / My friends / Places we live in / Helping in the community / The weather and us / Changing for the seasons | 同 | 人教社官网音频页、文轩教辅 | 一致 |
+| 四下 (2026春) | ~~From farm to table~~ → **On the farm** | On the farm | 21世纪教育网 Contents 扫描（页码 4/14/26/38/50/62/74）、当当科学普及教辅、孔夫子教辅、Unit 6 知识清单 | **本轮修正** |
+| 五上 (2026秋) | Different friends / My feelings / Work and play / Healthy habits / Food we eat / Nature and us | 同 | 课本 Contents 扫描、文轩&孔夫子教辅 | 一致 |
+| 五下 (2027春) | Following the rules / Our community / Life in different seasons / My hometown / Travelling around / Making a travel plan | 同 | 课本 Contents 扫描 | 一致 |
+| 六上 (2026秋) | Amazing places / Getting together / Healthy life / Managing money well / Exploring space / Energy, nature and us | 同 | 人教社官网音频页、电子课本网 2026秋版、课本 Contents 扫描 | 一致 |
+| 六下 (旧版) | How tall are you? / Last weekend / Where did you go? / Then and now | 旧版同 | 旧版教材 | 标题对旧版；标签「现行」已改「旧版」 |
+
+### 改了什么
+
+1. **四下 Unit 6：`From farm to table` → `On the farm`**（中文「从农场到餐桌」→「在农场」）。
+   这个错不是编的：文轩网那本《课堂笔记 26春英语4年级下》的目录就写 *From farm to table*，站内当年照抄了它；
+   而课本扫描件、当当《教材伴读课堂笔记》、孔夫子《课堂笔记英语四年级下册RJ》、21世纪教育网《Unit 6 知识清单》
+   四家都是 *On the farm*。**该单元词表（feed / pick / milk / knife / fork / chopsticks / bowl / spoon /
+   set the table / clear the table / salad / delicious / waste）本来就对应 On the farm**，所以只改标题即可，词表不用动。
+2. **六下标签：`现行版` → `旧版`**。站内六下一直是旧版四个单元（How tall are you? / Last weekend / Where did you go? /
+   Then and now），但标签写「现行版」。2027 春起人教版六下换新（Happy together / Our traditions / Then and now /
+   Great inventions，4 单元 + Revision Graduation week），旧版词表还能用，但不能再叫「现行」。新版词表待补。
+3. **`pep.html` 说明文字**同步改为「三 ~ 五年级与六上为 2024 审定新课标版；六下仍按旧版整理（2027 春起换新）。
+   单元名按课本 Contents 逐条核对」。
+
+### 一个教训（写下来免得再犯）
+「送审稿目录」和「实际印本」会不一样。三下的 *Expressing yourself / Learning better / Old toys* 是送审稿标题，
+实际印本改成了 *My words and actions / Tools and senses for learning / Old things*——
+证据是课本 Contents 页码（2/14/26/38/50/62）与单元开篇句（Unit 2 "How do you express yourself?" 是单元里的歌名，不是单元名）。
+**判断依据优先级：课本正文扫描 > 教辅目录 > 电子课本网站目录**，教辅和网站都可能停在送审稿上。
 
 ## 2026-11-14.4 · 静态文案复核：修掉 6 处英文 / 中文错误
 
@@ -166,14 +203,17 @@
 - 重音位置错 2 处：`magazine`（重音在 zine）、`sometimes`（首重音）。
 - `-teen` 家族补次重音：`thirteen /ˌθɜːˈtiːn/`、`sixteen /ˌsɪksˈtiːn/`（原值还丢了 six 的 s）。
 
+> **2026-11-14.5 更正**：下面这段原来的判断是**错的**。当时看到电子课本网「三年级下册 2025 春版」的目录写
+> *Expressing yourself* / *Learning better* / *Old toys*，就认定站内三条单元名有误。实际上那是**送审稿目录**，
+> 2026 春起实际印的课本（Contents 页码 2/14/26/38/50/62）是 *My words and actions* / *Tools and senses for learning* /
+> *Old things*，站内一直是对的。原始错误留档，结论见文末「2026-11-14.5」一节。
+
 ### 顺手改掉的过度声明
-`pep.html` 原写「每单元词表与课本附录**完全一致**」。核对时发现三下 Unit 2/3/5 的单元名
-与已出版教材不一致（教材为 *Expressing yourself* / *Learning better* / *Old toys*，
-站内为 *My words and actions* / *Tools and senses for learning* / *Old things*），
-这句话站不住，改为「词表按课本附录**逐单元整理**」，并注明音标里可核对的 605 条已核。
+`pep.html` 原写「每单元词表与课本附录**完全一致**」。改成「词表按课本附录**逐单元整理**」，
+并注明音标里可核对的 605 条已核。这条改动本身仍然成立（词表确实只是整理、不是影印），
+但当时引用的理由（三下单元名不一致）不成立。
 
 ### 未做（留待确认）
-- 三下单元名与词表是否整册替换 —— 需要纸质课本或更多公开词表，属内容迁移不是音标问题。
 - `(r)` 标记：公开词表一半印 `teacher /ˈtiːtʃə(r)/`、一半不印，教材印法不统一，本站不印。
 
 ## 2026-11-14.1 · 音标分两套口径：课本页英式、其余美式；Get Smart 补齐 650 处
