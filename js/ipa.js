@@ -109,7 +109,7 @@ const IPA = {
   "country":"/ˈkʌntri/", "world":"/wɜrld/", "Chinese":"/tʃaɪˈniz/", "English":"/ˈɪŋɡlɪʃ/", "math":"/mæθ/",
   "music":"/ˈmjuzɪk/", "art":"/ɑrt/", "science":"/ˈsaɪəns/", "computer":"/kəmˈpjutər/", "lesson":"/ˈlesən/",
   "homework":"/ˈhoʊmwɜrk/", "subject":"/ˈsʌbdʒɪkt/", "classmate":"/ˈklæsmeɪt/", "test":"/test/", "grade":"/ɡreɪd/",
-  "January":"/ˈdʒænjueri/", "February":"/ˈfebjəweri/", "March":"/mɑrtʃ/", "April":"/ˈeɪprəl/", "May":"/meɪ/",
+  "January":"/ˈdʒænjueri/", "February":"/ˈfebruˌeri/", "March":"/mɑrtʃ/", "April":"/ˈeɪprəl/", "May":"/meɪ/",
   "June":"/dʒun/", "July":"/dʒuˈlaɪ/", "August":"/ˈɑɡəst/", "September":"/sepˈtembər/", "October":"/ɑkˈtoʊbər/",
   "November":"/noʊˈvembər/", "December":"/dɪˈsembər/", "month":"/mʌnθ/", "year":"/jɪr/", "spring":"/sprɪŋ/",
   "summer":"/ˈsʌmər/", "autumn":"/ˈɔtəm/", "fall":"/fɔl/", "season":"/ˈsizən/", "weather":"/ˈweðər/",

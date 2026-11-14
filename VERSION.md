@@ -14,29 +14,92 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v135 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v136 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v44 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
 | js/sentence.js | v51 | 句子朗读引擎（整句音频优先 / 逐词接龙兜底 + 高亮），句子工厂/游戏/Get Smart 共用 |
 | js/speech.js | v1 | 跟读评分引擎（浏览器语音识别 → 「听清度」，**不是**发音评分） |
 | js/grammar-engine.js | v9 | 语法引擎（词性、复数、冠词、句型转换、能不能加 a/an） |
-| js/ipa.js | v6 | 音标 |
+| js/ipa.js | v7 | 音标 |
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
 | js/getsmart-data.js | v15 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v1 | 人教版 8 册 47 单元词表 |
 | js/pep-lessons.js | v1 | 人教版单元知识点讲解（273 张卡 / gzip 40.1KB）。**仅 pep.html 引**；`en:` 字段与整句音频对账 |
-| js/pep-mem.js | v1 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
+| js/pep-mem.js | v2 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
 | js/pep-points.js | v24 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
 | js/audio-list.js | v7 | 发音清单（2882 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
 | css/style.css | v53 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
 | svg/word-svg.js | v7 | 379 张自绘词图（346 张卡通 + 33 张数字 / 日历 / 国旗卡；3 张泄答案图已重画，board / blackboard 共用黑板画） |
-| svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
+| svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v194 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v195 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
+
+## 2026-11-13.13 · 内容审计：音标错误 / 两页两套音标 / 声明数字
+
+本轮是「侵权、不正确、错误内容」专项体检后的修复。先给体检结论，再说改了什么。
+
+### 体检结论（未改的部分）
+
+| 项 | 结果 |
+|---|---|
+| 国旗 | 站内 13 面国旗全是主权国家（CN/US/GB/CA/IN/IT/NZ/FR/MX/BR/KR/AU/JP），**没有**台/港/澳旗 |
+| 第三方请求 | 0（无 CDN、无统计、无字体外链），学习数据只存 localStorage |
+| 知名 IP | 0（无迪士尼/佩奇/宝可梦等） |
+| 绝对化宣传 | 0（「保证」「100%」只出现在免责条款与 CSS 宽度里） |
+| 教材原文 | PEP 273 条讲解句、Get Smart 226 条例句，含教材角色名的各只有 2 句（"Hello, I'm Mike." / "Hi! I'm April."），其余为按语法点自编 |
+| 记忆法词源 | 891 条抽查无「his story / golf / tips」这类著名谣言；family 一条还主动辟谣「F-A-M-I-L-Y 是好玩的玩笑，不是词源」 |
+
+### 改了什么
+
+**① February 音标错**
+`/ˈfebjəweri/` → `/ˈfebruˌeri/`（CMUdict: F EH1 B R UW0 EH2 R IY0）。原来的写法把 `-bru-` 读成了 `-bju-we-`。
+
+**② 同一个词，两个页面两套音标**（最要紧的一条）
+`js/pep-mem.js` 的 `PEP_IPA` 原本 529 条，其中 **202 条与 `js/ipa.js` 主表重复**，而且写法不同：
+
+| 词 | 主表（单词镇） | PEP_IPA（人教课本页） |
+|---|---|---|
+| Wednesday | `/ˈwenzdi/` | `/ˈwɛnzdeɪ/` ❌（-day 读 /di/） |
+| photo | `/ˈfoʊtoʊ/` | `/foʊtə/` ❌ |
+| excited | `/ɪkˈsaɪtɪd/` | `/ɪkˈsaɪtəd/` ❌ |
+| basketball | `/ˈbæskətbɔl/` | `/ˈbæskɪtbɔl/` ❌ |
+| uncle | `/ˈʌŋkəl/` | `/ʌŋkl/`（缺重音） |
+| colour | `/ˈkʌlər/` | `/kʌlə/`（英式尾） |
+
+`pepIpaOf()` 先查 `PEP_IPA` 再回退主表，所以孩子在这两页看到的同一个词音标不一样。
+**修法**：删掉这 202 条重复项，一律回退主表（主表是 CMUdict 转写、统一美式）。
+保留 328 条是课本特有、主表确实没有的词（含新增 `may` /meɪ/），并补齐 27 条缺失的主重音
+（`panda` `/ˈpændə/`、`animal` `/ˈænɪml/`、`get up` `/ˈɡet ʌp/`…），`ɛ` 统一写成 `e` 与主表口径一致。
+
+**③ grammar.html 两处标注**
+`every day` 由「副词」改为「名词短语」（名词短语作时间状语，不是副词）；
+`Yes` 词性「感叹词」/ 成分「状语」自相矛盾，改为「副词 / 状语」，note 同步。
+
+**④ 声明数字与实际不符**
+
+| 位置 | 原文 | 实际 |
+|---|---|---|
+| THIRD-PARTY | 970 条音标 | 主表 1000 条 + 课本补充 328 条 |
+| THIRD-PARTY | 自绘 345 张 SVG | 379 张（`grep -c 'WORD_SVG\["'`） |
+| disclaimer.html | 课本补充 243 条 | 328 条 |
+| svg/emoji-svg.js 注释 | Get Smart 专用 195 个 | 227 个 |
+| VERSION.md 表格 | emoji-svg v5 | 实际引用是 v6（app.js / sw.js） |
+
+`svg/emoji-svg.js` 只改了一行注释，**故意不升 `?v=`** —— 升了会让老用户白重下 626 条图库（约 300KB）。
+
+版本链：`app v135→v136`、`ipa v6→v7`（4 页 + sw）、`pep-mem v1→v2`（2 页 + sw）、
+`CACHE v194→v195`、`BUILD .12→.13`。音频零改动。
+
+### 已知但未改（下一轮可选）
+
+- Get Smart 1026 个词条里 583 条没有音标（`insect`、`bicycle`、`eyes`…），页面上音标位是空的。
+  复数与短语可以按单数音标派生，但要一条条定规则，属于补内容不是修错。
+- 两表符号体系已统一到 `e`，但仍有 `ɑ` / `ɔ` 这类美式变体写法与部分教材的 `/ɒ/` `/ɔː/` 不同 ——
+  家长中心已注明「以老师板书和课本词表为准」，不逐词跟随课本。
 
 ## 2026-11-13.12 · 颜色词图从「圆点 / 圆球」改成「圆角方色卡」
 

@@ -91,7 +91,7 @@
 <script src="js/words-data.js?v=46"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=44"></script>
-<script src="js/app.js?v=135"></script>
+<script src="js/app.js?v=136"></script>
 <script defer src="js/audio-list.js?v=7"></script>
 <script src="js/sentence.js?v=51"></script>
 <script src="js/grammar-engine.js?v=9"></script>
@@ -205,10 +205,10 @@ const MANUAL_PARSE = {
     cells: [['There','引导词','引导词'],['are','be 动词','谓语'],['two pencils','名词短语','主语'],['in the bag','介词短语','状语']] },
   'He watches TV every day.': {
     note: 'every day 说「多久一次」，是时间状语，不是宾语。',
-    cells: [['He','代词','主语'],['watches','动词','谓语'],['TV','名词','宾语'],['every day','副词','状语']] },
+    cells: [['He','代词','主语'],['watches','动词','谓语'],['TV','名词','宾语'],['every day','名词短语','状语']] },
   'Yes, she is.': {
-    note: '简略回答：Yes 是感叹词，she 是主语，is 是 be 动词。',
-    cells: [['Yes','感叹词','状语'],['she','代词','主语'],['is','be 动词','谓语']] },
+    note: '简略回答：Yes 表示肯定，she 是主语，is 是 be 动词。',
+    cells: [['Yes','副词','状语'],['she','代词','主语'],['is','be 动词','谓语']] },
 };
 
 /* ---------------- 句子语法解析面板 ----------------
