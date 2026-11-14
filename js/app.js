@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-13.11';
+const BUILD = '2026-11-13.12';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1141,12 +1141,33 @@ function ipaOf(w) {
 }
 
 /* 颜色词的图：emoji 里根本没有"灰色圆点"这类符号，硬凑就会出现 grey=🐈 这种错。
-   颜色一律用**色块**——这正是课本教颜色的方式，也不会和别的词撞图。 */
+   颜色一律用**色块**——这正是课本教颜色的方式，也不会和别的词撞图。
+
+   ★ 2026-11-14.12：色块必须是**圆角方块**，不能是圆点。
+     🔴（以及自绘 WORD_SVG 里 red/blue/yellow/black/grey 的圆球）在小朋友眼里
+     就是一个「白底红圆」——家长反馈像日本国旗，怕误导孩子。
+     同理蓝黄绿圆点也容易被看成旗子/球。改成方角色卡：像一张颜料卡，
+     一眼就是"颜色"，谁都不会看错，也和「学堂」页的颜色词画法统一。
+   ⚠️ wordIcon 与 iconKey 必须同时判在最前：只改一处，图与身份对不上，去重会静默失效。 */
 const WORD_COLOR = {
   red: '#EF4444', yellow: '#FACC15', blue: '#3B82F6', green: '#22C55E',
   white: '#FFFFFF', black: '#1F2937', orange: '#F97316', pink: '#F472B6',
-  purple: '#A855F7', brown: '#92400E', grey: '#9CA3AF',
+  purple: '#A855F7', brown: '#92400E', grey: '#9CA3AF', gray: '#9CA3AF',
 };
+
+/* 色卡图：圆角方块 + 左上高光 + 描边。
+   白 / 黄在白卡上必须加深描边，否则和白底糊成一片（学堂页踩过这个坑）。 */
+function colorCardSVG(name) {
+  const fill = WORD_COLOR[name];
+  if (!fill) return '';
+  const light = (name === 'white' || name === 'yellow');
+  const edge = light ? 'rgba(15,23,42,.42)' : 'rgba(15,23,42,.22)';
+  return '<svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">'
+    + '<rect x="2.6" y="2.6" width="30.8" height="30.8" rx="7.5" fill="' + fill + '"'
+    + ' stroke="' + edge + '" stroke-width="2.4"/>'
+    + '<rect x="6.4" y="6" width="23.2" height="7.6" rx="3.8" fill="#FFFFFF"'
+    + ' opacity="' + (light ? '.55' : '.22') + '"/></svg>';
+}
 
 /* 词图三级：色块（颜色词）→ emoji（有合适图形的）→ 首字母牌（配不上的）
    代词/介词/连词/抽象动词这类词根本没有形象，硬塞一个 emoji 是错的——
@@ -1155,6 +1176,10 @@ const WORD_COLOR = {
 function wordIcon(w) {
   const name = String((w && w.w) || '').toLowerCase();
   const emo = String((w && w.e) || '').trim();
+  /* 颜色词最先判：色卡是"画出来的图形"，不能让 emoji 圆点 / 自绘圆球抢在前面 */
+  if (WORD_COLOR[name]) {
+    return `<span class="wsvg" role="img" aria-label="${esc(w.zh || name)}">${colorCardSVG(name)}</span>`;
+  }
   /* 内置 SVG 优先：不依赖系统 emoji 字体，任何电脑画出来都一样彩色
      （emoji 靠字体渲染，会变黑白或吐方块，见下面 emojiClusters 的说明） */
   if (emo && !wordSvgFirst(name) && hasEmojiSvg(emo)) {
@@ -1163,9 +1188,6 @@ function wordIcon(w) {
   /* SVG 卡通插画（svg/word-svg.js） */
   if (typeof WORD_SVG !== 'undefined' && WORD_SVG[name]) {
     return `<span class="wsvg" role="img" aria-label="${esc(w.zh || name)}">${WORD_SVG[name]}</span>`;
-  }
-  if (WORD_COLOR[name]) {
-    return `<span class="cchip" style="background:${WORD_COLOR[name]}" role="img" aria-label="${esc(w.zh || name)}"></span>`;
   }
   /* 没内置图才退回系统 emoji，并强制走彩色 emoji 字体（.emj） */
   if (emo) return `<span class="emj" role="img" aria-label="${esc(w.zh || name)}">${esc(emo)}</span>`;
@@ -1220,6 +1242,8 @@ function iconKey(w) {
   if (!w) return '';
   const name = String(w.w || '').toLowerCase();
   const emo = String(w.e || '').trim();
+  /* 与 wordIcon 同序：颜色词走色卡 key，不能退回 emoji 码位 */
+  if (WORD_COLOR[name]) return 'chip:' + WORD_COLOR[name];
   /* U+FE0F（变体选择符）要去掉：同一张图有时带有时不带，key 必须一致 */
   if (emo && !wordSvgFirst(name)) {
     const plain = emo.replace(/\uFE0F/g, '');
@@ -1230,7 +1254,6 @@ function iconKey(w) {
        只按词名做 key 会漏掉它们，同一轮照样出现两张一样的画。归一到同一个 key。 */
     return 'svg:' + (SVG_SAME_KEY[name] || name);
   }
-  if (WORD_COLOR[name]) return 'chip:' + WORD_COLOR[name];
   if (emo) return 'emoji:' + emo.replace(/\uFE0F/g, '');
   return 'letter:' + name.charAt(0);
 }

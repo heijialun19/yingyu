@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v134 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v135 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v44 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -34,9 +34,50 @@
 | svg/emoji-svg.js | v5 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v193 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v194 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 
 版本号引用位置：各 HTML `<script src="...?v=N">`、sw.js 的 CORE 数组。**改了 JS/CSS 必须同步升 ?v= 和 sw.js 里的引用**，否则老用户的 Service Worker 缓存会继续用旧文件。
+
+## 2026-11-13.12 · 颜色词图从「圆点 / 圆球」改成「圆角方色卡」
+
+**现象（用户报）**：字母岛 B 关小练习里，干扰项 `red` 的图标是一个红圆，像日本国旗，
+怕给小朋友错误联想。
+
+**为什么是红圆**：`red` 的数据里 `e:'🔴'`，而 `wordIcon` 的判定顺序是
+「内置 emoji SVG → 自绘 `WORD_SVG` → 颜色色块」。`svg/emoji-svg.js` 有 🔴
+（`<circle fill="#DD2E44">`），第一道就命中，色块分支**永远走不到**。
+即便走到自绘 `WORD_SVG`，`red/blue/yellow/black/grey` 画的也都是圆球 —— 一样有"旗子/球"的观感。
+
+**修法**：颜色词改为 `wordIcon` **最先**判，统一产出 `colorCardSVG()`
+（圆角方块 + 左上高光 + 描边；白/黄加深描边，否则与白卡糊成一片），
+与「学堂」页 `gsIcon` 的颜色词画法一致。`iconKey` 同步前移 ——
+**图与身份必须同源**，只改一处会让"看图选词"的去重静默失效。
+
+| 项 | 结果 |
+|---|---|
+| 受影响词 | red / yellow / blue / green / white / black / orange / pink / purple / brown / grey（另补 gray 同一色值） |
+| 页面 | 字母岛、单词镇、语法页、Get Smart 全一致（都走 `wordIcon` / `iconOf`） |
+| letters.html | 拼读口诀里的例词 emoji 由 `${l.words[0].e}` 改为 `wordIcon(l.words[0])`，不再直渲字符 |
+| 音频 | 零改动（`AUDIO_VER` / `SENTENCE_VER` / `PHRASE_VER` / `WEAK_VER` 全不动） |
+
+版本链：`app v134→v135`（9 个正式页 + SW CORE/BOOT 两处）、`CACHE v193→v194`、
+`BUILD 2026-11-13.11→.12`。
+
+## 2026-11-13.11 · 语法页动态句补 37 条连读词块（100→137）
+
+家长在 L13「问问句：Is this __?」看到 `He isn't happy.` 一词一蹦。
+查证该句**不是固定例句**，而是 `beTransform` 随机生成（随机形容词 × he/she/it/they × 一半概率否定），
+所以不在 553 条整句库里，只能靠词块接龙；而词块库原先只有疑问句开头 `is_he/is_she/is_it`，
+没有否定缩写，3 个词就落 3 段。
+
+- A 档 5 条：`he_isn_t` `she_isn_t` `it_isn_t` `they_aren_t` `the_cat_is` → 23 句「短句全碎」从 3~4 段降到 2 段
+- B 档 32 条：`it_doesn_t_like` / `they_don_t_want` / `does_he_see` …（主语+助动词+动词），覆盖占比最大的一族约 1000 句
+- 效果：语法页 1901 句 段/词 **0.664 → 0.545**，纯逐词 106(5.6%) → 83(4.4%)，剩余全是 `He sings.` 这类两词句
+- 词块 100→**137**（+350.5KB，同声线逐字节同源）；`PHRASE_VER` 不升（纯新增 slug，URL 天然无缓存）
+- 版本链：`app v133→v134`、`CACHE v192→v193`、`BUILD .10→.11`
+
+**坑**：`Network.setCacheDisabled` 管不到 Service Worker —— 它会绕过 HTTP 缓存把旧 HTML
+（引用旧 `?v=`）发回来。验证线上新版本时，每个标签页先 `Storage.clearDataForOrigin({storageTypes:'service_workers,cache_storage'})`。
 
 ## 2026-11-13.10 · 句子火车员词组扩表 + 冠词 a 不再读成字母名
 
