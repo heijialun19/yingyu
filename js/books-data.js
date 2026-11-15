@@ -1,6 +1,7 @@
 /* ============================================================
    小鸟英语乐园 · 读书馆（分级拼读小书）
-   2026-11-14.16 新增。对标 Starfall Learn to Read（15 本序列拼读书）
+   2026-11-14.16 新增，2026-11-15.1 第三轮复检修订（B1 Q1 题干、b13 视觉词 me、复数标注）。
+   对标 Starfall Learn to Read（15 本序列拼读书）
    与 Bob Books（每本 8-25 个不重复词、极简句式、幽默收尾）：
 
    编写铁律（_check_books.py 强制校验）：
@@ -34,7 +35,7 @@ const BOOKS = [
       { art: '🐱🐭', en: 'The cat sat on the rat!', zh: '猫坐在了老鼠身上！' }
     ],
     quiz: [
-      { q: '故事开头，猫坐在哪里？', opts: ['垫子上', '帽子上', '箱子上'], a: 0 },
+      { q: '猫坐在什么上面？', opts: ['垫子上', '帽子上', '箱子上'], a: 0 },
       { q: '谁坐在了帽子上？', opts: ['猫', '老鼠', '狗'], a: 1 },
       { q: '故事最后谁在最下面？', opts: ['猫', '帽子', '老鼠'], a: 2 }
     ]
@@ -202,7 +203,7 @@ const BOOKS = [
     emoji: '🐝', color: '#FACC15',
     sight: ['the', 'a', 'is', 'my', 'and', 'we'],
     newWords: [
-      { w: 'see', zh: '看见' }, { w: 'tree', zh: '树' }, { w: 'bee', zh: '蜜蜂' },
+      { w: 'see', zh: '看见' }, { w: 'tree', zh: '树' }, { w: 'bee', zh: '蜜蜂（复数 bees）' },
       { w: 'three', zh: '三' }, { w: 'green', zh: '绿色的' }, { w: 'moon', zh: '月亮' },
       { w: 'sleep', zh: '睡觉' }, { w: 'feet', zh: '脚' }
     ],
@@ -297,9 +298,9 @@ const BOOKS = [
     id: 'b13', lv: 'L8', tag: '视觉词', title: 'Where Is the Duck?', zh: '鸭子去哪儿了',
     emoji: '🔍', color: '#6366F1',
     sight: ['the', 'a', 'is', 'my', 'and', 'we', 'what', 'where', 'out', 'now',
-            'come', 'one', 'two', 'you', 'are', 'all'],
+            'come', 'one', 'two', 'you', 'are', 'all', 'me'],
     newWords: [
-      { w: 'it', zh: '它' }, { w: 'duck', zh: '鸭子' }, { w: 'three', zh: '三' },
+      { w: 'it', zh: '它' }, { w: 'duck', zh: '鸭子（复数 ducks）' }, { w: 'three', zh: '三' },
       { w: 'sun', zh: '太阳' }
     ],
     pages: [

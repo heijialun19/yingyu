@@ -348,7 +348,7 @@ const GS_LEVELS = [
      交叉核对旧版官方 Syllabus 与教材前四模块词汇。
      每 Module 4-5 节小课：词课一节 ≤8 词，末节复习闯关。 */
   {
-    id: 'gs2', name: 'Get Smart 2', zh: '第二册', emoji: '🐥', color: '#FF6B6B',
+    id: 'gs2', name: 'Get Smart 2', zh: '第二册 · 官方目录对齐', emoji: '🐥', color: '#FF6B6B',
     desc: '与课本逐字对齐：10 个 Module × 4-5 节小课（官方目录 We are back! → Having fun），词课一节 5-8 个词，末节复习闯关；「U1-U4 词汇复习课」= 教材前四模块综合复习。',
     units: [
       /* ---- Module 1 · We're back!（文具 · 颜色 · 数字1-20）---- */

@@ -18,7 +18,7 @@
 <title>自然拼读课 · 分级闯关 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/phonics.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=53" onerror="this.onerror=null;this.href='css/style.css?v=53&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=54" onerror="this.onerror=null;this.href='css/style.css?v=54&amp;retry=1'">
 <style>
 /* 拼读课页内样式（不进 style.css：只有这一页用） */
 /* ---- 关卡地图 ---- */
@@ -29,7 +29,7 @@
 .ph-lv.cur{border-color:var(--lake);background:#EFF8FF;outline:3px solid rgba(78,197,241,.25)}
 .ph-lv.done{border-color:var(--mint);background:#F2FCF4}
 .ph-lv-icon{font-size:1.7rem;line-height:1.2}
-.ph-lv b{display:inline-block;font-size:.72rem;color:#fff;background:var(--lake);border-radius:999px;padding:2px 9px;margin:4px 0 2px}
+.ph-lv b{display:inline-block;font-size:.72rem;color:var(--ink);background:var(--lake);border-radius:999px;padding:2px 9px;margin:4px 0 2px}
 .ph-lv.done b{background:var(--mint)}
 .ph-lv-name{display:block;font-size:.88rem;font-weight:800;color:var(--ink)}
 .ph-lv small{display:block;font-size:.68rem;color:var(--ink2);margin-top:2px;line-height:1.45}
@@ -97,7 +97,7 @@
 .pw-blocks{display:flex;gap:5px;flex-wrap:wrap}
 .pw-blocks .pb{min-width:38px;height:40px;border-radius:11px;border:2px solid var(--lake);
   background:#EAF6FD;font-family:inherit;font-weight:800;font-size:.95rem;cursor:pointer;color:var(--ink)}
-.pw-blocks .pb:hover{background:var(--lake);color:#fff}
+.pw-blocks .pb:hover{background:var(--lake);color:var(--ink)}
 .pw-tag{font-size:.72rem;color:#7A5B00;background:#FFF3C4;border-radius:999px;padding:4px 10px}
 .pw-go{padding:7px 12px;font-size:.8rem;min-height:0}
 .pw-full{padding:7px 12px;font-size:.8rem;min-height:0}
@@ -174,6 +174,14 @@
 </head>
 <!-- data-emoji="full"：词卡要画全量表情库的图（和游戏乐园同规格） -->
 <body data-emoji="full">
+<noscript>
+  <section class="card" style="margin-top:18px">
+    <h2>🔤 自然拼读课 · 9 关分级体系（不依赖脚本）</h2>
+    <p>L1 字母音启蒙 → L2 短元音拼读 → L3 双辅音 → L4 辅音连缀 → L5 元音组合 → L6 魔法 e →
+    L7 卷舌音 → L8 视觉词 → L9 听音能写，另有 TX 拼读块工具箱与入学定级测。
+    每关按「学 → 拼 → 读句 → 能量格」四步走，全部发音使用站内离线音频，断网也能学。</p>
+  </section>
+</noscript>
   <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
     <div style="font-size:52px">🐤</div>
     <div style="font-size:.9rem;color:#5C6273;font-weight:700">加载中，请稍等…</div>
@@ -229,10 +237,10 @@
 <script src="js/words-data.js?v=46"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=155"></script>
+<script src="js/app.js?v=156"></script>
 <script defer src="js/audio-list.js?v=9"></script>
 <script src="js/sentence.js?v=52"></script>
-<script src="js/phonics.js?v=7"></script>
+<script src="js/phonics.js?v=8"></script>
 <script>
 renderNav('phonics'); renderDecor();
 
@@ -328,7 +336,9 @@ function letterHTML(ch) {
   const l = LETTERS.find(x => x.L.toLowerCase() === ch);
   if (!l) return '';
   const ipa = l.szh.split(' ')[0];
-  const zh = l.szh.split(' ').slice(1).join(' ');
+  /* N12：拼读课用口型/气流描述，不沿用字母岛的汉字谐音（sī/tè/pō 会给清辅音加元音）。 */
+  const phHint = (typeof PH_LETTER_HINT !== 'undefined' ? PH_LETTER_HINT[ch] : null) || null;
+  const zh = phHint ? phHint.desc : l.szh.split(' ').slice(1).join(' ');
   const ex = l.words[0];
   const i = reg(ex.w, null);
   return `<div class="ph-letter ${l.v ? 'v' : ''}" onclick="phPlayBlock('${l.L.toLowerCase()}')" role="button" tabindex="0"
@@ -337,7 +347,8 @@ function letterHTML(ch) {
     <div class="pl-ipa">${esc(ipa)}</div>
     <div class="pl-zh">${esc(zh)}</div>
     <button class="pl-ex" onclick="event.stopPropagation();phRowWord(${i})" title="听例词 ${esc(ex.w)}">${esc(ex.e || '')} ${esc(ex.w)}</button>
-    ${l.tipSame ? `<div class="pl-note">📌 ${l.tipSame}</div>` : ''}
+    ${phHint && phHint.warn ? `<div class="pl-note">📌 ${esc(phHint.warn)}</div>`
+       : (l.tipSame ? `<div class="pl-note">📌 ${l.tipSame}</div>` : '')}
   </div>`;
 }
 

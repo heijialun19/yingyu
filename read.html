@@ -18,7 +18,7 @@
 <title>读书馆 · 分级拼读小书 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/read.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=53" onerror="this.onerror=null;this.href='css/style.css?v=53&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=54" onerror="this.onerror=null;this.href='css/style.css?v=54&amp;retry=1'">
 <style>
 /* 读书馆页内样式（只有这一页用） */
 .bk-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px;margin-top:12px}
@@ -28,7 +28,7 @@
 .bk-card.done{border-color:var(--mint);background:#F2FCF4}
 .bk-card.lock{opacity:.55}
 .bk-emoji{font-size:2.1rem;line-height:1.2}
-.bk-card b{display:inline-block;font-size:.68rem;font-weight:700;color:#fff;background:var(--lake);
+.bk-card b{display:inline-block;font-size:.68rem;font-weight:700;color:var(--ink);background:var(--lake);
   border-radius:999px;padding:2px 9px;margin:6px 0 3px}
 .bk-card.done b{background:var(--mint)}
 .bk-title{display:block;font-size:.86rem;font-weight:800;color:var(--ink);line-height:1.35}
@@ -67,9 +67,23 @@
 .bk-back{margin:2px 4px 8px}
 .bk-level-label{margin:18px 4px 8px;font-size:.92rem;font-weight:800;color:var(--ink)}
 .bk-level-label small{font-weight:600;color:var(--ink2);font-size:.78rem;margin-left:6px}
+/* N16：读书视图把首屏 hero 收成一行面包屑，正文不用滚半屏才看到。 */
+.hero.compact{padding:7px 14px;margin-top:8px;border-radius:14px;border-width:2px}
+.hero.compact h1{font-size:.92rem;margin:0}
+.hero.compact .sub{display:none}
 </style>
 </head>
 <body>
+<noscript>
+  <section class="card" style="margin-top:18px">
+    <h2>📚 读书馆 · 15 本分级拼读小书（不依赖脚本）</h2>
+    <p>按拼读规则由易到难：A Cat, a Hat / My Red Hen / The Big Pig / Fox in a Box /
+    Fun in the Sun / The Big Fish / Duck Sings / Frog and Crab / Three Green Bees /
+    Rain, Train, Boat / Cake on a Lake / The Star Car / Where Is the Duck? /
+    A Big Day / We Can Read!。每本只用该级别已学的拼读规则写成，点句子听整句、
+    点单词听发音，读完全书有 3 道理解题。进度只保存在自己的浏览器里。</p>
+  </section>
+</noscript>
 <div id="decor" aria-hidden="true"></div>
 <nav id="nav"></nav>
 <main class="wrap">
@@ -126,8 +140,8 @@
 
 <script src="js/words-data.js?v=46"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=155"></script>
-<script src="js/books-data.js?v=2"></script>
+<script src="js/app.js?v=156"></script>
+<script src="js/books-data.js?v=3"></script>
 <script defer src="js/audio-list.js?v=9"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>
@@ -180,6 +194,7 @@ function openBook(id) {
   if (!CUR) return;
   PAGE = 0;
   document.getElementById('shelf').style.display = 'none';
+  document.querySelector('.hero').classList.add('compact');
   document.getElementById('reader').style.display = '';
   document.getElementById('quiz').style.display = 'none';
   document.getElementById('bkNum').textContent = CUR.emoji;
@@ -302,6 +317,7 @@ function finishBook() {
 }
 
 function backShelf() {
+  document.querySelector('.hero').classList.remove('compact');
   document.getElementById('shelf').style.display = '';
   document.getElementById('reader').style.display = 'none';
   document.getElementById('quiz').style.display = 'none';

@@ -14,9 +14,9 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v155 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/books-data.js | v2 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
-| js/phonics.js | v7 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
+| js/app.js | v156 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/books-data.js | v3 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
+| js/phonics.js | v8 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -38,7 +38,7 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v214 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v215 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
 
 ## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
@@ -77,6 +77,31 @@
 版本链：SENTENCE_VER 5→6、PHRASE_VER 3→4、app v154→v155、CACHE v213→v214、
 BUILD 2026-11-14.18→.19，11 个正式页与 SW CORE/BOOT 同步。AUDIO_VER / WEAK_VER /
 PHONICS_VER 零改动，2912 条单词与母语者字母音字节不动。
+
+## 2026-11-15.1 · 第三轮复检修复（逐条论证）
+
+对象：外部《第三轮复检报告》（v155 / BUILD 2026-11-14.19）。**逐条核验后只改成立项**，
+不成立项原样保留并书面说明，避免照单改坏刚验收过的东西。
+
+| 判定 | 条目 | 处置 |
+|---|---|---|
+| 属实已改 | N9 徽章/标签 1.98 | 彩色底一律深墨字 `var(--ink)`，两页一起生效 |
+| 属实已改 | N10 sitemap / noscript | sitemap 9→11 条；7 个空壳页补静态正文 |
+| 属实已改 | N11 / F2 / N18 | 开始卡片学深字、课数深绿、音标 11px |
+| 属实已改 | N12 汉字谐音 | 26 字母改口型/气流描述 + 「别读成 sī/特…」 |
+| 属实已改 | N13 / E2 / N17 | 横滑渐隐提示、删三个白方块、gs2 副标题 |
+| 属实已改 | N14 | 45 道题逐题复核，仅 B1 Q1「开头」措辞与页序不符，改「猫坐在什么上面？」 |
+| 部分成立 | B2 拆块 | 全量比对 phonicsLine 与 phonics.js segs **106/109 一致**；逐音素拆是拼读标准，3 处 ss 差异是链路用途不同。只精准修 44 个「整体认读词」（cake 曾拆成 c·a·k·e） |
+| 部分成立 | N15 生词表 | 铁律是「规则可解码 OR 显式声明视觉词」，big/red/wet/bees/ducks 都合规；只有视觉词 me 真漏，已补，复数在生词表标注 |
+| 部分成立 | N16 入口 | 顶部 7 项 + 底栏 8 格已满，硬加会复犯 A3/A4 折行；改首页双入口 + 读书视图 hero 收成面包屑 |
+| **不成立** | B6「998 词」 | 复检正则漏了双引号 `W("o'clock")`；`GRADES` 实计 **999**，页面文案正确。仅把无 JS 时的 1000 占位改成 999 |
+| **不成立** | N8「L20–L23 缺造句标签」 | 这 4 关是 s3 课本同步固定例句（无 gen 字段），加标签会说谎；页首「第二阶段起」表述准确 |
+| **不宜改** | B4 长音符 | 美式紧凑记法是家长 2026-11-09 拍板口径，与站内美音对应；「课本写法对照」弹窗 + 人教课本页 894 条英式音标已齐备。批量 /i/→/iː/ 会误改词尾非重读 /i/、/ʊ/ |
+| **不宜改** | B5 / C1 | B5 报告自称「未复核」，无证据；C1 6 个同步脚本改 defer 会引入执行顺序风险，收益有限 |
+
+版本链：app v155→v156、style v53→v54、phonics v7→v8、books-data v2→v3、
+getsmart-data v16→v17、pep-points v24→v25、CACHE v214→v215、BUILD .14.19→.15.1。
+**音频与单词音频版本零改动**（SENTENCE_VER 6 / PHRASE_VER 4 / AUDIO_VER 4 全部不动）。
 
 ## 2026-11-14.18 · 读书馆热修复（页面打不开）
 

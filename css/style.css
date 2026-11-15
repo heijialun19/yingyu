@@ -350,6 +350,8 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 
 /* ---------- 单词镇 ---------- */
 .theme-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+/* N13：桌面端标签自动换行，滑动提示默认隐藏；窄屏在媒体查询里打开。 */
+.tab-swipe-hint { display: none; }
 .theme-tab {
   display: flex; align-items: center; gap: 7px; background: #fff; border: 3px solid transparent;
   border-radius: 999px; padding: 9px 18px; font-size: .95rem; font-weight: 700; cursor: pointer;
@@ -725,6 +727,12 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
     padding-bottom: 4px; margin-bottom: 14px;
     scrollbar-width: none; -webkit-overflow-scrolling: touch;
   }
+  /* N13：可横滑的主题行右缘渐隐，告诉孩子右边还有内容（年级 3 列 grid 不套这条）。 */
+  .theme-tabs.ph-scroll {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent 100%);
+    mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent 100%);
+  }
+  .tab-swipe-hint { display: block; font-size: .75rem; color: var(--ink2); margin: -4px 0 8px; }
   .theme-tabs::-webkit-scrollbar { display: none; }
   .theme-tab { flex: 0 0 auto; padding: 8px 14px; font-size: .85rem; box-shadow: 0 3px 0 rgba(45,49,66,.07); }
   .theme-tab .te { font-size: 18px; }

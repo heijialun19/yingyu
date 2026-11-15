@@ -29,6 +29,11 @@ const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu',
   'oo', 'ee', 'ea', 'ai', 'ay', 'oa', 'ow', 'ou', 'oi', 'oy',
   'ar', 'or', 'er', 'ir', 'ur', 'au', 'ew', 'ei', 'eo', 'ie', 'ui', 'kn',
   'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd'];
+/* ★ 2026-11-15（第三轮复检 B2 精准修）：phonics.js 明确宣布「整体认读」的词。
+   这些词在拼读课里没有 segs（硬拼会把 cake 读成 /kæke/、把 shoe 的哑巴 e 念出来）。
+   词卡之前仍走 splitBlocks 逐音拆，属于同一站两套标准：对这些词改为整词认读提示。
+   其余词保持逐音素拆——那正是 phonics.js segs 的做法（cat→c·a·t），实测 106/109 一致。 */
+const PH_WHOLE_WORDS = new Set('rabbit egg doctor wash shoe chair peach teacher thumb cake lake name plate grape whale gate game kite bike nine white ice five rice time nose rose home bone stone rope afternoon away today garden market horse short chicken young along cute use rule'.split(' '));
 const EAR_NOT_IER = { bear: 1, wear: 1, pear: 1, learn: 1, early: 1, earth: 1, search: 1, heart: 1, swear: 1 };
 /* 组合例外表：这些词在特定位置组合并不成立，命中也要跳过（回到逐字母诚实拆分）。
    - homework/bathroom：复合词边界（home|work、bath|room）上的 ew/thr 是假组合
@@ -82,7 +87,14 @@ function splitBlocks(w) {
 /* 短语/连字符词分段：'look after'→['look','after']，'o'clock'→['o','clock'] */
 function splitPhrase(w) { return String(w).split(/[\s'’\-]+/).filter(Boolean); }
 /* 词 → 拼读拆分展示串（按音）：look after → l · oo · k ／ a · f · t · er */
-function phonicsLine(w) { return splitPhrase(w).map(p => splitBlocks(p).join(' · ')).join(' ／ '); }
+function phonicsLine(w) {
+  return splitPhrase(w).map(p => {
+    const key = p.toLowerCase().replace(/[^a-z]/g, '');
+    /* 整体认读词不逐音硬拆：点词卡听标准音才是唯一正确读法。 */
+    if (key && PH_WHOLE_WORDS.has(key)) return p + '（整词认读）';
+    return splitBlocks(p).join(' · ');
+  }).join(' ／ ');
+}
 
 /* ================= 音节切分（2026-11-11.11 / B2） =================
    用途：拆词（"按一口气读得出来分"）、跟读音节。
