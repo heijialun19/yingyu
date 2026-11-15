@@ -14,8 +14,8 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v164 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
-| js/books-data.js | v3 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
+| js/app.js | v165 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/books-data.js | v8 | 读书馆 v3（2026-11-15.10 推翻重做）：10 站 × 6 本 = 60 本，正文平均 16 → 256 词/本；每本含 goal / trap / pre / summary / track，读前看图说词先解决「懂意思」；read.html 消费；校验规则见 _check_books.py |
 | js/phonics.js | v9 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
@@ -26,19 +26,19 @@
 | js/ipa.js | v9 | 音标 |
 | js/ipa-gs.js | v3 | Get Smart 学堂页补充美式音标 646 条（2026-11-14.1 新增；仅 getsmart.html 引，末尾 Object.assign 并入主表） |
 | js/build-data.js | v3 | 造词实验室题库（合成词 / 派生词 / 词根） |
-| js/getsmart-data.js | v16 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
+| js/getsmart-data.js | v17 | Get Smart 1-6 全系列课程数据（6 册 237 课） |
 | js/pep-data.js | v2 | 人教版 8 册 47 单元词表 |
 | js/pep-lessons.js | v3 | 人教版单元知识点「基础篇」273 张卡。**仅 pep.html 引**；`en:` 字段与整句音频对账；v3 起 `pepPointsOf()` 会把 js/pep-points-more.js 的拓展条拼在后面 |
 | js/pep-points-more.js | v1 | 人教版单元知识点「拓展篇」282 张卡（2026-11-14.6 新增）。每单元 +6 条，全站 273 → 555；只写课本主线之外的角度，与基础篇零撞题 |
 | js/pep-mem.js | v5 | PEP 记忆法 891 条 + 词性表 + 音标补充表（gzip 33.6KB）。getsmart / pep 引 |
-| js/pep-points.js | v24 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
-| js/audio-list.js | v8 | 发音清单（2903 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
-| css/style.css | v53 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
+| js/pep-points.js | v26 | 拼读 / 音节工具 + 课本查询函数（2026-11-12.3 拆瘦到 gzip 8.8KB）；三页共用 |
+| js/audio-list.js | v10 | 发音清单（3049 条 slug，构建产物）。defer 加载，file:// 也能用；改了音频必须与 AUDIO_VER 一起升 |
+| css/style.css | v55 | 全站样式（含首屏加载层 10 秒兜底；F2 次级文字对比度与音标字号） |
 | svg/word-svg.js | v7 | 379 张自绘词图（346 张卡通 + 33 张数字 / 日历 / 国旗卡；3 张泄答案图已重画，board / blackboard 共用黑板画） |
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v223 | Service Worker（音频缓存 birdie-audio-v7 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v224 | Service Worker（音频缓存 birdie-audio-v7 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
 
 ## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
@@ -3380,3 +3380,44 @@ L1–L19 动态生成句仍走引擎。人工标注允许把介词短语合成�
 `CACHE v185→v186`、`BUILD 2026-11-13.3→.4`，9 个正式页与 SW CORE/BOOT 同步；
 本地 `_probe_*.html` 一起升，避免同一资源两种版本并存。
 黑板重画（.3）的其余资源零改动。
+
+
+---
+
+## 2026-11-15.10 读书馆 v3（推翻重做，不是扩量）
+
+旧版 111 本被整体替换。理由不是「书不够多」，是**体系设计错了**：
+
+| 问题 | 旧版 | v3 |
+|---|---|---|
+| 长度梯度 | 8 个级别全部 27-34 词/本，等于没梯度 | 10 站：16 → 31 → 39 → 56 → 73 → 95 → 121 → 150 → 186 → 256 词/本，每站 +20% 以上 |
+| 教学前提 | 照搬美国 decodable reader（假设入学已有 5000+ 口语词） | 中国孩子口语词约 300，必须**先懂再读**：读前预教词、中文发音提示、低新词率、跨书复现 |
+| 场景 | 随机小动物、30 本同一个「发现真相」包袱 | 固定人物（Ming / Lili / 奶奶 / 爷爷 / Mimi / Doudou）+ 包饺子、中秋、高铁、端午、长城、熊猫、菜园 |
+| 发音难点 | 混在故事里 | 每站 1 本发音专项单独成册（L1 除外）：短元音最小对立、咬舌 th、连缀别加「呃」、长短元音、魔法 e、卷舌音、新元音、疑问句语调、长文阅读策略 |
+| 家长 | 只有英文 | goal / trap / summary 全中文，家长不会英语也能陪读 |
+| 校验 | 只查「可拼 / 结构」，查不出题意与梯度 | 长度梯度、字素按级放行、读前词必须在正文、题干不得无指代、感叹号比例、答案位置 40%/15% 红线 |
+
+分轨口径：L1 六本全为「看图说词」（先建立音—义连接，不要求拼读）；
+L2–L10 每站 4 本故事 + 1 本发音专项 + 1 本小科普。全书 60 本 / 585 页 / 180 题，答案位置 60/60/60。
+
+### 字素教学顺序（写死在 `_lib_common.py` 的 GPC_TABLE）
+L1 整体认读 → L2 单字母 CVC → L3 sh/ch/th/ck/ng → L4 辅音连缀 →
+L5 ee/oo/ai/ay/oa → L6 魔法 e → L7 ar/or/ir/er/ur →
+L8 ea/igh/ou/ow/oi/oy/au/aw/ew → L9 ph/wh/kn/wr/tch/dge/tion + 长句 → L10 段落。
+本级没教的字素若不得不用，**登记为「整体认读词」并在读前页预教**，不假装孩子能拼。
+
+### 音频口径（老用户零重下）
+583 条新整句 + 137 个新单词用 `en_US-ljspeech-medium`（公有领域）合成，
+规格 1.1 / noise 0/0 / 128kbps / 22050Hz mono / volume −2dB / 不裁头补 15ms 静音。
+`SENTENCE_VER 8`、`AUDIO_VER 6`、`AUDIO_CACHE birdie-audio-v7` **全部不动**：
+AUDIO_CACHE 按完整 URL 匹配，新 slug 本来没有缓存条目，老用户只下这 720 条；
+2912 个旧词、1529 条旧句的 sha 一个都不变。只有 `audio-list.js` 内容变了，单独升 v9→v10。
+
+### 创作与校验流程（下次扩书照此办理）
+1. 每级一个 `_lib_lN.py`，用 `_lib_common.mk()` 构造书；它会自动扫描页面词、
+   把本级读不出的字素登记为整体认读词，并记入 `AUTO_LOG` 供人工审查。
+2. `_lib_all.py` 按 L1→L10 顺序汇总 → `_booklib.save_books()` 写 JS 并**强制答案配平**。
+   （一次性脚本修过的缺陷不写进生成流程一定会复发，这是 .15.9 的教训。）
+3. `python _check_books.py` 必须全绿；`_audit_v3_audio.py` 算新增音频清单；
+   `_gen_v3_audio.py` 合成；`_apply_v3_audio.py` 登记集合与清单。
+4. 发版仍走三道闸：线上基线 / 变更集合精确匹配 / 提交后回读。
