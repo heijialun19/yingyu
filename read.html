@@ -177,19 +177,45 @@
 
 <script src="js/words-data.js?v=46"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=165"></script>
+<script src="js/app.js?v=166"></script>
 <script src="js/books-data.js?v=8"></script>
 <script defer src="js/audio-list.js?v=10"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>
 renderNav('read'); renderDecor();
 
-/* 读书馆进度：{done:{b1:ts}, stars:{b1:2}} 按档案存储 */
-const BK_KEY = 'bk1';
+/* 读书馆进度：{done:{b1:ts}, stars:{b1:2}} —— 必须按档案隔离，
+   否则兄弟姐妹共用一个浏览器时，读完的书和星星会串台。
+   老版本只用一个 'bk1'，首次读取时迁移一次，不让家长丢进度。 */
+const BK_KEY = 'bk1_' + ((typeof Profiles !== 'undefined' && Profiles.meta && Profiles.meta.activeId)
+  ? Profiles.meta.activeId : 'default');
 function bkProg() {
-  try { return JSON.parse(localStorage.getItem(BK_KEY)) || {}; } catch (e) { return {}; }
+  try {
+    const p = JSON.parse(localStorage.getItem(BK_KEY));
+    if (p) return p;
+    const legacy = JSON.parse(localStorage.getItem('bk1'));
+    if (legacy) { bkSave(legacy); return legacy; }
+  } catch (e) {}
+  return {};
 }
 function bkSave(p) { try { localStorage.setItem(BK_KEY, JSON.stringify(p)); } catch (e) {} }
+
+/* 「看/藏中文」是阅读偏好，不该每翻一页就被重置。
+   默认仍给中文（面向中国孩子的支架），但孩子/家长一旦选择只读英文，整本都保持。 */
+const BK_ZH_KEY = 'birdie_books_zh';
+let BK_SHOW_ZH = true;
+try { const s = localStorage.getItem(BK_ZH_KEY); if (s !== null) BK_SHOW_ZH = (s === '1'); } catch (e) {}
+
+/* 读后输出：一流分级读物每本都要有 retell / 迁移，不能只做选择题就结束。
+   按级别给不同难度的说写任务，避免一本书一句话的模板腔。 */
+function retellTask(b) {
+  const lv = parseInt(String(b.lv || 'L2').slice(1), 10) || 2;
+  if (lv <= 2) return '指着图，把这一本的词一个一个说出来；再说一句你最喜欢哪一页。';
+  if (lv <= 5) return '先把整本小声再读一遍（不看中文），然后合上书，说出你记得的三个词。';
+  if (lv <= 7) return '合上书，用两三句话把这件事讲给家长听；先说中文也行，再试着用英文说一句。';
+  if (lv <= 9) return '用三句话说说：开头发生了什么、中间最难的是什么、最后怎么收尾。再加一句你自己的看法。';
+  return '用三句话写出这本书最主要的一件事，再说一句你同意或不同意，为什么。';
+}
 
 let CUR = null;      // 当前书
 let PAGE = 0;        // 当前页码
@@ -303,7 +329,17 @@ function paintPage() {
   });
   document.getElementById('bkPlay').onclick = () => speakSentence(p.en, sentEl);
   const zhEl = stage.querySelector('.bk-zh');
-  document.getElementById('bkZh').onclick = () => { zhEl.style.display = zhEl.style.display === 'none' ? '' : 'none'; };
+  const zhBtn = document.getElementById('bkZh');
+  const paintZh = () => {
+    zhEl.style.display = BK_SHOW_ZH ? '' : 'none';
+    zhBtn.textContent = BK_SHOW_ZH ? '👀 看/藏中文' : '👀 显示中文';
+  };
+  zhBtn.onclick = () => {
+    BK_SHOW_ZH = !BK_SHOW_ZH;
+    try { localStorage.setItem(BK_ZH_KEY, BK_SHOW_ZH ? '1' : '0'); } catch (e) {}
+    paintZh();
+  };
+  paintZh();
   /* 没有读前页时，第 1 页顶部给一次发音提示 */
   if (CUR.trap && !(CUR.pre && CUR.pre.length) && PAGE === 0) {
     const tip = document.createElement('div');
@@ -379,7 +415,8 @@ function paintQuiz() {
     if (!right) btn.classList.add('wrong');
     if (right) { QUIZ_OK++; sfx.good ? sfx.good() : sfx.pop(); }
     else sfx.no && sfx.no();
-    document.getElementById('qFeed').textContent = right ? '✅ 答对啦！' : '❌ 没关系，记住答案，下次一定行！';
+    document.getElementById('qFeed').textContent = right
+      ? '✅ 答对啦！' : '❌ 别急，答案藏在故事里，等一下可以翻回去找一找';
     setTimeout(() => {
       if (QUIZI < CUR.quiz.length - 1) { QUIZI++; paintQuiz(); }
       else finishBook();
@@ -396,17 +433,23 @@ function finishBook() {
   prog.stars[CUR.id] = Math.max(prog.stars[CUR.id] || 0, QUIZ_OK);
   bkSave(prog);
   if (first) addStars(2);
+  const weak = QUIZ_OK < 2;
   document.getElementById('qBox').innerHTML = `
     <div style="text-align:center;padding:12px 4px 6px">
       <div style="font-size:64px">${QUIZ_OK === CUR.quiz.length ? '🏆' : '📖'}</div>
       <h3>${QUIZ_OK === CUR.quiz.length ? '太棒了，全对！' : '读完啦！'}</h3>
       ${CUR.summary ? `<div class="bk-summary"><b>这本书练了什么</b><br>${esc(CUR.summary)}</div>` : ''}
+      <div class="bk-summary" style="text-align:left"><b>🎤 合上书，说一说</b><br>${esc(retellTask(CUR))}</div>
+      ${weak ? '<p style="margin:6px 4px;color:var(--ink2);line-height:1.6;font-size:.92rem">这一本建议再读一遍：先听整句，再自己读，最后重做小测。读顺了再往下一本走。</p>' : ''}
       <p style="margin:8px 4px;color:var(--ink2);line-height:1.7">
         《${esc(CUR.title)}》· 答对 <b>${QUIZ_OK}</b> / ${CUR.quiz.length} 题
         ${first ? ' · 奖励 ⭐+2' : ''}
       </p>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0 4px">
-        <button class="btn coral" id="qNextBook">下一本书 →</button>
+        ${weak ? '<button class="btn coral" id="qAgain">📖 再读一遍</button>'
+               : '<button class="btn coral" id="qNextBook">下一本书 →</button>'}
+        ${weak ? '<button class="btn ghost" id="qNextBook">下一本书 →</button>'
+               : '<button class="btn ghost" id="qAgain">📖 再读一遍</button>'}
         <button class="btn ghost" id="qShelf">回书架</button>
       </div>
     </div>`;
@@ -416,6 +459,7 @@ function finishBook() {
     const nxt = BOOKS[i + 1];
     if (nxt) openBook(nxt.id); else backShelf();
   };
+  document.getElementById('qAgain').onclick = () => openBook(CUR.id);
   document.getElementById('qShelf').onclick = backShelf;
 }
 

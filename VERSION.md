@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v165 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v166 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/books-data.js | v8 | 读书馆 v3（2026-11-15.10 推翻重做）：10 站 × 6 本 = 60 本，正文平均 16 → 256 词/本；每本含 goal / trap / pre / summary / track，读前看图说词先解决「懂意思」；read.html 消费；校验规则见 _check_books.py |
 | js/phonics.js | v9 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
@@ -38,7 +38,7 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v224 | Service Worker（音频缓存 birdie-audio-v7 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v225 | Service Worker（音频缓存 birdie-audio-v7 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
 
 ## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
@@ -3421,3 +3421,24 @@ AUDIO_CACHE 按完整 URL 匹配，新 slug 本来没有缓存条目，老用户
 3. `python _check_books.py` 必须全绿；`_audit_v3_audio.py` 算新增音频清单；
    `_gen_v3_audio.py` 合成；`_apply_v3_audio.py` 登记集合与清单。
 4. 发版仍走三道闸：线上基线 / 变更集合精确匹配 / 提交后回读。
+
+
+## 2026-11-15.11 · 读书馆 P0 教学机制补齐（不改动 60 本正文）
+
+一次面向「是否达到一流」的量化审计暴露出：工程与文本质量已达一流，
+但阅读教学机制有 5 处可直接修的缺陷。本版只补机制，不改任何书的内容，
+因此 `books-data.js v8` / `audio-list.js v10` / 音频 / 答案配平全部不动。
+
+| 缺陷 | 修法 |
+|---|---|
+| 进度固定 `bk1`，多档案串台 | key 追加 `Profiles.meta.activeId`；首次读取迁移旧数据，不丢家长已攒的星星 |
+| 每页重建 DOM 导致「藏中文」状态丢失 | `BK_ZH_KEY` 记住偏好，跨页跨书保持；可选整本只读英文 |
+| 读后只有星星 + 中文小结，零输出 | 结算页新增按 L1-2 / L3-5 / L6-7 / L8-9 / L10 分档的「合上书，说一说」 |
+| 答 0/3 也能点「下一本书」 | 答对 <2 题时主按钮改「再读一遍」，并给「先听整句→自己读→重做小测」路径 |
+| 答错提示「记住答案」 | 改为「答案藏在故事里，翻回去找一找」 |
+
+**注意：这一版不改变「尚未达到一流」的结论。** 审计中真正致命的两项 ——
+新词率（42/60 本 >30%，一流应 ≤15%）与跨书复现（49.2% 的词只出现一次）——
+必须重写 60 本正文才能解决，属下一阶段工程；每级 6 本也需扩到 12-20 本。
+
+版本链：BUILD .15.10 → .15.11 / app v165 → v166 / CACHE v224 → v225；音频零改动。
