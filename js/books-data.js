@@ -22,6 +22,14 @@ const BOOKS = [
   {
     id: 'b1', lv: 'L2', tag: '短元音 a', title: 'A Cat, a Hat', zh: '小猫和帽子',
     emoji: '🐱', color: '#FF6B6B',
+    goal: '/æ/ 短促有力，嘴张大',
+    trap: 'a 不要读成「阿」。发 /æ/ 时嘴角往两边拉、下巴放低，像被人轻拍一下那样短。cat 千万别读成「卡特」。',
+    summary: '这一级练短元音 a。/æ/ 在中文里没有对应的音，最容易读成「阿」或者拖长。',
+    pre: [
+      { art: '🐱', en: 'cat', zh: '猫' },
+      { art: '🎩', en: 'hat', zh: '帽子' },
+      { art: '🐀', en: 'rat', zh: '老鼠' }
+    ],
     sight: ['the', 'a', 'is', 'my'],
     newWords: [
       { w: 'cat', zh: '猫' },
@@ -39,7 +47,7 @@ const BOOKS = [
       { art: '🐱🐭', en: 'The cat sat on the rat!', zh: '猫坐在了老鼠身上！' }
     ],
     quiz: [
-      { q: '猫坐在什么上面？', opts: ['箱子上', '垫子上', '帽子上'], a: 1 },
+      { q: '猫坐在什么上面？', opts: ['垫子上', '帽子上', '箱子上'], a: 0 },
       { q: '谁坐在了帽子上？', opts: ['狗', '猫', '老鼠'], a: 2 },
       { q: '故事最后谁在最下面？', opts: ['老鼠', '猫', '帽子'], a: 0 }
     ]
@@ -47,6 +55,15 @@ const BOOKS = [
   {
     id: 'b2', lv: 'L2', tag: '短元音 e', title: 'My Red Hen', zh: '我的红母鸡',
     emoji: '🐔', color: '#E24B4A',
+    goal: '/e/ 嘴形扁平',
+    trap: 'e 不要读成「诶」。发 /e/ 时嘴唇向两边拉开、上下齿微开，bed 一口气收住，不要拖成「贝德」。',
+    summary: '这一级练短元音 e。/e/ 的关键是短和扁，孩子容易读成双元音「诶」。',
+    pre: [
+      { art: '🐔', en: 'hen', zh: '母鸡' },
+      { art: '🖊️', en: 'pen', zh: '围栏（养动物的）' },
+      { art: '💧', en: 'wet', zh: '湿的' },
+      { art: '🛏️', en: 'bed', zh: '床' }
+    ],
     sight: ['the', 'a', 'is', 'my'],
     newWords: [
       { w: 'hen', zh: '母鸡' },
@@ -75,6 +92,15 @@ const BOOKS = [
   {
     id: 'b3', lv: 'L2', tag: '短元音 i', title: 'The Big Pig', zh: '大胖猪',
     emoji: '🐷', color: '#F4A7B9',
+    goal: '/ɪ/ 短而松',
+    trap: 'i 不要读成「衣」。发 /ɪ/ 时嘴比「衣」松、舌位靠后一点，pig 不要读成「皮格」。',
+    summary: '这一级练短元音 i。/ɪ/ 和中文「衣」最大的差别是「松」，读紧了就变成另一个词。',
+    pre: [
+      { art: '🐷', en: 'pig', zh: '猪' },
+      { art: '🐘', en: 'big', zh: '大的' },
+      { art: '⛏️', en: 'dig', zh: '挖' },
+      { art: '👱', en: 'wig', zh: '假发' }
+    ],
     sight: ['the', 'a', 'is', 'my'],
     newWords: [
       { w: 'pig', zh: '猪' },
@@ -95,13 +121,22 @@ const BOOKS = [
     ],
     quiz: [
       { q: '猪会做什么？', opts: ['挖土', '飞', '游泳'], a: 0 },
-      { q: '猪掉到哪里去了？', opts: ['床上', '水里', '坑里'], a: 2 },
+      { q: '猪掉到哪里去了？', opts: ['坑里', '水里', '床上'], a: 0 },
       { q: '猪头上戴了什么？', opts: ['帽子', '围巾', '假发'], a: 2 }
     ]
   },
   {
     id: 'b4', lv: 'L2', tag: '短元音 o', title: 'Fox in a Box', zh: '盒子里的狐狸',
     emoji: '🦊', color: '#F0997B',
+    goal: '/ɒ/ 嘴唇收圆',
+    trap: 'o 不要读成「哦」。发 /ɒ/ 时嘴唇收圆、舌位低，dog 的尾音 /g/ 也要出来。',
+    summary: '这一级练短元音 o。/ɒ/ 要比中文「哦」更短、嘴更圆。',
+    pre: [
+      { art: '🦊', en: 'fox', zh: '狐狸' },
+      { art: '📦', en: 'box', zh: '盒子' },
+      { art: '🔥', en: 'hot', zh: '热的' },
+      { art: '🐰', en: 'hop', zh: '跳' }
+    ],
     sight: ['the', 'a', 'is', 'my'],
     newWords: [
       { w: 'fox', zh: '狐狸' },
@@ -128,6 +163,14 @@ const BOOKS = [
   {
     id: 'b5', lv: 'L2', tag: '短元音 u', title: 'Fun in the Sun', zh: '太阳底下真好玩',
     emoji: '🐶', color: '#4EC5F1',
+    goal: '/ʌ/ 短促',
+    trap: 'u 不要读成「啊」或「乌」。发 /ʌ/ 时嘴巴半开、舌头放平，sun 一口气收住。',
+    summary: '这一级练短元音 u。/ʌ/ 介于「啊」和「呃」之间，孩子常读成两者之一。',
+    pre: [
+      { art: '🐶', en: 'pup', zh: '小狗' },
+      { art: '☀️', en: 'sun', zh: '太阳' },
+      { art: '🏃', en: 'run', zh: '跑' }
+    ],
     sight: ['the', 'a', 'is', 'my'],
     newWords: [
       { w: 'pup', zh: '小狗' },
@@ -154,6 +197,15 @@ const BOOKS = [
   {
     id: 'b6', lv: 'L3', tag: 'sh · ch', title: 'The Big Fish', zh: '大鱼',
     emoji: '🐟', color: '#0EA5E9',
+    goal: '/ʃ/ 像「嘘」',
+    trap: 'sh 不要把舌头卷起来。嘴唇往前噘成小圆，像让人安静那样吹气。fish 的 sh 在词尾也要出来。',
+    summary: '这一级练 sh。/ʃ/ 和中文「嘘」接近，但嘴唇要更往前。',
+    pre: [
+      { art: '🐟', en: 'fish', zh: '鱼' },
+      { art: '🚢', en: 'ship', zh: '船' },
+      { art: '🍽️', en: 'dish', zh: '盘子' },
+      { art: '🏪', en: 'shop', zh: '商店' }
+    ],
     sight: ['the', 'a', 'is', 'my', 'and'],
     newWords: [
       { w: 'fish', zh: '鱼' },
@@ -172,14 +224,23 @@ const BOOKS = [
       { art: '🐟🍟', en: 'Fish and chips!', zh: '鱼和薯条！（英国名菜）' }
     ],
     quiz: [
-      { q: '鱼在哪里？', opts: ['车里', '船上', '盒子里'], a: 1 },
-      { q: '鱼坐在什么上面？', opts: ['盘子', '垫子', '帽子'], a: 0 },
+      { q: '鱼在哪里？', opts: ['盒子里', '车里', '船上'], a: 2 },
+      { q: '鱼坐在什么上面？', opts: ['垫子', '帽子', '盘子'], a: 2 },
       { q: '故事最后鱼变成了什么？', opts: ['鱼和薯条', '鱼汤', '鱼骨头'], a: 0 }
     ]
   },
   {
     id: 'b7', lv: 'L3', tag: 'ck · ng · th', title: 'Duck Sings', zh: '鸭子唱歌',
     emoji: '🦆', color: '#F59E0B',
+    goal: '/θ/ 舌尖放在齿间',
+    trap: 'th 中文里没有。舌尖轻轻放在上下齿之间吹气，不要读成 s，也不要读成 f。think 不是「辛克」。',
+    summary: '这一级练 th。这是中国学生最难的一个音，常见错误是读成 s（think→sink）或 f（three→free）。',
+    pre: [
+      { art: '🦆', en: 'duck', zh: '鸭子' },
+      { art: '🪨', en: 'rock', zh: '石头' },
+      { art: '🎤', en: 'sing', zh: '唱歌' },
+      { art: '🐤', en: 'chick', zh: '小鸡' }
+    ],
     sight: ['the', 'a', 'is', 'my', 'and'],
     newWords: [
       { w: 'duck', zh: '鸭子' },
@@ -199,7 +260,7 @@ const BOOKS = [
       { art: '🦆🐥🎶', en: 'The duck and the chick sing and sing!', zh: '鸭子和小鸡唱啊唱！' }
     ],
     quiz: [
-      { q: '鸭子站在什么上面？', opts: ['盒子', '盘子', '石头'], a: 2 },
+      { q: '鸭子站在什么上面？', opts: ['盘子', '石头', '盒子'], a: 1 },
       { q: '谁骑在鸭子上？', opts: ['小鸡', '猪', '猫'], a: 0 },
       { q: '最后谁在唱歌？', opts: ['只有鸭子', '鸭子和小鸡', '只有小鸡'], a: 1 }
     ]
@@ -207,6 +268,15 @@ const BOOKS = [
   {
     id: 'b8', lv: 'L4', tag: '辅音连缀', title: 'Frog and Crab', zh: '青蛙和螃蟹',
     emoji: '🐸', color: '#22C55E',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
+    pre: [
+      { art: '🐸', en: 'frog', zh: '青蛙' },
+      { art: '🌿', en: 'grass', zh: '草地' },
+      { art: '🏊', en: 'swim', zh: '游泳' },
+      { art: '🦀', en: 'crab', zh: '螃蟹' }
+    ],
     sight: ['the', 'a', 'is', 'my', 'and'],
     newWords: [
       { w: 'frog', zh: '青蛙' },
@@ -226,14 +296,23 @@ const BOOKS = [
       { art: '🐸🦀', en: 'The frog and the crab swim and grab!', zh: '青蛙和螃蟹一边游一边抓！' }
     ],
     quiz: [
-      { q: '青蛙一开始在哪里？', opts: ['草地里', '石头上', '水里'], a: 0 },
-      { q: '谁骑在青蛙上？', opts: ['螃蟹', '鸭子', '小鸡'], a: 0 },
-      { q: '青蛙会做什么？', opts: ['游泳', '挖土', '唱歌'], a: 0 }
+      { q: '青蛙一开始在哪里？', opts: ['石头上', '水里', '草地里'], a: 2 },
+      { q: '谁骑在青蛙上？', opts: ['鸭子', '小鸡', '螃蟹'], a: 2 },
+      { q: '青蛙会做什么？', opts: ['唱歌', '游泳', '挖土'], a: 1 }
     ]
   },
   {
     id: 'b9', lv: 'L5', tag: 'ee · oo', title: 'Three Green Bees', zh: '三只绿蜜蜂',
     emoji: '🐝', color: '#FACC15',
+    goal: '/iː/ 拉长',
+    trap: 'ee 要拉长，像微笑时说「衣——」。sheep 比 ship 长一倍，长短不分就会说成另一个词。',
+    summary: '这一级练 ee 的长音 /iː/。中文没有长短元音对立，孩子容易把 sheep 读成 ship。',
+    pre: [
+      { art: '🌳', en: 'tree', zh: '树' },
+      { art: '🐝', en: 'bee', zh: '蜜蜂（复数 bees）' },
+      { art: '🌙', en: 'moon', zh: '月亮' },
+      { art: '😴', en: 'sleep', zh: '睡觉' }
+    ],
     sight: ['the', 'a', 'is', 'my', 'and', 'we'],
     newWords: [
       { w: 'see', zh: '看见' },
@@ -255,7 +334,7 @@ const BOOKS = [
       { art: '🌙😴', en: 'Sleep, bees, sleep!', zh: '睡吧，蜜蜂，睡吧！' }
     ],
     quiz: [
-      { q: '树上有什么？', opts: ['帽子', '蜜蜂', '鸭子'], a: 1 },
+      { q: '树上有什么？', opts: ['蜜蜂', '鸭子', '帽子'], a: 0 },
       { q: '有几只蜜蜂？', opts: ['三只', '两只', '一只'], a: 0 },
       { q: '蜜蜂睡在哪里？', opts: ['草地上', '月亮上', '树上'], a: 1 }
     ]
@@ -263,6 +342,15 @@ const BOOKS = [
   {
     id: 'b10', lv: 'L5', tag: 'ai · ay · oa', title: 'Rain, Train, Boat', zh: '雨、火车和船',
     emoji: '🚂', color: '#8B5CF6',
+    goal: '/eɪ/ 就是字母 A 的名字',
+    trap: 'ai 读 /eɪ/，跟字母 A 的名字一样。rain 不要读成「拉因」两个音。',
+    summary: '这一级练 ai。/eɪ/ 是双元音，要滑动，不能读成一个平的元音。',
+    pre: [
+      { art: '🌧️', en: 'rain', zh: '雨' },
+      { art: '🎈', en: 'play', zh: '玩' },
+      { art: '🚂', en: 'train', zh: '火车' },
+      { art: '🛤️', en: 'road', zh: '路' }
+    ],
     sight: ['the', 'a', 'is', 'my', 'and', 'we', 'go'],
     newWords: [
       { w: 'rain', zh: '雨' },
@@ -287,13 +375,21 @@ const BOOKS = [
     ],
     quiz: [
       { q: '大家今天在哪里玩？', opts: ['泥巴里', '雨里', '月亮上'], a: 1 },
-      { q: '谁在船上？', opts: ['鸭子', '蜜蜂', '山羊'], a: 2 },
+      { q: '谁在船上？', opts: ['山羊', '鸭子', '蜜蜂'], a: 0 },
       { q: '雨歌里雨要去哪里？', opts: ['快下来', '快走开', '快睡觉'], a: 1 }
     ]
   },
   {
     id: 'b11', lv: 'L6', tag: '魔法 e', title: 'Cake on a Lake', zh: '湖上的蛋糕',
     emoji: '🎂', color: '#D4537E',
+    goal: '把这一级的拼读规则读顺',
+    trap: '先看每个词的元音，判断是短音还是长音，再开口。',
+    summary: '这一级继续巩固拼读规则。',
+    pre: [
+      { art: '🎂', en: 'cake', zh: '蛋糕' },
+      { art: '🍽️', en: 'plate', zh: '盘子' },
+      { art: '🍚', en: 'rice', zh: '米饭' }
+    ],
     sight: ['the', 'a', 'is', 'my', 'and', 'we', 'by'],
     newWords: [
       { w: 'cake', zh: '蛋糕' },
@@ -317,12 +413,21 @@ const BOOKS = [
     quiz: [
       { q: '蛋糕在哪儿？', opts: ['盒子里', '树上', '湖边'], a: 2 },
       { q: '湖里有几只鸭子？', opts: ['十只', '五只', '三只'], a: 1 },
-      { q: '盘子上还有什么？', opts: ['米饭和葡萄', '薯条', '鸡蛋'], a: 0 }
+      { q: '盘子上还有什么？', opts: ['鸡蛋', '米饭和葡萄', '薯条'], a: 1 }
     ]
   },
   {
     id: 'b12', lv: 'L7', tag: 'ar · or · ir', title: 'The Star Car', zh: '星星汽车',
     emoji: '🚗', color: '#D85A30',
+    goal: '/ɑːr/ 卷舌',
+    trap: 'ar 要卷舌，但舌尖不要顶到上颚。car 不要读成「卡」，结尾要有 r 的色彩。',
+    summary: '这一级练 ar。中文的「儿化」和英语的 r 不一样，容易卷过头或完全不卷。',
+    pre: [
+      { art: '🚗', en: 'car', zh: '汽车' },
+      { art: '🌾', en: 'farm', zh: '农场' },
+      { art: '🐴', en: 'horse', zh: '马（词尾 e 不发音）' },
+      { art: '🐦', en: 'bird', zh: '鸟' }
+    ],
     sight: ['the', 'a', 'is', 'my', 'and', 'we'],
     newWords: [
       { w: 'car', zh: '汽车' },
@@ -344,14 +449,23 @@ const BOOKS = [
       { art: '⭐🚗', en: 'The star is on the car!', zh: '星星落在汽车上啦！' }
     ],
     quiz: [
-      { q: '汽车在哪里？', opts: ['农场', '湖里', '商店'], a: 0 },
+      { q: '汽车在哪里？', opts: ['商店', '湖里', '农场'], a: 2 },
       { q: '谁坐进汽车里了？', opts: ['猪', '鸭子', '马'], a: 2 },
-      { q: '最后什么落在了汽车上？', opts: ['假发', '星星', '蛋糕'], a: 1 }
+      { q: '最后什么落在了汽车上？', opts: ['蛋糕', '假发', '星星'], a: 2 }
     ]
   },
   {
     id: 'b13', lv: 'L8', tag: '视觉词', title: 'Where Is the Duck?', zh: '鸭子去哪儿了',
     emoji: '🔍', color: '#6366F1',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
+    pre: [
+      { art: '👉', en: 'it', zh: '它' },
+      { art: '🦆', en: 'duck', zh: '鸭子（复数 ducks）' },
+      { art: '3️⃣', en: 'three', zh: '三' },
+      { art: '☀️', en: 'sun', zh: '太阳' }
+    ],
     sight: ['the', 'a', 'is', 'my', 'and', 'we', 'what', 'where', 'out', 'now', 'come', 'one', 'two', 'you', 'are', 'all', 'me'],
     newWords: [
       { w: 'it', zh: '它' },
@@ -371,14 +485,23 @@ const BOOKS = [
       { art: '🦆☀️', en: 'You and me and my duck.', zh: '你、我，还有我的鸭子。' }
     ],
     quiz: [
-      { q: '“Where is the duck?” 是什么意思？', opts: ['鸭子几岁？', '鸭子在哪儿？', '鸭子会飞吗？'], a: 1 },
-      { q: '一共有几只鸭子？', opts: ['一只', '两只', '三只'], a: 2 },
+      { q: '“Where is the duck?” 是什么意思？', opts: ['鸭子会飞吗？', '鸭子几岁？', '鸭子在哪儿？'], a: 2 },
+      { q: '一共有几只鸭子？', opts: ['两只', '三只', '一只'], a: 1 },
       { q: '“Come out” 是什么意思？', opts: ['坐下', '进去', '出来'], a: 2 }
     ]
   },
   {
     id: 'b14', lv: 'L9', tag: '综合复习', title: 'A Big Day', zh: '了不起的一天',
     emoji: '🌅', color: '#0F6E56',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
+    pre: [
+      { art: '🌾', en: 'farm', zh: '农场' },
+      { art: '🐴', en: 'horse', zh: '马（词尾 e 不发音）' },
+      { art: '🦆', en: 'duck', zh: '鸭子' },
+      { art: '🐷', en: 'pig', zh: '猪' }
+    ],
     sight: ['the', 'a', 'is', 'my', 'and', 'we', 'go', 'day', 'for'],
     newWords: [
       { w: 'farm', zh: '农场' },
@@ -403,13 +526,22 @@ const BOOKS = [
     ],
     quiz: [
       { q: '大家今天去哪里？', opts: ['商店', '学校', '农场'], a: 2 },
-      { q: '鸭子会做什么？', opts: ['开车', '挖土', '跑和唱'], a: 2 },
-      { q: '谁坐进了汽车里？', opts: ['马', '猪', '鸭子'], a: 0 }
+      { q: '鸭子会做什么？', opts: ['挖土', '跑和唱', '开车'], a: 1 },
+      { q: '谁坐进了汽车里？', opts: ['猪', '鸭子', '马'], a: 2 }
     ]
   },
   {
     id: 'b15', lv: 'L9', tag: '毕业读物', title: 'We Can Read!', zh: '我们会读书啦！',
     emoji: '📖', color: '#534AB7',
+    goal: '把这一级的拼读规则读顺',
+    trap: '先看每个词的元音，判断是短音还是长音，再开口。',
+    summary: '这一级继续巩固拼读规则。',
+    pre: [
+      { art: '🐱', en: 'cat', zh: '猫' },
+      { art: '🐔', en: 'hen', zh: '母鸡' },
+      { art: '🐷', en: 'pig', zh: '猪' },
+      { art: '🐸', en: 'frog', zh: '青蛙' }
+    ],
     sight: ['the', 'a', 'is', 'my', 'and', 'we', 'can', 'I', 'read'],
     newWords: [
       { w: 'see', zh: '看见' },
@@ -435,12 +567,21 @@ const BOOKS = [
     quiz: [
       { q: '“I can read” 是什么意思？', opts: ['我会读书', '我会唱歌', '我会跑'], a: 0 },
       { q: '故事里提到了哪些动物？', opts: ['猫、母鸡、猪、青蛙、螃蟹、蜜蜂', '狗和马', '只有猫'], a: 0 },
-      { q: '蜜蜂会读书吗？', opts: ['故事里没说', '不会', '会'], a: 1 }
+      { q: '蜜蜂会读书吗？', opts: ['不会', '故事里没说', '会'], a: 0 }
     ]
   },
   {
     id: 'b16', lv: 'L2', tag: '短元音 a', title: 'The Sad Cat', zh: '难过的小猫',
     emoji: '😿', color: '#8FB8DE',
+    goal: '/æ/ 短促有力，嘴张大',
+    trap: 'a 不要读成「阿」。发 /æ/ 时嘴角往两边拉、下巴放低，像被人轻拍一下那样短。cat 千万别读成「卡特」。',
+    summary: '这一级练短元音 a。/æ/ 在中文里没有对应的音，最容易读成「阿」或者拖长。',
+    pre: [
+      { art: '😢', en: 'sad', zh: '难过的' },
+      { art: '💧', en: 'wet', zh: '湿的' },
+      { art: '😤', en: 'mad', zh: '生气的' },
+      { art: '👨', en: 'Dad', zh: '爸爸' }
+    ],
     sight: ['the', 'a', 'is', 'my', 'and', 'it', 'I', 'am'],
     newWords: [
       { w: 'sad', zh: '难过的' },
@@ -461,13 +602,22 @@ const BOOKS = [
     ],
     quiz: [
       { q: '小猫为什么难过？', opts: ['太热了', '太饿了', '淋湿了'], a: 2 },
-      { q: '小猫在哪儿睡觉？', opts: ['垫子上', '帽子里', '我的腿上'], a: 2 },
+      { q: '小猫在哪儿睡觉？', opts: ['我的腿上', '帽子里', '垫子上'], a: 0 },
       { q: '故事最后谁生气了？', opts: ['爸爸', '小猫', '我'], a: 0 }
     ]
   },
   {
     id: 'b17', lv: 'L2', tag: '短元音 e', title: 'Ten Men', zh: '十个人',
     emoji: '👨‍👨‍👦', color: '#F0A868',
+    goal: '/e/ 嘴形扁平',
+    trap: 'e 不要读成「诶」。发 /e/ 时嘴唇向两边拉开、上下齿微开，bed 一口气收住，不要拖成「贝德」。',
+    summary: '这一级练短元音 e。/e/ 的关键是短和扁，孩子容易读成双元音「诶」。',
+    pre: [
+      { art: '🖊️', en: 'pen', zh: '围栏' },
+      { art: '🐔', en: 'hen', zh: '母鸡' },
+      { art: '🛏️', en: 'bed', zh: '床' },
+      { art: '😊', en: 'glad', zh: '高兴的' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not'],
     newWords: [
       { w: 'men', zh: '男人（复数）' },
@@ -489,12 +639,21 @@ const BOOKS = [
     quiz: [
       { q: '围栏里挤了几个人？', opts: ['五个人', '十个人', '两个人'], a: 1 },
       { q: '谁在围栏里不高兴？', opts: ['男人', '母鸡', '床'], a: 1 },
-      { q: '最后床怎么了？', opts: ['变红了', '被压平了', '飞走了'], a: 1 }
+      { q: '最后床怎么了？', opts: ['变红了', '飞走了', '被压平了'], a: 2 }
     ]
   },
   {
     id: 'b18', lv: 'L2', tag: '短元音 i', title: 'Dig a Pit', zh: '挖个坑',
     emoji: '⛏️', color: '#C89F6D',
+    goal: '/ɪ/ 短而松',
+    trap: 'i 不要读成「衣」。发 /ɪ/ 时嘴比「衣」松、舌位靠后一点，pig 不要读成「皮格」。',
+    summary: '这一级练短元音 i。/ɪ/ 和中文「衣」最大的差别是「松」，读紧了就变成另一个词。',
+    pre: [
+      { art: '⛏️', en: 'dig', zh: '挖' },
+      { art: '🐘', en: 'big', zh: '大的' },
+      { art: '👱', en: 'wig', zh: '假发' },
+      { art: '😊', en: 'glad', zh: '高兴的' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'no'],
     newWords: [
       { w: 'dig', zh: '挖' },
@@ -514,7 +673,7 @@ const BOOKS = [
       { art: '😄🕳️', en: 'I am glad in my pit!', zh: '大坑里一点也不无聊。' }
     ],
     quiz: [
-      { q: '小孩在挖什么？', opts: ['一棵树', '一个坑', '一条河'], a: 1 },
+      { q: '小孩在挖什么？', opts: ['一个坑', '一条河', '一棵树'], a: 0 },
       { q: '坑里有什么？', opts: ['一只猫', '一顶假发', '一辆车'], a: 1 },
       { q: '最后小孩变成了什么样？', opts: ['跑回家了', '戴着假发坐在坑里', '睡着了'], a: 1 }
     ]
@@ -522,6 +681,15 @@ const BOOKS = [
   {
     id: 'b19', lv: 'L2', tag: '短元音 o', title: 'The Hot Pot', zh: '滚烫的锅',
     emoji: '🍲', color: '#E5707E',
+    goal: '/ɒ/ 嘴唇收圆',
+    trap: 'o 不要读成「哦」。发 /ɒ/ 时嘴唇收圆、舌位低，dog 的尾音 /g/ 也要出来。',
+    summary: '这一级练短元音 o。/ɒ/ 要比中文「哦」更短、嘴更圆。',
+    pre: [
+      { art: '🔥', en: 'hot', zh: '烫的' },
+      { art: '🍲', en: 'pot', zh: '锅' },
+      { art: '🧹', en: 'mop', zh: '拖把' },
+      { art: '🐰', en: 'hop', zh: '单脚跳' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'no', 'my', 'by'],
     newWords: [
       { w: 'hot', zh: '烫的' },
@@ -540,13 +708,21 @@ const BOOKS = [
     ],
     quiz: [
       { q: '锅怎么了？', opts: ['很凉', '很烫', '是空的'], a: 1 },
-      { q: '狗为什么跳起来？', opts: ['很高兴', '被烫到了', '想睡觉'], a: 1 },
+      { q: '狗为什么跳起来？', opts: ['很高兴', '想睡觉', '被烫到了'], a: 2 },
       { q: '最后锅跑到哪儿了？', opts: ['树上', '拖把上', '床上'], a: 1 }
     ]
   },
   {
     id: 'b20', lv: 'L2', tag: '短元音 u', title: 'A Bug in a Mug', zh: '杯子里的虫子',
     emoji: '🐛', color: '#8CC084',
+    goal: '/ʌ/ 短促',
+    trap: 'u 不要读成「啊」或「乌」。发 /ʌ/ 时嘴巴半开、舌头放平，sun 一口气收住。',
+    summary: '这一级练短元音 u。/ʌ/ 介于「啊」和「呃」之间，孩子常读成两者之一。',
+    pre: [
+      { art: '🐛', en: 'bug', zh: '小虫子' },
+      { art: '☕', en: 'mug', zh: '马克杯' },
+      { art: '🏃', en: 'run', zh: '跑' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'you', 'glad'],
     newWords: [
       { w: 'bug', zh: '小虫子' },
@@ -564,14 +740,23 @@ const BOOKS = [
       { art: '🏃🐛', en: 'No! Run, bug, run!', zh: '不要！快跑，虫子，快跑！' }
     ],
     quiz: [
-      { q: '虫子在哪儿？', opts: ['杯子里', '帽子里', '鞋子里'], a: 0 },
-      { q: '虫子后来又跑到哪儿？', opts: ['水壶里', '床上', '树上'], a: 0 },
+      { q: '虫子在哪儿？', opts: ['鞋子里', '帽子里', '杯子里'], a: 2 },
+      { q: '虫子后来又跑到哪儿？', opts: ['床上', '水壶里', '树上'], a: 1 },
       { q: '故事最后让虫子做什么？', opts: ['睡觉', '唱歌', '快跑'], a: 2 }
     ]
   },
   {
     id: 'b21', lv: 'L2', tag: '短元音 e / a', title: 'My Wet Pet', zh: '我的湿宠物',
     emoji: '🐹', color: '#B99BE0',
+    goal: '/e/ 嘴形扁平',
+    trap: 'e 不要读成「诶」。发 /e/ 时嘴唇向两边拉开、上下齿微开，bed 一口气收住，不要拖成「贝德」。',
+    summary: '这一级练短元音 e。/e/ 的关键是短和扁，孩子容易读成双元音「诶」。',
+    pre: [
+      { art: '🐾', en: 'pet', zh: '宠物' },
+      { art: '💧', en: 'wet', zh: '湿的' },
+      { art: '🥅', en: 'net', zh: '网' },
+      { art: '✋', en: 'get', zh: '抓住' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no'],
     newWords: [
       { w: 'pet', zh: '宠物' },
@@ -590,7 +775,7 @@ const BOOKS = [
       { art: '😆🐹', en: 'My wet pet is not sad!', zh: '我的湿宠物一点也不难过！' }
     ],
     quiz: [
-      { q: '我的宠物是什么？', opts: ['小老鼠', '小兔', '小猫'], a: 0 },
+      { q: '我的宠物是什么？', opts: ['小猫', '小老鼠', '小兔'], a: 1 },
       { q: '宠物为什么湿了？', opts: ['掉水里了', '洗澡了', '淋雨了'], a: 2 },
       { q: '我拿什么去罩它？', opts: ['帽子', '被子', '网'], a: 2 }
     ]
@@ -598,6 +783,15 @@ const BOOKS = [
   {
     id: 'b22', lv: 'L2', tag: '短元音 a / e', title: 'The Red Cap', zh: '红帽子',
     emoji: '🧢', color: '#F2A0A0',
+    goal: '/æ/ 短促有力，嘴张大',
+    trap: 'a 不要读成「阿」。发 /æ/ 时嘴角往两边拉、下巴放低，像被人轻拍一下那样短。cat 千万别读成「卡特」。',
+    summary: '这一级练短元音 a。/æ/ 在中文里没有对应的音，最容易读成「阿」或者拖长。',
+    pre: [
+      { art: '🧢', en: 'cap', zh: '帽子（带帽檐）' },
+      { art: '🗺️', en: 'map', zh: '地图' },
+      { art: '👆', en: 'tap', zh: '轻敲' },
+      { art: '↔️', en: 'gap', zh: '缝隙' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no', 'can'],
     newWords: [
       { w: 'cap', zh: '帽子（带帽檐）' },
@@ -615,7 +809,7 @@ const BOOKS = [
       { art: '😅🧢', en: 'The cap is in the gap!', zh: '帽子卡在车缝里了！' }
     ],
     quiz: [
-      { q: '帽子是什么颜色？', opts: ['蓝色', '红色', '绿色'], a: 1 },
+      { q: '帽子是什么颜色？', opts: ['绿色', '红色', '蓝色'], a: 1 },
       { q: '帽子先压在什么东西上？', opts: ['书', '地图', '盘子'], a: 1 },
       { q: '最后帽子卡在哪儿？', opts: ['车的缝隙里', '水里', '树上'], a: 0 }
     ]
@@ -623,6 +817,14 @@ const BOOKS = [
   {
     id: 'b23', lv: 'L3', tag: 'sh', title: 'Fish in a Dish', zh: '盘子里的鱼',
     emoji: '🐟', color: '#6FB3D9',
+    goal: '/ʃ/ 像「嘘」',
+    trap: 'sh 不要把舌头卷起来。嘴唇往前噘成小圆，像让人安静那样吹气。fish 的 sh 在词尾也要出来。',
+    summary: '这一级练 sh。/ʃ/ 和中文「嘘」接近，但嘴唇要更往前。',
+    pre: [
+      { art: '🐟', en: 'fish', zh: '鱼' },
+      { art: '🍽️', en: 'dish', zh: '盘子' },
+      { art: '🚢', en: 'ship', zh: '船' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no', 'see', 'glad'],
     newWords: [
       { w: 'fish', zh: '鱼' },
@@ -639,14 +841,23 @@ const BOOKS = [
       { art: '🐟😄', en: 'The dish is not for a fish.', zh: '盘子本来就不该装鱼嘛。' }
     ],
     quiz: [
-      { q: '鱼在哪儿？', opts: ['船上', '盘子里', '水里'], a: 1 },
+      { q: '鱼在哪儿？', opts: ['盘子里', '水里', '船上'], a: 0 },
       { q: '鱼许了什么愿？', opts: ['想去船上', '想吃东西', '想睡觉'], a: 0 },
-      { q: '故事最后鱼在哪里？', opts: ['船上', '盘子里', '商店里'], a: 0 }
+      { q: '故事最后鱼在哪里？', opts: ['商店里', '船上', '盘子里'], a: 1 }
     ]
   },
   {
     id: 'b24', lv: 'L3', tag: 'sh / ck', title: 'The Big Ship', zh: '大船',
     emoji: '🚢', color: '#5B9BD5',
+    goal: '/ʃ/ 像「嘘」',
+    trap: 'sh 不要把舌头卷起来。嘴唇往前噘成小圆，像让人安静那样吹气。fish 的 sh 在词尾也要出来。',
+    summary: '这一级练 sh。/ʃ/ 和中文「嘘」接近，但嘴唇要更往前。',
+    pre: [
+      { art: '🚢', en: 'ship', zh: '船' },
+      { art: '🪨', en: 'rock', zh: '摇晃' },
+      { art: '🧦', en: 'sock', zh: '袜子' },
+      { art: '🌬️', en: 'wind', zh: '风' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'on', 'glad'],
     newWords: [
       { w: 'ship', zh: '船' },
@@ -665,14 +876,23 @@ const BOOKS = [
       { art: '😂🧦', en: 'The fish is not glad.', zh: '鱼可一点也不想穿袜子。' }
     ],
     quiz: [
-      { q: '我的袜子掉在哪儿？', opts: ['海里', '床上', '甲板上'], a: 2 },
-      { q: '袜子被什么吹跑了？', opts: ['风', '船', '鱼'], a: 0 },
+      { q: '我的袜子掉在哪儿？', opts: ['海里', '甲板上', '床上'], a: 1 },
+      { q: '袜子被什么吹跑了？', opts: ['船', '风', '鱼'], a: 1 },
       { q: '谁钻进了袜子里？', opts: ['一个人', '一只猫', '一条鱼'], a: 2 }
     ]
   },
   {
     id: 'b25', lv: 'L3', tag: 'th', title: 'This and That', zh: '这个和那个',
     emoji: '👐', color: '#E0A458',
+    goal: '/θ/ 舌尖放在齿间',
+    trap: 'th 中文里没有。舌尖轻轻放在上下齿之间吹气，不要读成 s，也不要读成 f。think 不是「辛克」。',
+    summary: '这一级练 th。这是中国学生最难的一个音，常见错误是读成 s（think→sink）或 f（three→free）。',
+    pre: [
+      { art: '📏', en: 'thin', zh: '瘦的' },
+      { art: '📏', en: 'thick', zh: '粗的；厚的' },
+      { art: '➡️', en: 'then', zh: '然后' },
+      { art: '🛁', en: 'bath', zh: '浴缸' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'this', 'that'],
     newWords: [
       { w: 'thin', zh: '瘦的' },
@@ -692,14 +912,23 @@ const BOOKS = [
       { art: '🐈‍⬛😤', en: 'The thick cat can not!', zh: '胖猫可跳不上去！' }
     ],
     quiz: [
-      { q: '两只猫有什么不同？', opts: ['一只大一只小', '一只瘦一只胖', '一只黑一只白'], a: 1 },
-      { q: '飞蛾先在哪儿？', opts: ['浴缸里', '床上', '灯上'], a: 0 },
+      { q: '两只猫有什么不同？', opts: ['一只瘦一只胖', '一只大一只小', '一只黑一只白'], a: 0 },
+      { q: '飞蛾先在哪儿？', opts: ['灯上', '床上', '浴缸里'], a: 2 },
       { q: '谁能跳到灯上？', opts: ['胖猫', '瘦猫', '两只都能'], a: 1 }
     ]
   },
   {
     id: 'b26', lv: 'L3', tag: 'ck', title: 'Duck in a Sock', zh: '穿袜子的鸭子',
     emoji: '🦆', color: '#F2C14E',
+    goal: '/k/ 只发一个音',
+    trap: 'ck 只发一个 /k/，不是「克」两拍。duck 的结尾要干净地停住。',
+    summary: '这一级练 ck。ck 永远只发一个 /k/，孩子容易读成「克」多一拍。',
+    pre: [
+      { art: '🦆', en: 'duck', zh: '鸭子' },
+      { art: '🧦', en: 'sock', zh: '袜子' },
+      { art: '🪨', en: 'rock', zh: '石头' },
+      { art: '👜', en: 'sack', zh: '麻袋' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no', 'on'],
     newWords: [
       { w: 'duck', zh: '鸭子' },
@@ -717,14 +946,23 @@ const BOOKS = [
       { art: '😂🧦', en: 'A duck in a sack of socks!', zh: '一袋袜子里有只鸭子！' }
     ],
     quiz: [
-      { q: '鸭子穿着什么？', opts: ['鞋子', '帽子', '袜子'], a: 2 },
+      { q: '鸭子穿着什么？', opts: ['袜子', '鞋子', '帽子'], a: 0 },
       { q: '鸭子站在哪儿？', opts: ['桌子上', '船上', '石头上'], a: 2 },
-      { q: '最后鸭子在哪儿？', opts: ['水里', '装满袜子的麻袋里', '树上'], a: 1 }
+      { q: '最后鸭子在哪儿？', opts: ['装满袜子的麻袋里', '树上', '水里'], a: 0 }
     ]
   },
   {
     id: 'b27', lv: 'L3', tag: 'ng', title: 'The Singing King', zh: '爱唱歌的国王',
     emoji: '👑', color: '#C8A2E0',
+    goal: '/ŋ/ 收在鼻腔',
+    trap: 'ng 不要读成「恩格」。发 /ŋ/ 时舌根抬起、声音从鼻腔出来，sing 结尾不要加 g。',
+    summary: '这一级练 ng。/ŋ/ 是鼻音收尾，加一个 /g/ 就变成 sing-g，很常见。',
+    pre: [
+      { art: '🎤', en: 'sing', zh: '唱歌' },
+      { art: '👑', en: 'king', zh: '国王' },
+      { art: '💍', en: 'ring', zh: '戒指；铃声' },
+      { art: '🎵', en: 'song', zh: '歌曲' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'too'],
     newWords: [
       { w: 'sing', zh: '唱歌' },
@@ -745,13 +983,22 @@ const BOOKS = [
     ],
     quiz: [
       { q: '国王在做什么？', opts: ['唱歌', '吃饭', '跳舞'], a: 0 },
-      { q: '国王发现了什么？', opts: ['一本书', '一枚戒指', '一顶帽子'], a: 1 },
+      { q: '国王发现了什么？', opts: ['一顶帽子', '一枚戒指', '一本书'], a: 1 },
       { q: '为什么大家都困了？', opts: ['天黑了', '太累了', '歌太长了'], a: 2 }
     ]
   },
   {
     id: 'b28', lv: 'L3', tag: 'ch', title: 'Chop, Chop!', zh: '切切切',
     emoji: '🔪', color: '#E88C7D',
+    goal: '/tʃ/ 像「阿嚏」的后半',
+    trap: 'ch 不要读成「吃」。先堵住气流再放开，chip 听起来要像「齐普」的起音而不是「吃」。',
+    summary: '这一级练 ch。/tʃ/ 是「塞 + 擦」两个动作，中文「吃」只有擦音，所以容易读软。',
+    pre: [
+      { art: '🔪', en: 'chop', zh: '切' },
+      { art: '🍟', en: 'chip', zh: '薯片' },
+      { art: '➕', en: 'much', zh: '许多' },
+      { art: '❗', en: 'such', zh: '如此的' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'see'],
     newWords: [
       { w: 'chop', zh: '切' },
@@ -769,14 +1016,23 @@ const BOOKS = [
       { art: '🐦💨', en: 'Chop, chop! No chip!', zh: '叨叨叨！薯片没了！' }
     ],
     quiz: [
-      { q: '这个动作在做什么？', opts: ['煮东西', '切东西', '洗东西'], a: 1 },
-      { q: '薯片放在哪儿？', opts: ['地上', '长凳上', '桌上'], a: 1 },
+      { q: '这个动作在做什么？', opts: ['切东西', '煮东西', '洗东西'], a: 0 },
+      { q: '薯片放在哪儿？', opts: ['长凳上', '地上', '桌上'], a: 0 },
       { q: '谁把薯片吃掉了？', opts: ['我', '小鸡', '小狗'], a: 1 }
     ]
   },
   {
     id: 'b29', lv: 'L3', tag: 'ng / sh', title: 'The Long Song', zh: '长长的歌',
     emoji: '🎵', color: '#7FC8A9',
+    goal: '/ʃ/ 像「嘘」',
+    trap: 'sh 不要把舌头卷起来。嘴唇往前噘成小圆，像让人安静那样吹气。fish 的 sh 在词尾也要出来。',
+    summary: '这一级练 sh。/ʃ/ 和中文「嘘」接近，但嘴唇要更往前。',
+    pre: [
+      { art: '📏', en: 'long', zh: '长的' },
+      { art: '🎵', en: 'song', zh: '歌曲' },
+      { art: '🎤', en: 'sing', zh: '唱' },
+      { art: '🐟', en: 'fish', zh: '鱼' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'we'],
     newWords: [
       { w: 'long', zh: '长的' },
@@ -796,12 +1052,20 @@ const BOOKS = [
     quiz: [
       { q: '谁在唱歌？', opts: ['猫', '鱼', '鸟'], a: 1 },
       { q: '有几条鱼跟着唱？', opts: ['两条', '一条', '三条'], a: 0 },
-      { q: '最后谁来了？', opts: ['一条大鱼', '一个人', '一只猫'], a: 0 }
+      { q: '最后谁来了？', opts: ['一只猫', '一个人', '一条大鱼'], a: 2 }
     ]
   },
   {
     id: 'b30', lv: 'L3', tag: 'th', title: 'Thick Fog', zh: '浓浓的大雾',
     emoji: '🌫️', color: '#A9B7C6',
+    goal: '/θ/ 舌尖放在齿间',
+    trap: 'th 中文里没有。舌尖轻轻放在上下齿之间吹气，不要读成 s，也不要读成 f。think 不是「辛克」。',
+    summary: '这一级练 th。这是中国学生最难的一个音，常见错误是读成 s（think→sink）或 f（three→free）。',
+    pre: [
+      { art: '🌫️', en: 'fog', zh: '雾' },
+      { art: '🛤️', en: 'path', zh: '小路' },
+      { art: '💡', en: 'lamp', zh: '灯' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'this', 'see'],
     newWords: [
       { w: 'thick', zh: '浓的' },
@@ -819,14 +1083,23 @@ const BOOKS = [
       { art: '🐈💡', en: 'It is my cat!', zh: '是我的猫！' }
     ],
     quiz: [
-      { q: '雾怎么样？', opts: ['很淡', '很浓', '没有雾'], a: 1 },
-      { q: '我为什么看不见小路？', opts: ['天太黑了', '雾太浓了', '眼睛闭上了'], a: 1 },
-      { q: '最后看到的是谁？', opts: ['我的猫', '一只狗', '一个人'], a: 0 }
+      { q: '雾怎么样？', opts: ['很淡', '没有雾', '很浓'], a: 2 },
+      { q: '我为什么看不见小路？', opts: ['眼睛闭上了', '天太黑了', '雾太浓了'], a: 2 },
+      { q: '最后看到的是谁？', opts: ['一只狗', '我的猫', '一个人'], a: 1 }
     ]
   },
   {
     id: 'b31', lv: 'L3', tag: 'sh / th', title: 'Wish, Wish, Wish', zh: '许愿许愿',
     emoji: '🌟', color: '#F5C26B',
+    goal: '/ʃ/ 像「嘘」',
+    trap: 'sh 不要把舌头卷起来。嘴唇往前噘成小圆，像让人安静那样吹气。fish 的 sh 在词尾也要出来。',
+    summary: '这一级练 sh。/ʃ/ 和中文「嘘」接近，但嘴唇要更往前。',
+    pre: [
+      { art: '🌟', en: 'wish', zh: '愿望' },
+      { art: '🐟', en: 'fish', zh: '鱼' },
+      { art: '➡️', en: 'then', zh: '然后' },
+      { art: '👥', en: 'them', zh: '它们' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'this', 'but', 'swim'],
     newWords: [
       { w: 'wish', zh: '愿望' },
@@ -844,7 +1117,7 @@ const BOOKS = [
       { art: '🐟💦', en: 'The fish wish to swim!', zh: '鱼儿们还是想游泳！' }
     ],
     quiz: [
-      { q: '鱼许了什么愿？', opts: ['想长出腿', '想飞', '想吃东西'], a: 0 },
+      { q: '鱼许了什么愿？', opts: ['想吃东西', '想飞', '想长出腿'], a: 2 },
       { q: '长腿以后它不能做什么了？', opts: ['跑步', '跳', '游泳'], a: 2 },
       { q: '最后鱼还是想做什么？', opts: ['游泳', '跑步', '睡觉'], a: 0 }
     ]
@@ -852,6 +1125,14 @@ const BOOKS = [
   {
     id: 'b32', lv: 'L3', tag: 'ng / ck', title: 'The Lost Ring', zh: '丢了的戒指',
     emoji: '💍', color: '#D9A5B3',
+    goal: '/k/ 只发一个音',
+    trap: 'ck 只发一个 /k/，不是「克」两拍。duck 的结尾要干净地停住。',
+    summary: '这一级练 ck。ck 永远只发一个 /k/，孩子容易读成「克」多一拍。',
+    pre: [
+      { art: '💍', en: 'ring', zh: '戒指' },
+      { art: '🧦', en: 'sock', zh: '袜子' },
+      { art: '🪨', en: 'rock', zh: '石头' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no', 'she', 'on'],
     newWords: [
       { w: 'ring', zh: '戒指' },
@@ -873,14 +1154,23 @@ const BOOKS = [
       { art: '💍🐟', en: 'And a fish has the ring!', zh: '可是戒指套在一条鱼身上！' }
     ],
     quiz: [
-      { q: '我丢了什么？', opts: ['袜子', '戒指', '帽子'], a: 1 },
-      { q: '戒指最后在哪儿找到的？', opts: ['石头上', '袜子里', '水槽里'], a: 2 },
-      { q: '戒指套在了谁身上？', opts: ['一条鱼', '一只手', '一只猫'], a: 0 }
+      { q: '我丢了什么？', opts: ['帽子', '袜子', '戒指'], a: 2 },
+      { q: '戒指最后在哪儿找到的？', opts: ['袜子里', '水槽里', '石头上'], a: 1 },
+      { q: '戒指套在了谁身上？', opts: ['一只手', '一条鱼', '一只猫'], a: 1 }
     ]
   },
   {
     id: 'b33', lv: 'L4', tag: '连缀 fr / j', title: 'The Frog Jumps', zh: '青蛙跳跳',
     emoji: '🐸', color: '#7FC97F',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
+    pre: [
+      { art: '🐸', en: 'frog', zh: '青蛙' },
+      { art: '🤸', en: 'jump', zh: '跳' },
+      { art: '💧', en: 'pond', zh: '池塘' },
+      { art: '🪵', en: 'log', zh: '木头' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'in'],
     newWords: [
       { w: 'frog', zh: '青蛙' },
@@ -898,14 +1188,23 @@ const BOOKS = [
       { art: '🐸😄', en: 'The frog is glad.', zh: '青蛙开心极了。' }
     ],
     quiz: [
-      { q: '青蛙会做什么？', opts: ['游泳', '跳', '飞'], a: 1 },
-      { q: '青蛙最后跳进哪儿？', opts: ['树林', '房子', '池塘'], a: 2 },
-      { q: '扑通扑通是什么声音？', opts: ['跳进水里的声音', '打雷的声音', '唱歌的声音'], a: 0 }
+      { q: '青蛙会做什么？', opts: ['游泳', '飞', '跳'], a: 2 },
+      { q: '青蛙最后跳进哪儿？', opts: ['树林', '池塘', '房子'], a: 1 },
+      { q: '扑通扑通是什么声音？', opts: ['唱歌的声音', '打雷的声音', '跳进水里的声音'], a: 2 }
     ]
   },
   {
     id: 'b34', lv: 'L4', tag: '连缀 st', title: 'Stop the Bus!', zh: '拦住公交车',
     emoji: '🚌', color: '#F2B04E',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
+    pre: [
+      { art: '🛑', en: 'stop', zh: '停' },
+      { art: '🚌', en: 'bus', zh: '公交车' },
+      { art: '🏁', en: 'last', zh: '最后的' },
+      { art: '✊', en: 'grab', zh: '抓住' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'road'],
     newWords: [
       { w: 'stop', zh: '停' },
@@ -922,14 +1221,23 @@ const BOOKS = [
       { art: '😄🚌', en: 'We can get on!', zh: '我们上得去了！' }
     ],
     quiz: [
-      { q: '公交车在哪儿跑？', opts: ['天上', '河里', '路上'], a: 2 },
+      { q: '公交车在哪儿跑？', opts: ['路上', '天上', '河里'], a: 0 },
       { q: '我们想做什么？', opts: ['洗公交车', '拦住公交车', '推公交车'], a: 1 },
-      { q: '公交车什么时候停的？', opts: ['到终点站时', '一开始', '一直没停'], a: 0 }
+      { q: '公交车什么时候停的？', opts: ['一开始', '一直没停', '到终点站时'], a: 2 }
     ]
   },
   {
     id: 'b35', lv: 'L4', tag: '连缀 tr / nd', title: 'A Trip to the Pond', zh: '去池塘玩',
     emoji: '🎒', color: '#6FB1D9',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
+    pre: [
+      { art: '🎒', en: 'trip', zh: '短途旅行' },
+      { art: '💧', en: 'pond', zh: '池塘' },
+      { art: '🐸', en: 'frog', zh: '青蛙' },
+      { art: '✋', en: 'hand', zh: '手' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'to'],
     newWords: [
       { w: 'trip', zh: '短途旅行' },
@@ -954,6 +1262,14 @@ const BOOKS = [
   {
     id: 'b36', lv: 'L4', tag: '连缀 tw / mb', title: 'Twin Lambs', zh: '双胞胎小羊',
     emoji: '🐑', color: '#D9C7A7',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
+    pre: [
+      { art: '🐑', en: 'lamb', zh: '小羊' },
+      { art: '🌿', en: 'grass', zh: '草' },
+      { art: '🤸', en: 'jump', zh: '跳' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'two', 'lambs'],
     newWords: [
       { w: 'twin', zh: '双胞胎' },
@@ -973,12 +1289,21 @@ const BOOKS = [
     quiz: [
       { q: '有几只小羊？', opts: ['一只', '三只', '两只'], a: 2 },
       { q: '小羊在哪儿？', opts: ['苹果树下', '水里', '草地上'], a: 2 },
-      { q: '小羊会做什么？', opts: ['游泳', '跳', '飞'], a: 1 }
+      { q: '小羊会做什么？', opts: ['跳', '游泳', '飞'], a: 0 }
     ]
   },
   {
     id: 'b37', lv: 'L4', tag: '连缀 sp / gl', title: 'Milk on the Desk', zh: '牛奶洒了',
     emoji: '🥛', color: '#A8C8E8',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
+    pre: [
+      { art: '🥛', en: 'milk', zh: '牛奶' },
+      { art: '🥛', en: 'glass', zh: '玻璃杯' },
+      { art: '🧹', en: 'mop', zh: '拖把' },
+      { art: '🪑', en: 'desk', zh: '书桌' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
     newWords: [
       { w: 'milk', zh: '牛奶' },
@@ -997,14 +1322,17 @@ const BOOKS = [
       { art: '🐱🥛', en: 'My cat drinks it up!', zh: '我的猫全舔干净了！' }
     ],
     quiz: [
-      { q: '杯子里装的是什么？', opts: ['水', '果汁', '牛奶'], a: 2 },
-      { q: '牛奶洒到哪儿了？', opts: ['桌上', '床上', '门外'], a: 0 },
+      { q: '杯子里装的是什么？', opts: ['果汁', '牛奶', '水'], a: 1 },
+      { q: '牛奶洒到哪儿了？', opts: ['门外', '床上', '桌上'], a: 2 },
       { q: '最后谁把牛奶喝光了？', opts: ['我', '爸爸', '我的猫'], a: 2 }
     ]
   },
   {
     id: 'b38', lv: 'L4', tag: '连缀 sn / cr', title: 'Snap! Snap!', zh: '咔嚓咔嚓',
     emoji: '🦀', color: '#E88C7D',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'too'],
     newWords: [
       { w: 'snap', zh: '咔嚓；夹' },
@@ -1022,13 +1350,16 @@ const BOOKS = [
     ],
     quiz: [
       { q: '螃蟹会做什么？', opts: ['唱歌', '跑', '夹人'], a: 2 },
-      { q: '螃蟹在哪儿？', opts: ['沙滩上', '水里', '树上'], a: 0 },
-      { q: '我做了什么动作？', opts: ['跳', '拍手', '跑'], a: 1 }
+      { q: '螃蟹在哪儿？', opts: ['水里', '沙滩上', '树上'], a: 1 },
+      { q: '我做了什么动作？', opts: ['拍手', '跑', '跳'], a: 0 }
     ]
   },
   {
     id: 'b39', lv: 'L4', tag: '连缀 dr / mp', title: 'The Big Drum', zh: '大鼓',
     emoji: '🥁', color: '#D98C6B',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'too'],
     newWords: [
       { w: 'drum', zh: '鼓' },
@@ -1053,6 +1384,14 @@ const BOOKS = [
   {
     id: 'b40', lv: 'L4', tag: '连缀 sk / sp', title: 'Skip and Spin', zh: '蹦蹦转圈',
     emoji: '🌀', color: '#B99BE0',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
+    pre: [
+      { art: '🤸', en: 'skip', zh: '蹦跳' },
+      { art: '🌀', en: 'spin', zh: '转圈' },
+      { art: '🤸', en: 'flop', zh: '瘫倒' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
     newWords: [
       { w: 'skip', zh: '蹦跳' },
@@ -1071,12 +1410,15 @@ const BOOKS = [
     quiz: [
       { q: '我会做什么？', opts: ['蹦跳和转圈', '画画', '游泳'], a: 0 },
       { q: '我怎么摔倒的？', opts: ['跳太高', '被推的', '滑倒的'], a: 2 },
-      { q: '最后我觉得好玩吗？', opts: ['好玩', '很生气', '不好玩'], a: 0 }
+      { q: '最后我觉得好玩吗？', opts: ['很生气', '好玩', '不好玩'], a: 1 }
     ]
   },
   {
     id: 'b41', lv: 'L4', tag: '连缀 st / br', title: 'A Nest of Eggs', zh: '一窝蛋',
     emoji: '🪺', color: '#C8B58A',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'bird'],
     newWords: [
       { w: 'nest', zh: '鸟窝' },
@@ -1102,6 +1444,14 @@ const BOOKS = [
   {
     id: 'b42', lv: 'L4', tag: '连缀 bl / tr', title: 'The Black Cat', zh: '黑猫',
     emoji: '🐈‍⬛', color: '#8E8E9A',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
+    pre: [
+      { art: '⚫', en: 'spot', zh: '看见；斑点' },
+      { art: '😊', en: 'glad', zh: '高兴的' },
+      { art: '🧱', en: 'wall', zh: '墙' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on', 'dark', 'see'],
     newWords: [
       { w: 'black', zh: '黑色的' },
@@ -1121,14 +1471,22 @@ const BOOKS = [
       { art: '😄🐈‍⬛', en: 'A black cat is my pal.', zh: '黑猫是我的好朋友。' }
     ],
     quiz: [
-      { q: '猫是什么颜色？', opts: ['黄色', '黑色', '白色'], a: 1 },
-      { q: '我在哪儿看见它？', opts: ['墙上', '树上', '水里'], a: 0 },
+      { q: '猫是什么颜色？', opts: ['白色', '黄色', '黑色'], a: 2 },
+      { q: '我在哪儿看见它？', opts: ['树上', '水里', '墙上'], a: 2 },
       { q: '猫见到我什么表情？', opts: ['很生气', '很高兴', '很害怕'], a: 1 }
     ]
   },
   {
     id: 'b43', lv: 'L4', tag: '连缀 gr / fl', title: 'Grab the Flag', zh: '抢旗子',
     emoji: '🚩', color: '#E5707E',
+    goal: '两个辅音连着滑过去',
+    trap: '两个辅音之间不能加「呃」。street 不要读成 si-te-ri-te，要一口气从 s 滑到 tr。',
+    summary: '这一级练辅音连缀。中文没有辅音丛，孩子会本能地在中间加元音，这是最典型的「中国口音」。',
+    pre: [
+      { art: '🚩', en: 'flag', zh: '旗子' },
+      { art: '🏃', en: 'run', zh: '跑' },
+      { art: '💨', en: 'fast', zh: '快地' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
     newWords: [
       { w: 'grab', zh: '抓住' },
@@ -1154,6 +1512,14 @@ const BOOKS = [
   {
     id: 'b44', lv: 'L5', tag: 'ee', title: 'A Sheep in a Tree', zh: '树上的羊',
     emoji: '🐑', color: '#7FC8A9',
+    goal: '/iː/ 拉长',
+    trap: 'ee 要拉长，像微笑时说「衣——」。sheep 比 ship 长一倍，长短不分就会说成另一个词。',
+    summary: '这一级练 ee 的长音 /iː/。中文没有长短元音对立，孩子容易把 sheep 读成 ship。',
+    pre: [
+      { art: '🐑', en: 'sheep', zh: '绵羊' },
+      { art: '🌳', en: 'tree', zh: '树' },
+      { art: '😴', en: 'sleep', zh: '睡觉' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'see'],
     newWords: [
       { w: 'sheep', zh: '绵羊' },
@@ -1180,6 +1546,14 @@ const BOOKS = [
   {
     id: 'b45', lv: 'L5', tag: 'oo', title: 'The Moon in the Pool', zh: '池子里的月亮',
     emoji: '🌙', color: '#7B8FA8',
+    goal: '/uː/ 圆唇长音',
+    trap: 'oo 嘴唇收圆往前，像火车「呜——」。book 是短音 /ʊ/，moon 是长音 /uː/，两个不一样。',
+    summary: '这一级练 oo。oo 有长 /uː/ 和短 /ʊ/ 两种读法，靠单词记，不靠规则。',
+    pre: [
+      { art: '🌙', en: 'moon', zh: '月亮' },
+      { art: '🏊', en: 'pool', zh: '水池' },
+      { art: '🔁', en: 'again', zh: '再一次' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'see'],
     newWords: [
       { w: 'moon', zh: '月亮' },
@@ -1198,14 +1572,22 @@ const BOOKS = [
       { art: '😌🌙', en: 'Soon it is up again!', zh: '很快它又回到天上了！' }
     ],
     quiz: [
-      { q: '月亮在哪儿？', opts: ['树上', '屋顶上', '水池里（倒影）'], a: 2 },
-      { q: '池水感觉怎么样？', opts: ['结冰了', '很烫', '凉凉的'], a: 2 },
-      { q: '我捞到月亮了吗？', opts: ['没有', '捞到了', '捞到一半'], a: 0 }
+      { q: '月亮在哪儿？', opts: ['水池里（倒影）', '树上', '屋顶上'], a: 0 },
+      { q: '池水感觉怎么样？', opts: ['很烫', '凉凉的', '结冰了'], a: 1 },
+      { q: '我捞到月亮了吗？', opts: ['捞到一半', '没有', '捞到了'], a: 1 }
     ]
   },
   {
     id: 'b46', lv: 'L5', tag: 'ai', title: 'Wait for the Train', zh: '等火车',
     emoji: '🚂', color: '#6FB1D9',
+    goal: '/eɪ/ 就是字母 A 的名字',
+    trap: 'ai 读 /eɪ/，跟字母 A 的名字一样。rain 不要读成「拉因」两个音。',
+    summary: '这一级练 ai。/eɪ/ 是双元音，要滑动，不能读成一个平的元音。',
+    pre: [
+      { art: '🚂', en: 'train', zh: '火车' },
+      { art: '🌧️', en: 'rain', zh: '雨' },
+      { art: '🔁', en: 'again', zh: '再一次' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'for', 'are'],
     newWords: [
       { w: 'wait', zh: '等待' },
@@ -1230,6 +1612,14 @@ const BOOKS = [
   {
     id: 'b47', lv: 'L5', tag: 'ai', title: 'A Snail on the Tail', zh: '尾巴上的蜗牛',
     emoji: '🐌', color: '#C8B58A',
+    goal: '/eɪ/ 就是字母 A 的名字',
+    trap: 'ai 读 /eɪ/，跟字母 A 的名字一样。rain 不要读成「拉因」两个音。',
+    summary: '这一级练 ai。/eɪ/ 是双元音，要滑动，不能读成一个平的元音。',
+    pre: [
+      { art: '🐌', en: 'snail', zh: '蜗牛' },
+      { art: '🐕', en: 'tail', zh: '尾巴' },
+      { art: '🐢', en: 'slow', zh: '慢的' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on', 'safe'],
     newWords: [
       { w: 'snail', zh: '蜗牛' },
@@ -1249,12 +1639,15 @@ const BOOKS = [
     quiz: [
       { q: '蜗牛爬得怎么样？', opts: ['很快', '会飞', '很慢'], a: 2 },
       { q: '蜗牛趴在哪儿？', opts: ['墙上', '狗的尾巴上', '树上'], a: 1 },
-      { q: '狗跑完以后蜗牛还在吗？', opts: ['还在', '飞了', '掉了'], a: 0 }
+      { q: '狗跑完以后蜗牛还在吗？', opts: ['飞了', '还在', '掉了'], a: 1 }
     ]
   },
   {
     id: 'b48', lv: 'L5', tag: 'ay', title: 'Play All Day', zh: '玩一整天',
     emoji: '🎈', color: '#F5C26B',
+    goal: '/eɪ/ 词尾写法',
+    trap: 'ay 和 ai 读音一样，都是 /eɪ/，只是 ay 出现在词尾。play 的结尾要收圆。',
+    summary: '这一级练 ay。ay 出现在词尾（play、day），ai 出现在词中（rain），读音相同。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'all', 'now'],
     newWords: [
       { w: 'play', zh: '玩' },
@@ -1272,13 +1665,22 @@ const BOOKS = [
     ],
     quiz: [
       { q: '我们玩了多久？', opts: ['一小时', '一整天', '一分钟'], a: 1 },
-      { q: '回家走的是哪条路？', opts: ['近路', '远路', '水路'], a: 1 },
+      { q: '回家走的是哪条路？', opts: ['远路', '水路', '近路'], a: 0 },
       { q: '最后天怎么样了？', opts: ['还亮着', '黑了', '下雪了'], a: 1 }
     ]
   },
   {
     id: 'b49', lv: 'L5', tag: 'oa', title: 'The Goat and the Boat', zh: '山羊和船',
     emoji: '🐐', color: '#A8C8E8',
+    goal: '/oʊ/ 就是字母 O 的名字',
+    trap: 'oa 读 /oʊ/，跟字母 O 的名字一样。boat 不要读成「波阿特」。',
+    summary: '这一级练 oa。/oʊ/ 要滑动，从 /o/ 滑到 /ʊ/。',
+    pre: [
+      { art: '🐐', en: 'goat', zh: '山羊' },
+      { art: '⛵', en: 'boat', zh: '小船' },
+      { art: '🛤️', en: 'road', zh: '路' },
+      { art: '🧥', en: 'coat', zh: '外套' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on', 'goes'],
     newWords: [
       { w: 'goat', zh: '山羊' },
@@ -1298,12 +1700,20 @@ const BOOKS = [
     quiz: [
       { q: '山羊在哪儿？', opts: ['船上', '路上', '屋顶上'], a: 1 },
       { q: '山羊拿走了什么？', opts: ['船桨', '外套', '帽子'], a: 1 },
-      { q: '最后山羊变成了什么样？', opts: ['坐在船上', '睡着了', '穿着外套'], a: 2 }
+      { q: '最后山羊变成了什么样？', opts: ['穿着外套', '睡着了', '坐在船上'], a: 0 }
     ]
   },
   {
     id: 'b50', lv: 'L5', tag: 'ai / ay', title: 'Rain, Rain', zh: '下雨啦',
     emoji: '🌧️', color: '#8FB8DE',
+    goal: '/eɪ/ 就是字母 A 的名字',
+    trap: 'ai 读 /eɪ/，跟字母 A 的名字一样。rain 不要读成「拉因」两个音。',
+    summary: '这一级练 ai。/eɪ/ 是双元音，要滑动，不能读成一个平的元音。',
+    pre: [
+      { art: '🌧️', en: 'rain', zh: '雨' },
+      { art: '💧', en: 'wet', zh: '湿的' },
+      { art: '🎈', en: 'play', zh: '玩' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
     newWords: [
       { w: 'rain', zh: '雨' },
@@ -1323,12 +1733,15 @@ const BOOKS = [
     quiz: [
       { q: '天气怎么样？', opts: ['刮风', '下雨', '下雪'], a: 1 },
       { q: '我们为什么待在家里？', opts: ['门坏了', '天太黑', '下雨不能出去'], a: 2 },
-      { q: '雨停后我们做什么？', opts: ['吃饭', '继续睡', '出去玩'], a: 2 }
+      { q: '雨停后我们做什么？', opts: ['出去玩', '吃饭', '继续睡'], a: 0 }
     ]
   },
   {
     id: 'b51', lv: 'L5', tag: 'ee', title: 'Sleep, Sheep!', zh: '睡吧，小羊',
     emoji: '😴', color: '#B9C7D9',
+    goal: '/iː/ 拉长',
+    trap: 'ee 要拉长，像微笑时说「衣——」。sheep 比 ship 长一倍，长短不分就会说成另一个词。',
+    summary: '这一级练 ee 的长音 /iː/。中文没有长短元音对立，孩子容易把 sheep 读成 ship。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'all', 'eyes', 'night', 'now'],
     newWords: [
       { w: 'sheep', zh: '绵羊' },
@@ -1347,13 +1760,22 @@ const BOOKS = [
     ],
     quiz: [
       { q: '谁睡不着？', opts: ['我', '小羊', '狗'], a: 1 },
-      { q: '我做了什么帮它？', opts: ['拍它', '唱歌', '讲故事'], a: 1 },
+      { q: '我做了什么帮它？', opts: ['唱歌', '拍它', '讲故事'], a: 0 },
       { q: '最后谁睡不着了？', opts: ['两个都睡不好', '小羊', '我'], a: 2 }
     ]
   },
   {
     id: 'b52', lv: 'L5', tag: 'oo', title: 'Food at the Zoo', zh: '动物园的饭',
     emoji: '🦒', color: '#F2B04E',
+    goal: '/uː/ 圆唇长音',
+    trap: 'oo 嘴唇收圆往前，像火车「呜——」。book 是短音 /ʊ/，moon 是长音 /uː/，两个不一样。',
+    summary: '这一级练 oo。oo 有长 /uː/ 和短 /ʊ/ 两种读法，靠单词记，不靠规则。',
+    pre: [
+      { art: '🍽️', en: 'food', zh: '食物' },
+      { art: '🦁', en: 'zoo', zh: '动物园' },
+      { art: '🍽️', en: 'eat', zh: '吃' },
+      { art: '🦓', en: 'zebra', zh: '斑马' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'at', 'eats'],
     newWords: [
       { w: 'food', zh: '食物' },
@@ -1375,12 +1797,15 @@ const BOOKS = [
     quiz: [
       { q: '这是在哪儿？', opts: ['农场', '学校', '动物园'], a: 2 },
       { q: '斑马吃了多少？', opts: ['一点点', '没吃', '太多了'], a: 2 },
-      { q: '为什么说动物园太小？', opts: ['斑马吃得太多了', '门太窄', '动物太多'], a: 0 }
+      { q: '为什么说动物园太小？', opts: ['门太窄', '动物太多', '斑马吃得太多了'], a: 2 }
     ]
   },
   {
     id: 'b53', lv: 'L5', tag: 'ee', title: 'A Green Seed', zh: '一颗绿种子',
     emoji: '🌱', color: '#7FC97F',
+    goal: '/iː/ 拉长',
+    trap: 'ee 要拉长，像微笑时说「衣——」。sheep 比 ship 长一倍，长短不分就会说成另一个词。',
+    summary: '这一级练 ee 的长音 /iː/。中文没有长短元音对立，孩子容易把 sheep 读成 ship。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'from', 'now'],
     newWords: [
       { w: 'green', zh: '绿色的' },
@@ -1398,14 +1823,23 @@ const BOOKS = [
       { art: '😄🌳', en: 'A tree from a seed!', zh: '一颗种子长成了一棵树！' }
     ],
     quiz: [
-      { q: '我把种子放在哪儿？', opts: ['土里', '水里', '桌上'], a: 0 },
+      { q: '我把种子放在哪儿？', opts: ['桌上', '土里', '水里'], a: 1 },
       { q: '种子需要什么？', opts: ['阳光和雨水', '风', '灯光'], a: 0 },
-      { q: '最后种子长成了什么？', opts: ['一棵树', '一根草', '一朵花'], a: 0 }
+      { q: '最后种子长成了什么？', opts: ['一根草', '一朵花', '一棵树'], a: 2 }
     ]
   },
   {
     id: 'b54', lv: 'L5', tag: 'oa', title: 'The Long Road', zh: '长长的路',
     emoji: '🛤️', color: '#C8B58A',
+    goal: '/oʊ/ 就是字母 O 的名字',
+    trap: 'oa 读 /oʊ/，跟字母 O 的名字一样。boat 不要读成「波阿特」。',
+    summary: '这一级练 oa。/oʊ/ 要滑动，从 /o/ 滑到 /ʊ/。',
+    pre: [
+      { art: '🛤️', en: 'road', zh: '路' },
+      { art: '🐐', en: 'goat', zh: '山羊' },
+      { art: '🐸', en: 'toad', zh: '蟾蜍' },
+      { art: '🤸', en: 'jump', zh: '跳' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on', 'they'],
     newWords: [
       { w: 'road', zh: '路' },
@@ -1431,6 +1865,9 @@ const BOOKS = [
   {
     id: 'b55', lv: 'L6', tag: 'a_e', title: 'The Cake by the Lake', zh: '湖边的蛋糕',
     emoji: '🎂', color: '#F2A0A0',
+    goal: '末尾 e 不发音，a 读字母名',
+    trap: '末尾的 e 不发音，但它让前面的 a 读 /eɪ/。cake 不是「卡克」，是「凯克」。',
+    summary: '这一级练魔法 e（a_e）。这是英语里最划算的规则：加一个不发音的 e，前面的元音就读字母名。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
     newWords: [
       { w: 'cake', zh: '蛋糕' },
@@ -1448,14 +1885,23 @@ const BOOKS = [
       { art: '😂🎂', en: 'The duck is in the cake!', zh: '鸭子一头栽进蛋糕里！' }
     ],
     quiz: [
-      { q: '我们做了什么？', opts: ['一顶帽子', '一个蛋糕', '一条船'], a: 1 },
-      { q: '我们把蛋糕带到哪儿？', opts: ['山上', '学校', '湖边'], a: 2 },
+      { q: '我们做了什么？', opts: ['一条船', '一个蛋糕', '一顶帽子'], a: 1 },
+      { q: '我们把蛋糕带到哪儿？', opts: ['湖边', '山上', '学校'], a: 0 },
       { q: '谁把蛋糕叼走了？', opts: ['猫', '鸭子', '狗'], a: 1 }
     ]
   },
   {
     id: 'b56', lv: 'L6', tag: 'i_e', title: 'Five Kites', zh: '五只风筝',
     emoji: '🪁', color: '#7FB8DE',
+    goal: '末尾 e 不发音，i 读 /aɪ/',
+    trap: 'i_e 里 i 读 /aɪ/，就是字母 I 的名字。bike 不是「比克」，是「拜克」。',
+    summary: '这一级练魔法 e（i_e）。孩子容易把 i_e 还读成短音 /ɪ/，那样 bike 就变回 bick。',
+    pre: [
+      { art: '🪁', en: 'kite', zh: '风筝' },
+      { art: '🚲', en: 'ride', zh: '骑' },
+      { art: '🚲', en: 'bike', zh: '自行车' },
+      { art: '🌌', en: 'sky', zh: '天空' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
     newWords: [
       { w: 'five', zh: '五' },
@@ -1474,7 +1920,7 @@ const BOOKS = [
       { art: '😂🪁', en: 'Five kites, one tree!', zh: '五只风筝，一棵树！' }
     ],
     quiz: [
-      { q: '天上有几只风筝？', opts: ['三只', '五只', '一只'], a: 1 },
+      { q: '天上有几只风筝？', opts: ['五只', '一只', '三只'], a: 0 },
       { q: '我喜欢哪只？', opts: ['绿色的', '蓝色的', '红色的'], a: 2 },
       { q: '风筝最后飞到哪儿？', opts: ['屋顶', '树上', '水里'], a: 1 }
     ]
@@ -1482,6 +1928,15 @@ const BOOKS = [
   {
     id: 'b57', lv: 'L6', tag: 'a_e', title: 'A Snake at the Gate', zh: '门口的蛇',
     emoji: '🐍', color: '#8CC084',
+    goal: '末尾 e 不发音，a 读字母名',
+    trap: '末尾的 e 不发音，但它让前面的 a 读 /eɪ/。cake 不是「卡克」，是「凯克」。',
+    summary: '这一级练魔法 e（a_e）。这是英语里最划算的规则：加一个不发音的 e，前面的元音就读字母名。',
+    pre: [
+      { art: '🐍', en: 'snake', zh: '蛇' },
+      { art: '🚪', en: 'gate', zh: '大门' },
+      { art: '⏰', en: 'late', zh: '迟到' },
+      { art: '🏷️', en: 'name', zh: '名字' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'at', 'our', 'teacher'],
     newWords: [
       { w: 'snake', zh: '蛇' },
@@ -1502,13 +1957,22 @@ const BOOKS = [
     ],
     quiz: [
       { q: '门口有什么？', opts: ['一辆车', '一只狗', '一条蛇'], a: 2 },
-      { q: '我为什么着急？', opts: ['要迟到了', '丢了东西', '天黑了'], a: 0 },
-      { q: '蛇其实是？', opts: ['我们的老师', '一只宠物', '雕像'], a: 0 }
+      { q: '我为什么着急？', opts: ['天黑了', '要迟到了', '丢了东西'], a: 1 },
+      { q: '蛇其实是？', opts: ['雕像', '一只宠物', '我们的老师'], a: 2 }
     ]
   },
   {
     id: 'b58', lv: 'L6', tag: 'i_e', title: 'Time to Ride', zh: '该骑车了',
     emoji: '🚲', color: '#F2B04E',
+    goal: '末尾 e 不发音，i 读 /aɪ/',
+    trap: 'i_e 里 i 读 /aɪ/，就是字母 I 的名字。bike 不是「比克」，是「拜克」。',
+    summary: '这一级练魔法 e（i_e）。孩子容易把 i_e 还读成短音 /ɪ/，那样 bike 就变回 bick。',
+    pre: [
+      { art: '⏰', en: 'time', zh: '时间' },
+      { art: '🚲', en: 'bike', zh: '自行车' },
+      { art: '🚲', en: 'ride', zh: '骑' },
+      { art: '➡️', en: 'side', zh: '一边' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'to'],
     newWords: [
       { w: 'time', zh: '时间' },
@@ -1525,14 +1989,22 @@ const BOOKS = [
       { art: '😂🐕', en: 'But it can not stop!', zh: '可它不会刹车！' }
     ],
     quiz: [
-      { q: '该做什么了？', opts: ['睡觉', '吃饭', '骑车'], a: 2 },
-      { q: '谁跟我一起骑？', opts: ['我的朋友', '我爸爸', '我的狗'], a: 2 },
-      { q: '狗不会做什么？', opts: ['坐着', '叫', '刹车'], a: 2 }
+      { q: '该做什么了？', opts: ['吃饭', '骑车', '睡觉'], a: 1 },
+      { q: '谁跟我一起骑？', opts: ['我的狗', '我的朋友', '我爸爸'], a: 0 },
+      { q: '狗不会做什么？', opts: ['叫', '坐着', '刹车'], a: 2 }
     ]
   },
   {
     id: 'b59', lv: 'L6', tag: 'o_e', title: 'The Bone in the Stone', zh: '石头里的骨头',
     emoji: '🦴', color: '#C8B58A',
+    goal: '末尾 e 不发音，o 读 /oʊ/',
+    trap: 'o_e 里 o 读 /oʊ/，就是字母 O 的名字。note 不是「诺特」，是「诺特」带滑动。',
+    summary: '这一级练魔法 e（o_e）。o_e 的 /oʊ/ 要滑动，读平了就变成短音。',
+    pre: [
+      { art: '🦴', en: 'bone', zh: '骨头' },
+      { art: '🪨', en: 'stone', zh: '石头' },
+      { art: '🏠', en: 'home', zh: '家' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'now'],
     newWords: [
       { w: 'bone', zh: '骨头' },
@@ -1552,13 +2024,21 @@ const BOOKS = [
     ],
     quiz: [
       { q: '狗把骨头藏在哪儿？', opts: ['床底', '石头缝里', '树下'], a: 1 },
-      { q: '狗拿得出来吗？', opts: ['立刻拿出来了', '根本没藏', '一开始拿不出来'], a: 2 },
-      { q: '最后骨头在哪儿？', opts: ['被狗带回家了', '留在石头里', '丢了'], a: 0 }
+      { q: '狗拿得出来吗？', opts: ['根本没藏', '立刻拿出来了', '一开始拿不出来'], a: 2 },
+      { q: '最后骨头在哪儿？', opts: ['丢了', '留在石头里', '被狗带回家了'], a: 2 }
     ]
   },
   {
     id: 'b60', lv: 'L6', tag: 'u_e', title: 'A Cute Cube', zh: '可爱的小方块',
     emoji: '🧊', color: '#7FB8DE',
+    goal: '末尾 e 不发音，u 读 /juː/',
+    trap: 'u_e 里 u 读 /juː/，前面带一点「y」的音。cube 是「Q 布」，不是「库布」。',
+    summary: '这一级练魔法 e（u_e）。/juː/ 前面有一个 /j/，孩子容易漏掉。',
+    pre: [
+      { art: '🐘', en: 'huge', zh: '巨大的' },
+      { art: '📜', en: 'rule', zh: '规则' },
+      { art: '➕', en: 'more', zh: '更多' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
     newWords: [
       { w: 'cute', zh: '可爱的' },
@@ -1576,14 +2056,23 @@ const BOOKS = [
       { art: '😂🧊', en: 'But I like the huge one!', zh: '可我就喜欢那个大的！' }
     ],
     quiz: [
-      { q: '小方块怎么样？', opts: ['是圆的', '很小但可爱', '巨大'], a: 1 },
-      { q: '几个方块拼成盒子？', opts: ['两个', '五个', '十个'], a: 0 },
+      { q: '小方块怎么样？', opts: ['巨大', '是圆的', '很小但可爱'], a: 2 },
+      { q: '几个方块拼成盒子？', opts: ['五个', '十个', '两个'], a: 2 },
       { q: '规则是什么？', opts: ['不许再加方块', '要快点', '要安静'], a: 0 }
     ]
   },
   {
     id: 'b61', lv: 'L6', tag: 'a_e', title: 'Late for the Game', zh: '比赛迟到了',
     emoji: '⚽', color: '#7FC97F',
+    goal: '末尾 e 不发音，a 读字母名',
+    trap: '末尾的 e 不发音，但它让前面的 a 读 /eɪ/。cake 不是「卡克」，是「凯克」。',
+    summary: '这一级练魔法 e（a_e）。这是英语里最划算的规则：加一个不发音的 e，前面的元音就读字母名。',
+    pre: [
+      { art: '⏰', en: 'late', zh: '迟到' },
+      { art: '🏷️', en: 'name', zh: '名字' },
+      { art: '🔨', en: 'make', zh: '赶；做' },
+      { art: '⚽', en: 'ball', zh: '球' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'for'],
     newWords: [
       { w: 'late', zh: '迟到' },
@@ -1604,12 +2093,15 @@ const BOOKS = [
     quiz: [
       { q: '我们为什么跑？', opts: ['下雨了', '比赛要迟到了', '狗追我们'], a: 1 },
       { q: '到了以后我做了什么？', opts: ['抢到球', '喝水', '坐下'], a: 0 },
-      { q: '最后发现什么？', opts: ['走错了场地', '赢了', '球丢了'], a: 0 }
+      { q: '最后发现什么？', opts: ['走错了场地', '球丢了', '赢了'], a: 0 }
     ]
   },
   {
     id: 'b62', lv: 'L6', tag: 'o_e', title: 'The Rope and the Nose', zh: '绳子和鼻子',
     emoji: '🐘', color: '#B9C7D9',
+    goal: '末尾 e 不发音，o 读 /oʊ/',
+    trap: 'o_e 里 o 读 /oʊ/，就是字母 O 的名字。note 不是「诺特」，是「诺特」带滑动。',
+    summary: '这一级练魔法 e（o_e）。o_e 的 /oʊ/ 要滑动，读平了就变成短音。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on', 'now'],
     newWords: [
       { w: 'rope', zh: '绳子' },
@@ -1627,7 +2119,7 @@ const BOOKS = [
       { art: '😂🪢', en: 'Now the rope is on me!', zh: '绳子跑到我身上了！' }
     ],
     quiz: [
-      { q: '绳子挂在哪儿？', opts: ['尾巴上', '耳朵上', '鼻子上'], a: 2 },
+      { q: '绳子挂在哪儿？', opts: ['尾巴上', '鼻子上', '耳朵上'], a: 1 },
       { q: '鼻子怎么样？', opts: ['很短', '很小', '很大'], a: 2 },
       { q: '打喷嚏后绳子跑到哪儿？', opts: ['水里', '我身上', '树上'], a: 1 }
     ]
@@ -1635,6 +2127,9 @@ const BOOKS = [
   {
     id: 'b63', lv: 'L6', tag: 'i_e / a_e', title: 'Nine Pigs', zh: '九只小猪',
     emoji: '🐖', color: '#F2A0A0',
+    goal: '末尾 e 不发音，a 读字母名',
+    trap: '末尾的 e 不发音，但它让前面的 a 读 /eɪ/。cake 不是「卡克」，是「凯克」。',
+    summary: '这一级练魔法 e（a_e）。这是英语里最划算的规则：加一个不发音的 e，前面的元音就读字母名。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
     newWords: [
       { w: 'nine', zh: '九' },
@@ -1654,14 +2149,23 @@ const BOOKS = [
       { art: '😂🐖', en: 'Nine pigs in a pile!', zh: '九只小猪叠成一堆！' }
     ],
     quiz: [
-      { q: '有几只小猪？', opts: ['九只', '三只', '五只'], a: 0 },
-      { q: '小猪喜欢做什么？', opts: ['游泳', '爬树', '骑车'], a: 2 },
+      { q: '有几只小猪？', opts: ['三只', '九只', '五只'], a: 1 },
+      { q: '小猪喜欢做什么？', opts: ['游泳', '骑车', '爬树'], a: 1 },
       { q: '最后小猪怎么了？', opts: ['睡着了', '飞走了', '撞树叠成一堆'], a: 2 }
     ]
   },
   {
     id: 'b64', lv: 'L6', tag: 'a_e / i_e', title: 'Wake Up!', zh: '快起床',
     emoji: '⏰', color: '#F5C26B',
+    goal: '末尾 e 不发音，a 读字母名',
+    trap: '末尾的 e 不发音，但它让前面的 a 读 /eɪ/。cake 不是「卡克」，是「凯克」。',
+    summary: '这一级练魔法 e（a_e）。这是英语里最划算的规则：加一个不发音的 e，前面的元音就读字母名。',
+    pre: [
+      { art: '⏰', en: 'late', zh: '迟的' },
+      { art: '⏰', en: 'time', zh: '时间' },
+      { art: '🏠', en: 'home', zh: '家' },
+      { art: '🏫', en: 'school', zh: '学校' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'to'],
     newWords: [
       { w: 'wake', zh: '醒来' },
@@ -1679,14 +2183,23 @@ const BOOKS = [
       { art: '😂📅', en: 'It is not a school day!', zh: '原来今天是休息日！' }
     ],
     quiz: [
-      { q: '为什么被叫起床？', opts: ['有人来了', '以为迟到了', '要吃早饭'], a: 1 },
-      { q: '我跑去了哪儿？', opts: ['公园', '家', '学校'], a: 1 },
-      { q: '最后发现什么？', opts: ['走错了', '今天不用上学', '家里没人'], a: 1 }
+      { q: '为什么被叫起床？', opts: ['以为迟到了', '要吃早饭', '有人来了'], a: 0 },
+      { q: '我跑去了哪儿？', opts: ['公园', '学校', '家'], a: 2 },
+      { q: '最后发现什么？', opts: ['今天不用上学', '家里没人', '走错了'], a: 0 }
     ]
   },
   {
     id: 'b65', lv: 'L6', tag: 'u_e / o_e', title: 'The Huge Stone', zh: '巨大的石头',
     emoji: '🪨', color: '#A9B7C6',
+    goal: '末尾 e 不发音，o 读 /oʊ/',
+    trap: 'o_e 里 o 读 /oʊ/，就是字母 O 的名字。note 不是「诺特」，是「诺特」带滑动。',
+    summary: '这一级练魔法 e（o_e）。o_e 的 /oʊ/ 要滑动，读平了就变成短音。',
+    pre: [
+      { art: '🐘', en: 'huge', zh: '巨大的' },
+      { art: '🪨', en: 'stone', zh: '石头' },
+      { art: '📜', en: 'rule', zh: '规则' },
+      { art: '➡️', en: 'move', zh: '移动' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'will', 'car'],
     newWords: [
       { w: 'huge', zh: '巨大的' },
@@ -1706,13 +2219,21 @@ const BOOKS = [
     ],
     quiz: [
       { q: '路上有什么？', opts: ['一棵树', '一块大石头', '一辆车'], a: 1 },
-      { q: '我们想做什么？', opts: ['挪开石头', '搬回家', '坐上去'], a: 0 },
-      { q: '石头挪开了吗？', opts: ['挪开了', '没有', '碎掉了'], a: 1 }
+      { q: '我们想做什么？', opts: ['搬回家', '挪开石头', '坐上去'], a: 1 },
+      { q: '石头挪开了吗？', opts: ['碎掉了', '挪开了', '没有'], a: 2 }
     ]
   },
   {
     id: 'b66', lv: 'L6', tag: 'o_e', title: 'Hope for the Bone', zh: '盼望的骨头',
     emoji: '🐕', color: '#C8B58A',
+    goal: '末尾 e 不发音，o 读 /oʊ/',
+    trap: 'o_e 里 o 读 /oʊ/，就是字母 O 的名字。note 不是「诺特」，是「诺特」带滑动。',
+    summary: '这一级练魔法 e（o_e）。o_e 的 /oʊ/ 要滑动，读平了就变成短音。',
+    pre: [
+      { art: '🦴', en: 'bone', zh: '骨头' },
+      { art: '🏠', en: 'home', zh: '家' },
+      { art: '🚪', en: 'door', zh: '门' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
     newWords: [
       { w: 'hope', zh: '希望' },
@@ -1733,12 +2254,20 @@ const BOOKS = [
     quiz: [
       { q: '狗盼着什么？', opts: ['一根骨头', '一个球', '一顿饭'], a: 0 },
       { q: '谁先拿到骨头？', opts: ['我', '猫', '狗'], a: 1 },
-      { q: '最后谁追谁？', opts: ['狗追猫', '都在跑', '猫追狗'], a: 0 }
+      { q: '最后谁追谁？', opts: ['狗追猫', '猫追狗', '都在跑'], a: 0 }
     ]
   },
   {
     id: 'b67', lv: 'L7', tag: 'ar', title: 'The Star in the Jar', zh: '罐子里的星星',
     emoji: '⭐', color: '#F5C26B',
+    goal: '/ɑːr/ 卷舌',
+    trap: 'ar 要卷舌，但舌尖不要顶到上颚。car 不要读成「卡」，结尾要有 r 的色彩。',
+    summary: '这一级练 ar。中文的「儿化」和英语的 r 不一样，容易卷过头或完全不卷。',
+    pre: [
+      { art: '⭐', en: 'star', zh: '星星' },
+      { art: '🫙', en: 'jar', zh: '玻璃罐' },
+      { art: '🌑', en: 'dark', zh: '黑的' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'just', 'now'],
     newWords: [
       { w: 'star', zh: '星星' },
@@ -1763,6 +2292,15 @@ const BOOKS = [
   {
     id: 'b68', lv: 'L7', tag: 'ir / ar', title: 'A Bird in the Park', zh: '公园里的小鸟',
     emoji: '🐦', color: '#7FC97F',
+    goal: '/ɑːr/ 卷舌',
+    trap: 'ar 要卷舌，但舌尖不要顶到上颚。car 不要读成「卡」，结尾要有 r 的色彩。',
+    summary: '这一级练 ar。中文的「儿化」和英语的 r 不一样，容易卷过头或完全不卷。',
+    pre: [
+      { art: '🐦', en: 'bird', zh: '小鸟' },
+      { art: '🏞️', en: 'park', zh: '公园' },
+      { art: '🐤', en: 'chirp', zh: '啁啾叫' },
+      { art: '1️⃣', en: 'first', zh: '第一' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'now'],
     newWords: [
       { w: 'bird', zh: '小鸟' },
@@ -1782,14 +2320,23 @@ const BOOKS = [
       { art: '😂🐦', en: 'Now it chirps for more!', zh: '结果它叫得更欢了——还要！' }
     ],
     quiz: [
-      { q: '公园里有什么？', opts: ['一只猫', '一条狗', '一只小鸟'], a: 2 },
+      { q: '公园里有什么？', opts: ['一只小鸟', '一只猫', '一条狗'], a: 0 },
       { q: '小鸟什么时候叫？', opts: ['不叫', '晚上叫', '太阳出来时最先叫'], a: 2 },
-      { q: '我给了小鸟什么？', opts: ['蛋糕', '帽子', '水'], a: 0 }
+      { q: '我给了小鸟什么？', opts: ['帽子', '蛋糕', '水'], a: 1 }
     ]
   },
   {
     id: 'b69', lv: 'L7', tag: 'or', title: 'Corn on the Fork', zh: '叉子上的玉米',
     emoji: '🌽', color: '#F2B04E',
+    goal: '/ɔːr/ 圆唇加卷舌',
+    trap: 'or 先把嘴唇收圆，再卷舌。fork 不要读成「福克」。',
+    summary: '这一级练 or。/ɔːr/ 是圆唇 + 卷舌两个动作叠在一起。',
+    pre: [
+      { art: '🌽', en: 'corn', zh: '玉米' },
+      { art: '🍴', en: 'fork', zh: '叉子' },
+      { art: '📏', en: 'short', zh: '短的' },
+      { art: '🌪️', en: 'storm', zh: '暴风雨' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
     newWords: [
       { w: 'corn', zh: '玉米' },
@@ -1808,7 +2355,7 @@ const BOOKS = [
       { art: '😂🍴', en: 'Just the fork is left.', zh: '只剩叉子还在手里。' }
     ],
     quiz: [
-      { q: '叉子上有什么？', opts: ['苹果', '玉米', '面包'], a: 1 },
+      { q: '叉子上有什么？', opts: ['苹果', '面包', '玉米'], a: 2 },
       { q: '什么要来了？', opts: ['雪', '暴风雨', '客人'], a: 1 },
       { q: '最后剩下什么？', opts: ['玉米', '什么也没有', '叉子'], a: 2 }
     ]
@@ -1816,6 +2363,15 @@ const BOOKS = [
   {
     id: 'b70', lv: 'L7', tag: 'ir', title: 'The First Day', zh: '第一天',
     emoji: '🎒', color: '#8FB8DE',
+    goal: '/ɜːr/ 像「饿」加卷舌',
+    trap: 'ir 读 /ɜːr/，像「饿」拖长再加卷舌。bird 不要读成「伯德」。',
+    summary: '这一级练 ir。/ɜːr/ 在中文里没有，最接近的是「饿」加卷舌。',
+    pre: [
+      { art: '👧', en: 'girl', zh: '女孩' },
+      { art: '👕', en: 'shirt', zh: '衬衫' },
+      { art: '👗', en: 'skirt', zh: '裙子' },
+      { art: '😊', en: 'smile', zh: '微笑' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'to', 'have', 'her'],
     newWords: [
       { w: 'first', zh: '第一' },
@@ -1837,13 +2393,21 @@ const BOOKS = [
     ],
     quiz: [
       { q: '这是谁的第一天？', opts: ['老师', '我', '只有我一个人'], a: 1 },
-      { q: '我穿了什么？', opts: ['衬衫和裙子', 'T 恤', '外套和裤子'], a: 0 },
+      { q: '我穿了什么？', opts: ['T 恤', '外套和裤子', '衬衫和裙子'], a: 2 },
       { q: '最后发现什么巧合？', opts: ['两人裙子一样', '住同一个楼', '同一天生日'], a: 0 }
     ]
   },
   {
     id: 'b71', lv: 'L7', tag: 'ar / or', title: 'A Dark Storm', zh: '黑沉沉的暴风雨',
     emoji: '⛈️', color: '#7B8FA8',
+    goal: '/ɑːr/ 卷舌',
+    trap: 'ar 要卷舌，但舌尖不要顶到上颚。car 不要读成「卡」，结尾要有 r 的色彩。',
+    summary: '这一级练 ar。中文的「儿化」和英语的 r 不一样，容易卷过头或完全不卷。',
+    pre: [
+      { art: '🌑', en: 'dark', zh: '黑' },
+      { art: '🌪️', en: 'storm', zh: '暴风雨' },
+      { art: '💨', en: 'fast', zh: '快地' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'off'],
     newWords: [
       { w: 'dark', zh: '黑' },
@@ -1862,14 +2426,22 @@ const BOOKS = [
       { art: '😂☀️', en: 'Then it is gone. So fast!', zh: '然后它就走了——原来并不远！' }
     ],
     quiz: [
-      { q: '天气怎么样？', opts: ['暴风雨', '晴天', '下雪'], a: 0 },
-      { q: '我们坐在哪里？', opts: ['车里', '黑着灯的屋里', '外面'], a: 1 },
+      { q: '天气怎么样？', opts: ['晴天', '暴风雨', '下雪'], a: 1 },
+      { q: '我们坐在哪里？', opts: ['外面', '黑着灯的屋里', '车里'], a: 1 },
       { q: '最后天气怎么样？', opts: ['更大了', '下雪了', '雨停了'], a: 2 }
     ]
   },
   {
     id: 'b72', lv: 'L7', tag: 'or / ar', title: 'The Horse and the Cart', zh: '马和车',
     emoji: '🐴', color: '#C8B58A',
+    goal: '/ɑːr/ 卷舌',
+    trap: 'ar 要卷舌，但舌尖不要顶到上颚。car 不要读成「卡」，结尾要有 r 的色彩。',
+    summary: '这一级练 ar。中文的「儿化」和英语的 r 不一样，容易卷过头或完全不卷。',
+    pre: [
+      { art: '🐴', en: 'horse', zh: '马' },
+      { art: '🛒', en: 'cart', zh: '大车' },
+      { art: '💪', en: 'hard', zh: '吃力' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
     newWords: [
       { w: 'horse', zh: '马' },
@@ -1899,6 +2471,14 @@ const BOOKS = [
   {
     id: 'b73', lv: 'L7', tag: 'ir', title: 'The Girl in the Red Skirt', zh: '红裙子女孩',
     emoji: '👗', color: '#E5707E',
+    goal: '/ɜːr/ 像「饿」加卷舌',
+    trap: 'ir 读 /ɜːr/，像「饿」拖长再加卷舌。bird 不要读成「伯德」。',
+    summary: '这一级练 ir。/ɜːr/ 在中文里没有，最接近的是「饿」加卷舌。',
+    pre: [
+      { art: '👧', en: 'girl', zh: '女孩' },
+      { art: '👗', en: 'skirt', zh: '裙子' },
+      { art: '👕', en: 'shirt', zh: '衬衫' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'her', 'now'],
     newWords: [
       { w: 'girl', zh: '女孩' },
@@ -1917,14 +2497,22 @@ const BOOKS = [
       { art: '😂🎨', en: 'Now her skirt is red and green!', zh: '现在她的裙子红一块蓝一块！' }
     ],
     quiz: [
-      { q: '女孩穿什么？', opts: ['黄外套', '蓝裤子', '红裙子'], a: 2 },
-      { q: '她是第几个女孩？', opts: ['最后一个', '第一个', '第三个'], a: 2 },
+      { q: '女孩穿什么？', opts: ['蓝裤子', '红裙子', '黄外套'], a: 1 },
+      { q: '她是第几个女孩？', opts: ['第三个', '最后一个', '第一个'], a: 0 },
       { q: '她喜欢做什么？', opts: ['唱歌', '画画', '跑步'], a: 1 }
     ]
   },
   {
     id: 'b74', lv: 'L7', tag: 'ar', title: 'A Hard Card', zh: '难做的卡片',
     emoji: '🎴', color: '#B99BE0',
+    goal: '/ɑːr/ 卷舌',
+    trap: 'ar 要卷舌，但舌尖不要顶到上颚。car 不要读成「卡」，结尾要有 r 的色彩。',
+    summary: '这一级练 ar。中文的「儿化」和英语的 r 不一样，容易卷过头或完全不卷。',
+    pre: [
+      { art: '⭐', en: 'star', zh: '星星' },
+      { art: '🏞️', en: 'park', zh: '公园' },
+      { art: '👵', en: 'grandma', zh: '奶奶' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'for', 'her'],
     newWords: [
       { w: 'hard', zh: '难的' },
@@ -1944,7 +2532,7 @@ const BOOKS = [
       { art: '😂🎴', en: 'She has a star in her hair!', zh: '她头上也戴着颗星星！' }
     ],
     quiz: [
-      { q: '我在做什么？', opts: ['做卡片', '写信', '画画'], a: 0 },
+      { q: '我在做什么？', opts: ['写信', '画画', '做卡片'], a: 2 },
       { q: '卡片上有什么？', opts: ['星星', '花', '月亮'], a: 0 },
       { q: '卡片送给谁？', opts: ['老师', '奶奶', '朋友'], a: 1 }
     ]
@@ -1952,6 +2540,15 @@ const BOOKS = [
   {
     id: 'b75', lv: 'L7', tag: 'or', title: 'Short and Tall', zh: '矮和高',
     emoji: '🦒', color: '#F2B04E',
+    goal: '/ɔːr/ 圆唇加卷舌',
+    trap: 'or 先把嘴唇收圆，再卷舌。fork 不要读成「福克」。',
+    summary: '这一级练 or。/ɔːr/ 是圆唇 + 卷舌两个动作叠在一起。',
+    pre: [
+      { art: '📏', en: 'short', zh: '矮的；短的' },
+      { art: '🐴', en: 'horse', zh: '马' },
+      { art: '🌽', en: 'corn', zh: '玉米' },
+      { art: '📏', en: 'tall', zh: '高的' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
     newWords: [
       { w: 'short', zh: '矮的；短的' },
@@ -1970,13 +2567,21 @@ const BOOKS = [
     ],
     quiz: [
       { q: '谁高？', opts: ['母鸡', '一样高', '马'], a: 2 },
-      { q: '谁能吃到玉米？', opts: ['都吃不到', '马', '母鸡'], a: 2 },
-      { q: '故事告诉我们什么？', opts: ['矮也有好处', '高才好', '要吃玉米'], a: 0 }
+      { q: '谁能吃到玉米？', opts: ['母鸡', '马', '都吃不到'], a: 0 },
+      { q: '故事告诉我们什么？', opts: ['要吃玉米', '高才好', '矮也有好处'], a: 2 }
     ]
   },
   {
     id: 'b76', lv: 'L7', tag: 'ir', title: 'Chirp, Chirp!', zh: '唧唧唧',
     emoji: '🐤', color: '#F5C26B',
+    goal: '/ɜːr/ 像「饿」加卷舌',
+    trap: 'ir 读 /ɜːr/，像「饿」拖长再加卷舌。bird 不要读成「伯德」。',
+    summary: '这一级练 ir。/ɜːr/ 在中文里没有，最接近的是「饿」加卷舌。',
+    pre: [
+      { art: '🐤', en: 'chirp', zh: '唧唧叫' },
+      { art: '🐦', en: 'bird', zh: '鸟' },
+      { art: '1️⃣', en: 'first', zh: '先' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'now'],
     newWords: [
       { w: 'chirp', zh: '唧唧叫' },
@@ -1994,14 +2599,23 @@ const BOOKS = [
       { art: '😂🐤', en: 'Now it chirps for a bath!', zh: '这下它叫着要洗澡了！' }
     ],
     quiz: [
-      { q: '小鸟在哪儿？', opts: ['窝里', '树上', '地上'], a: 0 },
-      { q: '小鸟想吃什么？', opts: ['面包', '玉米', '虫子'], a: 2 },
+      { q: '小鸟在哪儿？', opts: ['树上', '地上', '窝里'], a: 2 },
+      { q: '小鸟想吃什么？', opts: ['虫子', '玉米', '面包'], a: 0 },
       { q: '掉进泥里后它想要什么？', opts: ['洗澡', '玩耍', '睡觉'], a: 0 }
     ]
   },
   {
     id: 'b77', lv: 'L7', tag: 'ar', title: 'The Farm at Night', zh: '夜里的农场',
     emoji: '🌙', color: '#8FB8DE',
+    goal: '/ɑːr/ 卷舌',
+    trap: 'ar 要卷舌，但舌尖不要顶到上颚。car 不要读成「卡」，结尾要有 r 的色彩。',
+    summary: '这一级练 ar。中文的「儿化」和英语的 r 不一样，容易卷过头或完全不卷。',
+    pre: [
+      { art: '🌾', en: 'farm', zh: '农场' },
+      { art: '🌑', en: 'dark', zh: '黑' },
+      { art: '⭐', en: 'star', zh: '星星' },
+      { art: '🏞️', en: 'park', zh: '停放' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'at', 'night', 'by'],
     newWords: [
       { w: 'farm', zh: '农场' },
@@ -2021,7 +2635,7 @@ const BOOKS = [
       { art: '😂🐔', en: 'It is first up in the dark!', zh: '它起得比谁都早——天还黑着呢！' }
     ],
     quiz: [
-      { q: '夜里的农场怎么样？', opts: ['很亮', '很吵', '很黑'], a: 2 },
+      { q: '夜里的农场怎么样？', opts: ['很吵', '很黑', '很亮'], a: 1 },
       { q: '大车停在哪儿？', opts: ['田里', '路上', '谷仓旁'], a: 2 },
       { q: '谁还没睡？', opts: ['马', '一只母鸡', '全部'], a: 1 }
     ]
@@ -2029,6 +2643,14 @@ const BOOKS = [
   {
     id: 'b78', lv: 'L7', tag: 'ir / th', title: 'Thirty Birds', zh: '三十只鸟',
     emoji: '🕊️', color: '#A9B7C6',
+    goal: '/θ/ 舌尖放在齿间',
+    trap: 'th 中文里没有。舌尖轻轻放在上下齿之间吹气，不要读成 s，也不要读成 f。think 不是「辛克」。',
+    summary: '这一级练 th。这是中国学生最难的一个音，常见错误是读成 s（think→sink）或 f（three→free）。',
+    pre: [
+      { art: '🐦', en: 'bird', zh: '鸟' },
+      { art: '1️⃣', en: 'first', zh: '第一' },
+      { art: '🪰', en: 'fly', zh: '飞' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'loud'],
     newWords: [
       { w: 'thirty', zh: '三十' },
@@ -2055,6 +2677,14 @@ const BOOKS = [
   {
     id: 'b79', lv: 'L8', tag: '视觉词 where', title: 'Where Is My Hat?', zh: '我的帽子在哪',
     emoji: '🎩', color: '#8FB8DE',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
+    pre: [
+      { art: '🎩', en: 'hat', zh: '帽子' },
+      { art: '👀', en: 'look', zh: '看' },
+      { art: '🪑', en: 'chair', zh: '椅子' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'where', 'door'],
     newWords: [
       { w: 'hat', zh: '帽子' },
@@ -2071,14 +2701,17 @@ const BOOKS = [
       { art: '😂🐱', en: 'My cat has it on!', zh: '原来我的猫戴着它！' }
     ],
     quiz: [
-      { q: '我在找什么？', opts: ['我的帽子', '我的鞋', '我的书'], a: 0 },
-      { q: '我找了哪些地方？', opts: ['厨房', '学校、公园', '床上、椅子下、门边'], a: 2 },
-      { q: '帽子最后在哪儿？', opts: ['猫头上', '床下', '门外'], a: 0 }
+      { q: '我在找什么？', opts: ['我的书', '我的帽子', '我的鞋'], a: 1 },
+      { q: '我找了哪些地方？', opts: ['床上、椅子下、门边', '厨房', '学校、公园'], a: 0 },
+      { q: '帽子最后在哪儿？', opts: ['门外', '猫头上', '床下'], a: 1 }
     ]
   },
   {
     id: 'b80', lv: 'L8', tag: '视觉词 what / was', title: 'What Was That?', zh: '那是什么声音',
     emoji: '🌙', color: '#7B8FA8',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'what', 'was', 'that', 'in', 'be', 'bit', 'with'],
     newWords: [
       { w: 'sound', zh: '声音' },
@@ -2103,6 +2736,15 @@ const BOOKS = [
   {
     id: 'b81', lv: 'L8', tag: '视觉词 they / come', title: 'They Come at Night', zh: '它们夜里来',
     emoji: '🦇', color: '#8E8E9A',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
+    pre: [
+      { art: '🌑', en: 'dark', zh: '黑' },
+      { art: '🪽', en: 'wing', zh: '翅膀' },
+      { art: '🤫', en: 'quiet', zh: '安静的' },
+      { art: '😴', en: 'sleep', zh: '睡' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'they', 'come', 'at', 'night', 'out', 'their', 'now'],
     newWords: [
       { w: 'dark', zh: '黑' },
@@ -2121,14 +2763,22 @@ const BOOKS = [
       { art: '😂💤', en: 'Now they all sleep!', zh: '现在它们全睡了！' }
     ],
     quiz: [
-      { q: '它们什么时候出来？', opts: ['早上', '夜里', '中午'], a: 1 },
-      { q: '它们有什么？', opts: ['角', '翅膀', '长尾巴'], a: 1 },
-      { q: '太阳出来后它们做什么？', opts: ['睡觉', '继续飞', '唱歌'], a: 0 }
+      { q: '它们什么时候出来？', opts: ['早上', '中午', '夜里'], a: 2 },
+      { q: '它们有什么？', opts: ['翅膀', '长尾巴', '角'], a: 0 },
+      { q: '太阳出来后它们做什么？', opts: ['唱歌', '继续飞', '睡觉'], a: 2 }
     ]
   },
   {
     id: 'b82', lv: 'L8', tag: '视觉词 some', title: 'Some Cake and Jam', zh: '蛋糕和果酱',
     emoji: '🍰', color: '#F2A0A0',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
+    pre: [
+      { art: '🎂', en: 'cake', zh: '蛋糕' },
+      { art: '🍯', en: 'jam', zh: '果酱' },
+      { art: '🍽️', en: 'plate', zh: '盘子' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'some', 'on', 'have', 'with', 'whole', 'now'],
     newWords: [
       { w: 'cake', zh: '蛋糕' },
@@ -2148,13 +2798,16 @@ const BOOKS = [
     ],
     quiz: [
       { q: '盘子里有什么？', opts: ['苹果', '面包和牛奶', '蛋糕和果酱'], a: 2 },
-      { q: '谁想要一些？', opts: ['我朋友', '我的狗', '我的猫'], a: 1 },
+      { q: '谁想要一些？', opts: ['我的狗', '我朋友', '我的猫'], a: 0 },
       { q: '最后剩下什么？', opts: ['蛋糕', '果酱', '什么都没有'], a: 1 }
     ]
   },
   {
     id: 'b83', lv: 'L8', tag: '视觉词 here / there', title: 'Here and There', zh: '这里和那里',
     emoji: '🧭', color: '#7FC8A9',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'here', 'there', 'look', 'with'],
     newWords: [
       { w: 'map', zh: '地图' },
@@ -2172,13 +2825,21 @@ const BOOKS = [
     ],
     quiz: [
       { q: '地图上有什么？', opts: ['一棵树', '一只鸟', '一个标记'], a: 2 },
-      { q: '小路在哪里？', opts: ['山顶', '标记旁边', '河边'], a: 1 },
+      { q: '小路在哪里？', opts: ['河边', '山顶', '标记旁边'], a: 2 },
       { q: '最后找到的是什么？', opts: ['宝石', '一块石头', '箱子'], a: 1 }
     ]
   },
   {
     id: 'b84', lv: 'L8', tag: '视觉词 look', title: 'Look at the Moon', zh: '看月亮',
     emoji: '🌕', color: '#8FB8DE',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
+    pre: [
+      { art: '🌙', en: 'moon', zh: '月亮' },
+      { art: '✨', en: 'bright', zh: '明亮的' },
+      { art: '🌌', en: 'sky', zh: '天空' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'look', 'at', 'up', 'so', 'with'],
     newWords: [
       { w: 'moon', zh: '月亮' },
@@ -2196,14 +2857,17 @@ const BOOKS = [
       { art: '😂🐕', en: 'My dog looks up too!', zh: '我的狗也抬头看！' }
     ],
     quiz: [
-      { q: '月亮什么样？', opts: ['是方的', '又小又暗', '又圆又亮'], a: 2 },
-      { q: '我用什么看月亮？', opts: ['眼镜', '望远镜', '镜子'], a: 1 },
+      { q: '月亮什么样？', opts: ['又小又暗', '又圆又亮', '是方的'], a: 1 },
+      { q: '我用什么看月亮？', opts: ['望远镜', '镜子', '眼镜'], a: 0 },
       { q: '谁也抬头看？', opts: ['我的猫', '我爸爸', '我的狗'], a: 2 }
     ]
   },
   {
     id: 'b85', lv: 'L8', tag: '视觉词 have', title: 'I Have a Wish', zh: '我有一个愿望',
     emoji: '🌟', color: '#F5C26B',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'have', 'for', 'do', 'bright'],
     newWords: [
       { w: 'wish', zh: '愿望' },
@@ -2220,13 +2884,16 @@ const BOOKS = [
     ],
     quiz: [
       { q: '我向谁许愿？', opts: ['月亮', '星星', '太阳'], a: 1 },
-      { q: '夜里怎么样？', opts: ['很冷', '下雨', '星星很亮'], a: 2 },
-      { q: '狗的愿望是什么？', opts: ['一个球', '睡觉', '一根大骨头'], a: 2 }
+      { q: '夜里怎么样？', opts: ['下雨', '星星很亮', '很冷'], a: 1 },
+      { q: '狗的愿望是什么？', opts: ['睡觉', '一根大骨头', '一个球'], a: 1 }
     ]
   },
   {
     id: 'b86', lv: 'L8', tag: '视觉词 said', title: 'Said the Cat', zh: '猫说',
     emoji: '🐈', color: '#F2B04E',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'said', 'to', 'me', 'you', 'with', 'now'],
     newWords: [
       { w: 'cat', zh: '猫' },
@@ -2251,6 +2918,9 @@ const BOOKS = [
   {
     id: 'b87', lv: 'L8', tag: '视觉词 one / two', title: 'One, Two, Three', zh: '一二三',
     emoji: '🔢', color: '#B99BE0',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'one', 'two', 'three', 'then', 'counting'],
     newWords: [
       { w: 'count', zh: '数' },
@@ -2267,7 +2937,7 @@ const BOOKS = [
       { art: '😂🌱', en: 'Counting is hard on grass!', zh: '在草地上数数真难！' }
     ],
     quiz: [
-      { q: '我能数到几？', opts: ['一百', '十', '三'], a: 2 },
+      { q: '我能数到几？', opts: ['三', '一百', '十'], a: 0 },
       { q: '数完三我做什么？', opts: ['跳', '跑', '坐'], a: 0 },
       { q: '最后怎么了？', opts: ['摔在草地上', '赢了比赛', '睡着了'], a: 0 }
     ]
@@ -2275,6 +2945,14 @@ const BOOKS = [
   {
     id: 'b88', lv: 'L8', tag: '视觉词 come / see', title: 'Come and See', zh: '来看呀',
     emoji: '👀', color: '#7FC97F',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
+    pre: [
+      { art: '🌻', en: 'garden', zh: '花园' },
+      { art: '🌱', en: 'seed', zh: '种子' },
+      { art: '📏', en: 'tall', zh: '高的' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'come', 'see', 'and', 'what', 'be', 'grows', 'now'],
     newWords: [
       { w: 'garden', zh: '花园' },
@@ -2293,13 +2971,21 @@ const BOOKS = [
     ],
     quiz: [
       { q: '我种了什么？', opts: ['一颗种子', '一朵花', '一棵树'], a: 0 },
-      { q: '它长得怎么样？', opts: ['没长', '枯了', '又高又大'], a: 2 },
+      { q: '它长得怎么样？', opts: ['又高又大', '没长', '枯了'], a: 0 },
       { q: '最后发现是什么？', opts: ['大树', '一棵野草', '向日葵'], a: 1 }
     ]
   },
   {
     id: 'b89', lv: 'L8', tag: '视觉词 was', title: 'Was It a Bug?', zh: '那是只虫吗',
     emoji: '🐛', color: '#8CC084',
+    goal: '整体认读，不按规则拼',
+    trap: '这些词不按拼读规则走，要整体记住形状和声音。看到就整词读出来，不要逐字母拆。',
+    summary: '这一级练视觉词。它们出现频率极高但不合规则，只能整体认读，读多了就自动化了。',
+    pre: [
+      { art: '🐛', en: 'bug', zh: '小虫' },
+      { art: '🧱', en: 'wall', zh: '墙' },
+      { art: '⚫', en: 'spot', zh: '斑点' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'what', 'on', 'so', 'now'],
     newWords: [
       { w: 'bug', zh: '小虫' },
@@ -2317,14 +3003,22 @@ const BOOKS = [
       { art: '😂🧱', en: 'Now it is on me!', zh: '现在它爬到我身上了！' }
     ],
     quiz: [
-      { q: '墙上有什么？', opts: ['一幅画', '一个小点', '一只猫'], a: 1 },
-      { q: '那个小点怎么样？', opts: ['非常小', '会发光', '很大'], a: 0 },
-      { q: '最后小虫在哪儿？', opts: ['地上', '墙上', '我身上'], a: 2 }
+      { q: '墙上有什么？', opts: ['一个小点', '一只猫', '一幅画'], a: 0 },
+      { q: '那个小点怎么样？', opts: ['会发光', '很大', '非常小'], a: 2 },
+      { q: '最后小虫在哪儿？', opts: ['墙上', '我身上', '地上'], a: 1 }
     ]
   },
   {
     id: 'b90', lv: 'L9', tag: '综合', title: 'The Best Day', zh: '最好的一天',
     emoji: '☀️', color: '#F5C26B',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
+    pre: [
+      { art: '🏞️', en: 'park', zh: '公园' },
+      { art: '🪁', en: 'kite', zh: '风筝' },
+      { art: '☀️', en: 'sun', zh: '太阳' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'day', 'all', 'with', 'high'],
     newWords: [
       { w: 'best', zh: '最好的' },
@@ -2349,13 +3043,22 @@ const BOOKS = [
     ],
     quiz: [
       { q: '我们去了哪儿？', opts: ['公园', '学校', '海边'], a: 0 },
-      { q: '风筝飞得怎么样？', opts: ['很低', '很高', '没飞起来'], a: 1 },
+      { q: '风筝飞得怎么样？', opts: ['很高', '没飞起来', '很低'], a: 0 },
       { q: '后来天气怎么了？', opts: ['起风了', '下雨了', '下雪了'], a: 1 }
     ]
   },
   {
     id: 'b91', lv: 'L9', tag: '综合', title: 'A Wish for the King', zh: '给国王的愿望',
     emoji: '👑', color: '#C8A2E0',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
+    pre: [
+      { art: '👑', en: 'king', zh: '国王' },
+      { art: '🌟', en: 'wish', zh: '愿望' },
+      { art: '🏅', en: 'gold', zh: '金子' },
+      { art: '✋', en: 'had', zh: '有（过去式）' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'for', 'said', 'was', 'so', 'bread', 'he', 'his'],
     newWords: [
       { w: 'king', zh: '国王' },
@@ -2378,7 +3081,7 @@ const BOOKS = [
       { art: '😂🍞', en: 'So the gold went away!', zh: '于是金子全没了！' }
     ],
     quiz: [
-      { q: '国王许了什么愿？', opts: ['想要金子', '想要面包', '想要马'], a: 0 },
+      { q: '国王许了什么愿？', opts: ['想要马', '想要面包', '想要金子'], a: 2 },
       { q: '得到金子后他觉得怎么样？', opts: ['很开心', '金子不暖和', '很富有'], a: 1 },
       { q: '最后金子怎么了？', opts: ['变多了', '被埋起来', '消失了'], a: 2 }
     ]
@@ -2386,6 +3089,9 @@ const BOOKS = [
   {
     id: 'b92', lv: 'L9', tag: '综合', title: 'The Lost Bone', zh: '丢了的骨头',
     emoji: '🦴', color: '#C8B58A',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'where', 'said', 'on'],
     newWords: [
       { w: 'bone', zh: '骨头' },
@@ -2404,12 +3110,20 @@ const BOOKS = [
     quiz: [
       { q: '狗丢了什么？', opts: ['球', '骨头', '项圈'], a: 1 },
       { q: '狗做了什么找骨头？', opts: ['挖土', '叫', '跑'], a: 0 },
-      { q: '骨头最后在谁那儿？', opts: ['猫', '我', '狗'], a: 0 }
+      { q: '骨头最后在谁那儿？', opts: ['狗', '猫', '我'], a: 1 }
     ]
   },
   {
     id: 'b93', lv: 'L9', tag: '综合', title: 'Rain on the Roof', zh: '屋顶上的雨',
     emoji: '🌧️', color: '#8FB8DE',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
+    pre: [
+      { art: '🌧️', en: 'rain', zh: '雨' },
+      { art: '🔊', en: 'sound', zh: '声音' },
+      { art: '😴', en: 'sleep', zh: '睡' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'on', 'all', 'night', 'could', 'now', 'quiet'],
     newWords: [
       { w: 'rain', zh: '雨' },
@@ -2430,13 +3144,22 @@ const BOOKS = [
     ],
     quiz: [
       { q: '雨下在哪里？', opts: ['树上', '屋顶上', '窗户上'], a: 1 },
-      { q: '雨声怎么样？', opts: ['很响', '没有声音', '轻轻的'], a: 2 },
+      { q: '雨声怎么样？', opts: ['没有声音', '轻轻的', '很响'], a: 1 },
       { q: '雨停后我觉得怎么样？', opts: ['太安静了', '很高兴', '很冷'], a: 0 }
     ]
   },
   {
     id: 'b94', lv: 'L9', tag: '综合', title: 'The Thirsty Crow', zh: '口渴的乌鸦',
     emoji: '🐦‍⬛', color: '#7B8FA8',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
+    pre: [
+      { art: '🐦‍⬛', en: 'crow', zh: '乌鸦' },
+      { art: '🚶', en: 'came', zh: '来（过去式）' },
+      { art: '✋', en: 'had', zh: '有（过去式）' },
+      { art: '💧', en: 'water', zh: '水' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'but', 'so', 'then', 'found', 'low'],
     newWords: [
       { w: 'crow', zh: '乌鸦' },
@@ -2459,12 +3182,20 @@ const BOOKS = [
     quiz: [
       { q: '乌鸦为什么发愁？', opts: ['迷路了', '口渴', '饿了'], a: 1 },
       { q: '罐子里的水怎么样？', opts: ['很多', '是脏的', '太低了够不着'], a: 2 },
-      { q: '乌鸦想了什么办法？', opts: ['丢石子让水升高', '把罐子推倒', '叫别的鸟'], a: 0 }
+      { q: '乌鸦想了什么办法？', opts: ['把罐子推倒', '丢石子让水升高', '叫别的鸟'], a: 1 }
     ]
   },
   {
     id: 'b95', lv: 'L9', tag: '综合', title: 'My Little Seed', zh: '我的小种子',
     emoji: '🌱', color: '#7FC97F',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
+    pre: [
+      { art: '🌱', en: 'seed', zh: '种子' },
+      { art: '💧', en: 'water', zh: '水' },
+      { art: '📏', en: 'tall', zh: '高的' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'so', 'day', 'then', 'now'],
     newWords: [
       { w: 'seed', zh: '种子' },
@@ -2491,6 +3222,14 @@ const BOOKS = [
   {
     id: 'b96', lv: 'L9', tag: '综合', title: 'The Night Train', zh: '夜里的火车',
     emoji: '🚂', color: '#6FB1D9',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
+    pre: [
+      { art: '🚂', en: 'train', zh: '火车' },
+      { art: '🌑', en: 'dark', zh: '黑的' },
+      { art: '⛰️', en: 'hill', zh: '小山' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'night', 'all', 'on', 'could', 'wheels', 'now'],
     newWords: [
       { w: 'train', zh: '火车' },
@@ -2509,14 +3248,22 @@ const BOOKS = [
       { art: '😴🚂', en: 'Now the train is still!', zh: '火车停了，我却睡着了！' }
     ],
     quiz: [
-      { q: '火车跑了多久？', opts: ['一整夜', '一整天', '一小时'], a: 0 },
-      { q: '我睡得着吗？', opts: ['睡不着', '睡得很好', '睡了又醒'], a: 0 },
-      { q: '天亮后火车怎么样？', opts: ['停了', '开更快了', '坏了'], a: 0 }
+      { q: '火车跑了多久？', opts: ['一整天', '一整夜', '一小时'], a: 1 },
+      { q: '我睡得着吗？', opts: ['睡了又醒', '睡得很好', '睡不着'], a: 2 },
+      { q: '天亮后火车怎么样？', opts: ['开更快了', '坏了', '停了'], a: 2 }
     ]
   },
   {
     id: 'b97', lv: 'L9', tag: '综合', title: 'A Home for a Snail', zh: '蜗牛的家',
     emoji: '🐌', color: '#C8B58A',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
+    pre: [
+      { art: '🐌', en: 'snail', zh: '蜗牛' },
+      { art: '🏠', en: 'home', zh: '家' },
+      { art: '🐚', en: 'shell', zh: '壳' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'for', 'so', 'with', 'now'],
     newWords: [
       { w: 'snail', zh: '蜗牛' },
@@ -2537,12 +3284,20 @@ const BOOKS = [
     quiz: [
       { q: '蜗牛的家在哪儿？', opts: ['树下', '就在它身上', '石头下'], a: 1 },
       { q: '它的壳怎么样？', opts: ['很大', '是空的', '很小'], a: 2 },
-      { q: '下雨后它为什么高兴？', opts: ['可以喝水', '壳能挡雨', '能跑得快'], a: 1 }
+      { q: '下雨后它为什么高兴？', opts: ['壳能挡雨', '可以喝水', '能跑得快'], a: 0 }
     ]
   },
   {
     id: 'b98', lv: 'L9', tag: '综合', title: 'The Big Storm', zh: '大风暴',
     emoji: '🌪️', color: '#7B8FA8',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
+    pre: [
+      { art: '🌪️', en: 'storm', zh: '风暴' },
+      { art: '🌬️', en: 'wind', zh: '风' },
+      { art: '💪', en: 'hard', zh: '猛烈' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'all', 'then', 'so', 'scared'],
     newWords: [
       { w: 'storm', zh: '风暴' },
@@ -2563,13 +3318,22 @@ const BOOKS = [
     ],
     quiz: [
       { q: '外面怎么了？', opts: ['很热', '下雪', '刮大风暴'], a: 2 },
-      { q: '风暴里我们怎么样？', opts: ['很害怕地哭', '都安全', '跑出去了'], a: 1 },
-      { q: '最后风暴怎么样？', opts: ['过去了', '更大了', '一直不停'], a: 0 }
+      { q: '风暴里我们怎么样？', opts: ['跑出去了', '都安全', '很害怕地哭'], a: 1 },
+      { q: '最后风暴怎么样？', opts: ['更大了', '一直不停', '过去了'], a: 2 }
     ]
   },
   {
     id: 'b99', lv: 'L9', tag: '综合', title: 'Three Little Bugs', zh: '三只小虫',
     emoji: '🐞', color: '#8CC084',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
+    pre: [
+      { art: '🐛', en: 'bug', zh: '小虫' },
+      { art: '🍃', en: 'leaf', zh: '叶子' },
+      { art: '🪰', en: 'fly', zh: '飞' },
+      { art: '🚶', en: 'came', zh: '来（过去式）' }
+    ],
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'three', 'on', 'was', 'then'],
     newWords: [
       { w: 'bug', zh: '小虫' },
@@ -2589,14 +3353,17 @@ const BOOKS = [
       { art: '😂🐞', en: 'Three bugs, one wet leaf!', zh: '三只小虫，一片湿叶子！' }
     ],
     quiz: [
-      { q: '小虫在哪儿？', opts: ['树上', '水里', '叶子上'], a: 2 },
-      { q: '下雨后叶子怎么样？', opts: ['湿了', '飞了', '干了'], a: 0 },
-      { q: '最后小虫做什么？', opts: ['继续爬', '飞走', '睡觉'], a: 1 }
+      { q: '小虫在哪儿？', opts: ['叶子上', '水里', '树上'], a: 0 },
+      { q: '下雨后叶子怎么样？', opts: ['干了', '湿了', '飞了'], a: 1 },
+      { q: '最后小虫做什么？', opts: ['飞走', '睡觉', '继续爬'], a: 0 }
     ]
   },
   {
     id: 'b100', lv: 'L9', tag: '综合', title: 'A Book for Me', zh: '送给我的书',
     emoji: '📖', color: '#B99BE0',
+    goal: '把学过的规则混起来用',
+    trap: '读之前先看每个词的元音：是短音、长音，还是魔法 e？判断完再开口。',
+    summary: '这一级是综合复习。句子里混了多种规则，要先判断再读，不能凭感觉。',
     sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'for', 'me', 'was', 'all'],
     newWords: [
       { w: 'book', zh: '书' },
@@ -2614,9 +3381,9 @@ const BOOKS = [
       { art: '😂🔦', en: 'But I still read on!', zh: '可我还想接着读！' }
     ],
     quiz: [
-      { q: '这本书是给谁的？', opts: ['我的', '老师的', '弟弟的'], a: 0 },
+      { q: '这本书是给谁的？', opts: ['弟弟的', '老师的', '我的'], a: 2 },
       { q: '我能读吗？', opts: ['只能读一点', '读不了', '全都能读'], a: 2 },
-      { q: '天黑了我在做什么？', opts: ['玩', '睡觉', '还在读书'], a: 2 }
+      { q: '天黑了我在做什么？', opts: ['玩', '还在读书', '睡觉'], a: 1 }
     ]
   },
   {
@@ -2655,7 +3422,7 @@ const BOOKS = [
     ],
     quiz: [
       { q: '猫坐在什么上面？', opts: ['垫子上', '袋子上', '帽子上'], a: 0 },
-      { q: '老鼠躲到哪里去了？', opts: ['袋子里', '床底下', '树上'], a: 0 },
+      { q: '老鼠躲到哪里去了？', opts: ['床底下', '树上', '袋子里'], a: 2 },
       { q: '最后谁坐在了袋子上？', opts: ['猫', '老鼠', '奶奶'], a: 0 }
     ]
   },
@@ -2701,7 +3468,7 @@ const BOOKS = [
     ],
     quiz: [
       { q: '红包是谁给的？', opts: ['奶奶', '老师', '同学'], a: 0 },
-      { q: '纸条上写的是什么？', opts: ['去买本书', '去买个蛋糕', '早点睡觉'], a: 0 },
+      { q: '纸条上写的是什么？', opts: ['去买个蛋糕', '早点睡觉', '去买本书'], a: 2 },
       { q: '我最后买回了什么？', opts: ['蛋糕', '书', '自行车'], a: 0 }
     ]
   },
@@ -2764,9 +3531,427 @@ const BOOKS = [
       { art: '🐼🛡️', en: 'Now the panda is safe. China sends pandas to many zoos.', zh: '现在熊猫安全了。中国把熊猫送到很多动物园。' }
     ],
     quiz: [
-      { q: '熊猫是什么颜色的？', opts: ['黑白两色', '全身白色', '棕色'], a: 0 },
+      { q: '熊猫是什么颜色的？', opts: ['棕色', '黑白两色', '全身白色'], a: 1 },
       { q: '熊猫主要吃什么？', opts: ['竹子', '苹果', '小鱼'], a: 0 },
       { q: '刚出生的熊猫宝宝有多大？', opts: ['像一只杯子那么大', '像一只猫那么大', '像妈妈那么大'], a: 0 }
+    ]
+  },
+  {
+    id: 'b104', lv: 'L6', tag: '魔法 e · 长读', title: 'Grandma\'s Dumplings', zh: '奶奶包饺子',
+    emoji: '🥟', color: '#E8C07D',
+    track: 'story',
+    goal: '魔法 e 在长句里也要读准（make / cake / plate / white）',
+    trap: 'dumpling 的重音在第一拍 DUM-pling；plate 的 /t/ 要出来，别读成「普雷」。',
+    summary: '长句里最容易丢掉的是尾音和魔法 e——dumpling、plate、make 这些词一快就糊。让孩子先慢读一遍，把每个词的末尾都读清楚，再提速。',
+    pre: [
+      { art: '🥟', en: 'dumpling', zh: '饺子' },
+      { art: '👵', en: 'Grandma', zh: '奶奶' },
+      { art: '🥩', en: 'meat', zh: '肉馅' },
+      { art: '🍲', en: 'pot', zh: '锅' }
+    ],
+    sight: ['meat', 'soup', 'water', 'yours'],
+    newWords: [
+      { w: 'Grandma', zh: '奶奶' },
+      { w: 'makes', zh: '做（第三人称）' },
+      { w: 'dumplings', zh: '饺子' },
+      { w: 'today', zh: '今天' },
+      { w: 'help', zh: '帮忙' },
+      { w: 'meat', zh: '肉馅' },
+      { w: 'middle', zh: '中间' },
+      { w: 'much', zh: '多' },
+      { w: 'small', zh: '小的' },
+      { w: 'good', zh: '好的' },
+      { w: 'fat', zh: '胖的' },
+      { w: 'smile', zh: '笑' },
+      { w: 'ten', zh: '十个' },
+      { w: 'biggest', zh: '最大的' },
+      { w: 'water', zh: '水' },
+      { w: 'hot', zh: '烫的' },
+      { w: 'wait', zh: '等' },
+      { w: 'opens', zh: '裂开（第三人称）' },
+      { w: 'soup', zh: '汤' }
+    ],
+    pages: [
+      { art: '👵🥟', en: 'Grandma makes dumplings today. It is my best day.', zh: '奶奶今天包饺子。这是我最喜欢的一天。' },
+      { art: '👦🥟', en: 'I help her. I put meat in the middle.', zh: '我帮她。我把肉馅放在中间。' },
+      { art: '👵🤏', en: '"Not too much," says Grandma. "Small is good."', zh: '「别放太多，」奶奶说，「小小的才好。」' },
+      { art: '🥟😮', en: 'I put too much in. My dumpling is big and fat!', zh: '我放太多了。我的饺子又大又胖！' },
+      { art: '👵😊', en: '"That one is yours," she says with a smile.', zh: '「那个是你的，」她笑着说。' },
+      { art: '🥟🥟🥟', en: 'We make ten dumplings. Mine is the biggest of all.', zh: '我们包了十个饺子。我那个是最大的。' },
+      { art: '🍲🔥', en: 'The water is hot. We wait and wait and wait.', zh: '水开了。我们等啊等啊等。' },
+      { art: '🥟💥', en: 'Mine opens in the water. Now it is soup!', zh: '我那个在水里裂开了。它变成汤了！' }
+    ],
+    quiz: [
+      { q: '今天奶奶在做什么？', opts: ['包饺子', '做蛋糕', '煮面条'], a: 0 },
+      { q: '我的饺子为什么特别大？', opts: ['我放了太多肉馅', '奶奶帮我做的', '我用了两张皮'], a: 0 },
+      { q: '最后我的饺子怎么了？', opts: ['在水里裂开了', '被奶奶吃掉了', '变得最好看'], a: 0 }
+    ]
+  },
+  {
+    id: 'b105', lv: 'L6', tag: '魔法 e / ee · 长读', title: 'Mimi at Night', zh: '夜里的咪咪',
+    emoji: '🐈', color: '#8E9AAF',
+    track: 'story',
+    goal: 'i_e / ee 混在长句里：Mimi / night / sleep',
+    trap: 'Mimi 两个音节都是「咪」，第二个不重读；night 的 gh 不发音，别读成「尼格特」。',
+    summary: '这本书的长句里有好几个 ee / i_e 词（sleep / night / line）。孩子容易把 night 读成「尼特」，记住 gh 是不发音的。',
+    pre: [
+      { art: '🐈', en: 'cat', zh: '猫' },
+      { art: '🌙', en: 'night', zh: '夜晚' },
+      { art: '🧱', en: 'wall', zh: '墙' },
+      { art: '😴', en: 'sleep', zh: '睡觉' }
+    ],
+    sight: ['know', 'window'],
+    newWords: [
+      { w: 'Mimi', zh: '咪咪（猫名）' },
+      { w: 'cat', zh: '猫' },
+      { w: 'sleeps', zh: '睡（第三人称）' },
+      { w: 'day', zh: '白天' },
+      { w: 'night', zh: '夜晚' },
+      { w: 'sleepy', zh: '困的' },
+      { w: 'goes', zh: '去（第三人称）' },
+      { w: 'window', zh: '窗户' },
+      { w: 'know', zh: '知道' },
+      { w: 'get', zh: '起身' },
+      { w: 'wall', zh: '墙' },
+      { w: 'alone', zh: '独自' },
+      { w: 'sit', zh: '坐' },
+      { w: 'line', zh: '一排' },
+      { w: 'moon', zh: '月亮' },
+      { w: 'home', zh: '家' },
+      { w: 'six', zh: '六点' }
+    ],
+    pages: [
+      { art: '🐈💤', en: 'Mimi is my cat. She sleeps all day.', zh: '咪咪是我的猫。她白天一直睡。' },
+      { art: '🐈🌙', en: 'At night she is not sleepy at all.', zh: '到了晚上她一点也不困。' },
+      { art: '🪟🐈', en: 'She goes out by the window.', zh: '她从窗户出去。' },
+      { art: '❓🐈', en: 'Where does she go? I do not know.', zh: '她去哪儿了？我不知道。' },
+      { art: '👦🌙', en: 'One night I get up and look.', zh: '有一天夜里，我爬起来看。' },
+      { art: '🐈🧱', en: 'Mimi is on the wall. She is not alone.', zh: '咪咪在墙上。她不是一个人。' },
+      { art: '🐈🐈🐈🌕', en: 'Three cats sit in a line. They look at the moon.', zh: '三只猫排成一排，一起看着月亮。' },
+      { art: '🐈😴', en: 'Mimi comes home at six. Now she is sleepy!', zh: '咪咪六点回家。这下她困了！' }
+    ],
+    quiz: [
+      { q: '咪咪白天在做什么？', opts: ['一直睡觉', '一直跑', '一直叫'], a: 0 },
+      { q: '夜里咪咪从哪里出去？', opts: ['窗户', '大门', '屋顶'], a: 0 },
+      { q: '墙上有几只猫？', opts: ['三只', '一只', '五只'], a: 0 }
+    ]
+  },
+  {
+    id: 'b106', lv: 'L7', tag: 'ar / or · 长读 · 科普', title: 'The Fast Train', zh: '高铁',
+    emoji: '🚄', color: '#5B8DEF',
+    track: 'info',
+    goal: 'ar / or 在长句里：far / car / station / short',
+    trap: 'station 的重音在第一拍 STA-tion；hour 的 h 不发音，读「奥儿」。',
+    summary: '科普类长句的特点是「一个事实接一个事实」。ar / or 在这本里反复出现（far / car / station / short），读顺了就是肌肉记忆。',
+    pre: [
+      { art: '🚄', en: 'train', zh: '火车' },
+      { art: '🚉', en: 'station', zh: '车站' },
+      { art: '👴', en: 'grandpa', zh: '爷爷' },
+      { art: '🍊', en: 'oranges', zh: '橘子' }
+    ],
+    sight: ['hours', 'reads', 'rivers', 'station', 'town', 'white', 'window'],
+    newWords: [
+      { w: 'Grandpa', zh: '爷爷' },
+      { w: 'lives', zh: '住（第三人称）' },
+      { w: 'far', zh: '远的' },
+      { w: 'away', zh: '离开' },
+      { w: 'train', zh: '火车' },
+      { w: 'white', zh: '白色的' },
+      { w: 'long', zh: '长的' },
+      { w: 'fast', zh: '快的' },
+      { w: 'trees', zh: '树（复数）' },
+      { w: 'wind', zh: '风' },
+      { w: 'window', zh: '窗户' },
+      { w: 'farms', zh: '农场（复数）' },
+      { w: 'rivers', zh: '河（复数）' },
+      { w: 'girl', zh: '女孩' },
+      { w: 'next', zh: '旁边的' },
+      { w: 'book', zh: '书' },
+      { w: 'ask', zh: '问' },
+      { w: 'hours', zh: '小时（复数）' },
+      { w: 'town', zh: '小镇' },
+      { w: 'stops', zh: '停（第三人称）' },
+      { w: 'station', zh: '车站' },
+      { w: 'bag', zh: '袋子' },
+      { w: 'oranges', zh: '橘子（复数）' }
+    ],
+    pages: [
+      { art: '👴🏠', en: 'My grandpa lives far away. We go to see him today.', zh: '爷爷住得很远。我们今天去看他。' },
+      { art: '🚄', en: 'We take the fast train. It is white and long.', zh: '我们坐高铁。它又白又长。' },
+      { art: '🌳💨', en: 'The train goes very fast. The trees go by like wind.', zh: '火车开得飞快。树像风一样往后退。' },
+      { art: '🪟🌾', en: 'I look out of the window. I can see farms and rivers.', zh: '我往窗外看。我能看见农田和河流。' },
+      { art: '👧📖', en: 'A girl next to me has a book. She reads it fast.', zh: '我旁边的女孩有一本书。她读得很快。' },
+      { art: '👦👩', en: '"Is it far?" I ask. "Not far," says Mom. "Two hours."', zh: '「远吗？」我问。「不远，」妈妈说，「两个小时。」' },
+      { art: '🏘️🚉', en: 'Grandpa lives in a small town. The train stops there.', zh: '爷爷住在一个小镇上。火车在那里停。' },
+      { art: '👴🍊', en: 'Grandpa is at the station. He has a bag of oranges!', zh: '爷爷在车站。他有一袋橘子！' }
+    ],
+    quiz: [
+      { q: '我们要去看谁？', opts: ['爷爷', '奶奶', '老师'], a: 0 },
+      { q: '坐火车要多久？', opts: ['两个小时', '一整天', '十分钟'], a: 0 },
+      { q: '爷爷带了什么来？', opts: ['一袋橘子', '一束花', '一本书'], a: 0 }
+    ]
+  },
+  {
+    id: 'b107', lv: 'L7', tag: 'ar / ir · 长读', title: 'The Lost Bag', zh: '书包丢了',
+    emoji: '🎒', color: '#F0A868',
+    track: 'story',
+    goal: 'ar / ir 长句：bag / park / girl / first',
+    trap: 'first 的 ir 要卷舌；park 的 /k/ 收住，别读成「帕克」拖长。',
+    summary: '长故事里孩子容易只顾情节、忘了发音。建议第二遍读时专门盯 ar / ir 的词：park、dark、start、first、girl、shirt。',
+    pre: [
+      { art: '🎒', en: 'bag', zh: '书包' },
+      { art: '🏞️', en: 'park', zh: '公园' },
+      { art: '👧', en: 'girl', zh: '女孩' },
+      { art: '🪑', en: 'bench', zh: '长椅' }
+    ],
+    sight: ['yours'],
+    newWords: [
+      { w: 'bag', zh: '书包' },
+      { w: 'lost', zh: '丢了' },
+      { w: 'park', zh: '公园' },
+      { w: 'played', zh: '玩（过去式）' },
+      { w: 'bench', zh: '长椅' },
+      { w: 'first', zh: '第一个' },
+      { w: 'girl', zh: '女孩' },
+      { w: 'red', zh: '红色的' },
+      { w: 'shirt', zh: '上衣' },
+      { w: 'smiles', zh: '微笑（第三人称）' },
+      { w: 'says', zh: '说（第三人称）' },
+      { w: 'this', zh: '这个' },
+      { w: 'yours', zh: '你的' },
+      { w: 'thank', zh: '感谢' },
+      { w: 'home', zh: '家' },
+      { w: 'dark', zh: '黑的' },
+      { w: 'start', zh: '开始' },
+      { w: 'run', zh: '跑' }
+    ],
+    pages: [
+      { art: '👦🎒', en: 'I lost my bag in the park. I am not glad.', zh: '我把书包丢在公园了。我一点也不高兴。' },
+      { art: '🏞️🪑', en: 'We played by the bench. Then it was dark.', zh: '我们在长椅边玩。后来天黑了。' },
+      { art: '🔍🎒', en: 'Where is my bag? I look and look.', zh: '我的书包在哪儿？我找啊找。' },
+      { art: '👧🎒', en: 'A girl has a bag. It is red.', zh: '一个女孩拿着一个书包。是红色的。' },
+      { art: '👧👕', en: 'She has a red shirt too. She smiles at me.', zh: '她也穿着红上衣。她朝我笑。' },
+      { art: '👦❓', en: '"Is this yours?" she says. "It is!" I say.', zh: '「这是你的吗？」她问。「是我的！」我说。' },
+      { art: '🙏👧', en: '"Thank you! You are the first to find it."', zh: '「谢谢你！你是第一个找到它的。」' },
+      { art: '👦👧🏃', en: 'We run home at dark. Now I have my bag!', zh: '天黑了，我们一起跑回家。书包找回来了！' }
+    ],
+    quiz: [
+      { q: '我把书包丢在哪儿了？', opts: ['公园', '学校', '家里'], a: 0 },
+      { q: '谁捡到了书包？', opts: ['一个穿红上衣的女孩', '一位老师', '我的同学'], a: 0 },
+      { q: '女孩是怎么找到书包的？', opts: ['书包就在长椅旁边', '她问了很多人', '她看见我丢的'], a: 0 }
+    ]
+  },
+  {
+    id: 'b108', lv: 'L8', tag: '视觉词 · 长读 · 科普', title: 'The Great Wall', zh: '长城',
+    emoji: '🧱', color: '#8D7B68',
+    track: 'info',
+    goal: '长句里的视觉词：because / through / people / years',
+    trap: 'wall 的 /w/ 要圆唇；through 读 /θruː/，th 要咬舌，不是「斯鲁」。',
+    summary: '这篇句子长、信息密，适合练「一口气读一句」。视觉词 because / through / people / world 不按规则拼，反复见几次就记住了。',
+    pre: [
+      { art: '🧱', en: 'wall', zh: '城墙' },
+      { art: '⛰️', en: 'mountain', zh: '山' },
+      { art: '🧑‍🤝‍🧑', en: 'people', zh: '人们' },
+      { art: '🏮', en: 'tower', zh: '城楼' }
+    ],
+    sight: ['built', 'climb', 'great', 'high', 'thousand', 'tired', 'tower', 'towers', 'years'],
+    newWords: [
+      { w: 'wall', zh: '城墙' },
+      { w: 'Great', zh: '伟大的' },
+      { w: 'mountains', zh: '群山' },
+      { w: 'north', zh: '北方' },
+      { w: 'kilometres', zh: '公里' },
+      { w: 'built', zh: '建造（过去式）' },
+      { w: 'long', zh: '长的' },
+      { w: 'ago', zh: '以前' },
+      { w: 'hands', zh: '手（复数）' },
+      { w: 'stones', zh: '石头（复数）' },
+      { w: 'carried', zh: '搬运（过去式）' },
+      { w: 'towers', zh: '城楼（复数）' },
+      { w: 'climb', zh: '爬' },
+      { w: 'steps', zh: '台阶（复数）' },
+      { w: 'tired', zh: '累的' },
+      { w: 'wind', zh: '风' },
+      { w: 'cold', zh: '冷的' },
+      { w: 'visit', zh: '参观' },
+      { w: 'world', zh: '世界' }
+    ],
+    pages: [
+      { art: '🧱⛰️', en: 'The Great Wall is in the north of China. It is very long.', zh: '长城在中国北方。它非常长。' },
+      { art: '📏🧱', en: 'It is more than twenty thousand kilometres. That is a lot!', zh: '它有两万多公里。那可太长了！' },
+      { art: '👷🧱', en: 'People built it many years ago. It was very hard work.', zh: '很久以前人们建造了它。那是一件非常辛苦的活。' },
+      { art: '✋🪨', en: 'They carried stones with their hands. No big machines then.', zh: '他们用手搬石头。那时候没有大机器。' },
+      { art: '🏔️🧱', en: 'From a tower you can see far away. The wall runs like a long dragon.', zh: '从城楼上看得很远。城墙像一条长龙。' },
+      { art: '🏮🧱', en: 'There are towers on the wall. People lived in them.', zh: '城墙上有城楼。人们住在里面。' },
+      { art: '🧗', en: 'Today you can climb the steps. Some are very high.', zh: '今天你可以爬台阶。有些台阶非常高。' },
+      { art: '😮‍💨🌬️', en: 'The wind is cold there. You will be tired but glad.', zh: '那里的风很冷。你会很累，但很开心。' },
+      { art: '🌍🧱', en: 'People from all over the world come to visit it.', zh: '世界各地的人都来参观它。' }
+    ],
+    quiz: [
+      { q: '长城在中国哪个方向？', opts: ['北方', '南方', '西边'], a: 0 },
+      { q: '古时候人们怎么搬石头？', opts: ['用手搬', '用大机器', '用火车运'], a: 0 },
+      { q: '城墙上的城楼是做什么用的？', opts: ['人们住在里面', '停放车辆', '种菜'], a: 0 }
+    ]
+  },
+  {
+    id: 'b109', lv: 'L8', tag: '视觉词 · 长读', title: 'Sports Day', zh: '运动会',
+    emoji: '🏃', color: '#4EC5F1',
+    track: 'story',
+    goal: '长句里的视觉词：everyone / ready / again / thought',
+    trap: 'thought 的 gh 不发音，读 /θɔːt/；race 的 c 是 /s/，不是 /k/。',
+    summary: '这篇有情绪转折，适合让孩子读完用中文讲一遍「我为什么停下来」。视觉词 everyone / ready / thought / again 在这篇里反复出现。',
+    pre: [
+      { art: '🏃', en: 'race', zh: '赛跑' },
+      { art: '🥇', en: 'first', zh: '第一名' },
+      { art: '👟', en: 'shoes', zh: '鞋' },
+      { art: '🎽', en: 'shirt', zh: '运动衣' }
+    ],
+    sight: ['everyone', 'heart', 'playground', 'ready', 'slower', 'teacher', 'tired'],
+    newWords: [
+      { w: 'sports', zh: '运动' },
+      { w: 'day', zh: '日子' },
+      { w: 'race', zh: '赛跑' },
+      { w: 'shoes', zh: '鞋（复数）' },
+      { w: 'fast', zh: '快的' },
+      { w: 'start', zh: '开始' },
+      { w: 'ran', zh: '跑（过去式）' },
+      { w: 'first', zh: '第一' },
+      { w: 'last', zh: '最后' },
+      { w: 'slower', zh: '更慢的' },
+      { w: 'tired', zh: '累的' },
+      { w: 'fell', zh: '摔倒（过去式）' },
+      { w: 'ground', zh: '地面' },
+      { w: 'smiled', zh: '笑（过去式）' },
+      { w: 'hand', zh: '手' },
+      { w: 'helped', zh: '帮助（过去式）' },
+      { w: 'finished', zh: '完成（过去式）' },
+      { w: 'happy', zh: '开心的' }
+    ],
+    pages: [
+      { art: '🏫🏃', en: 'It is Sports Day. Everyone is on the playground.', zh: '今天是运动会。大家都在操场上。' },
+      { art: '☀️🏫', en: 'The sun is hot. We stand in a line and wait for the start.', zh: '太阳很晒。我们排成一排，等比赛开始。' },
+      { art: '👟', en: 'I have new shoes. They are soft and very fast.', zh: '我有一双新鞋。又软又快。' },
+      { art: '🏁', en: '"Ready, go!" The race starts. We all run fast.', zh: '「预备，跑！」比赛开始了。我们都跑得飞快。' },
+      { art: '👦💨', en: 'I am first! But then I look back at my friend.', zh: '我是第一！可我回头看了看我的朋友。' },
+      { art: '😣', en: 'He is slower. He looks tired. Then he falls down.', zh: '他跑得慢。他看起来很累。然后他摔倒了。' },
+      { art: '🤝', en: 'I stop and go back. I give him my hand.', zh: '我停下来，跑回去，把手伸给他。' },
+      { art: '👦👦🏁', en: 'We finish last, hand in hand. Everyone smiles at us.', zh: '我们手拉手最后到达。大家都朝我们笑。' },
+      { art: '😊🎽', en: '"You are first in my heart," says my teacher.', zh: '「你在我心里是第一名。」老师说。' }
+    ],
+    quiz: [
+      { q: '比赛开始后，我跑得怎么样？', opts: ['一开始是第一名', '一直最后', '没有参加'], a: 0 },
+      { q: '我为什么停下来？', opts: ['朋友摔倒了，我去扶他', '我鞋带开了', '老师叫我'], a: 0 },
+      { q: '最后我们得了第几名？', opts: ['最后一名，但大家为我们鼓掌', '第一名', '没有名次'], a: 0 }
+    ]
+  },
+  {
+    id: 'b110', lv: 'L9', tag: '综合 · 长读 · 科普', title: 'Rice', zh: '水稻',
+    emoji: '🌾', color: '#D4A373',
+    track: 'info',
+    goal: '长段落阅读：一段两三个事实，靠连接词串起来',
+    trap: 'rice 的 c 是 /s/；grown 的 ow 读 /oʊ/；south 的 ou 读 /aʊ/。',
+    summary: '这篇是「信息型长文」：每页两三个事实，靠 where / then / for 这些连接词串起来。读完可以问孩子「米饭要经过哪几步」，练复述。',
+    pre: [
+      { art: '🌾', en: 'rice', zh: '水稻' },
+      { art: '💧', en: 'water', zh: '水' },
+      { art: '👨‍🌾', en: 'farmer', zh: '农民' },
+      { art: '🍚', en: 'bowl', zh: '碗' }
+    ],
+    sight: ['autumn', 'bowl', 'eat', 'everything', 'farmers', 'hours', 'right', 'south', 'turns', 'water'],
+    newWords: [
+      { w: 'rice', zh: '水稻；米饭' },
+      { w: 'plant', zh: '种植' },
+      { w: 'south', zh: '南方' },
+      { w: 'wet', zh: '湿的' },
+      { w: 'fields', zh: '田地（复数）' },
+      { w: 'farmers', zh: '农民（复数）' },
+      { w: 'stand', zh: '站' },
+      { w: 'water', zh: '水' },
+      { w: 'knees', zh: '膝盖（复数）' },
+      { w: 'green', zh: '绿色的' },
+      { w: 'turns', zh: '变成（第三人称）' },
+      { w: 'gold', zh: '金黄色' },
+      { w: 'autumn', zh: '秋天' },
+      { w: 'cut', zh: '收割' },
+      { w: 'bowl', zh: '碗' },
+      { w: 'hot', zh: '热的' },
+      { w: 'soft', zh: '软的' },
+      { w: 'taste', zh: '尝起来' },
+      { w: 'grow', zh: '生长' },
+      { w: 'months', zh: '月（复数）' },
+      { w: 'heavy', zh: '重的' },
+      { w: 'work', zh: '劳动' },
+      { w: 'cook', zh: '煮' },
+      { w: 'becomes', zh: '变成（第三人称）' }
+    ],
+    pages: [
+      { art: '🌾🇨🇳', en: 'Rice is the most important food in China. People eat it every day.', zh: '米饭是中国最重要的食物。人们每天都吃。' },
+      { art: '🌱💧', en: 'Farmers plant rice in the south, where it is warm and wet.', zh: '农民在南方种水稻，那里又暖和又潮湿。' },
+      { art: '👨‍🌾💦', en: 'The fields are full of water. Farmers stand in it for hours.', zh: '田里全是水。农民在水里一站就是几个小时。' },
+      { art: '🌾💧', en: 'The water must be just right. Too much rain is bad for rice.', zh: '水要刚刚好。雨太多对水稻不好。' },
+      { art: '🌿', en: 'For many months the rice is green. Then it turns gold.', zh: '好几个月里水稻都是绿的。然后它变成金黄色。' },
+      { art: '🍂🌾', en: 'In autumn farmers cut it and take it home.', zh: '到了秋天，农民收割，把它运回家。' },
+      { art: '🍚🔥', en: 'We cook it with water. It becomes hot and soft.', zh: '我们用水煮它。它变得又热又软。' },
+      { art: '🍚😋', en: 'A bowl of rice tastes good with almost everything.', zh: '一碗米饭几乎配什么都好吃。' },
+      { art: '🌍🍚', en: 'Half the people in the world eat rice every day. It is a lot of work!', zh: '世界上有一半的人每天吃米饭。这背后是很多很多劳动。' }
+    ],
+    quiz: [
+      { q: '水稻主要种在中国的哪里？', opts: ['南方', '北方', '西边'], a: 0 },
+      { q: '水稻什么时候变成金黄色？', opts: ['秋天', '春天', '冬天'], a: 0 },
+      { q: '一碗米饭是怎么来的？', opts: ['农民在水田里劳动好几个月', '超市里长出来的', '机器直接做出来的'], a: 0 }
+    ]
+  },
+  {
+    id: 'b111', lv: 'L9', tag: '综合 · 长读', title: 'The Mooncake Night', zh: '中秋夜',
+    emoji: '🥮', color: '#C9A227',
+    track: 'story',
+    goal: '长故事阅读：对话 + 场景描写 + 情绪变化',
+    trap: 'mooncake 重音在第一拍 MOON-cake；tonight 的 gh 不发音。',
+    summary: '这篇有对话、有空椅子这样的细节，还有情绪变化。读的时候让孩子注意「我」从一开始不说话、到后来不难过，中间发生了什么。',
+    pre: [
+      { art: '🥮', en: 'mooncake', zh: '月饼' },
+      { art: '🌕', en: 'moon', zh: '月亮' },
+      { art: '🏮', en: 'lantern', zh: '灯笼' },
+      { art: '👨‍👩‍👧', en: 'family', zh: '家人' }
+    ],
+    sight: ['bright', 'counted', 'door', 'everyone', 'round', 'seat', 'tonight', 'voice', 'year'],
+    newWords: [
+      { w: 'mooncake', zh: '月饼' },
+      { w: 'moon', zh: '月亮' },
+      { w: 'round', zh: '圆的' },
+      { w: 'bright', zh: '明亮的' },
+      { w: 'lantern', zh: '灯笼' },
+      { w: 'garden', zh: '院子' },
+      { w: 'table', zh: '桌子' },
+      { w: 'counted', zh: '数（过去式）' },
+      { w: 'pieces', zh: '块（复数）' },
+      { w: 'share', zh: '分享' },
+      { w: 'missing', zh: '缺失的' },
+      { w: 'seat', zh: '座位' },
+      { w: 'empty', zh: '空的' },
+      { w: 'quiet', zh: '安静的' },
+      { w: 'phone', zh: '电话' },
+      { w: 'voice', zh: '声音' },
+      { w: 'smiled', zh: '笑（过去式）' },
+      { w: 'smell', zh: '气味' },
+      { w: 'sweet', zh: '甜的' },
+      { w: 'same', zh: '同一个' }
+    ],
+    pages: [
+      { art: '🌕🏮', en: 'Tonight the moon is round and bright. Everyone in my family is here.', zh: '今晚的月亮又圆又亮。家里所有人都到齐了。' },
+      { art: '👨‍👩‍👧🌕', en: 'We sit in the garden and look up. The moon is like a big plate.', zh: '我们坐在院子里抬头看。月亮像一只大盘子。' },
+      { art: '🥮🪑', en: 'Grandma puts mooncakes on the table. She counted them three times.', zh: '奶奶把月饼摆在桌上。她数了三遍。' },
+      { art: '👵❓', en: '"One is missing," she says. "Who took it?"', zh: '「少了一个，」她说，「谁拿走了？」' },
+      { art: '👦🤫', en: 'Everyone looks at me. I do not say a word.', zh: '大家都看着我。我一句话也不说。' },
+      { art: '🪑⚪', en: 'There is an empty seat by the door. My uncle is not here this year.', zh: '门边有一张空椅子。今年舅舅没能回来。' },
+      { art: '📞', en: '"Save me a mooncake," he says. His voice is warm.', zh: '「给我留一块月饼，」他说。他的声音很暖。' },
+      { art: '🥮📱', en: '"Save me a mooncake," he says. I put one in a box for him.', zh: '「给我留一块月饼，」他说。我把一块装进盒子里。' },
+      { art: '🌕😊', en: 'The moon is the same for him and for us. I am not sad now.', zh: '他看到的月亮和我们看到的是同一个。我不难过了。' }
+    ],
+    quiz: [
+      { q: '奶奶为什么数了三遍月饼？', opts: ['发现少了一块', '想知道够不够甜', '要分给邻居'], a: 0 },
+      { q: '门边为什么有一张空椅子？', opts: ['舅舅今年没能回来', '椅子坏了', '要给客人坐'], a: 0 },
+      { q: '我最后为舅舅做了什么？', opts: ['留了一块月饼', '打了电话给他', '画了一幅画'], a: 0 }
     ]
   }
 ];

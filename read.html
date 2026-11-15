@@ -66,6 +66,7 @@
 .bk-summary{margin:14px 6px 4px;padding:12px 14px;border-radius:16px;background:#F1F7FF;
   border:2px solid #CFE4FA;font-size:.9rem;line-height:1.75;color:#22405C;text-align:left}
 .bk-summary b{color:#14304A}
+.bk-wc{color:var(--ink2);opacity:.85}
 .bk-goal{display:block;font-size:.96rem;line-height:1.55}
 .bk-meta2{display:block;margin-top:3px;font-size:.84rem;color:var(--ink2)}
 .bk-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px 2px 2px}
@@ -164,8 +165,8 @@
 
 <script src="js/words-data.js?v=46"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=163"></script>
-<script src="js/books-data.js?v=6"></script>
+<script src="js/app.js?v=164"></script>
+<script src="js/books-data.js?v=7"></script>
 <script defer src="js/audio-list.js?v=9"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>
@@ -187,6 +188,9 @@ let SEQ = [];        // 当前书的渲染序列（读前页 + 正文页）
 /* esc 使用 app.js 的全局版本（本地重复声明会与 app.js 的 const esc 冲突导致整段脚本解析失败） */
 
 /* ============ 书架 ============ */
+function wc(b) {
+  return (b.pages || []).reduce((n, p) => n + String(p.en || '').split(/\s+/).filter(Boolean).length, 0);
+}
 function renderShelf() {
   const prog = bkProg();
   const order = ['L2','L3','L4','L5','L6','L7','L8','L9'];
@@ -195,9 +199,12 @@ function renderShelf() {
                    L8:'第 7 站 · 视觉词', L9:'毕业 · 综合阅读' };
   let html = '';
   for (const lv of order) {
-    const books = BOOKS.filter(b => b.lv === lv);
+    /* 同级别按「正文词数」升序：先读短读本练拼读，再读长读本练流利 */
+    const books = BOOKS.filter(b => b.lv === lv).sort((a, b) => wc(a) - wc(b));
     if (!books.length) continue;
-    html += `<div class="bk-level-label">${esc(lvName[lv] || lv)}<small>${books.length} 本</small></div>`;
+    const nLong = books.filter(b => wc(b) >= 55).length;
+    html += `<div class="bk-level-label">${esc(lvName[lv] || lv)}` +
+            `<small>${books.length} 本${nLong ? ' · 含 ' + nLong + ' 本长读' : ''}</small></div>`;
     html += '<div class="bk-map">' + books.map(b => `
       <button class="bk-card ${prog.done && prog.done[b.id] ? 'done' : ''}" data-b="${b.id}">
         <span class="bk-star">${prog.done && prog.done[b.id] ? '⭐' : ''}</span>
@@ -205,6 +212,7 @@ function renderShelf() {
         <b>${esc(b.tag)}</b>
         <span class="bk-title">${esc(b.title)}</span>
         <small>${esc(b.zh)}</small>
+        <small class="bk-wc">${wc(b)} 词${wc(b) >= 55 ? ' · 长读' : ''}</small>
       </button>`).join('') + '</div>';
   }
   const doneN = Object.keys(prog.done || {}).length;

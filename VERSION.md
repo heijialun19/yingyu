@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v163 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v164 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/books-data.js | v3 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
 | js/phonics.js | v9 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
@@ -38,7 +38,7 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v222 | Service Worker（音频缓存 birdie-audio-v7 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v223 | Service Worker（音频缓存 birdie-audio-v7 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
 
 ## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
@@ -77,6 +77,39 @@
 版本链：SENTENCE_VER 5→6、PHRASE_VER 3→4、app v154→v155、CACHE v213→v214、
 BUILD 2026-11-14.18→.19，11 个正式页与 SW CORE/BOOT 同步。AUDIO_VER / WEAK_VER /
 PHONICS_VER 零改动，2912 条单词与母语者字母音字节不动。
+
+## 2026-11-15.9 · 读书馆：答案配平 + 全站支架 + 长度梯度
+
+**起因**：用户发现新加的三本样书答案全在 A 位。
+
+**答案位置**：这三本是手写的 `a: 0`，绕过了上一轮的配平。已把配平下沉到
+`_booklib.save_books()`——所有增删改书都强制走它，先随机打散选项、再做位置均衡，
+现在 300 题是 111/111/111。校验器加了红线：任一位置 >40% 或极差 >15% 直接报错。
+
+**全站支架**：103 本全部补上 `goal / trap / summary`，84 本有读前看图说词。
+`trap` 按音素组逐条写（th 是「舌尖放齿间」，连缀是「中间不能加呃」），不是一句万能话。
+剩下 19 本的生词太抽象（wish / late / had），配图反而误导，就让它直接显示发音提示。
+
+**校验逻辑纠正**：原来 `is_declared` 要求每个词都在某本书的 sight/newWords 里，
+等于把「能按规则拼出来」的词也逼成视觉词——视觉词表越滚越大，`b111` 一度到 78 个。
+改成「**已声明 或 能按本级字素拼出** 即通过」，8 本长读的视觉词表随即收敛到 1–10 个。
+
+**长度梯度**：新增 8 本长读，同级别「短读练拼读、长读练流利」：
+
+| 书 | 级 | 词数 | 类型 |
+|---|---|---|---|
+| Grandma's Dumplings | L6 | 75 | 故事（包饺子） |
+| Mimi at Night | L6 | 66 | 故事（小区里的猫） |
+| The Fast Train | L7 | 88 | 科普（高铁） |
+| The Lost Bag | L7 | 74 | 故事（公园丢书包） |
+| The Great Wall | L8 | 101 | 科普（长城） |
+| Sports Day | L8 | 94 | 故事（运动会扶同学） |
+| Rice | L9 | 105 | 科普（水稻） |
+| The Mooncake Night | L9 | 111 | 故事（中秋空椅子） |
+
+书架同级别按正文词数升序排列，卡片标「N 词 · 长读」，孩子自然从短读到长读。
+
+68 条整句音频。app v164 / CACHE v223 / books-data v7 / BUILD .15.9。
 
 ## 2026-11-15.8 · 读书馆面向中国学生改造（第一步）
 
