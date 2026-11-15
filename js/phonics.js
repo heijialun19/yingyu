@@ -349,7 +349,7 @@ const PH_L1_BATCHES = [
 const PH_LEVELS = [
   { id: 'L1', icon: '🔤', name: '字母音启蒙', kind: 'letters',
     goal: '26 个字母在单词里的声音——见字母就想音',
-    intro: '字母<b>名</b>是它的名字（A 读 /eɪ/），字母<b>音</b>是它在单词里的声音（a 读 /æ/）——自然拼读学的是<b>声音</b>。分 4 批学，点字母卡听音，点小词听例词。想看象形小故事去 <a href="letters.html" style="color:var(--lake)">字母岛 →</a>',
+    intro: '字母<b>名</b>是它的名字（A 读 /eɪ/），字母<b>音</b>是它在单词里的声音（a 读 /æ/）——自然拼读学的是<b>声音</b>。分 4 批学，点字母卡听音，点小词听例词。想看象形小故事去 <a href="letters.html" style="color:var(--ink)">字母岛 →</a>',
     goals: ['听得出 26 个字母音', '分清字母名和字母音', '听例词找到开头音'] },
   { id: 'L2', icon: '🧱', name: '短元音拼读', kind: 'words',
     goal: '元音发短音，c-a-t 一拼就会',

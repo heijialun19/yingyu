@@ -34,6 +34,8 @@ const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu',
    词卡之前仍走 splitBlocks 逐音拆，属于同一站两套标准：对这些词改为整词认读提示。
    其余词保持逐音素拆——那正是 phonics.js segs 的做法（cat→c·a·t），实测 106/109 一致。 */
 const PH_WHOLE_WORDS = new Set('rabbit egg doctor wash shoe chair peach teacher thumb cake lake name plate grape whale gate game kite bike nine white ice five rice time nose rose home bone stone rope afternoon away today garden market horse short chicken young along cute use rule'.split(' '));
+/* 视觉词（phonics.js SIGHT_WORDS 同步清单）：逐音拆会把 the 拆成 t·h·e，必须整词认读。 */
+const PH_SIGHT_WORDS = new Set('the a is my he she we you are they this that said one two was has were come some have do does of to them there what where who why out now all her'.split(' '));
 const EAR_NOT_IER = { bear: 1, wear: 1, pear: 1, learn: 1, early: 1, earth: 1, search: 1, heart: 1, swear: 1 };
 /* 组合例外表：这些词在特定位置组合并不成立，命中也要跳过（回到逐字母诚实拆分）。
    - homework/bathroom：复合词边界（home|work、bath|room）上的 ew/thr 是假组合
@@ -90,8 +92,14 @@ function splitPhrase(w) { return String(w).split(/[\s'’\-]+/).filter(Boolean);
 function phonicsLine(w) {
   return splitPhrase(w).map(p => {
     const key = p.toLowerCase().replace(/[^a-z]/g, '');
-    /* 整体认读词不逐音硬拆：点词卡听标准音才是唯一正确读法。 */
-    if (key && PH_WHOLE_WORDS.has(key)) return p + '（整词认读）';
+    /* 2026-11-15.2（第四轮验收 B2）：三层判定。
+       ① 拼读课 segs 覆盖的词走 segs（splitBlocks 与之一致，106/109）；
+       ② 整体认读词 / 视觉词：硬拼会把 the 拆成 t·h·e、把 cake 的哑巴 e 念出来；
+       ③ 多音节词（splitSyllables>=2）：breakfast / grandma / umbrella 这类，逐音素拆
+          没有音节边界，会让孩子按 /æ/ /e/ 硬拼——一律整词认读；
+       剩单音节规则词（cat / hat / dog）保留逐音素拆，那正是拼读教学标准。 */
+    if (key && (PH_WHOLE_WORDS.has(key) || PH_SIGHT_WORDS.has(key))) return p + '（整词认读）';
+    if (key && splitSyllables(p).length >= 2) return p + '（整词认读）';
     return splitBlocks(p).join(' · ');
   }).join(' ／ ');
 }

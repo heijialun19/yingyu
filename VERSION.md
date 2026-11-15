@@ -14,9 +14,9 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v156 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v157 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/books-data.js | v3 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
-| js/phonics.js | v8 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
+| js/phonics.js | v9 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
 | js/words-data.js | v46 | 999 词词库（2026-11-09.15：colour/color 合并为一条） |
 | js/data.js | v45 | 字母岛 / 句子工厂等数据（v33：THEMES 去掉 flatMap，见文末） |
@@ -38,7 +38,7 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v215 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v216 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
 
 ## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
@@ -77,6 +77,25 @@
 版本链：SENTENCE_VER 5→6、PHRASE_VER 3→4、app v154→v155、CACHE v213→v214、
 BUILD 2026-11-14.18→.19，11 个正式页与 SW CORE/BOOT 同步。AUDIO_VER / WEAK_VER /
 PHONICS_VER 零改动，2912 条单词与母语者字母音字节不动。
+
+## 2026-11-15.2 · 第四轮验收修复（色彩规则 + B2 分层）
+
+第四轮验收报告（对象 .15.1）认可 12 条修复、并承认自己上轮 B6/N15/N8 三条错判；
+本轮按它成立的新问题做系统性修复，不成立的三处已在对话中说明。
+
+| 类别 | 改动 |
+|---|---|
+| 色彩规则 | `--ink2` #5C6273→**#3F4658**（蓝底 3.86→5.98）；硬编码 `#6B7280`/`#78909C`→**#4A5162**（蓝底 5.04、白底 7.94）；主题/年级糖果色从文字色改为 `--tc` 边框色、文字统一 `var(--ink)`（1.38→12.89）；字母岛链接 1.26→8.18；句子火车尾件背景 #6A45E8+白字（3.83→5.79）；开始卡片学渐变 #5B3FD6→#6A45E8+白字（最差端 4.03→5.79）；声明页 GitHub 链接 #1F6FA8（1.98→5.39） |
+| B2 分层 | `phonicsLine`：segs 覆盖词走 segs；整体认读 44 + 视觉词 35 + **多音节 481** → 整词认读；仅单音节规则词保留逐音素拆（cat→c·a·t）。breakfast/grandma/umbrella 不再硬拆，单音节拼读功能不丢 |
+| N13 | 移动端主题行由「横滑+渐隐」改为**两行换行**，彻底消除右缘裁切（原 scrollWidth 1046 vs 容器 366） |
+| N18 | `.phc-chip small` .69rem→**.72rem**（手机 11.04→11.52px，桌面 12.42→12.96px） |
+| N23 | 页脚 `.foot-links a` 改 inline-flex + gap 2px，图标不再与 `·` 挤在一起 |
+| N24 | 单词镇搜索框 placeholder 缩短为「🔍 搜单词或中文」 |
+| N10 | letters（26 字母表）、games（7 个游戏清单）、parents（6 个模块说明）、disclaimer（5 条要点）由 82 字简介补成实质静态内容 |
+| N8 | 页首改为「L1–L19 的造句题由单词镇生成；L20–L23 是课本同步固定句型」 |
+
+验证：390px 对比度重扫、B2 全量复算、12 页冒烟、交互路径回归。
+版本链：app v157 / style v55 / phonics v9 / pep-points v26 / CACHE v216 / BUILD .15.2；音频零改动。
 
 ## 2026-11-15.1 · 第三轮复检修复（逐条论证）
 

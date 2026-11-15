@@ -17,20 +17,28 @@
 <title>家长中心 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/parents.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=54" onerror="this.onerror=null;this.href='css/style.css?v=54&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=55" onerror="this.onerror=null;this.href='css/style.css?v=55&amp;retry=1'">
 </head>
 <!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
 <body data-emoji="full">
 <noscript>
   <section class="card" style="margin-top:18px">
-    <h2>👨‍👩‍👧 家长中心（不依赖脚本）</h2>
-    <p>查看学习总览、多档案切换与备份、按年级调整词库、星星与掌握进度，
-    并可一键复制朗读诊断信息。所有数据只存在本机浏览器，不上传服务器。</p>
+    <h2>👨‍👩‍👧 家长中心 · 看什么（不依赖脚本）</h2>
+    <p>家长中心把孩子的学习数据整理成一页报告，全部读取本机浏览器里的进度，不上传服务器：</p>
+    <ul style="line-height:1.9">
+      <li><b>📊 学习总览</b>：当前档案、词库总量、已掌握词数、星星与连续学习天数。</li>
+      <li><b>🎓 各年级词汇进度</b>：1-6 年级分别掌握了多少，高年级可回补低年级。</li>
+      <li><b>📅 最近 7 天活动</b>：每天的学习动作数，一眼看出有没有断。</li>
+      <li><b>🏅 徽章墙</b>：已获得的成就徽章。</li>
+      <li><b>🔊 语音诊断</b>：手机没声音时，一键复制环境信息排查。</li>
+      <li><b>🔤 音标说明</b>：为什么本站用美式紧凑记法、和课本怎么对照。</li>
+    </ul>
+    <p>支持多档案切换、导出/导入备份、按年级调整词库范围。</p>
   </section>
 </noscript>
   <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
     <div style="font-size:52px">🐤</div>
-    <div style="font-size:.9rem;color:#5C6273;font-weight:700">加载中，请稍等…</div>
+    <div style="font-size:.9rem;color:#3F4658;font-weight:700">加载中，请稍等…</div>
   </div>
 <main>
   <div class="page-title">
@@ -43,7 +51,7 @@
     <div class="card" style="border-color:var(--lemon)">
       <h2>🎓 孩子的年级设置</h2>
       <div class="grade-grid" id="gradeGrid"></div>
-      <p style="margin:12px 0 0;color:#5C6273;font-size:.82rem">
+      <p style="margin:12px 0 0;color:#3F4658;font-size:.82rem">
         选好年级后：单词镇自动打开对应年级、游戏乐园优先抽该年级的词、句子工厂按年级分阶段。切换年级不会丢失学习进度。
       </p>
     </div>
@@ -52,7 +60,7 @@
   <!-- 学习总览 -->
   <section class="section">
     <div class="card">
-      <h2>📊 学习总览 <small style="font-weight:400;color:#5C6273">当前档案：<b id="curProfileName"></b> · 词库共 <b id="totalWords"></b> 词（1-6 年级新课标范围）</small></h2>
+      <h2>📊 学习总览 <small style="font-weight:400;color:#3F4658">当前档案：<b id="curProfileName"></b> · 词库共 <b id="totalWords"></b> 词（1-6 年级新课标范围）</small></h2>
       <div class="stat-grid" style="margin-top:12px" id="statGrid"></div>
     </div>
   </section>
@@ -60,7 +68,7 @@
   <!-- 各年级进度 -->
   <section class="section">
     <div class="card">
-      <h2>🎓 各年级词汇进度 <small style="font-weight:400;color:#5C6273">掌握 = 累计答对 2 次以上；高年级的孩子也可回补低年级（单词镇 · 我的词单）</small></h2>
+      <h2>🎓 各年级词汇进度 <small style="font-weight:400;color:#3F4658">掌握 = 累计答对 2 次以上；高年级的孩子也可回补低年级（单词镇 · 我的词单）</small></h2>
       <div id="gradeProgress" style="margin-top:10px"></div>
     </div>
   </section>
@@ -68,7 +76,7 @@
   <!-- 近 7 天活跃 -->
   <section class="section">
     <div class="card">
-      <h2>📅 最近 7 天学习活动 <small style="font-weight:400;color:#5C6273">（每天的学习动作数）</small></h2>
+      <h2>📅 最近 7 天学习活动 <small style="font-weight:400;color:#3F4658">（每天的学习动作数）</small></h2>
       <div class="bar-chart" id="barChart"></div>
     </div>
   </section>
@@ -91,8 +99,8 @@
         <button class="btn ghost" onclick="renderSpeechDiag()">🔄 重新检测</button>
       </div>
       <details style="margin-top:12px">
-        <summary style="cursor:pointer;font-weight:700;color:#5C6273">📋 语音来源说明</summary><div style="font-size:.82rem;line-height:2;color:#5C6273;margin-top:8px">本站发音<b>全部是站内自带的静态音频</b>：2951 个单词/拼读块/字母名/派生词/字母音发音 + 934 句整句合成音频 + 137 段连读词块（单词、整句与词块同一说话人；字母音与拼读块 39 个中 38 个为母语者录音，字母 U 由本站自合成），<b>断网也能读，不联网、不请求任何第三方服务</b>。单词、整句与词块由 Piper 引擎 + <code>en_US-libritts-high</code> 的 381 号声线合成（模型权重 MIT；训练数据 LibriTTS / OpenSLR 60 为 CC BY 4.0，署名与许可全文见《第三方素材与许可说明》）。程序临时生成的句子按「连读词块 + 单词音频」接龙朗读；极少数包里没有的内容才用手机自带的系统语音兜底。</div></details><details style="margin-top:8px"><summary style="cursor:pointer;font-weight:700;color:#5C6273">📱 手机打开没有声音？依次检查这 5 条</summary>
-        <div style="font-size:.85rem;line-height:2;color:#5C6273;margin-top:8px">
+        <summary style="cursor:pointer;font-weight:700;color:#3F4658">📋 语音来源说明</summary><div style="font-size:.82rem;line-height:2;color:#3F4658;margin-top:8px">本站发音<b>全部是站内自带的静态音频</b>：2951 个单词/拼读块/字母名/派生词/字母音发音 + 934 句整句合成音频 + 137 段连读词块（单词、整句与词块同一说话人；字母音与拼读块 39 个中 38 个为母语者录音，字母 U 由本站自合成），<b>断网也能读，不联网、不请求任何第三方服务</b>。单词、整句与词块由 Piper 引擎 + <code>en_US-libritts-high</code> 的 381 号声线合成（模型权重 MIT；训练数据 LibriTTS / OpenSLR 60 为 CC BY 4.0，署名与许可全文见《第三方素材与许可说明》）。程序临时生成的句子按「连读词块 + 单词音频」接龙朗读；极少数包里没有的内容才用手机自带的系统语音兜底。</div></details><details style="margin-top:8px"><summary style="cursor:pointer;font-weight:700;color:#3F4658">📱 手机打开没有声音？依次检查这 5 条</summary>
+        <div style="font-size:.85rem;line-height:2;color:#3F4658;margin-top:8px">
           1️⃣ 先<b>点一下页面任意位置</b>再点单词——手机浏览器要求第一次发音必须由点击触发（本站已做自动解锁，一般无感）<br>
           2️⃣ 微信/QQ 里打开可能完全没有语音：点右上角「···」→「在浏览器打开」<br>
           3️⃣ iPhone 检查<b>侧边静音键</b>和音量；部分机型需关闭"旁白"功能<br>
@@ -230,7 +238,7 @@
       <div style="font-size:40px">🧰</div>
       <div style="flex:1;min-width:220px">
         <b>档案与数据管理</b>
-        <p style="margin:4px 0 0;color:#5C6273;font-size:.82rem">
+        <p style="margin:4px 0 0;color:#3F4658;font-size:.82rem">
           每个小伙伴一份独立进度，保存在<b>这台电脑的浏览器</b>里，不上传、不收集任何信息。
           换电脑或防止丢失：点「档案管理」里的 <b>💾 备份与同步</b>，一步生成短码（发微信）和备份文件（下载存档），到新设备粘贴短码或选文件即可恢复。
         </p>
@@ -240,7 +248,7 @@
     </div>
   </section>
 
-  <footer style="text-align:center;color:#5C6273;font-size:.72rem;line-height:1.9;margin-top:30px">
+  <footer style="text-align:center;color:#3F4658;font-size:.72rem;line-height:1.9;margin-top:30px">
     小鸟英语乐园 Birdie ABC · 本站为学习方法演示原型，内容供家庭学习参考
   </footer>
 
@@ -248,9 +256,9 @@
   <section class="card" id="diagBox" style="margin-top:18px;padding:16px">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
       <b style="font-size:.95rem">🔧 版本与朗读诊断</b>
-      <span id="verLine" style="font-size:.78rem;color:#5C6273">…</span>
+      <span id="verLine" style="font-size:.78rem;color:#3F4658">…</span>
     </div>
-    <p style="font-size:.76rem;color:#5C6273;margin:8px 0">
+    <p style="font-size:.76rem;color:#3F4658;margin:8px 0">
       课本与课程的固定句子已配好整句音频，一次播完；只有没有预置音频的临时句子才会分段连读。
       如果出现「念到一半停了」，把下面这段发给开发者，里面记着每一段是播完、失败还是没出声。
     </p>
@@ -260,12 +268,12 @@
       <button class="btn ghost" type="button" id="audClear">🧽 清空</button>
     </div>
   </section>
-<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
+<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#4A5162">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=46"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=156"></script>
+<script src="js/app.js?v=157"></script>
 <script defer src="js/audio-list.js?v=9"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>
@@ -313,7 +321,7 @@ renderSpeechDiag();
       <div class="prog" style="flex:1;min-width:180px;height:16px;background:#EEF3F8;border-radius:999px;overflow:hidden">
         <i style="display:block;height:100%;width:${pct}%;background:linear-gradient(90deg,#6BCB77,#4EC5F1);border-radius:999px"></i>
       </div>
-      <span style="color:#5C6273;font-size:.85rem;min-width:110px">${got} / ${total} 词（${pct}%）</span>
+      <span style="color:#3F4658;font-size:.85rem;min-width:110px">${got} / ${total} 词（${pct}%）</span>
     </div>`;
   }).join('');
 })();
@@ -332,7 +340,7 @@ renderSpeechDiag();
     const d2 = new Date(d.t.replace(/-/g, '/'));
     const wd = '日一二三四五六'[d2.getDay()];
     return `<div class="bar-col" title="${d.t}：${d.n} 个学习动作">
-      <b style="font-size:.7rem;color:#5C6273">${d.n || ''}</b>
+      <b style="font-size:.7rem;color:#3F4658">${d.n || ''}</b>
       <i style="height:${Math.max(4, d.n / max * 100)}%"></i>
       <span>${wd}<br>${d2.getMonth() + 1}/${d2.getDate()}</span>
     </div>`;
@@ -351,7 +359,7 @@ renderSpeechDiag();
 
 /* 重置当前档案 */
 $('#resetBtn').addEventListener('click', function () {
-  askConfirm(`确定要清空当前档案 <b>${esc(Profiles.active().name)}</b> 的全部学习进度吗？<br><small style="color:#6B7280">此操作无法恢复。</small>`, function () {
+  askConfirm(`确定要清空当前档案 <b>${esc(Profiles.active().name)}</b> 的全部学习进度吗？<br><small style="color:#4A5162">此操作无法恢复。</small>`, function () {
     Store.resetActive();
     location.reload();
   });

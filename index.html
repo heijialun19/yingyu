@@ -27,30 +27,28 @@
 </script>
 <title>小鸟英语乐园 · 一年级英语启蒙</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=54" onerror="this.onerror=null;this.href='css/style.css?v=54&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=55" onerror="this.onerror=null;this.href='css/style.css?v=55&amp;retry=1'">
 <style>
-.hello-line{text-align:center;color:#5C6273;font-size:.9rem;margin:4px 0 14px}
+.hello-line{text-align:center;color:#3F4658;font-size:.9rem;margin:4px 0 14px}
 .hello-line b{color:var(--ink)}
-.hello-line a{color:#6B7280;text-decoration:underline dotted;cursor:pointer}
+.hello-line a{color:#4A5162;text-decoration:underline dotted;cursor:pointer}
 .main-card{text-align:center;padding:34px 20px 28px;cursor:pointer;transition:.18s;border-width:4px}
 .main-card:hover{transform:translateY(-4px)}
 /* 不用 filter：会把内联 SVG 画成空白 */
 .main-emoji{font-size:76px;line-height:1.15}
 .main-title{font-size:1.5rem;font-weight:800;margin:6px 0 2px}
-.main-sub{color:#5C6273;font-size:.92rem;margin-bottom:14px}
+.main-sub{color:#3F4658;font-size:.92rem;margin-bottom:14px}
 .main-progress{height:14px;background:#EEF3F8;border-radius:999px;overflow:hidden;max-width:320px;margin:0 auto 16px}
 .main-progress i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--mint),var(--lake));transition:.4s}
-.task-strip{display:flex;justify-content:center;gap:14px;margin:10px 0 4px;font-size:.82rem;color:#5C6273;flex-wrap:wrap}
+.task-strip{display:flex;justify-content:center;gap:14px;margin:10px 0 4px;font-size:.82rem;color:#3F4658;flex-wrap:wrap}
 .task-strip .tdone{color:#4E9E59;font-weight:700}
-.section-label{text-align:center;color:#6B7280;font-size:.8rem;margin:22px 0 10px;letter-spacing:2px}
+.section-label{text-align:center;color:#4A5162;font-size:.8rem;margin:22px 0 10px;letter-spacing:2px}
 .big-islands{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;max-width:760px;margin:0 auto}
 .big-island{background:#fff;border-radius:24px;border:3px solid var(--sky2);box-shadow:0 5px 0 rgba(45,49,66,.08);display:flex;flex-direction:column;align-items:center;gap:2px;padding:18px 8px 14px;cursor:pointer;transition:.15s;font:inherit;color:inherit;text-align:center;width:100%}
 .big-island:hover{transform:translateY(-5px);border-color:var(--lemon)}
 .big-island .bi-emoji{font-size:52px;line-height:1.1}
 .big-island b{font-size:1.05rem}
-.big-island small{color:#6B7280;font-size:.78rem}
-.foot-links{text-align:center;margin-top:26px;font-size:.78rem;color:#6B7280}
-.foot-links a{color:var(--ink2);margin:0 8px}
+.big-island small{color:#4A5162;font-size:.78rem}
 .welcome-only{max-width:420px;margin:30px auto;text-align:center;padding:30px 24px}
 .avatar-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:12px 0}
 .avatar-chip{width:46px;height:46px;font-size:26px;border-radius:14px;cursor:pointer;background:#fff;border:3px solid #E8EAF0;transition:.13s}
@@ -63,15 +61,15 @@
 
 .phc-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 6px}
 .phc-head b{font-size:1.12rem}
-.phc-head small{color:#6B7280;font-size:.78rem}
-.phc-steps{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:.78rem;color:#5C6273;margin:2px 0 12px}
+.phc-head small{color:#4A5162;font-size:.78rem}
+.phc-steps{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:.78rem;color:#3F4658;margin:2px 0 12px}
 .phc-steps span{background:#F5F6FA;border-radius:999px;padding:5px 11px;font-weight:700}
 .phc-chips{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:4px 0 14px}
 .phc-chip{width:56px;padding:7px 0 5px;border-radius:15px;border:3px solid var(--sky2,#B9E2FA);background:#fff;
   font-family:inherit;cursor:pointer;transition:.13s;line-height:1.15}
 .phc-chip:hover{transform:translateY(-3px);border-color:var(--lemon)}
 .phc-chip b{font-size:1.12rem;color:var(--ink)}
-.phc-chip small{display:block;font-size:.69rem;color:#636A76;font-weight:700}
+.phc-chip small{display:block;font-size:.72rem;color:#636A76;font-weight:700}
 .phc-chip.blk{border-color:var(--grape);background:#F8F5FF}
 .phc-cta{display:flex;justify-content:center}
 </style>
@@ -79,7 +77,7 @@
 <body>
   <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
     <div style="font-size:52px">🐤</div>
-    <div style="font-size:.9rem;color:#5C6273;font-weight:700">加载中，请稍等…</div>
+    <div style="font-size:.9rem;color:#3F4658;font-weight:700">加载中，请稍等…</div>
   </div>
   <!-- D2：首页原本一进 body 就是脚本，搜索引擎拿到的是空壳。
        给不执行 JS 的爬虫 / 关了 JS 的家长一份真实静态摘要。
@@ -104,7 +102,7 @@
   </noscript>
 
 <main style="max-width:720px">
-  <div id="bootPlaceholder" class="card" style="max-width:560px;margin:22px auto;text-align:center;padding:26px 18px"><div style="font-size:34px">🐤</div><p style="color:#6B7280;font-size:.9rem;margin:8px 0 0">正在打开，请稍等…</p></div>
+  <div id="bootPlaceholder" class="card" style="max-width:560px;margin:22px auto;text-align:center;padding:26px 18px"><div style="font-size:34px">🐤</div><p style="color:#4A5162;font-size:.9rem;margin:8px 0 0">正在打开，请稍等…</p></div>
   <!-- 语义标题：视觉上不需要（孩子看的是图），但读屏器和搜索引擎需要一个 h1 -->
   <h1 class="sr-only">小鸟英语乐园 —— 小学英语单词、句子与发音练习</h1>
   <section id="welcome" style="display:none">
@@ -115,7 +113,7 @@
       <div class="avatar-grid" id="introAvatars"></div>
       <div class="mini-grade" id="introGrade"></div>
       <button class="btn grape big" style="width:100%" onclick="saveIntro()">🚀 开始学习！</button>
-      <small style="display:block;color:#6B7280;margin-top:10px">进度保存在这台电脑上，随时可备份</small>
+      <small style="display:block;color:#4A5162;margin-top:10px">进度保存在这台电脑上，随时可备份</small>
     </div>
   </section>
 
@@ -132,7 +130,7 @@
     <div id="gsFlowCard" style="display:none;margin-top:14px"></div>
     <div class="review-banner" id="reviewBanner" style="display:none">
       <div style="font-size:34px">🔔</div>
-      <div style="flex:1;min-width:180px"><b>有单词到复习时间啦</b><div style="font-size:.8rem;color:#5C6273" id="revText"></div></div>
+      <div style="flex:1;min-width:180px"><b>有单词到复习时间啦</b><div style="font-size:.8rem;color:#3F4658" id="revText"></div></div>
       <button class="btn coral" onclick="location.href='words.html?mode=review'">去复习</button>
     </div>
     <div class="section-label">—— 🔤 自然拼读 · 见词能读 ——</div>
@@ -150,8 +148,8 @@
      所以不引 246KB 的 svg/word-svg.js。没图时会自动回退到表情 SVG，
      真要画词卡的页面（单词镇/课本/学堂/游戏/字母岛/语法）都还在引。 -->
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=156"></script>
-<script src="js/phonics.js?v=8"></script>
+<script src="js/app.js?v=157"></script>
+<script src="js/phonics.js?v=9"></script>
 <script defer src="js/audio-list.js?v=9"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/getsmart-data.js?v=17"></script>
@@ -246,7 +244,7 @@ function showHome() {
       fc.innerHTML = `<div class="gs-catch" style="cursor:pointer" onclick="location.href='getsmart.html?flow=1'">
         <span style="font-size:30px">🚀</span>
         <div style="flex:1"><b>今天学什么？${head}</b>
-        <div style="font-size:.8rem;color:#5C6273">${parts.join(' · ')}</div></div>
+        <div style="font-size:.8rem;color:#3F4658">${parts.join(' · ')}</div></div>
         <button class="btn grape">开始 ▶</button></div>`;
     } catch (e) {}
   }

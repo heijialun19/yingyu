@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-15.1';
+const BUILD = '2026-11-15.2';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -317,7 +317,7 @@ function restTip(msg) {
       <div class="modal card" style="text-align:center;max-width:420px">
         <div style="font-size:60px">🌿</div>
         <h2 style="justify-content:center">休息一下吧！</h2>
-        <p style="color:#5C6273;font-size:.95rem;line-height:1.9;margin:8px 0 16px">${msg}</p>
+        <p style="color:#3F4658;font-size:.95rem;line-height:1.9;margin:8px 0 16px">${msg}</p>
         <button class="btn mint big" style="width:100%" onclick="closeRestTip()">好的 ☀️</button>
       </div>
     </div>`);
@@ -2195,7 +2195,7 @@ function openProfileModal() {
       <span class="pa">${x.avatar}</span>
       <div style="flex:1;min-width:0">
         <b>${esc(x.name)}${x.id === p.id ? ' <small style="color:#4E9E59">（当前）</small>' : ''}</b>
-        <small style="display:block;color:#5C6273">${x.grade ? GRADES.find(g => g.id === x.grade) ? GRADES.find(g => g.id === x.grade).name : '' : '未设年级'} · ${x.created ? new Date(x.created).toLocaleDateString() : ''}</small>
+        <small style="display:block;color:#3F4658">${x.grade ? GRADES.find(g => g.id === x.grade) ? GRADES.find(g => g.id === x.grade).name : '' : '未设年级'} · ${x.created ? new Date(x.created).toLocaleDateString() : ''}</small>
       </div>
       ${x.id === p.id ? '' : `<button class="btn mint" style="padding:6px 14px;font-size:.8rem" onclick="switchProfile('${x.id}')">🔄 切换</button>`}
       ${Profiles.meta.list.length > 1 ? `<button class="btn coral" style="padding:6px 12px;font-size:.8rem" onclick="removeProfile('${x.id}')">🗑️</button>` : ''}
@@ -2204,21 +2204,21 @@ function openProfileModal() {
     <div class="modal-mask" id="profileMask" onclick="if(event.target===this)closeProfileModal()">
       <div class="modal card">
         <h2>👤 小伙伴档案</h2>
-        <p style="font-size:.8rem;color:#5C6273;margin:4px 0 10px">一台电脑可以有多个小朋友，每人一份独立进度，互不打扰！</p>
+        <p style="font-size:.8rem;color:#3F4658;margin:4px 0 10px">一台电脑可以有多个小朋友，每人一份独立进度，互不打扰！</p>
         <div class="profile-list">${rows}</div>
         <div style="margin-top:14px" data-avatar-target="profile">
           <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
             <b style="font-size:.95rem">🖼️ 换个头像</b>
-            <small style="color:#5C6273">现在是 <span id="curAvatarEcho">${p.avatar}</span> · ⭐ 当前 <b>${Store.d.stars}</b> 颗</small>
+            <small style="color:#3F4658">现在是 <span id="curAvatarEcho">${p.avatar}</span> · ⭐ 当前 <b>${Store.d.stars}</b> 颗</small>
           </div>
-          <small style="display:block;color:#5C6273;margin:4px 0 8px">点一下就换好。带 🔒 的用星星解锁，解锁后永久有效。</small>
+          <small style="display:block;color:#3F4658;margin:4px 0 8px">点一下就换好。带 🔒 的用星星解锁，解锁后永久有效。</small>
           <div class="avatar-grid">${AVATARS.map(a => avatarChipHtml(a, a === p.avatar)).join('')}</div>
         </div>
         <div style="display:flex;gap:8px;margin-top:12px">
           <button class="btn ghost" style="flex:1" onclick="toggleSoundQuick();this.textContent=Store.d.soundOn?'🔊 声音：开':'🔇 声音：关'">🔊 声音：${Store.d.soundOn ? '开' : '关'}</button>
           <button class="btn mint" style="flex:1" onclick="testSound()">🎵 测试声音</button>
         </div>
-        <p style="font-size:.72rem;color:#5C6273;margin:8px 0 0;text-align:center">没听到声音？点「测试声音」检查设备音量键 🔊</p>
+        <p style="font-size:.72rem;color:#3F4658;margin:8px 0 0;text-align:center">没听到声音？点「测试声音」检查设备音量键 🔊</p>
         <details class="profile-tool">
           <summary>🔧 修改当前档案的年级</summary>
           <div class="theme-tabs" style="margin-top:10px">
@@ -2230,7 +2230,7 @@ function openProfileModal() {
           <summary>➕ 新建一个档案</summary>
           <div style="margin-top:10px">
             <input id="newName" type="text" placeholder="小伙伴的名字" maxlength="10" style="width:100%;padding:10px 14px;border:3px solid var(--lemon);border-radius:14px;font-family:inherit;font-size:.95rem">
-            <small style="display:block;color:#5C6273;margin-top:8px">⭐ 当前有 <b>${Store.d.stars}</b> 颗星星 · 带 🔒 的头像用星星解锁，永久有效</small>
+            <small style="display:block;color:#3F4658;margin-top:8px">⭐ 当前有 <b>${Store.d.stars}</b> 颗星星 · 带 🔒 的头像用星星解锁，永久有效</small>
             <div class="avatar-grid" style="margin-top:8px" data-avatar-target="new">
               ${AVATARS.map(a => avatarChipHtml(a, false)).join('')}
             </div>
@@ -2243,7 +2243,7 @@ function openProfileModal() {
         <details class="profile-tool">
           <summary>💾 备份与同步（换电脑、防丢失）</summary>
           <div style="margin-top:10px">
-            <p style="font-size:.78rem;color:#5C6273;margin:0 0 10px;line-height:1.6">
+            <p style="font-size:.78rem;color:#3F4658;margin:0 0 10px;line-height:1.6">
               点「导出进度」会同时给你两样东西：<b>一段短码</b>（发微信/短信到另一台设备）和
               <b>一个备份文件</b>（下载存档防丢）。到了新设备，粘贴短码或选备份文件都能恢复。
             </p>
@@ -2257,7 +2257,7 @@ function openProfileModal() {
               <button class="btn grape" onclick="importFromSyncCode()">📥 粘贴短码恢复</button>
               <button class="btn orange" onclick="document.getElementById('importFile').click()">📂 选择备份文件恢复</button>
             </div>
-            <p style="font-size:.7rem;color:#6B7280;margin:8px 0 0">🔒 进度只存在你自己的浏览器里，不上传任何服务器。短码经微信/短信发送时，传输安全由该渠道负责。恢复会新建一个档案，不会覆盖现有进度。</p>
+            <p style="font-size:.7rem;color:#4A5162;margin:8px 0 0">🔒 进度只存在你自己的浏览器里，不上传任何服务器。短码经微信/短信发送时，传输安全由该渠道负责。恢复会新建一个档案，不会覆盖现有进度。</p>
           </div>
         </details>
         <button class="btn ghost" style="margin-top:14px;width:100%" onclick="closeProfileModal()">关闭</button>
@@ -2322,7 +2322,7 @@ function avatarTap(btn) {
     toast(`🎈 解锁 ${a} 需要 ${price} 颗星星，还差 ${price - Store.d.stars} 颗，继续加油！`);
     return;
   }
-  askConfirm(`用 <b>${price}</b> 颗星星解锁头像 ${a} 吗？<br><small style="color:#6B7280">解锁后永久有效，马上就能用上。</small>`, function () {
+  askConfirm(`用 <b>${price}</b> 颗星星解锁头像 ${a} 吗？<br><small style="color:#4A5162">解锁后永久有效，马上就能用上。</small>`, function () {
     Store.d.stars -= price;
     Store.d.unlocked = Store.d.unlocked || {};
     Store.d.unlocked[a] = true;
@@ -2355,7 +2355,7 @@ function pickAvatar(btn) { applyAvatar(btn.dataset.a, 'new', btn); }   /* 兼容
 function switchProfile(id) { Profiles.switchTo(id); location.reload(); }
 function removeProfile(id) {
   const p = Profiles.meta.list.find(x => x.id === id);
-  askConfirm(`确定删除档案 <b>${esc(p ? p.name : '')}</b> 吗？<br><small style="color:#6B7280">它的全部学习进度将无法恢复。</small>`, function () {
+  askConfirm(`确定删除档案 <b>${esc(p ? p.name : '')}</b> 吗？<br><small style="color:#4A5162">它的全部学习进度将无法恢复。</small>`, function () {
     if (Profiles.remove(id)) location.reload();
   });
 }
@@ -2595,7 +2595,7 @@ function prewarmBatch(list, gap) {
     const msg = kind === 'slow'
       ? '网络有点慢，内容还在路上…<br><span style="font-size:.82rem">可以先点下面重试，或者等一下下～</span>'
       : '内容没能加载出来，检查网络后重试一下～';
-    ph.innerHTML = '<p style="color:#5C6273;font-size:.9rem;line-height:1.6">' + msg + '</p>'
+    ph.innerHTML = '<p style="color:#3F4658;font-size:.9rem;line-height:1.6">' + msg + '</p>'
       + '<button class="btn" style="margin-top:10px" onclick="location.reload()">🔄 点这里重试</button>';
   };
   window.addEventListener('error', e => {

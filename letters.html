@@ -18,20 +18,28 @@
 <title>字母岛 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/letters.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=54" onerror="this.onerror=null;this.href='css/style.css?v=54&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=55" onerror="this.onerror=null;this.href='css/style.css?v=55&amp;retry=1'">
 </head>
 <!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
 <body data-emoji="full">
 <noscript>
   <section class="card" style="margin-top:18px">
-    <h2>🏝️ 字母岛（不依赖脚本）</h2>
-    <p>26 个字母的象形小故事、字母名与字母音、大小写与例词，配站内离线发音。
-    适合刚开始学英语的孩子，学完可接着去「自然拼读课」练见词能读。</p>
+    <h2>🏝️ 字母岛 · 26 个字母（不依赖脚本）</h2>
+    <p>每个字母都有象形小故事、字母名（A 读 /eɪ/）与字母音（a 读 /æ/）、大小写和例词。
+    红色 a e i o u 是会唱歌的元音，其余是辅音。点字母卡可听站内离线发音。</p>
+    <p style="line-height:2"><b>A</b> apple 苹果 · <b>B</b> ball 球 · <b>C</b> cat 小猫 ·
+    <b>D</b> down 向下 · <b>E</b> egg 鸡蛋 · <b>F</b> finger 手指 · <b>G</b> girl 女孩 ·
+    <b>H</b> hat 帽子 · <b>I</b> in 在里面 · <b>J</b> jump 跳 · <b>K</b> kick 踢 ·
+    <b>L</b> leg 腿 · <b>M</b> mountain 大山 · <b>N</b> no 不 · <b>O</b> octopus 章鱼 ·
+    <b>P</b> paper 纸 · <b>Q</b> queen 女王 · <b>R</b> run 跑 · <b>S</b> sun 太阳 ·
+    <b>T</b> talk 说话 · <b>U</b> up 向上 · <b>V</b> van 面包车 · <b>W</b> water 水 ·
+    <b>X</b> X-ray X 光 · <b>Y</b> yes 是的 · <b>Z</b> zoo 动物园。</p>
+    <p>学完字母音，去「自然拼读课」从 L1 开始练见词能读。</p>
   </section>
 </noscript>
   <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
     <div style="font-size:52px">🐤</div>
-    <div style="font-size:.9rem;color:#5C6273;font-weight:700">加载中，请稍等…</div>
+    <div style="font-size:.9rem;color:#3F4658;font-weight:700">加载中，请稍等…</div>
   </div>
 <main>
   <div class="page-title">
@@ -64,18 +72,18 @@
   <section class="section">
     <div class="letter-stage" id="letterStage"></div>
   </section>
-<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#6B7280">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
+<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#4A5162">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=46"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=156"></script>
+<script src="js/app.js?v=157"></script>
 <script defer src="js/audio-list.js?v=9"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>
 renderNav('letters'); renderDecor();
 function skipLetters() {
-  askConfirm('确认：把 26 个字母都标记为已学会？<br><small style="color:#6B7280">以后直接从单词开始。</small>', function () {
+  askConfirm('确认：把 26 个字母都标记为已学会？<br><small style="color:#4A5162">以后直接从单词开始。</small>', function () {
     markAllLettersKnown();
     setTimeout(() => location.href = 'words.html', 800);
   });
@@ -149,7 +157,7 @@ function renderStage(speakIt) {
           🎵 拼读小口诀：<b>${l.L} 的名字读 "${l.nameEn}"</b>，
           它在单词里发 <b>${l.szh}</b> 的音——
           ${l.tipSame ? l.tipSame : `点 <b>📢 字母音</b> 听它自己的音，再听 <b>${l.words[0].w}</b> ${wordIcon(l.words[0])} 的开头，是同一个音。`}
-          <span style="color:#5C6273;display:block;margin-top:4px">（点上方按钮听发音，想多听几遍就多点几次）</span>
+          <span style="color:#3F4658;display:block;margin-top:4px">（点上方按钮听发音，想多听几遍就多点几次）</span>
         </div>
       </div>
       ${l.py ? `<div class="py-note">🌉 <b>拼音小桥梁：</b>${l.py}</div>` : ''}
@@ -181,7 +189,7 @@ function renderStage(speakIt) {
         ${cur < LETTERS.length - 1 ? `<button class="btn orange big" onclick="nextAfterLearn()">下一个字母 ▶</button>` : `<button class="btn orange big" onclick="location.href='words.html'">去单词镇 →</button>`}
       </div>
 
-      <p style="color:#5C6273;font-size:.78rem;margin-top:10px">💡 小提示：点单词卡片可以听发音；红色 a e i o u 是"歌手"，蓝色辅音是"画家"。</p>
+      <p style="color:#3F4658;font-size:.78rem;margin-top:10px">💡 小提示：点单词卡片可以听发音；红色 a e i o u 是"歌手"，蓝色辅音是"画家"。</p>
     </div>`;
   if (speakIt) sayName(); // 只有用户点击切换时才朗读；首次打开页面保持安静
   // 预拉取本字母的三段音频（字母名 / 字母音 / 代表词），用户一点就秒响
