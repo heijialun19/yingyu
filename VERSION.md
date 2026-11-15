@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v158 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v159 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/books-data.js | v3 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
 | js/phonics.js | v9 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
@@ -38,7 +38,7 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v217 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v218 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
 
 ## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
@@ -77,6 +77,41 @@
 版本链：SENTENCE_VER 5→6、PHRASE_VER 3→4、app v154→v155、CACHE v213→v214、
 BUILD 2026-11-14.18→.19，11 个正式页与 SW CORE/BOOT 同步。AUDIO_VER / WEAK_VER /
 PHONICS_VER 零改动，2912 条单词与母语者字母音字节不动。
+
+## 2026-11-15.4 · 换声线（ljspeech 公有领域女声）
+
+**为什么换。** 前一版把码率 64k→128k、留 2dB 余量，家长反馈仍有「沙沙/啫啫」。
+这轮做声源级排查：
+
+| 声音 | 开口前底噪 | 谱平坦度 | 结论 |
+|---|---|---|---|
+| libritts #381（旧） | −48dB | 0.0014 | LibriVox 志愿者录音，房间底噪被学进模型 |
+| ljspeech-medium（新） | 无前导静音；句内 −70.3dB | 0.0010 | 公有领域录音室语料 |
+
+噪声在**声源**里，不在编码里——所以提升码率治不好。另测 18 个 libritts 说话人
+（音高 97–235Hz），底噪全部落在 −43~−58dB，换说话人无用，必须换语料。
+
+**一次未采用的尝试（记录备查）。** 先做过 lessac（开口前 −85dB，四个候选里最干净），
+3983 条已全部合成完毕；随后核授权发现其训练数据 Blizzard 2013 Lessac 为
+「RESEARCH LICENCE AGREEMENT / exclusively for Research Purposes only」，
+第 7 条禁止 distribute——本站音频公开发布属分发，**整批作废并回滚**，未上线。
+同时排除：ryan（CC BY-NC-SA 非商业）、joe（从 lessac 微调，继承限制）。
+
+**最终选择。** en_US-ljspeech-medium，**公有领域**（LJSpeech），可自由公开发布。
+句内底噪 −70.3dB，比原来的 −65.6dB 更干净；语速沿用家长确认的 1.1 原速。
+
+**重做范围与处理。** 3983 条全部重新合成：整句 934 · 词块 137 · 单词 2912。
+
+- 统一 ljspeech-medium / length_scale 1.1 / 22050 / mono / 128kbps / 峰值 −2dBFS
+- **ljspeech 没有前导静音**（第 0 个采样就是语音）→ 绝不裁头；
+  改为开头补 15ms 静音、8ms 淡入落在补的静音上，起首辅音既不爆音也不被削
+- 尾部固定 200ms 纯静音 → 裁到 60ms（单词）/ 100ms（句子、词块）
+- 文本：整句 934 条全部有权威原文（站点 JS 850 + 批次清单 84）；词块 95 条简单短语
+  由 slug 反推并做缩写还原（`you_can_t → you can't`）；单词 1052 条原文命中
+
+**版本链。** SENTENCE_VER 7→8 / PHRASE_VER 5→6 / AUDIO_VER 5→6 /
+AUDIO_CACHE v6→v7（换名后旧缓存自动删）/ CACHE v218 / app v159 / BUILD .15.4。
+39 个母语者音素块、weak_a / weak_an（0.2s schwa）不动。
 
 ## 2026-11-15.3 · 音频音质 + 句子火车员病句
 

@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-15.3';
+const BUILD = '2026-11-15.4';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -543,7 +543,13 @@ function renderGradePicker(sel) {
    单词/整句/词块三类一起换，各自版本号 +1；字母音是母语者录音，不动。 */
 /* ★ 2026-11-09.8：只修 pep.html 拼词复习的泄底，音频零改动，
    所以 AUDIO_VER / SENTENCE_VER / PHRASE_VER 都不动。 */
-const AUDIO_VER = 5;
+/* ★ 2026-11-15.4 v6：换声线 libritts(381) → **en_US-ljspeech-medium**。
+   原因：LibriTTS 训练于 LibriVox 志愿者录音，房间底噪被模型学进去（开口前 -48dB），
+   换码率治不好。曾试 lessac（-85dB 最干净），但它是 Blizzard 2013 研究许可
+   （"exclusively for Research Purposes only"、禁止 distribute），不能公开发布，
+   已作废。最终选 ljspeech：**公有领域（LJSpeech）**，句内底噪 -70.3dB 优于原 -65.6dB。
+   音素块仍是母语者录音，WEAK_VER 不动（0.2s schwa，音色差异不可辨）。 */
+const AUDIO_VER = 6;
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
    有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
@@ -617,8 +623,11 @@ __registerAudioList();          /* audio-list.js 比 app.js 先执行时直接�
    根因是 64k 的 4-10kHz 编解码误差余量仅 ~10dB（量化噪声骑在摩擦音与高次谐波上）；
    128k 后余量 ~26dB（实测 +14~16dB）。934 条字节全变，必须升版本——老用户按需
    重下（预取每页最多 24 条、低优先级，不是一次性全量 20MB）。词音频 96k 不动，
-   AUDIO_VER 不升；本条只影响 audio/sentences/。 */
-const SENTENCE_VER = 7;
+   AUDIO_VER 不升；本条只影响 audio/sentences/。
+   ★ 2026-11-15.4 v8：换声线 libritts → ljspeech-medium（公有领域）。934 条全部重新
+   合成，句内底噪 -65.6 → -70.3dB。ljspeech 无前导静音（第 0 采样即语音），
+   故不裁头、改为补 15ms 静音后 8ms 淡入，避免起首辅音爆音或被削。 */
+const SENTENCE_VER = 8;
 const SENTENCE_AUDIO = new Set([
   "a_bee_is_in_the_tree", "a_big_day_for_my_duck_and_pig", "a_big_fish_a_big_fish", "a_bird_is_on_the_car", "a_cake_on_a_plate", "a_car_is_on_the_farm",
   "a_cat_a_hat", "a_cheetah_can_run_fast", "a_chick_is_on_the_duck", "a_crab_a_crab", "a_dish_on_the_ship", "a_duck_and_a_pig",
@@ -793,7 +802,7 @@ const sentenceAudioURL = t => {
    ★ PHRASE_VER 独立于 AUDIO_VER / SENTENCE_VER，重做词块只升它。
    2026-11-14.19 v4：137 条 64kbps → 128kbps 重编（同整句降噪，词块是
    整句缺失时的连读兜底，码率必须与整句同规格才没有音质断层）。 */
-const PHRASE_VER = 5;
+const PHRASE_VER = 6;
 const PHRASE_AUDIO = new Set([
   "a_boy","a_girl","are_these","are_they","birds_fly","can_he",
   "can_i","can_she","can_they","can_you","did_you","do_you",
