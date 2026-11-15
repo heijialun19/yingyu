@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-15.6",
-  "note": "2026-11-15.6 读书馆扩容：15 本 → 100 本。新增 85 本原创分级拼读小书（b16-b100），8 个级别各 12-13 本：L2 短元音 · L3 双辅音 · L4 连缀 · L5 元音组合 · L6 魔法 e · L7 卷舌音 · L8 视觉词扩展 · L9 综合收官。每本 6-7 页、4-25 个不重复词、生词表带中文、读后 3 题。全部通过可解码校验（每词可用该级音素切分，或显式声明为视觉词）。新增 505 条整句音频（ljspeech-medium 1.1 速 128kbps）。SENTENCE_VER 保持 8——新增 slug 无缓存，老用户只下新句子，不重下已有 934 条。app v161 / CACHE v220 / books-data v4 / BUILD .15.6。"
+  "build": "2026-11-15.7",
+  "note": "2026-11-15.7 读书馆全量内容审查：通读 100 本，修 15 处真错误 + 打散答案位置。题意不符 4（b52 正文 zebra 但配图题干还是长颈鹿 / b68 蛋糕答成面包 / b73 正文改成 third girl 但题干问第几排 / b77 正文 park 但答案车棚）；语法 5（So much chip / Them fish / a nest in a branch / rope is on the go / goat and train in the rain 缺谓语）；常识 6（火车开马路 / 儿歌 go again / 答非所问 too green / 蛋糕浮湖上 / 床不高兴 / 戒指不高兴）。另修正题干无正文支撑 3 处（b36/b59/b95）。答案位置原来 271/300 在 A 位（90%，孩子只点第一个就能全对），现打散为 93/106/101。b37 标题 Milk on the Glass → Milk on the Desk。19 条正文改动全部重新合成音频（ljspeech 1.1 / 128k / -2dB）。app v161 / CACHE v220 / BUILD .15.7。"
 }

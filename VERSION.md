@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v161 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v162 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/books-data.js | v3 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
 | js/phonics.js | v9 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
@@ -38,7 +38,7 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v220 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v221 | Service Worker（音频缓存 birdie-audio-v7 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
 
 ## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
@@ -77,6 +77,29 @@
 版本链：SENTENCE_VER 5→6、PHRASE_VER 3→4、app v154→v155、CACHE v213→v214、
 BUILD 2026-11-14.18→.19，11 个正式页与 SW CORE/BOOT 同步。AUDIO_VER / WEAK_VER /
 PHONICS_VER 零改动，2912 条单词与母语者字母音字节不动。
+
+## 2026-11-15.7 · 读书馆 100 本内容审查
+
+通读全部 100 本后发现 15 处真错误，全部落在**自动校验的盲区**里
+（校验器只查「可解码 / 音素可拼 / 结构自洽」，查不出题意与语法）：
+
+| 类型 | 数量 | 例子 |
+|---|---|---|
+| 题意与正文不符 | 4 | b52 正文 `zebra` 但配图与题干是长颈鹿；b68 正文 `my cake` 而答案写「面包」；b73 正文 `the third girl` 而题干问「第几排」；b77 正文 `in the park` 而答案「车棚里」 |
+| 语法错误 | 5 | `So much chip!` → `Chips! Chips! Chips!`；`Them fish wish to swim!` → `The fish wish…`；`A nest in a branch.` → `on a branch`；`The rope is on the go.` → `The rope moves!`；`The goat and the train in the rain.`（缺谓语）→ `The goat waits in the rain.` |
+| 常识 / 逻辑 | 6 | 火车开在马路上 → `on the track`；儿歌 `go again` → `we are on the train`；`No. It is too green!` 答非所问 → `I am too sleepy!`；蛋糕浮在湖上 → `by the lake`；`The bed is not glad!` → `The bed is flat!`；`The ring is not glad.` → `The king is asleep!` |
+| 题干无正文支撑 | 3 | b36 问「小羊在吃什么」而正文只说 `on the grass`；b59 答案「狗嘴里叼回家」正文没写；b95 问「每天」正文没写 |
+
+其中 4 处是**上一轮为规避超纲词改正文时改坏的对齐**（giraffe→zebra、bread→cake、
+third row→third girl），题干没跟着改——这是「只跑机器校验、不通读」的代价。
+
+**答案位置**：300 道题原本 **271 道（90%）正确答案在 A 位**，孩子只点第一个就能全对。
+已用固定种子打散为 93 / 106 / 101。
+
+19 条改动页全部重新合成整句音频（ljspeech-medium 1.1 / 128kbps / −2dB），
+`SENTENCE_AUDIO` 同步删旧加新（1439 条不变，老用户只重下这 19 条）。
+b37 标题 `Milk on the Glass` → `Milk on the Desk`（内容其实是洒在桌上）。
+app v162 / CACHE v221 / BUILD .15.7。
 
 ## 2026-11-15.6 · 读书馆扩容 15 → 100 本
 
