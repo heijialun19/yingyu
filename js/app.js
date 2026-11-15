@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-15.4';
+const BUILD = '2026-11-15.5';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -550,6 +550,10 @@ function renderGradePicker(sel) {
    已作废。最终选 ljspeech：**公有领域（LJSpeech）**，句内底噪 -70.3dB 优于原 -65.6dB。
    音素块仍是母语者录音，WEAK_VER 不动（0.2s schwa，音色差异不可辨）。 */
 const AUDIO_VER = 6;
+/* 2026-11-15.5：个别词的发音单独重修过（pe 原来只读 "P"；with 孤立发音只有 0.174s）。
+   用 &f=1 只让这几个文件失效——不动 AUDIO_VER，否则 2912 个词全部重下。 */
+const AUDIO_FIX = new Set(['pe', 'with']);
+const __audioFixQS = k => (AUDIO_FIX.has(k) ? '&f=1' : '');
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
    有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
@@ -852,12 +856,12 @@ const localAudioURL = t => {
   const phrase = phraseAudioURL(t);
   if (phrase) return phrase;
   if (!__LOCAL_AUDIO.has(k)) __registerGSAudio();
-  if (__LOCAL_AUDIO.has(k)) return `audio/${k}.mp3?v=${AUDIO_VER}`;
+  if (__LOCAL_AUDIO.has(k)) return `audio/${k}.mp3?v=${AUDIO_VER}${__audioFixQS(k)}`;
   /* 清单还没落地（首访的几十毫秒窗口）：单个词先按「本地应该有」试一次。
      真有文件的当场响，真没有的 404 之后才走兜底语音，反正比现在更慢的情况不存在。
      带空格的短语不做这个乐观判断——那会把整句朗读引到 404 上，
      该走逐词接龙的还是走逐词接龙。 */
-  if (!__audioListReady && !/\s/.test(String(t))) return `audio/${k}.mp3?v=${AUDIO_VER}`;
+  if (!__audioListReady && !/\s/.test(String(t))) return `audio/${k}.mp3?v=${AUDIO_VER}${__audioFixQS(k)}`;
   return '';
 };
 /* 音源：只认站内自有 mp3，一个外部 URL 都不产生。

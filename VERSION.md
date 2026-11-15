@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v159 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v160 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/books-data.js | v3 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
 | js/phonics.js | v9 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
@@ -38,7 +38,7 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v218 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v219 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
 
 ## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
@@ -77,6 +77,29 @@
 版本链：SENTENCE_VER 5→6、PHRASE_VER 3→4、app v154→v155、CACHE v213→v214、
 BUILD 2026-11-14.18→.19，11 个正式页与 SW CORE/BOOT 同步。AUDIO_VER / WEAK_VER /
 PHONICS_VER 零改动，2912 条单词与母语者字母音字节不动。
+
+## 2026-11-15.5 · 单词发音修复（pe / with）
+
+换声线后做了一次全量内容审查，命中两个真问题，均**非本次换声线引入**（旧版同样存在，pe 旧版更短）：
+
+| 词 | 问题 | 证据 | 修法 |
+|---|---|---|---|
+| `pe` | 只读了字母 **P** | ASR 转写为 "P."（0.44s）；旧版 0.25s 更短 | 合成文本改为 `P E`，ASR 复验为 "PE"（0.745s） |
+| `with` | 孤立发音仅 **0.174s** | ASR 完全识别不出（转写为 "TR"）；4 种模型/语速组合都识别失败 | 放慢到 1.5 倍 → 0.292s，接近旧版 0.268s |
+
+`with` 在**句中完全正常**：`I play with my friends.` / `She goes to school with her brother.` /
+`Please come with me.` 三句 ASR 全部精确识别，所以读句子与读本不受影响，只有单词镇单独点它偏短。
+
+**只失效这 2 个文件**：URL 追加 `&f=1`（`AUDIO_FIX` 集合），`AUDIO_VER` 保持 6，
+不触发 2912 个词重下。app v160 / CACHE v219 / BUILD .15.5。
+
+同时完成的全量审查（结果见下）：
+- 音频覆盖：单词 2912/2912、整句 934/934、词块 137/137，**零缺失、零多余、无异常小文件**
+- 整句时长：934 条**零离群**（按「秒/词」中位 0.350 判定）
+- 单词时长：2881 条正常，仅 7 条显著偏短，其中 `the`/`what`/`cook` 属正常短词
+- 同形异音词 13 个（read/live/use/close/present/subject/minute/wind/tear/house/desert/excuse 等），
+  词库释义均为最常见义项，时长正常、未拼字母
+- 缩写 13 个：`mr → Mister`、`dr → Doctor`、`ok → Okay`、`tv/uk/usa` 读字母，均正确
 
 ## 2026-11-15.4 · 换声线（ljspeech 公有领域女声）
 
