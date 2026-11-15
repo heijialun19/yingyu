@@ -1,7 +1,7 @@
 /* ============================================================
    小鸟英语乐园 · 读书馆（分级拼读小书）
    2026-11-14.16 新增，2026-11-15.1 第三轮复检修订（B1 Q1 题干、b13 视觉词 me、复数标注）。
-   对标 Starfall Learn to Read（15 本序列拼读书）
+   对标 Starfall Learn to Read 与 Bob Books（2026-11-15.6 扩至 100 本）
    与 Bob Books（每本 8-25 个不重复词、极简句式、幽默收尾）：
 
    编写铁律（_check_books.py 强制校验）：
@@ -11,9 +11,9 @@
    ② 每页 1-2 个短句，全书重复句式 + 一个荒诞小笑点收尾；
    ③ 生词量 8-25，生词表带中文；读后 3 道理解题（中文提问）。
 
-   级别映射：B1-B5=L2 短元音 · B6-B7=L3 双辅音 · B8=L4 连缀
-             B9-B10=L5 元音组合 · B11=L6 魔法 e · B12=L7 卷舌音
-             B13=L8 视觉词 · B14-B15=L9 综合收官
+   级别映射（100 本）：L2 短元音 · L3 双辅音 sh/ch/th/ck/ng · L4 连缀
+             L5 元音组合 ee/oo/ai/ay/oa · L6 魔法 e · L7 卷舌音 ar/or/ir
+             L8 视觉词扩展 · L9 综合收官；每级 12-13 本，逐级递进
    ============================================================ */
 'use strict';
 
@@ -368,6 +368,2180 @@ const BOOKS = [
       { q: '“I can read” 是什么意思？', opts: ['我会唱歌', '我会读书', '我会跑'], a: 1 },
       { q: '故事里提到了哪些动物？', opts: ['只有猫', '狗和马', '猫、母鸡、猪、青蛙、螃蟹、蜜蜂'], a: 2 },
       { q: '蜜蜂会读书吗？', opts: ['不会', '会', '故事里没说'], a: 0 }
+    ]
+  },
+  {
+    id: 'b16', lv: 'L2', tag: '短元音 a', title: 'The Sad Cat', zh: '难过的小猫',
+    emoji: '😿', color: '#8FB8DE',
+    sight: ['the', 'a', 'is', 'my', 'and', 'it', 'I', 'am'],
+    newWords: [
+      { w: 'sad', zh: '难过的' },
+      { w: 'wet', zh: '湿的' },
+      { w: 'lap', zh: '大腿（坐着时）' },
+      { w: 'nap', zh: '小睡' },
+      { w: 'mad', zh: '生气的' },
+      { w: 'Dad', zh: '爸爸' }
+    ],
+    pages: [
+      { art: '😿', en: 'A sad cat.', zh: '一只难过的小猫。' },
+      { art: '🌧️😿', en: 'The cat is wet.', zh: '小猫淋湿了。' },
+      { art: '😿💧', en: 'The wet cat is sad.', zh: '湿透的小猫很难过。' },
+      { art: '🛋️😿', en: 'A nap on my lap.', zh: '在我腿上睡一觉吧。' },
+      { art: '😴🐱', en: 'The cat is on my lap.', zh: '小猫趴在我腿上睡着了。' },
+      { art: '😾💦', en: 'And I am wet!', zh: '结果我身上湿了一大片！' },
+      { art: '😤💦', en: 'Dad is wet. Dad is mad!', zh: '爸爸也湿了，爸爸生气了！' }
+    ],
+    quiz: [
+      { q: '小猫为什么难过？', opts: ['淋湿了', '太热了', '太饿了'], a: 0 },
+      { q: '小猫在哪儿睡觉？', opts: ['我的腿上', '帽子里', '垫子上'], a: 0 },
+      { q: '故事最后谁生气了？', opts: ['小猫', '我', '爸爸'], a: 2 }
+    ]
+  },
+  {
+    id: 'b17', lv: 'L2', tag: '短元音 e', title: 'Ten Men', zh: '十个人',
+    emoji: '👨‍👨‍👦', color: '#F0A868',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not'],
+    newWords: [
+      { w: 'men', zh: '男人（复数）' },
+      { w: 'ten', zh: '十' },
+      { w: 'pen', zh: '围栏' },
+      { w: 'hen', zh: '母鸡' },
+      { w: 'bed', zh: '床' },
+      { w: 'glad', zh: '高兴的' }
+    ],
+    pages: [
+      { art: '👨‍👨‍👦👨‍👨‍👦', en: 'Ten men. Ten men!', zh: '十个人。十个人！' },
+      { art: '👨🚧', en: 'The men are in a pen.', zh: '十个人挤在围栏里。' },
+      { art: '🐔👨', en: 'A hen is in the pen.', zh: '围栏里还有一只母鸡。' },
+      { art: '🐔😱', en: 'The hen is not glad.', zh: '母鸡一点也不高兴。' },
+      { art: '🛏️👨', en: 'Ten men on a bed!', zh: '十个人挤到一张床上！' },
+      { art: '💥🛏️', en: 'The bed is not glad!', zh: '床也不乐意了——塌了！' }
+    ],
+    quiz: [
+      { q: '围栏里挤了几个人？', opts: ['十个人', '两个人', '五个人'], a: 0 },
+      { q: '谁在围栏里不高兴？', opts: ['母鸡', '床', '男人'], a: 0 },
+      { q: '最后床怎么了？', opts: ['被压塌了', '飞走了', '变红了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b18', lv: 'L2', tag: '短元音 i', title: 'Dig a Pit', zh: '挖个坑',
+    emoji: '⛏️', color: '#C89F6D',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'no'],
+    newWords: [
+      { w: 'dig', zh: '挖' },
+      { w: 'pit', zh: '坑' },
+      { w: 'big', zh: '大的' },
+      { w: 'wig', zh: '假发' },
+      { w: 'kid', zh: '小孩' },
+      { w: 'sit', zh: '坐' }
+    ],
+    pages: [
+      { art: '⛏️👦', en: 'I can dig. Dig, dig!', zh: '我会挖。挖呀挖！' },
+      { art: '🕳️', en: 'A big pit!', zh: '一个大坑！' },
+      { art: '👦🕳️', en: 'I sit in the pit.', zh: '我坐在坑里。' },
+      { art: '🎩👦', en: 'A wig is in the pit.', zh: '坑里居然有顶假发。' },
+      { art: '👦🎩', en: 'The kid is in a wig!', zh: '小孩戴上了假发！' },
+      { art: '😄🕳️', en: 'A big pit is not sad.', zh: '大坑里一点也不无聊。' }
+    ],
+    quiz: [
+      { q: '小孩在挖什么？', opts: ['一个坑', '一棵树', '一条河'], a: 0 },
+      { q: '坑里有什么？', opts: ['一顶假发', '一只猫', '一辆车'], a: 0 },
+      { q: '最后小孩变成了什么样？', opts: ['戴着假发坐在坑里', '跑回家了', '睡着了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b19', lv: 'L2', tag: '短元音 o', title: 'The Hot Pot', zh: '滚烫的锅',
+    emoji: '🍲', color: '#E5707E',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'no', 'my', 'by'],
+    newWords: [
+      { w: 'hot', zh: '烫的' },
+      { w: 'pot', zh: '锅' },
+      { w: 'mop', zh: '拖把' },
+      { w: 'hop', zh: '单脚跳' },
+      { w: 'dog', zh: '狗' }
+    ],
+    pages: [
+      { art: '🍲🔥', en: 'A hot pot.', zh: '一锅滚烫的东西。' },
+      { art: '🍲👐', en: 'The pot is hot. Not for me!', zh: '锅很烫，我可不敢碰！' },
+      { art: '🐶🍲', en: 'My dog is by the pot.', zh: '我的狗凑到锅边。' },
+      { art: '🐶💨', en: 'Hop! Hop! The dog can hop!', zh: '跳！跳！狗被烫得直跳！' },
+      { art: '🧹🍲', en: 'Get the mop!', zh: '快拿拖把来！' },
+      { art: '🍲🧹😅', en: 'The pot is on the mop!', zh: '锅扣在拖把上了！' }
+    ],
+    quiz: [
+      { q: '锅怎么了？', opts: ['很烫', '很凉', '是空的'], a: 0 },
+      { q: '狗为什么跳起来？', opts: ['被烫到了', '很高兴', '想睡觉'], a: 0 },
+      { q: '最后锅跑到哪儿了？', opts: ['拖把上', '床上', '树上'], a: 0 }
+    ]
+  },
+  {
+    id: 'b20', lv: 'L2', tag: '短元音 u', title: 'A Bug in a Mug', zh: '杯子里的虫子',
+    emoji: '🐛', color: '#8CC084',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'you'],
+    newWords: [
+      { w: 'bug', zh: '小虫子' },
+      { w: 'mug', zh: '马克杯' },
+      { w: 'hug', zh: '抱' },
+      { w: 'jug', zh: '壶' },
+      { w: 'run', zh: '跑' }
+    ],
+    pages: [
+      { art: '☕🐛', en: 'A bug in a mug!', zh: '杯子里有只虫子！' },
+      { art: '🐛☕', en: 'The bug is in my mug.', zh: '虫子在我的杯子里。' },
+      { art: '😱☕', en: 'I am not glad.', zh: '我可一点也不开心。' },
+      { art: '🐛🫙', en: 'The bug is in the jug.', zh: '虫子又跑到水壶里。' },
+      { art: '🤗🐛', en: 'A hug for the bug?', zh: '要给虫子一个拥抱吗？' },
+      { art: '🏃🐛', en: 'No! Run, bug, run!', zh: '不要！快跑，虫子，快跑！' }
+    ],
+    quiz: [
+      { q: '虫子在哪儿？', opts: ['杯子里', '鞋子里', '帽子里'], a: 0 },
+      { q: '虫子后来又跑到哪儿？', opts: ['水壶里', '树上', '床上'], a: 0 },
+      { q: '故事最后让虫子做什么？', opts: ['快跑', '睡觉', '唱歌'], a: 0 }
+    ]
+  },
+  {
+    id: 'b21', lv: 'L2', tag: '短元音 e / a', title: 'My Wet Pet', zh: '我的湿宠物',
+    emoji: '🐹', color: '#B99BE0',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no'],
+    newWords: [
+      { w: 'pet', zh: '宠物' },
+      { w: 'wet', zh: '湿的' },
+      { w: 'net', zh: '网' },
+      { w: 'get', zh: '抓住' },
+      { w: 'red', zh: '红色的' },
+      { w: 'leg', zh: '腿' }
+    ],
+    pages: [
+      { art: '🐹', en: 'My pet is a rat.', zh: '我的宠物是只小老鼠。' },
+      { art: '🌧️🐹', en: 'My pet is wet.', zh: '它淋湿了。' },
+      { art: '🕸️🐹', en: 'Get the net! Get the net!', zh: '快拿网来！快拿网来！' },
+      { art: '🐹🕸️', en: 'The red net is on my pet.', zh: '红网罩住了我的宠物。' },
+      { art: '🦵🐹', en: 'One leg. Two legs.', zh: '一条腿。两条腿。' },
+      { art: '😆🐹', en: 'My wet pet is not sad!', zh: '我的湿宠物一点也不难过！' }
+    ],
+    quiz: [
+      { q: '我的宠物是什么？', opts: ['小老鼠', '小猫', '小兔'], a: 0 },
+      { q: '宠物为什么湿了？', opts: ['淋雨了', '洗澡了', '掉水里了'], a: 0 },
+      { q: '我拿什么去罩它？', opts: ['网', '帽子', '被子'], a: 0 }
+    ]
+  },
+  {
+    id: 'b22', lv: 'L2', tag: '短元音 a / e', title: 'The Red Cap', zh: '红帽子',
+    emoji: '🧢', color: '#F2A0A0',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no', 'can'],
+    newWords: [
+      { w: 'cap', zh: '帽子（带帽檐）' },
+      { w: 'map', zh: '地图' },
+      { w: 'tap', zh: '轻敲' },
+      { w: 'gap', zh: '缝隙' },
+      { w: 'van', zh: '面包车' }
+    ],
+    pages: [
+      { art: '🧢', en: 'A red cap.', zh: '一顶红帽子。' },
+      { art: '🗺️🧢', en: 'The cap is on the map.', zh: '帽子压在地图上。' },
+      { art: '👆🗺️', en: 'Tap, tap, tap.', zh: '敲一敲，敲一敲。' },
+      { art: '🚐', en: 'A van! A red van!', zh: '一辆面包车！红色的！' },
+      { art: '🚐🧢', en: 'The cap is in the van.', zh: '帽子掉进了车里。' },
+      { art: '😅🧢', en: 'The cap is in the gap!', zh: '帽子卡在车缝里了！' }
+    ],
+    quiz: [
+      { q: '帽子是什么颜色？', opts: ['红色', '蓝色', '绿色'], a: 0 },
+      { q: '帽子先压在什么东西上？', opts: ['地图', '书', '盘子'], a: 0 },
+      { q: '最后帽子卡在哪儿？', opts: ['车的缝隙里', '树上', '水里'], a: 0 }
+    ]
+  },
+  {
+    id: 'b23', lv: 'L3', tag: 'sh', title: 'Fish in a Dish', zh: '盘子里的鱼',
+    emoji: '🐟', color: '#6FB3D9',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no', 'see'],
+    newWords: [
+      { w: 'fish', zh: '鱼' },
+      { w: 'dish', zh: '盘子' },
+      { w: 'wish', zh: '愿望' },
+      { w: 'ship', zh: '船' }
+    ],
+    pages: [
+      { art: '🐟🍽️', en: 'A fish in a dish.', zh: '盘子里的鱼。' },
+      { art: '🐟🍽️😮', en: 'The fish is not glad.', zh: '鱼并不高兴。' },
+      { art: '🐟🛳️', en: 'The fish can see a ship.', zh: '鱼能看见一条船。' },
+      { art: '🐟💭', en: 'A wish! A big wish!', zh: '它许了个愿！一个大愿！' },
+      { art: '🛳️🌊', en: 'The fish is in the ship!', zh: '鱼跑到船上去了！' },
+      { art: '🐟😄', en: 'The dish is not for a fish.', zh: '盘子本来就不该装鱼嘛。' }
+    ],
+    quiz: [
+      { q: '鱼在哪儿？', opts: ['盘子里', '船上', '水里'], a: 0 },
+      { q: '鱼许了什么愿？', opts: ['想去船上', '想吃东西', '想睡觉'], a: 0 },
+      { q: '故事最后鱼在哪里？', opts: ['船上', '盘子里', '商店里'], a: 0 }
+    ]
+  },
+  {
+    id: 'b24', lv: 'L3', tag: 'sh / ck', title: 'The Big Ship', zh: '大船',
+    emoji: '🚢', color: '#5B9BD5',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'on'],
+    newWords: [
+      { w: 'ship', zh: '船' },
+      { w: 'deck', zh: '甲板' },
+      { w: 'rock', zh: '摇晃' },
+      { w: 'sock', zh: '袜子' },
+      { w: 'black', zh: '黑色的' },
+      { w: 'wind', zh: '风' }
+    ],
+    pages: [
+      { art: '🚢', en: 'A big ship!', zh: '一条大船！' },
+      { art: '🚢🌊', en: 'The ship can rock.', zh: '船会摇来摇去。' },
+      { art: '🧦🚢', en: 'My sock is on the deck.', zh: '我的袜子落在甲板上。' },
+      { art: '🧦💨', en: 'The sock is in the wind.', zh: '袜子被风吹跑了。' },
+      { art: '🧦🐟', en: 'A fish in a black sock!', zh: '一条鱼钻进了黑袜子！' },
+      { art: '😂🧦', en: 'The fish is not glad.', zh: '鱼可一点也不想穿袜子。' }
+    ],
+    quiz: [
+      { q: '我的袜子掉在哪儿？', opts: ['甲板上', '海里', '床上'], a: 0 },
+      { q: '袜子被什么吹跑了？', opts: ['风', '鱼', '船'], a: 0 },
+      { q: '谁钻进了袜子里？', opts: ['一条鱼', '一只猫', '一个人'], a: 0 }
+    ]
+  },
+  {
+    id: 'b25', lv: 'L3', tag: 'th', title: 'This and That', zh: '这个和那个',
+    emoji: '👐', color: '#E0A458',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'this', 'that'],
+    newWords: [
+      { w: 'thin', zh: '瘦的' },
+      { w: 'thick', zh: '粗的；厚的' },
+      { w: 'then', zh: '然后' },
+      { w: 'bath', zh: '浴缸' },
+      { w: 'moth', zh: '飞蛾' },
+      { w: 'jump', zh: '跳' },
+      { w: 'lamp', zh: '台灯' }
+    ],
+    pages: [
+      { art: '🐈🐈', en: 'This cat is thin.', zh: '这只猫很瘦。' },
+      { art: '🐈🐈⬛', en: 'That cat is thick.', zh: '那只猫很胖。' },
+      { art: '🦋🛁', en: 'A moth is in the bath.', zh: '一只飞蛾在浴缸里。' },
+      { art: '🦋💡', en: 'Then it is on the lamp.', zh: '然后它飞到灯上。' },
+      { art: '🐈🦋', en: 'The thin cat can jump.', zh: '瘦猫跳得上去。' },
+      { art: '🐈‍⬛😤', en: 'The thick cat can not!', zh: '胖猫可跳不上去！' }
+    ],
+    quiz: [
+      { q: '两只猫有什么不同？', opts: ['一只瘦一只胖', '一只黑一只白', '一只大一只小'], a: 0 },
+      { q: '飞蛾先在哪儿？', opts: ['浴缸里', '灯上', '床上'], a: 0 },
+      { q: '谁能跳到灯上？', opts: ['瘦猫', '胖猫', '两只都能'], a: 0 }
+    ]
+  },
+  {
+    id: 'b26', lv: 'L3', tag: 'ck', title: 'Duck in a Sock', zh: '穿袜子的鸭子',
+    emoji: '🦆', color: '#F2C14E',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no', 'on'],
+    newWords: [
+      { w: 'duck', zh: '鸭子' },
+      { w: 'sock', zh: '袜子' },
+      { w: 'rock', zh: '石头' },
+      { w: 'sack', zh: '麻袋' },
+      { w: 'pick', zh: '捡；摘' }
+    ],
+    pages: [
+      { art: '🦆🧦', en: 'A duck in a sock.', zh: '一只穿袜子的鸭子。' },
+      { art: '🦆🪨', en: 'The duck is on a rock.', zh: '鸭子站在石头上。' },
+      { art: '🧦🪨', en: 'One sock. Two socks!', zh: '一只袜子。两只袜子！' },
+      { art: '👜🦆', en: 'Pick up the sack.', zh: '把麻袋捡起来。' },
+      { art: '🦆👜', en: 'The duck is in the sack!', zh: '鸭子钻进麻袋里了！' },
+      { art: '😂🧦', en: 'A duck in a sack of socks!', zh: '一袋袜子里有只鸭子！' }
+    ],
+    quiz: [
+      { q: '鸭子穿着什么？', opts: ['袜子', '鞋子', '帽子'], a: 0 },
+      { q: '鸭子站在哪儿？', opts: ['石头上', '船上', '桌子上'], a: 0 },
+      { q: '最后鸭子在哪儿？', opts: ['装满袜子的麻袋里', '水里', '树上'], a: 0 }
+    ]
+  },
+  {
+    id: 'b27', lv: 'L3', tag: 'ng', title: 'The Singing King', zh: '爱唱歌的国王',
+    emoji: '👑', color: '#C8A2E0',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no'],
+    newWords: [
+      { w: 'sing', zh: '唱歌' },
+      { w: 'king', zh: '国王' },
+      { w: 'ring', zh: '戒指；铃声' },
+      { w: 'song', zh: '歌曲' },
+      { w: 'long', zh: '长的' },
+      { w: 'gold', zh: '金的' }
+    ],
+    pages: [
+      { art: '👑🎤', en: 'The king can sing.', zh: '国王会唱歌。' },
+      { art: '👑🎶', en: 'A long, long song!', zh: '一首好长好长的歌！' },
+      { art: '💍👑', en: 'A ring! A gold ring!', zh: '一枚戒指！金戒指！' },
+      { art: '👑💍🎶', en: 'The king sings for the ring.', zh: '国王对着戒指唱。' },
+      { art: '😴👑', en: 'The song is too long.', zh: '这歌实在太长了。' },
+      { art: '😴💤', en: 'The ring is not glad.', zh: '连戒指都听睡着了。' }
+    ],
+    quiz: [
+      { q: '国王在做什么？', opts: ['唱歌', '跳舞', '吃饭'], a: 0 },
+      { q: '国王发现了什么？', opts: ['一枚戒指', '一顶帽子', '一本书'], a: 0 },
+      { q: '为什么大家都困了？', opts: ['歌太长了', '天黑了', '太累了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b28', lv: 'L3', tag: 'ch', title: 'Chop, Chop!', zh: '切切切',
+    emoji: '🔪', color: '#E88C7D',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no'],
+    newWords: [
+      { w: 'chop', zh: '切' },
+      { w: 'chip', zh: '薯片' },
+      { w: 'much', zh: '许多' },
+      { w: 'such', zh: '如此的' },
+      { w: 'bench', zh: '长凳' }
+    ],
+    pages: [
+      { art: '🔪🥔', en: 'Chop, chop, chop!', zh: '切切切！' },
+      { art: '🍟', en: 'So much chip!', zh: '好多薯片！' },
+      { art: '🍟🍟🍟', en: 'Such a big chip!', zh: '好大一片薯片！' },
+      { art: '🪑🍟', en: 'Chip on the bench.', zh: '薯片放在长凳上。' },
+      { art: '🐦🍟', en: 'A chick can see the chip.', zh: '一只小鸡看见了薯片。' },
+      { art: '🐦💨', en: 'Chop, chop! No chip!', zh: '叨叨叨！薯片没了！' }
+    ],
+    quiz: [
+      { q: '在切什么？', opts: ['土豆', '苹果', '面包'], a: 0 },
+      { q: '薯片放在哪儿？', opts: ['长凳上', '桌上', '地上'], a: 0 },
+      { q: '谁把薯片吃掉了？', opts: ['小鸡', '小狗', '我'], a: 0 }
+    ]
+  },
+  {
+    id: 'b29', lv: 'L3', tag: 'ng / sh', title: 'The Long Song', zh: '长长的歌',
+    emoji: '🎵', color: '#7FC8A9',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'we'],
+    newWords: [
+      { w: 'long', zh: '长的' },
+      { w: 'song', zh: '歌曲' },
+      { w: 'sing', zh: '唱' },
+      { w: 'thing', zh: '东西' },
+      { w: 'fish', zh: '鱼' },
+      { w: 'along', zh: '一起（跟着）' }
+    ],
+    pages: [
+      { art: '🎵🐟', en: 'A fish can sing.', zh: '一条鱼会唱歌。' },
+      { art: '🎶🌊', en: 'Such a long song!', zh: '好长的一首歌！' },
+      { art: '🐟🎶🐟', en: 'Two fish sing along.', zh: '两条鱼跟着唱。' },
+      { art: '🐟🐟🐟', en: 'The song is a big thing.', zh: '这歌可真是件大事。' },
+      { art: '🦈🎶', en: 'A big fish can sing!', zh: '一条大鱼也来唱！' },
+      { art: '😱🎶', en: 'We can not sing that long!', zh: '我们可唱不了那么长！' }
+    ],
+    quiz: [
+      { q: '谁在唱歌？', opts: ['鱼', '鸟', '猫'], a: 0 },
+      { q: '有几条鱼跟着唱？', opts: ['两条', '一条', '三条'], a: 0 },
+      { q: '最后谁来了？', opts: ['一条大鱼', '一只猫', '一个人'], a: 0 }
+    ]
+  },
+  {
+    id: 'b30', lv: 'L3', tag: 'th', title: 'Thick Fog', zh: '浓浓的大雾',
+    emoji: '🌫️', color: '#A9B7C6',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'this'],
+    newWords: [
+      { w: 'thick', zh: '浓的' },
+      { w: 'fog', zh: '雾' },
+      { w: 'path', zh: '小路' },
+      { w: 'lamp', zh: '灯' },
+      { w: 'thing', zh: '东西' }
+    ],
+    pages: [
+      { art: '🌫️', en: 'Thick, thick fog.', zh: '浓浓的雾。' },
+      { art: '🌫️🛤️', en: 'I can not see the path.', zh: '我看不见小路了。' },
+      { art: '💡🌫️', en: 'A lamp! A big lamp!', zh: '一盏灯！好大的一盏灯！' },
+      { art: '💡🛤️', en: 'The lamp is on the path.', zh: '灯就立在小路旁。' },
+      { art: '🌫️💡👀', en: 'Then I can see a thing.', zh: '然后我看见了一个东西。' },
+      { art: '🐈💡', en: 'It is my cat!', zh: '是我的猫！' }
+    ],
+    quiz: [
+      { q: '雾怎么样？', opts: ['很浓', '很淡', '没有雾'], a: 0 },
+      { q: '我为什么看不见小路？', opts: ['雾太浓了', '天太黑了', '眼睛闭上了'], a: 0 },
+      { q: '最后看到的是谁？', opts: ['我的猫', '一只狗', '一个人'], a: 0 }
+    ]
+  },
+  {
+    id: 'b31', lv: 'L3', tag: 'sh / th', title: 'Wish, Wish, Wish', zh: '许愿许愿',
+    emoji: '🌟', color: '#F5C26B',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'this', 'but'],
+    newWords: [
+      { w: 'wish', zh: '愿望' },
+      { w: 'fish', zh: '鱼' },
+      { w: 'then', zh: '然后' },
+      { w: 'them', zh: '它们' },
+      { w: 'rush', zh: '冲；急忙' }
+    ],
+    pages: [
+      { art: '🌟🐟', en: 'A fish can wish.', zh: '一条鱼会许愿。' },
+      { art: '🐟💫', en: 'Wish, wish, wish!', zh: '许愿，许愿，许愿！' },
+      { art: '🐟🦵', en: 'Then it can run!', zh: '然后它长出了腿！' },
+      { art: '🐟🏃', en: 'It can rush and run.', zh: '它能跑能冲。' },
+      { art: '🐟😅', en: 'But it can not swim.', zh: '可它游不了泳了。' },
+      { art: '🐟💦', en: 'Them fish wish to swim!', zh: '鱼儿们还是想游泳！' }
+    ],
+    quiz: [
+      { q: '鱼许了什么愿？', opts: ['想长出腿', '想吃东西', '想飞'], a: 0 },
+      { q: '长腿以后它不能做什么了？', opts: ['游泳', '跑步', '跳'], a: 0 },
+      { q: '最后鱼还是想做什么？', opts: ['游泳', '跑步', '睡觉'], a: 0 }
+    ]
+  },
+  {
+    id: 'b32', lv: 'L3', tag: 'ng / ck', title: 'The Lost Ring', zh: '丢了的戒指',
+    emoji: '💍', color: '#D9A5B3',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no', 'she', 'on'],
+    newWords: [
+      { w: 'ring', zh: '戒指' },
+      { w: 'hand', zh: '手' },
+      { w: 'sock', zh: '袜子' },
+      { w: 'rock', zh: '石头' },
+      { w: 'thing', zh: '东西' },
+      { w: 'sink', zh: '水槽' },
+      { w: 'has', zh: '有（第三人称）' },
+      { w: 'yes', zh: '是的' }
+    ],
+    pages: [
+      { art: '💍❌', en: 'My ring is not on my hand.', zh: '戒指不在我手上了。' },
+      { art: '🧦', en: 'Is it in my sock?', zh: '在袜子里吗？' },
+      { art: '🧦❌', en: 'No, not in the sock.', zh: '不在袜子里。' },
+      { art: '🪨', en: 'Is it on the rock?', zh: '在石头上吗？' },
+      { art: '🚰✨', en: 'A thing is in the sink!', zh: '水槽里有个东西！' },
+      { art: '💍🚰', en: 'Yes! The ring is in the sink!', zh: '在！戒指就在水槽里！' },
+      { art: '💍🐟', en: 'And a fish has the ring!', zh: '可是戒指套在一条鱼身上！' }
+    ],
+    quiz: [
+      { q: '我丢了什么？', opts: ['戒指', '袜子', '帽子'], a: 0 },
+      { q: '戒指最后在哪儿找到的？', opts: ['水槽里', '袜子里', '石头上'], a: 0 },
+      { q: '戒指套在了谁身上？', opts: ['一条鱼', '一只猫', '一只手'], a: 0 }
+    ]
+  },
+  {
+    id: 'b33', lv: 'L4', tag: '连缀 fr / j', title: 'The Frog Jumps', zh: '青蛙跳跳',
+    emoji: '🐸', color: '#7FC97F',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'in'],
+    newWords: [
+      { w: 'frog', zh: '青蛙' },
+      { w: 'jump', zh: '跳' },
+      { w: 'pond', zh: '池塘' },
+      { w: 'plop', zh: '扑通' },
+      { w: 'log', zh: '木头' }
+    ],
+    pages: [
+      { art: '🐸', en: 'A frog can jump.', zh: '青蛙会跳。' },
+      { art: '🐸🪨', en: 'The frog jumps on a rock.', zh: '青蛙跳到石头上。' },
+      { art: '🐸🪵', en: 'Then on a log.', zh: '再跳到木头上。' },
+      { art: '🐸💧', en: 'Then in the pond!', zh: '然后跳进池塘！' },
+      { art: '💧🐸', en: 'Plop! Plop!', zh: '扑通！扑通！' },
+      { art: '🐸😄', en: 'The frog is glad.', zh: '青蛙开心极了。' }
+    ],
+    quiz: [
+      { q: '青蛙会做什么？', opts: ['跳', '飞', '游泳'], a: 0 },
+      { q: '青蛙最后跳进哪儿？', opts: ['池塘', '树林', '房子'], a: 0 },
+      { q: '扑通扑通是什么声音？', opts: ['跳进水里的声音', '打雷的声音', '唱歌的声音'], a: 0 }
+    ]
+  },
+  {
+    id: 'b34', lv: 'L4', tag: '连缀 st', title: 'Stop the Bus!', zh: '拦住公交车',
+    emoji: '🚌', color: '#F2B04E',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    newWords: [
+      { w: 'stop', zh: '停' },
+      { w: 'bus', zh: '公交车' },
+      { w: 'last', zh: '最后的' },
+      { w: 'grab', zh: '抓住' }
+    ],
+    pages: [
+      { art: '🚌💨', en: 'The bus is on the road.', zh: '公交车在路上跑。' },
+      { art: '🏃🚌', en: 'Stop the bus! Stop!', zh: '拦住公交车！停下！' },
+      { art: '🏃💨', en: 'We can not grab it.', zh: '我们抓不住它。' },
+      { art: '🚌✋', en: 'The last stop!', zh: '到终点站了！' },
+      { art: '😅🚌', en: 'The bus stops at last.', zh: '公交车终于停了。' },
+      { art: '😄🚌', en: 'We can get on!', zh: '我们上得去了！' }
+    ],
+    quiz: [
+      { q: '公交车在哪儿跑？', opts: ['路上', '河里', '天上'], a: 0 },
+      { q: '我们想做什么？', opts: ['拦住公交车', '推公交车', '洗公交车'], a: 0 },
+      { q: '公交车什么时候停的？', opts: ['到终点站时', '一开始', '一直没停'], a: 0 }
+    ]
+  },
+  {
+    id: 'b35', lv: 'L4', tag: '连缀 tr / nd', title: 'A Trip to the Pond', zh: '去池塘玩',
+    emoji: '🎒', color: '#6FB1D9',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'to'],
+    newWords: [
+      { w: 'trip', zh: '短途旅行' },
+      { w: 'pond', zh: '池塘' },
+      { w: 'frog', zh: '青蛙' },
+      { w: 'hand', zh: '手' }
+    ],
+    pages: [
+      { art: '🎒👦', en: 'A trip to the pond!', zh: '去池塘玩一趟！' },
+      { art: '🌿💧', en: 'The pond is big.', zh: '池塘很大。' },
+      { art: '🐸👀', en: 'A frog is in my hand.', zh: '一只青蛙在我手上。' },
+      { art: '🐸💨', en: 'The frog jumps in!', zh: '青蛙一下跳进水里！' },
+      { art: '👦🖐️', en: 'My hand is wet.', zh: '我的手湿了。' },
+      { art: '😄🐸', en: 'The frog is glad.', zh: '青蛙倒是很开心。' }
+    ],
+    quiz: [
+      { q: '我们去了哪儿？', opts: ['池塘', '学校', '商店'], a: 0 },
+      { q: '我手上有什么？', opts: ['一只青蛙', '一条鱼', '一本书'], a: 0 },
+      { q: '青蛙最后做了什么？', opts: ['跳进水里', '睡着了', '飞走了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b36', lv: 'L4', tag: '连缀 tw / mb', title: 'Twin Lambs', zh: '双胞胎小羊',
+    emoji: '🐑', color: '#D9C7A7',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'two'],
+    newWords: [
+      { w: 'twin', zh: '双胞胎' },
+      { w: 'lamb', zh: '小羊' },
+      { w: 'grass', zh: '草' },
+      { w: 'jump', zh: '跳' },
+      { w: 'well', zh: '好地' }
+    ],
+    pages: [
+      { art: '🐑🐑', en: 'Two twin lambs.', zh: '两只双胞胎小羊。' },
+      { art: '🐑🌱', en: 'A lamb is on the grass.', zh: '一只小羊在草地上。' },
+      { art: '🐑🌱🐑', en: 'The twin is on the grass.', zh: '另一只也在草地上。' },
+      { art: '🐑🦘', en: 'The lambs can jump!', zh: '小羊还会跳！' },
+      { art: '🐑💨🐑', en: 'Jump, lamb, jump!', zh: '跳吧，小羊，跳吧！' },
+      { art: '😄🐑', en: 'Twin lambs jump well.', zh: '双胞胎小羊跳得真好。' }
+    ],
+    quiz: [
+      { q: '有几只小羊？', opts: ['两只', '一只', '三只'], a: 0 },
+      { q: '小羊在吃什么？', opts: ['草', '苹果', '面包'], a: 0 },
+      { q: '小羊会做什么？', opts: ['跳', '飞', '游泳'], a: 0 }
+    ]
+  },
+  {
+    id: 'b37', lv: 'L4', tag: '连缀 sp / gl', title: 'Milk on the Glass', zh: '牛奶洒了',
+    emoji: '🥛', color: '#A8C8E8',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    newWords: [
+      { w: 'milk', zh: '牛奶' },
+      { w: 'glass', zh: '玻璃杯' },
+      { w: 'spill', zh: '洒出' },
+      { w: 'mop', zh: '拖把' },
+      { w: 'desk', zh: '书桌' },
+      { w: 'drink', zh: '喝' }
+    ],
+    pages: [
+      { art: '🥛', en: 'Milk in a glass.', zh: '杯子里的牛奶。' },
+      { art: '🥛💥', en: 'The glass spills!', zh: '杯子洒了！' },
+      { art: '💧🧻', en: 'Milk on the desk.', zh: '牛奶洒在桌上。' },
+      { art: '🧹💧', en: 'Get the mop!', zh: '快拿拖把！' },
+      { art: '😅🧹', en: 'I mop and mop.', zh: '我拖了又拖。' },
+      { art: '🐱🥛', en: 'My cat drinks it up!', zh: '我的猫全舔干净了！' }
+    ],
+    quiz: [
+      { q: '杯子里装的是什么？', opts: ['牛奶', '水', '果汁'], a: 0 },
+      { q: '牛奶洒到哪儿了？', opts: ['桌上', '床上', '门外'], a: 0 },
+      { q: '最后谁把牛奶喝光了？', opts: ['我的猫', '我', '爸爸'], a: 0 }
+    ]
+  },
+  {
+    id: 'b38', lv: 'L4', tag: '连缀 sn / cr', title: 'Snap! Snap!', zh: '咔嚓咔嚓',
+    emoji: '🦀', color: '#E88C7D',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    newWords: [
+      { w: 'snap', zh: '咔嚓；夹' },
+      { w: 'crab', zh: '螃蟹' },
+      { w: 'clap', zh: '拍手' },
+      { w: 'sand', zh: '沙子' }
+    ],
+    pages: [
+      { art: '🦀', en: 'A crab can snap.', zh: '螃蟹会夹人。' },
+      { art: '🦀🏖️', en: 'The crab is on the sand.', zh: '螃蟹在沙滩上。' },
+      { art: '🦀✋', en: 'Snap! Snap! My hand!', zh: '咔嚓！咔嚓！夹到我的手！' },
+      { art: '👏🦀', en: 'Clap, clap, clap!', zh: '拍手，拍手，拍手！' },
+      { art: '🦀🕺', en: 'The crab can clap too.', zh: '螃蟹也会拍手。' },
+      { art: '😂🦀', en: 'Snap and clap!', zh: '一边夹一边拍！' }
+    ],
+    quiz: [
+      { q: '螃蟹会做什么？', opts: ['夹人', '唱歌', '跑'], a: 0 },
+      { q: '螃蟹在哪儿？', opts: ['沙滩上', '树上', '水里'], a: 0 },
+      { q: '我做了什么动作？', opts: ['拍手', '跳', '跑'], a: 0 }
+    ]
+  },
+  {
+    id: 'b39', lv: 'L4', tag: '连缀 dr / mp', title: 'The Big Drum', zh: '大鼓',
+    emoji: '🥁', color: '#D98C6B',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    newWords: [
+      { w: 'drum', zh: '鼓' },
+      { w: 'stamp', zh: '跺脚' },
+      { w: 'bang', zh: '砰的一声' },
+      { w: 'loud', zh: '响亮的' }
+    ],
+    pages: [
+      { art: '🥁', en: 'A big drum!', zh: '一面大鼓！' },
+      { art: '🥁🥢', en: 'Bang, bang, bang!', zh: '砰！砰！砰！' },
+      { art: '🥁🔊', en: 'The drum is loud.', zh: '鼓声很响。' },
+      { art: '🦶🔊', en: 'I stamp and stamp.', zh: '我跺脚，再跺脚。' },
+      { art: '😬🥁', en: 'The drum is too loud.', zh: '鼓实在太响了。' },
+      { art: '😴🥁', en: 'But my dog can nap!', zh: '可我的狗照样睡得着！' }
+    ],
+    quiz: [
+      { q: '这是什么乐器？', opts: ['鼓', '琴', '喇叭'], a: 0 },
+      { q: '鼓声怎么样？', opts: ['很响', '很轻', '没有声音'], a: 0 },
+      { q: '我的狗在做什么？', opts: ['睡觉', '叫', '跑'], a: 0 }
+    ]
+  },
+  {
+    id: 'b40', lv: 'L4', tag: '连缀 sk / sp', title: 'Skip and Spin', zh: '蹦蹦转圈',
+    emoji: '🌀', color: '#B99BE0',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    newWords: [
+      { w: 'skip', zh: '蹦跳' },
+      { w: 'spin', zh: '转圈' },
+      { w: 'slip', zh: '滑倒' },
+      { w: 'flop', zh: '瘫倒' }
+    ],
+    pages: [
+      { art: '👧', en: 'I can skip.', zh: '我会蹦蹦跳。' },
+      { art: '👧🌀', en: 'I can spin and spin.', zh: '我还会转圈。' },
+      { art: '😵👧', en: 'Spin, spin, spin!', zh: '转、转、转！' },
+      { art: '🦶💦', en: 'Slip! I slip!', zh: '滑了！我滑倒了！' },
+      { art: '😵💫', en: 'Flop on the grass.', zh: '一屁股瘫在草地上。' },
+      { art: '😄🌱', en: 'Skip and spin is fun!', zh: '蹦蹦转圈真好玩！' }
+    ],
+    quiz: [
+      { q: '我会做什么？', opts: ['蹦跳和转圈', '游泳', '画画'], a: 0 },
+      { q: '我怎么摔倒的？', opts: ['滑倒的', '被推的', '跳太高'], a: 0 },
+      { q: '最后我觉得好玩吗？', opts: ['好玩', '不好玩', '很生气'], a: 0 }
+    ]
+  },
+  {
+    id: 'b41', lv: 'L4', tag: '连缀 st / br', title: 'A Nest of Eggs', zh: '一窝蛋',
+    emoji: '🪺', color: '#C8B58A',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    newWords: [
+      { w: 'nest', zh: '鸟窝' },
+      { w: 'egg', zh: '蛋' },
+      { w: 'branch', zh: '树枝' },
+      { w: 'six', zh: '六' },
+      { w: 'hatch', zh: '孵出' }
+    ],
+    pages: [
+      { art: '🪺', en: 'A nest in a branch.', zh: '树枝上有个鸟窝。' },
+      { art: '🥚🥚', en: 'Six eggs in the nest.', zh: '窝里有六个蛋。' },
+      { art: '🥚👀', en: 'I can not get them.', zh: '我够不着它们。' },
+      { art: '🐦🪺', en: 'A bird is on the nest.', zh: '一只鸟落在窝上。' },
+      { art: '🐦🥚', en: 'The bird sits and sits.', zh: '鸟就那样一直孵着。' },
+      { art: '🐣🐣', en: 'Six eggs hatch!', zh: '六个蛋全孵出来了！' }
+    ],
+    quiz: [
+      { q: '鸟窝在哪儿？', opts: ['树枝上', '地上', '水里'], a: 0 },
+      { q: '窝里有几个蛋？', opts: ['六个', '三个', '十个'], a: 0 },
+      { q: '最后蛋怎么了？', opts: ['孵出小鸟了', '被拿走了', '破了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b42', lv: 'L4', tag: '连缀 bl / tr', title: 'The Black Cat', zh: '黑猫',
+    emoji: '🐈‍⬛', color: '#8E8E9A',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
+    newWords: [
+      { w: 'black', zh: '黑色的' },
+      { w: 'track', zh: '足迹；小路' },
+      { w: 'spot', zh: '看见；斑点' },
+      { w: 'glad', zh: '高兴的' },
+      { w: 'pal', zh: '伙伴' },
+      { w: 'still', zh: '不动的' },
+      { w: 'wall', zh: '墙' }
+    ],
+    pages: [
+      { art: '🐈‍⬛', en: 'A black cat.', zh: '一只黑猫。' },
+      { art: '🐾🌙', en: 'It can track in the dark.', zh: '它能在黑夜里追踪。' },
+      { art: '👀🐈‍⬛', en: 'I spot it on the wall.', zh: '我在墙上看见了它。' },
+      { art: '🐈‍⬛🧱', en: 'The black cat sits still.', zh: '黑猫一动不动地坐着。' },
+      { art: '🐈‍⬛😺', en: 'It is glad to see me.', zh: '它见到我很高兴。' },
+      { art: '😄🐈‍⬛', en: 'A black cat is my pal.', zh: '黑猫是我的好朋友。' }
+    ],
+    quiz: [
+      { q: '猫是什么颜色？', opts: ['黑色', '白色', '黄色'], a: 0 },
+      { q: '我在哪儿看见它？', opts: ['墙上', '树上', '水里'], a: 0 },
+      { q: '猫见到我什么表情？', opts: ['很高兴', '很生气', '很害怕'], a: 0 }
+    ]
+  },
+  {
+    id: 'b43', lv: 'L4', tag: '连缀 gr / fl', title: 'Grab the Flag', zh: '抢旗子',
+    emoji: '🚩', color: '#E5707E',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    newWords: [
+      { w: 'grab', zh: '抓住' },
+      { w: 'flag', zh: '旗子' },
+      { w: 'run', zh: '跑' },
+      { w: 'win', zh: '赢' },
+      { w: 'fast', zh: '快地' }
+    ],
+    pages: [
+      { art: '🚩', en: 'A red flag!', zh: '一面红旗！' },
+      { art: '🏃🚩', en: 'Run and grab the flag!', zh: '跑去抢旗子！' },
+      { art: '🏃💨🏃', en: 'We all run fast.', zh: '我们都跑得飞快。' },
+      { art: '✋🚩', en: 'I grab it at last!', zh: '我终于抓住了！' },
+      { art: '😄🚩', en: 'I win the flag!', zh: '我赢到了旗子！' },
+      { art: '😂🚩', en: 'But it is my sock!', zh: '可那其实是只袜子！' }
+    ],
+    quiz: [
+      { q: '旗子是什么颜色？', opts: ['红色', '蓝色', '绿色'], a: 0 },
+      { q: '我们要做什么？', opts: ['抢旗子', '扔旗子', '洗旗子'], a: 0 },
+      { q: '最后发现抓到的是什么？', opts: ['一只袜子', '一面旗', '一条毛巾'], a: 0 }
+    ]
+  },
+  {
+    id: 'b44', lv: 'L5', tag: 'ee', title: 'A Sheep in a Tree', zh: '树上的羊',
+    emoji: '🐑', color: '#7FC8A9',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'see'],
+    newWords: [
+      { w: 'sheep', zh: '绵羊' },
+      { w: 'tree', zh: '树' },
+      { w: 'sleep', zh: '睡觉' },
+      { w: 'green', zh: '绿色的' },
+      { w: 'down', zh: '向下' }
+    ],
+    pages: [
+      { art: '🐑🌳', en: 'A sheep in a tree!', zh: '树上有一只羊！' },
+      { art: '👀🌳', en: 'I can see it sleep.', zh: '我看见它在睡觉。' },
+      { art: '🌳🍃', en: 'The tree is green.', zh: '这棵树绿油油的。' },
+      { art: '🐑💤', en: 'The sheep sleeps and sleeps.', zh: '羊睡了又睡。' },
+      { art: '😴🐑', en: 'Sheep, can you get down?', zh: '羊啊，你下得来吗？' },
+      { art: '😂🐑', en: 'No. It is too green!', zh: '下不来——这树太绿太舒服了！' }
+    ],
+    quiz: [
+      { q: '羊在哪儿？', opts: ['树上', '草地上', '水里'], a: 0 },
+      { q: '羊在做什么？', opts: ['睡觉', '吃草', '跑'], a: 0 },
+      { q: '树是什么颜色？', opts: ['绿色', '红色', '黄色'], a: 0 }
+    ]
+  },
+  {
+    id: 'b45', lv: 'L5', tag: 'oo', title: 'The Moon in the Pool', zh: '池子里的月亮',
+    emoji: '🌙', color: '#7B8FA8',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'see'],
+    newWords: [
+      { w: 'moon', zh: '月亮' },
+      { w: 'pool', zh: '水池' },
+      { w: 'soon', zh: '很快' },
+      { w: 'cool', zh: '凉的' },
+      { w: 'again', zh: '再一次' },
+      { w: 'there', zh: '那里' }
+    ],
+    pages: [
+      { art: '🌙', en: 'The moon is up.', zh: '月亮升起来了。' },
+      { art: '🌙🏊', en: 'The moon is in the pool!', zh: '月亮掉进水池里！' },
+      { art: '👀💧', en: 'I can see it there.', zh: '我能看见它在水里。' },
+      { art: '🌊🌙', en: 'The pool is cool.', zh: '池水凉凉的。' },
+      { art: '✋🌙', en: 'I can not get it.', zh: '可我捞不到它。' },
+      { art: '😌🌙', en: 'Soon it is up again!', zh: '很快它又回到天上了！' }
+    ],
+    quiz: [
+      { q: '月亮在哪儿？', opts: ['水池里（倒影）', '树上', '屋顶上'], a: 0 },
+      { q: '池水感觉怎么样？', opts: ['凉凉的', '很烫', '结冰了'], a: 0 },
+      { q: '我捞到月亮了吗？', opts: ['没有', '捞到了', '捞到一半'], a: 0 }
+    ]
+  },
+  {
+    id: 'b46', lv: 'L5', tag: 'ai', title: 'Wait for the Train', zh: '等火车',
+    emoji: '🚂', color: '#6FB1D9',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'for'],
+    newWords: [
+      { w: 'wait', zh: '等待' },
+      { w: 'train', zh: '火车' },
+      { w: 'rain', zh: '雨' },
+      { w: 'again', zh: '再一次' }
+    ],
+    pages: [
+      { art: '🚉👦', en: 'We wait for the train.', zh: '我们等火车。' },
+      { art: '🌧️🚉', en: 'Then the rain comes.', zh: '然后下起雨来。' },
+      { art: '🌧️😕', en: 'We wait and wait.', zh: '我们等了又等。' },
+      { art: '🚂💨', en: 'The train is in!', zh: '火车进站了！' },
+      { art: '🚂🌧️', en: 'We get on at last.', zh: '我们终于上去了。' },
+      { art: '😄🚂', en: 'Rain, rain, go again!', zh: '雨啊雨啊，你走吧！' }
+    ],
+    quiz: [
+      { q: '我们在等什么？', opts: ['火车', '公交车', '飞机'], a: 0 },
+      { q: '等的时候天气怎么了？', opts: ['下雨了', '下雪了', '出太阳'], a: 0 },
+      { q: '最后我们上去了吗？', opts: ['上去了', '没上去', '跑回家了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b47', lv: 'L5', tag: 'ai', title: 'A Snail on the Tail', zh: '尾巴上的蜗牛',
+    emoji: '🐌', color: '#C8B58A',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on', 'safe'],
+    newWords: [
+      { w: 'snail', zh: '蜗牛' },
+      { w: 'tail', zh: '尾巴' },
+      { w: 'slow', zh: '慢的' },
+      { w: 'still', zh: '仍然' },
+      { w: 'there', zh: '那里' }
+    ],
+    pages: [
+      { art: '🐌', en: 'A snail is slow.', zh: '蜗牛很慢。' },
+      { art: '🐌🐕', en: 'It is on my dog.', zh: '它趴在我的狗身上。' },
+      { art: '🐌🦴', en: 'It is on the tail!', zh: '就在尾巴上！' },
+      { art: '🐕💨', en: 'My dog runs and runs.', zh: '我的狗跑了又跑。' },
+      { art: '🐌😌', en: 'The snail is still there.', zh: '蜗牛还稳稳待着。' },
+      { art: '😂🐌', en: 'Slow and safe!', zh: '慢，但是稳！' }
+    ],
+    quiz: [
+      { q: '蜗牛爬得怎么样？', opts: ['很慢', '很快', '会飞'], a: 0 },
+      { q: '蜗牛趴在哪儿？', opts: ['狗的尾巴上', '树上', '墙上'], a: 0 },
+      { q: '狗跑完以后蜗牛还在吗？', opts: ['还在', '掉了', '飞了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b48', lv: 'L5', tag: 'ay', title: 'Play All Day', zh: '玩一整天',
+    emoji: '🎈', color: '#F5C26B',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'all'],
+    newWords: [
+      { w: 'play', zh: '玩' },
+      { w: 'day', zh: '白天' },
+      { w: 'stay', zh: '待着' },
+      { w: 'way', zh: '路；方式' }
+    ],
+    pages: [
+      { art: '🎈👦', en: 'We play all day.', zh: '我们玩了一整天。' },
+      { art: '🌞🎈', en: 'The day is long.', zh: '这一天很长。' },
+      { art: '🏠😕', en: 'But we can not stay.', zh: '可我们不能一直待着。' },
+      { art: '🚶🌇', en: 'We go the long way.', zh: '我们绕了条远路回家。' },
+      { art: '😴🎈', en: 'We play and play.', zh: '我们玩了又玩。' },
+      { art: '😂🌙', en: 'Now it is not day!', zh: '现在天都黑啦！' }
+    ],
+    quiz: [
+      { q: '我们玩了多久？', opts: ['一整天', '一小时', '一分钟'], a: 0 },
+      { q: '回家走的是哪条路？', opts: ['远路', '近路', '水路'], a: 0 },
+      { q: '最后天怎么样了？', opts: ['黑了', '还亮着', '下雪了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b49', lv: 'L5', tag: 'oa', title: 'The Goat and the Boat', zh: '山羊和船',
+    emoji: '🐐', color: '#A8C8E8',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on', 'goes'],
+    newWords: [
+      { w: 'goat', zh: '山羊' },
+      { w: 'boat', zh: '小船' },
+      { w: 'road', zh: '路' },
+      { w: 'coat', zh: '外套' },
+      { w: 'want', zh: '想要' }
+    ],
+    pages: [
+      { art: '🐐', en: 'A goat on the road.', zh: '路上有一只山羊。' },
+      { art: '🐐⛵', en: 'It wants a boat.', zh: '它想要一条船。' },
+      { art: '🧥⛵', en: 'A coat is in the boat.', zh: '船里有一件外套。' },
+      { art: '🐐🧥', en: 'The goat gets the coat.', zh: '山羊叼走了外套。' },
+      { art: '⛵🌊', en: 'The boat goes away.', zh: '小船漂走了。' },
+      { art: '😂🐐', en: 'A goat in a coat!', zh: '一只穿外套的山羊！' }
+    ],
+    quiz: [
+      { q: '山羊在哪儿？', opts: ['路上', '船上', '屋顶上'], a: 0 },
+      { q: '山羊拿走了什么？', opts: ['外套', '帽子', '船桨'], a: 0 },
+      { q: '最后山羊变成了什么样？', opts: ['穿着外套', '坐在船上', '睡着了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b50', lv: 'L5', tag: 'ai / ay', title: 'Rain, Rain', zh: '下雨啦',
+    emoji: '🌧️', color: '#8FB8DE',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    newWords: [
+      { w: 'rain', zh: '雨' },
+      { w: 'wet', zh: '湿的' },
+      { w: 'play', zh: '玩' },
+      { w: 'stay', zh: '待' },
+      { w: 'day', zh: '白天' }
+    ],
+    pages: [
+      { art: '🌧️', en: 'Rain, rain, rain!', zh: '下雨，下雨，下雨！' },
+      { art: '😕🪟', en: 'We can not play.', zh: '我们没法出去玩。' },
+      { art: '🏠🧩', en: 'We stay in all day.', zh: '我们整天待在家里。' },
+      { art: '💧🌱', en: 'The grass is wet.', zh: '外面的草湿透了。' },
+      { art: '🌞🌈', en: 'Then the sun is out!', zh: '然后太阳出来了！' },
+      { art: '😄💦', en: 'We can play in it!', zh: '我们可以在水洼里玩！' }
+    ],
+    quiz: [
+      { q: '天气怎么样？', opts: ['下雨', '下雪', '刮风'], a: 0 },
+      { q: '我们为什么待在家里？', opts: ['下雨不能出去', '天太黑', '门坏了'], a: 0 },
+      { q: '雨停后我们做什么？', opts: ['出去玩', '继续睡', '吃饭'], a: 0 }
+    ]
+  },
+  {
+    id: 'b51', lv: 'L5', tag: 'ee', title: 'Sleep, Sheep!', zh: '睡吧，小羊',
+    emoji: '😴', color: '#B9C7D9',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'all', 'eyes', 'night'],
+    newWords: [
+      { w: 'sheep', zh: '绵羊' },
+      { w: 'sleep', zh: '睡觉' },
+      { w: 'keep', zh: '保持' },
+      { w: 'deep', zh: '深的' },
+      { w: 'open', zh: '睁开的' }
+    ],
+    pages: [
+      { art: '🐑💤', en: 'The sheep can not sleep.', zh: '这只羊睡不着。' },
+      { art: '🐑👀', en: 'It keeps its eyes open.', zh: '它眼睛睁得大大的。' },
+      { art: '🌙🐑', en: 'It is a deep night.', zh: '夜已经很深了。' },
+      { art: '🎵🐑', en: 'I sing to the sheep.', zh: '我给羊唱歌。' },
+      { art: '😴🐑', en: 'The sheep sleeps at last.', zh: '羊终于睡着了。' },
+      { art: '😴👦', en: 'But now I can not sleep!', zh: '结果我睡不着了！' }
+    ],
+    quiz: [
+      { q: '谁睡不着？', opts: ['小羊', '我', '狗'], a: 0 },
+      { q: '我做了什么帮它？', opts: ['唱歌', '讲故事', '拍它'], a: 0 },
+      { q: '最后谁睡不着了？', opts: ['我', '小羊', '两个都睡不好'], a: 0 }
+    ]
+  },
+  {
+    id: 'b52', lv: 'L5', tag: 'oo', title: 'Food at the Zoo', zh: '动物园的饭',
+    emoji: '🦒', color: '#F2B04E',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'at'],
+    newWords: [
+      { w: 'food', zh: '食物' },
+      { w: 'zoo', zh: '动物园' },
+      { w: 'too', zh: '也；太' },
+      { w: 'room', zh: '房间；空间' },
+      { w: 'eat', zh: '吃' },
+      { w: 'small', zh: '小的' },
+      { w: 'zebra', zh: '斑马' }
+    ],
+    pages: [
+      { art: '🦒🍃', en: 'Food at the zoo!', zh: '动物园开饭啦！' },
+      { art: '🐘🍎', en: 'The zoo has much food.', zh: '动物园里吃的多得很。' },
+      { art: '🦒😋', en: 'The zebra eats and eats.', zh: '长颈鹿吃了又吃。' },
+      { art: '🦒🤰', en: 'Too much food!', zh: '实在吃太多了！' },
+      { art: '🦒😴', en: 'It wants a big room.', zh: '它需要一个更大的房间。' },
+      { art: '😂🦒', en: 'The zoo is too small!', zh: '这动物园太小啦！' }
+    ],
+    quiz: [
+      { q: '这是在哪儿？', opts: ['动物园', '学校', '农场'], a: 0 },
+      { q: '长颈鹿吃了多少？', opts: ['太多了', '一点点', '没吃'], a: 0 },
+      { q: '为什么说动物园太小？', opts: ['长颈鹿吃得太胖', '动物太多', '门太窄'], a: 0 }
+    ]
+  },
+  {
+    id: 'b53', lv: 'L5', tag: 'ee', title: 'A Green Seed', zh: '一颗绿种子',
+    emoji: '🌱', color: '#7FC97F',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'from'],
+    newWords: [
+      { w: 'green', zh: '绿色的' },
+      { w: 'seed', zh: '种子' },
+      { w: 'tree', zh: '树' },
+      { w: 'need', zh: '需要' },
+      { w: 'put', zh: '放' }
+    ],
+    pages: [
+      { art: '🌱', en: 'A green seed.', zh: '一颗绿绿的种子。' },
+      { art: '🕳️🌱', en: 'I put it in the mud.', zh: '我把它埋进土里。' },
+      { art: '💧🌱', en: 'It needs sun and rain.', zh: '它需要阳光和雨水。' },
+      { art: '🌱📈', en: 'It can get big.', zh: '它会慢慢长大。' },
+      { art: '🌳', en: 'Now it is a tree!', zh: '现在它是一棵树了！' },
+      { art: '😄🌳', en: 'A tree from a seed!', zh: '一颗种子长成了一棵树！' }
+    ],
+    quiz: [
+      { q: '我把种子放在哪儿？', opts: ['土里', '水里', '桌上'], a: 0 },
+      { q: '种子需要什么？', opts: ['阳光和雨水', '灯光', '风'], a: 0 },
+      { q: '最后种子长成了什么？', opts: ['一棵树', '一朵花', '一根草'], a: 0 }
+    ]
+  },
+  {
+    id: 'b54', lv: 'L5', tag: 'oa', title: 'The Long Road', zh: '长长的路',
+    emoji: '🛤️', color: '#C8B58A',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on', 'they'],
+    newWords: [
+      { w: 'road', zh: '路' },
+      { w: 'goat', zh: '山羊' },
+      { w: 'load', zh: '货物' },
+      { w: 'toad', zh: '蟾蜍' }
+    ],
+    pages: [
+      { art: '🛤️', en: 'A long, long road.', zh: '一条长长长路。' },
+      { art: '🐐🛤️', en: 'A goat on the road.', zh: '路上有只山羊。' },
+      { art: '🐐📦', en: 'It has a big load.', zh: '它背着一大包东西。' },
+      { art: '🐸🛤️', en: 'A toad is on the road too.', zh: '路上还有一只蟾蜍。' },
+      { art: '🐐🐸', en: 'They go down the road.', zh: '它们一起往前走。' },
+      { art: '😂🐐', en: 'The load is a toad!', zh: '那包东西原来是只蟾蜍！' }
+    ],
+    quiz: [
+      { q: '路上有谁？', opts: ['山羊和蟾蜍', '猫和狗', '牛和马'], a: 0 },
+      { q: '山羊背着什么？', opts: ['一大包东西', '一桶水', '一捆草'], a: 0 },
+      { q: '最后发现那包东西是什么？', opts: ['蟾蜍', '石头', '面包'], a: 0 }
+    ]
+  },
+  {
+    id: 'b55', lv: 'L6', tag: 'a_e', title: 'The Cake by the Lake', zh: '湖边的蛋糕',
+    emoji: '🎂', color: '#F2A0A0',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
+    newWords: [
+      { w: 'cake', zh: '蛋糕' },
+      { w: 'lake', zh: '湖' },
+      { w: 'make', zh: '做' },
+      { w: 'take', zh: '拿' },
+      { w: 'smell', zh: '闻到' }
+    ],
+    pages: [
+      { art: '🎂', en: 'We make a cake.', zh: '我们做了一个蛋糕。' },
+      { art: '🏞️🎂', en: 'We take it to the lake.', zh: '我们把它带到湖边。' },
+      { art: '🦆🎂', en: 'A duck can smell it.', zh: '一只鸭子闻到了香味。' },
+      { art: '🦆💨', en: 'It takes the cake!', zh: '它把蛋糕叼走了！' },
+      { art: '🏃🦆', en: 'We run to the lake.', zh: '我们追到湖边。' },
+      { art: '😂🎂', en: 'The duck is in the cake!', zh: '鸭子一头栽进蛋糕里！' }
+    ],
+    quiz: [
+      { q: '我们做了什么？', opts: ['一个蛋糕', '一条船', '一顶帽子'], a: 0 },
+      { q: '我们把蛋糕带到哪儿？', opts: ['湖边', '学校', '山上'], a: 0 },
+      { q: '谁把蛋糕叼走了？', opts: ['鸭子', '猫', '狗'], a: 0 }
+    ]
+  },
+  {
+    id: 'b56', lv: 'L6', tag: 'i_e', title: 'Five Kites', zh: '五只风筝',
+    emoji: '🪁', color: '#7FB8DE',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    newWords: [
+      { w: 'five', zh: '五' },
+      { w: 'kite', zh: '风筝' },
+      { w: 'like', zh: '喜欢' },
+      { w: 'ride', zh: '骑' },
+      { w: 'bike', zh: '自行车' },
+      { w: 'sky', zh: '天空' }
+    ],
+    pages: [
+      { art: '🪁🪁', en: 'Five kites in the sky.', zh: '天上有五只风筝。' },
+      { art: '👦🪁', en: 'I like the red kite.', zh: '我喜欢那只红的。' },
+      { art: '💨🪁', en: 'The wind takes it up.', zh: '风把它送得高高的。' },
+      { art: '🏃🪁', en: 'I ride my bike and run.', zh: '我骑车追着跑。' },
+      { art: '🌳🪁', en: 'It is in a tree!', zh: '它挂到树上了！' },
+      { art: '😂🪁', en: 'Five kites, one tree!', zh: '五只风筝，一棵树！' }
+    ],
+    quiz: [
+      { q: '天上有几只风筝？', opts: ['五只', '三只', '一只'], a: 0 },
+      { q: '我喜欢哪只？', opts: ['红色的', '蓝色的', '绿色的'], a: 0 },
+      { q: '风筝最后飞到哪儿？', opts: ['树上', '水里', '屋顶'], a: 0 }
+    ]
+  },
+  {
+    id: 'b57', lv: 'L6', tag: 'a_e', title: 'A Snake at the Gate', zh: '门口的蛇',
+    emoji: '🐍', color: '#8CC084',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'at', 'our', 'teacher'],
+    newWords: [
+      { w: 'snake', zh: '蛇' },
+      { w: 'gate', zh: '大门' },
+      { w: 'late', zh: '迟到' },
+      { w: 'name', zh: '名字' },
+      { w: 'class', zh: '班级' },
+      { w: 'let', zh: '让' },
+      { w: 'say', zh: '说' }
+    ],
+    pages: [
+      { art: '🐍🚪', en: 'A snake at the gate!', zh: '门口有一条蛇！' },
+      { art: '👦😱', en: 'I can not get in.', zh: '我进不去了。' },
+      { art: '🕐😰', en: 'I am late for class.', zh: '我上课要迟到了。' },
+      { art: '🗣️🐍', en: 'I say my name.', zh: '我报上自己的名字。' },
+      { art: '🐍😌', en: 'The snake lets me in.', zh: '蛇居然让我进去了。' },
+      { art: '😂🐍', en: 'The snake is our teacher!', zh: '原来蛇是我们的老师！' }
+    ],
+    quiz: [
+      { q: '门口有什么？', opts: ['一条蛇', '一只狗', '一辆车'], a: 0 },
+      { q: '我为什么着急？', opts: ['要迟到了', '丢了东西', '天黑了'], a: 0 },
+      { q: '蛇其实是？', opts: ['我们的老师', '一只宠物', '雕像'], a: 0 }
+    ]
+  },
+  {
+    id: 'b58', lv: 'L6', tag: 'i_e', title: 'Time to Ride', zh: '该骑车了',
+    emoji: '🚲', color: '#F2B04E',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'to'],
+    newWords: [
+      { w: 'time', zh: '时间' },
+      { w: 'bike', zh: '自行车' },
+      { w: 'ride', zh: '骑' },
+      { w: 'side', zh: '一边' }
+    ],
+    pages: [
+      { art: '🕐🚲', en: 'It is time to ride.', zh: '到骑车的时间了。' },
+      { art: '🚲👦', en: 'I ride my bike.', zh: '我骑上自行车。' },
+      { art: '🛤️🚲', en: 'I ride by the side.', zh: '我沿着路边骑。' },
+      { art: '🐕🚲', en: 'My dog rides too!', zh: '我的狗也上车了！' },
+      { art: '💨🐕', en: 'It likes the fast ride.', zh: '它喜欢这种飞快的感觉。' },
+      { art: '😂🐕', en: 'But it can not stop!', zh: '可它不会刹车！' }
+    ],
+    quiz: [
+      { q: '该做什么了？', opts: ['骑车', '睡觉', '吃饭'], a: 0 },
+      { q: '谁跟我一起骑？', opts: ['我的狗', '我的朋友', '我爸爸'], a: 0 },
+      { q: '狗不会做什么？', opts: ['刹车', '坐着', '叫'], a: 0 }
+    ]
+  },
+  {
+    id: 'b59', lv: 'L6', tag: 'o_e', title: 'The Bone in the Stone', zh: '石头里的骨头',
+    emoji: '🦴', color: '#C8B58A',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    newWords: [
+      { w: 'bone', zh: '骨头' },
+      { w: 'stone', zh: '石头' },
+      { w: 'home', zh: '家' },
+      { w: 'hope', zh: '希望' },
+      { w: 'back', zh: '回来' },
+      { w: 'hide', zh: '藏' }
+    ],
+    pages: [
+      { art: '🦴', en: 'My dog has a bone.', zh: '我的狗有一根骨头。' },
+      { art: '🐕🪨', en: 'It hides it in a stone!', zh: '它把骨头藏进石头缝里！' },
+      { art: '🐕😕', en: 'Now it can not get it.', zh: '现在它拿不出来了。' },
+      { art: '🐕💭', en: 'It hopes to get it back.', zh: '它希望能拿回来。' },
+      { art: '🏠🐕', en: 'We go home at last.', zh: '最后我们回了家。' },
+      { art: '😂🦴', en: 'The bone is home too!', zh: '骨头也跟着回家了（叼在嘴里）！' }
+    ],
+    quiz: [
+      { q: '狗把骨头藏在哪儿？', opts: ['石头缝里', '树下', '床底'], a: 0 },
+      { q: '狗拿得出来吗？', opts: ['一开始拿不出来', '立刻拿出来了', '根本没藏'], a: 0 },
+      { q: '最后骨头在哪儿？', opts: ['狗嘴里叼回家', '留在石头里', '丢了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b60', lv: 'L6', tag: 'u_e', title: 'A Cute Cube', zh: '可爱的小方块',
+    emoji: '🧊', color: '#7FB8DE',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    newWords: [
+      { w: 'cute', zh: '可爱的' },
+      { w: 'cube', zh: '方块' },
+      { w: 'huge', zh: '巨大的' },
+      { w: 'rule', zh: '规则' },
+      { w: 'more', zh: '更多' }
+    ],
+    pages: [
+      { art: '🧊', en: 'A cute cube!', zh: '一个可爱的小方块！' },
+      { art: '🧊📏', en: 'It is not huge.', zh: '它一点也不大。' },
+      { art: '🧊🧊', en: 'Two cubes make a box.', zh: '两个方块拼成一个盒子。' },
+      { art: '🧊🧊🧊', en: 'Ten cubes! So huge!', zh: '十个方块！好大一个！' },
+      { art: '📜🧊', en: 'One rule: no more cubes.', zh: '只有一条规则：不许再加了。' },
+      { art: '😂🧊', en: 'But I like the huge one!', zh: '可我就喜欢那个大的！' }
+    ],
+    quiz: [
+      { q: '小方块怎么样？', opts: ['很小但可爱', '巨大', '是圆的'], a: 0 },
+      { q: '几个方块拼成盒子？', opts: ['两个', '五个', '十个'], a: 0 },
+      { q: '规则是什么？', opts: ['不许再加方块', '要快点', '要安静'], a: 0 }
+    ]
+  },
+  {
+    id: 'b61', lv: 'L6', tag: 'a_e', title: 'Late for the Game', zh: '比赛迟到了',
+    emoji: '⚽', color: '#7FC97F',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'for'],
+    newWords: [
+      { w: 'late', zh: '迟到' },
+      { w: 'game', zh: '比赛' },
+      { w: 'name', zh: '名字' },
+      { w: 'make', zh: '赶；做' },
+      { w: 'ball', zh: '球' },
+      { w: 'wrong', zh: '错的' }
+    ],
+    pages: [
+      { art: '⚽🕐', en: 'We are late for the game.', zh: '我们比赛要迟到了。' },
+      { art: '🏃💨', en: 'We run and run.', zh: '我们跑啊跑。' },
+      { art: '🗣️📋', en: 'I say my name.', zh: '我报上名字。' },
+      { art: '⚽😅', en: 'We make it at last!', zh: '我们终于赶上了！' },
+      { art: '⚽🥅', en: 'I take the ball.', zh: '我抢到了球。' },
+      { art: '😂⚽', en: 'It is the wrong game!', zh: '可这是另一场比赛！' }
+    ],
+    quiz: [
+      { q: '我们为什么跑？', opts: ['比赛要迟到了', '下雨了', '狗追我们'], a: 0 },
+      { q: '到了以后我做了什么？', opts: ['抢到球', '坐下', '喝水'], a: 0 },
+      { q: '最后发现什么？', opts: ['走错了场地', '赢了', '球丢了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b62', lv: 'L6', tag: 'o_e', title: 'The Rope and the Nose', zh: '绳子和鼻子',
+    emoji: '🐘', color: '#B9C7D9',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
+    newWords: [
+      { w: 'rope', zh: '绳子' },
+      { w: 'nose', zh: '鼻子' },
+      { w: 'close', zh: '近的；关' },
+      { w: 'sneeze', zh: '喷嚏' }
+    ],
+    pages: [
+      { art: '🪢🐘', en: 'A rope on a nose.', zh: '鼻子上挂着根绳子。' },
+      { art: '🐘👃', en: 'The nose is big.', zh: '这鼻子可真大。' },
+      { art: '🐘📏', en: 'Come close. Not so close!', zh: '靠近一点。别太近！' },
+      { art: '🪢💨', en: 'The rope is on the go.', zh: '绳子晃来晃去。' },
+      { art: '🐘🤧', en: 'A big sneeze!', zh: '一个大喷嚏！' },
+      { art: '😂🪢', en: 'Now the rope is on me!', zh: '绳子跑到我身上了！' }
+    ],
+    quiz: [
+      { q: '绳子挂在哪儿？', opts: ['鼻子上', '耳朵上', '尾巴上'], a: 0 },
+      { q: '鼻子怎么样？', opts: ['很大', '很小', '很短'], a: 0 },
+      { q: '打喷嚏后绳子跑到哪儿？', opts: ['我身上', '树上', '水里'], a: 0 }
+    ]
+  },
+  {
+    id: 'b63', lv: 'L6', tag: 'i_e / a_e', title: 'Nine Pigs', zh: '九只小猪',
+    emoji: '🐖', color: '#F2A0A0',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    newWords: [
+      { w: 'nine', zh: '九' },
+      { w: 'like', zh: '喜欢' },
+      { w: 'ride', zh: '骑' },
+      { w: 'side', zh: '一边' },
+      { w: 'hit', zh: '撞' },
+      { w: 'line', zh: '一排' },
+      { w: 'pile', zh: '一堆' }
+    ],
+    pages: [
+      { art: '🐖🐖', en: 'Nine pigs in a line.', zh: '九只小猪排成一排。' },
+      { art: '🐖🚲', en: 'They like to ride.', zh: '它们喜欢骑车。' },
+      { art: '🚲💨', en: 'One pig rides fast.', zh: '一只小猪骑得飞快。' },
+      { art: '🐖🛤️', en: 'It rides by my side.', zh: '它骑在我旁边。' },
+      { art: '🌳🚲', en: 'Then it hits a tree!', zh: '然后它撞到树上！' },
+      { art: '😂🐖', en: 'Nine pigs in a pile!', zh: '九只小猪叠成一堆！' }
+    ],
+    quiz: [
+      { q: '有几只小猪？', opts: ['九只', '三只', '五只'], a: 0 },
+      { q: '小猪喜欢做什么？', opts: ['骑车', '游泳', '爬树'], a: 0 },
+      { q: '最后小猪怎么了？', opts: ['撞树叠成一堆', '飞走了', '睡着了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b64', lv: 'L6', tag: 'a_e / i_e', title: 'Wake Up!', zh: '快起床',
+    emoji: '⏰', color: '#F5C26B',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'to'],
+    newWords: [
+      { w: 'wake', zh: '醒来' },
+      { w: 'late', zh: '迟的' },
+      { w: 'time', zh: '时间' },
+      { w: 'home', zh: '家' },
+      { w: 'school', zh: '学校' }
+    ],
+    pages: [
+      { art: '⏰😴', en: 'Wake up! It is late!', zh: '快起床！要迟到了！' },
+      { art: '😴🛏️', en: 'I can not wake up.', zh: '我实在起不来。' },
+      { art: '🕐😱', en: 'It is time to go!', zh: '该出发了！' },
+      { art: '🏃💨', en: 'I run all the way home.', zh: '我一路跑回家。' },
+      { art: '🏠😮', en: 'No one is home.', zh: '家里一个人也没有。' },
+      { art: '😂📅', en: 'It is not a school day!', zh: '原来今天是休息日！' }
+    ],
+    quiz: [
+      { q: '为什么被叫起床？', opts: ['以为迟到了', '要吃早饭', '有人来了'], a: 0 },
+      { q: '我跑去了哪儿？', opts: ['家', '学校', '公园'], a: 0 },
+      { q: '最后发现什么？', opts: ['今天不用上学', '家里没人', '走错了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b65', lv: 'L6', tag: 'u_e / o_e', title: 'The Huge Stone', zh: '巨大的石头',
+    emoji: '🪨', color: '#A9B7C6',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'will'],
+    newWords: [
+      { w: 'huge', zh: '巨大的' },
+      { w: 'stone', zh: '石头' },
+      { w: 'rule', zh: '规则' },
+      { w: 'hope', zh: '希望' },
+      { w: 'move', zh: '移动' },
+      { w: 'push', zh: '推' }
+    ],
+    pages: [
+      { art: '🪨', en: 'A huge stone in the road.', zh: '路上有块巨大的石头。' },
+      { art: '🚗🪨', en: 'No car can get by.', zh: '车子都过不去。' },
+      { art: '👥🪨', en: 'We hope to move it.', zh: '我们希望能挪开它。' },
+      { art: '💪🪨', en: 'Push! Push! It will not move.', zh: '推！推！它就是不动。' },
+      { art: '📜🪨', en: 'The rule is: go by the side.', zh: '规则是：绕道走。' },
+      { art: '😂🪨', en: 'The stone is still there!', zh: '石头还在那儿！' }
+    ],
+    quiz: [
+      { q: '路上有什么？', opts: ['一块大石头', '一棵树', '一辆车'], a: 0 },
+      { q: '我们想做什么？', opts: ['挪开石头', '搬回家', '坐上去'], a: 0 },
+      { q: '石头挪开了吗？', opts: ['没有', '挪开了', '碎掉了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b66', lv: 'L6', tag: 'o_e', title: 'Hope for the Bone', zh: '盼望的骨头',
+    emoji: '🐕', color: '#C8B58A',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
+    newWords: [
+      { w: 'hope', zh: '希望' },
+      { w: 'bone', zh: '骨头' },
+      { w: 'home', zh: '家' },
+      { w: 'nose', zh: '鼻子' },
+      { w: 'door', zh: '门' },
+      { w: 'faster', zh: '更快' }
+    ],
+    pages: [
+      { art: '🐕💭', en: 'My dog hopes for a bone.', zh: '我的狗盼着一根骨头。' },
+      { art: '🐕💤', en: 'It sleeps by the door.', zh: '它睡在门口。' },
+      { art: '🐈🐕', en: 'My cat has a bone!', zh: '我的猫居然有根骨头！' },
+      { art: '🐕👃', en: 'The dog puts its nose up.', zh: '狗把鼻子凑过去。' },
+      { art: '🐈😼', en: 'The cat runs home.', zh: '猫叼着骨头跑回家。' },
+      { art: '😂🐕', en: 'The dog runs faster!', zh: '狗追得更快！' }
+    ],
+    quiz: [
+      { q: '狗盼着什么？', opts: ['一根骨头', '一个球', '一顿饭'], a: 0 },
+      { q: '谁先拿到骨头？', opts: ['猫', '狗', '我'], a: 0 },
+      { q: '最后谁追谁？', opts: ['狗追猫', '猫追狗', '都在跑'], a: 0 }
+    ]
+  },
+  {
+    id: 'b67', lv: 'L7', tag: 'ar', title: 'The Star in the Jar', zh: '罐子里的星星',
+    emoji: '⭐', color: '#F5C26B',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'just'],
+    newWords: [
+      { w: 'star', zh: '星星' },
+      { w: 'jar', zh: '玻璃罐' },
+      { w: 'dark', zh: '黑的' },
+      { w: 'far', zh: '远的' }
+    ],
+    pages: [
+      { art: '⭐🫙', en: 'A star in a jar!', zh: '罐子里装着一颗星星！' },
+      { art: '🌙🫙', en: 'It is dark and far.', zh: '它又黑又远。' },
+      { art: '✨🫙', en: 'The star is not far now.', zh: '现在星星不远了。' },
+      { art: '😴⭐', en: 'It is my lamp now.', zh: '它把我的房间照亮了。' },
+      { art: '🌅⭐', en: 'Then the sun comes up.', zh: '然后太阳升起来了。' },
+      { art: '😂🫙', en: 'The star is just a bug!', zh: '原来是只萤火虫！' }
+    ],
+    quiz: [
+      { q: '罐子里是什么？', opts: ['看起来像星星的东西', '月亮', '太阳'], a: 0 },
+      { q: '它把哪儿照亮了？', opts: ['我的房间', '院子', '船上'], a: 0 },
+      { q: '最后发现那是什么？', opts: ['一只小虫（萤火虫）', '真的星星', '一块糖'], a: 0 }
+    ]
+  },
+  {
+    id: 'b68', lv: 'L7', tag: 'ir / ar', title: 'A Bird in the Park', zh: '公园里的小鸟',
+    emoji: '🐦', color: '#7FC97F',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    newWords: [
+      { w: 'bird', zh: '小鸟' },
+      { w: 'park', zh: '公园' },
+      { w: 'chirp', zh: '啁啾叫' },
+      { w: 'first', zh: '第一' },
+      { w: 'give', zh: '给' },
+      { w: 'listen', zh: '听' },
+      { w: 'more', zh: '更多' }
+    ],
+    pages: [
+      { art: '🐦🌳', en: 'A bird in the park.', zh: '公园里的一只小鸟。' },
+      { art: '🎵🐦', en: 'It chirps and chirps.', zh: '它一直啁啾地叫。' },
+      { art: '🌅🐦', en: 'It chirps first at sun up.', zh: '太阳一出来它最先叫。' },
+      { art: '👦🐦', en: 'I sit and listen.', zh: '我坐着听它唱。' },
+      { art: '🍞🐦', en: 'I give it my cake.', zh: '我把面包分给它。' },
+      { art: '😂🐦', en: 'Now it chirps for more!', zh: '结果它叫得更欢了——还要！' }
+    ],
+    quiz: [
+      { q: '公园里有什么？', opts: ['一只小鸟', '一只猫', '一条狗'], a: 0 },
+      { q: '小鸟什么时候叫？', opts: ['太阳出来时最先叫', '晚上叫', '不叫'], a: 0 },
+      { q: '我给了小鸟什么？', opts: ['面包', '水', '帽子'], a: 0 }
+    ]
+  },
+  {
+    id: 'b69', lv: 'L7', tag: 'or', title: 'Corn on the Fork', zh: '叉子上的玉米',
+    emoji: '🌽', color: '#F2B04E',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
+    newWords: [
+      { w: 'corn', zh: '玉米' },
+      { w: 'fork', zh: '叉子' },
+      { w: 'short', zh: '短的' },
+      { w: 'storm', zh: '暴风雨' },
+      { w: 'hard', zh: '猛烈的' },
+      { w: 'left', zh: '剩下' }
+    ],
+    pages: [
+      { art: '🌽🍴', en: 'Corn on a fork!', zh: '叉子上的玉米！' },
+      { art: '🌽😋', en: 'I like hot corn.', zh: '我喜欢热乎乎的玉米。' },
+      { art: '🌬️🌽', en: 'A storm is on the way.', zh: '暴风雨要来了。' },
+      { art: '💨🌽', en: 'The wind is short and hard.', zh: '风一阵一阵地刮。' },
+      { art: '🌽💨', en: 'My corn is in the storm!', zh: '我的玉米被吹走了！' },
+      { art: '😂🍴', en: 'Just the fork is left.', zh: '只剩叉子还在手里。' }
+    ],
+    quiz: [
+      { q: '叉子上有什么？', opts: ['玉米', '苹果', '面包'], a: 0 },
+      { q: '什么要来了？', opts: ['暴风雨', '客人', '雪'], a: 0 },
+      { q: '最后剩下什么？', opts: ['叉子', '玉米', '什么也没有'], a: 0 }
+    ]
+  },
+  {
+    id: 'b70', lv: 'L7', tag: 'ir', title: 'The First Day', zh: '第一天',
+    emoji: '🎒', color: '#8FB8DE',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'to', 'have', 'her'],
+    newWords: [
+      { w: 'first', zh: '第一' },
+      { w: 'girl', zh: '女孩' },
+      { w: 'shirt', zh: '衬衫' },
+      { w: 'skirt', zh: '裙子' },
+      { w: 'next', zh: '旁边' },
+      { w: 'same', zh: '相同的' },
+      { w: 'smile', zh: '微笑' },
+      { w: 'talk', zh: '说话' }
+    ],
+    pages: [
+      { art: '🎒👧', en: 'It is my first day.', zh: '这是我第一天上学。' },
+      { art: '👕👗', en: 'I have a shirt and a skirt.', zh: '我有一件衬衫和一条裙子。' },
+      { art: '👧🏫', en: 'The girl next to me smiles.', zh: '旁边的女孩对我笑。' },
+      { art: '🤝👧', en: 'We sit and talk.', zh: '我们坐在一起聊天。' },
+      { art: '📚👧', en: 'It is her first day too.', zh: '她也是第一天来。' },
+      { art: '😂👗', en: 'We have the same skirt!', zh: '我们穿了一模一样的裙子！' }
+    ],
+    quiz: [
+      { q: '这是谁的第一天？', opts: ['我', '老师', '只有我一个人'], a: 0 },
+      { q: '我穿了什么？', opts: ['衬衫和裙子', '外套和裤子', 'T 恤'], a: 0 },
+      { q: '最后发现什么巧合？', opts: ['两人裙子一样', '同一天生日', '住同一个楼'], a: 0 }
+    ]
+  },
+  {
+    id: 'b71', lv: 'L7', tag: 'ar / or', title: 'A Dark Storm', zh: '黑沉沉的暴风雨',
+    emoji: '⛈️', color: '#7B8FA8',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'off'],
+    newWords: [
+      { w: 'dark', zh: '黑' },
+      { w: 'storm', zh: '暴风雨' },
+      { w: 'hard', zh: '猛烈的；困难的' },
+      { w: 'far', zh: '远的' },
+      { w: 'gone', zh: '不见了' }
+    ],
+    pages: [
+      { art: '⛈️', en: 'A dark storm is far off.', zh: '远处来了一场黑色的暴风雨。' },
+      { art: '🌬️🌧️', en: 'The wind hits hard.', zh: '风刮得很猛。' },
+      { art: '🏠💡', en: 'We sit in the dark.', zh: '我们坐在黑漆漆的屋里。' },
+      { art: '🕯️🏠', en: 'One small lamp is on.', zh: '只点着一盏小灯。' },
+      { art: '🌧️💨', en: 'The storm is on and on.', zh: '风雨一直不停。' },
+      { art: '😂☀️', en: 'Then it is gone. Not far!', zh: '然后它就走了——原来并不远！' }
+    ],
+    quiz: [
+      { q: '天气怎么样？', opts: ['暴风雨', '晴天', '下雪'], a: 0 },
+      { q: '我们坐在哪里？', opts: ['黑着灯的屋里', '外面', '车里'], a: 0 },
+      { q: '最后天气怎么样？', opts: ['雨停了', '更大了', '下雪了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b72', lv: 'L7', tag: 'or / ar', title: 'The Horse and the Cart', zh: '马和车',
+    emoji: '🐴', color: '#C8B58A',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
+    newWords: [
+      { w: 'horse', zh: '马' },
+      { w: 'cart', zh: '大车' },
+      { w: 'hard', zh: '吃力' },
+      { w: 'far', zh: '远' },
+      { w: 'full', zh: '满的' },
+      { w: 'itself', zh: '它自己' },
+      { w: 'pull', zh: '拉' },
+      { w: 'rest', zh: '休息' },
+      { w: 'roll', zh: '滚' }
+    ],
+    pages: [
+      { art: '🐴🛒', en: 'A horse and a cart.', zh: '一匹马和一辆大车。' },
+      { art: '🐴📦', en: 'The cart is full.', zh: '车上装得满满的。' },
+      { art: '🐴💪', en: 'The horse pulls hard.', zh: '马使劲地拉。' },
+      { art: '🛤️🐴', en: 'It is far, far off.', zh: '路还很远很远。' },
+      { art: '😴🐴', en: 'The horse stops for a rest.', zh: '马停下来歇一会儿。' },
+      { art: '😂🛒', en: 'The cart rolls on by itself!', zh: '大车自己滚下坡去了！' }
+    ],
+    quiz: [
+      { q: '谁在拉车？', opts: ['马', '牛', '人'], a: 0 },
+      { q: '车怎么样？', opts: ['装满了', '是空的', '坏了'], a: 0 },
+      { q: '马休息时发生了什么？', opts: ['车自己滚走了', '车翻了', '什么也没发生'], a: 0 }
+    ]
+  },
+  {
+    id: 'b73', lv: 'L7', tag: 'ir', title: 'The Girl in the Red Skirt', zh: '红裙子女孩',
+    emoji: '👗', color: '#E5707E',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'her'],
+    newWords: [
+      { w: 'girl', zh: '女孩' },
+      { w: 'skirt', zh: '裙子' },
+      { w: 'shirt', zh: '衬衫' },
+      { w: 'third', zh: '第三' },
+      { w: 'class', zh: '班级' },
+      { w: 'paint', zh: '画画' }
+    ],
+    pages: [
+      { art: '👗👧', en: 'A girl in a red skirt.', zh: '一个穿红裙子的女孩。' },
+      { art: '🏫👧', en: 'She is in my class.', zh: '她在我班上。' },
+      { art: '🪑👧', en: 'She is the third girl.', zh: '她坐在第三排。' },
+      { art: '👕👗', en: 'Her shirt is red too.', zh: '她的衬衫也是红的。' },
+      { art: '🎨👗', en: 'She likes to paint.', zh: '她喜欢画画。' },
+      { art: '😂🎨', en: 'Now her skirt is red and green!', zh: '现在她的裙子红一块蓝一块！' }
+    ],
+    quiz: [
+      { q: '女孩穿什么？', opts: ['红裙子', '蓝裤子', '黄外套'], a: 0 },
+      { q: '她坐在第几排？', opts: ['第三排', '第一排', '最后一排'], a: 0 },
+      { q: '她喜欢做什么？', opts: ['画画', '唱歌', '跑步'], a: 0 }
+    ]
+  },
+  {
+    id: 'b74', lv: 'L7', tag: 'ar', title: 'A Hard Card', zh: '难做的卡片',
+    emoji: '🎴', color: '#B99BE0',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'for', 'her'],
+    newWords: [
+      { w: 'hard', zh: '难的' },
+      { w: 'card', zh: '卡片' },
+      { w: 'star', zh: '星星' },
+      { w: 'park', zh: '公园' },
+      { w: 'cut', zh: '剪' },
+      { w: 'grandma', zh: '奶奶' },
+      { w: 'hair', zh: '头发' }
+    ],
+    pages: [
+      { art: '🎴✂️', en: 'I make a card.', zh: '我在做一张卡片。' },
+      { art: '⭐🎴', en: 'A star on the card.', zh: '卡片上画一颗星星。' },
+      { art: '😕🎴', en: 'It is hard to cut.', zh: '剪起来真不容易。' },
+      { art: '🌳🎴', en: 'I take it to the park.', zh: '我把它带到公园。' },
+      { art: '👵😊', en: 'I give it to my grandma.', zh: '我送给奶奶。' },
+      { art: '😂🎴', en: 'She has a star in her hair!', zh: '她头上也戴着颗星星！' }
+    ],
+    quiz: [
+      { q: '我在做什么？', opts: ['做卡片', '画画', '写信'], a: 0 },
+      { q: '卡片上有什么？', opts: ['星星', '月亮', '花'], a: 0 },
+      { q: '卡片送给谁？', opts: ['奶奶', '老师', '朋友'], a: 0 }
+    ]
+  },
+  {
+    id: 'b75', lv: 'L7', tag: 'or', title: 'Short and Tall', zh: '矮和高',
+    emoji: '🦒', color: '#F2B04E',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    newWords: [
+      { w: 'short', zh: '矮的；短的' },
+      { w: 'horse', zh: '马' },
+      { w: 'corn', zh: '玉米' },
+      { w: 'bad', zh: '坏的' },
+      { w: 'tall', zh: '高的' }
+    ],
+    pages: [
+      { art: '🐴🐔', en: 'A horse and a hen.', zh: '一匹马和一只母鸡。' },
+      { art: '📏🐴', en: 'The horse is tall.', zh: '马很高。' },
+      { art: '📏🐔', en: 'The hen is short.', zh: '母鸡很矮。' },
+      { art: '🌽🐔', en: 'The hen can get the corn.', zh: '母鸡能啄到玉米。' },
+      { art: '🌽🐴', en: 'The horse can not get it.', zh: '马却够不着。' },
+      { art: '😂🐔', en: 'Short is not bad at all!', zh: '矮一点也不吃亏！' }
+    ],
+    quiz: [
+      { q: '谁高？', opts: ['马', '母鸡', '一样高'], a: 0 },
+      { q: '谁能吃到玉米？', opts: ['母鸡', '马', '都吃不到'], a: 0 },
+      { q: '故事告诉我们什么？', opts: ['矮也有好处', '高才好', '要吃玉米'], a: 0 }
+    ]
+  },
+  {
+    id: 'b76', lv: 'L7', tag: 'ir', title: 'Chirp, Chirp!', zh: '唧唧唧',
+    emoji: '🐤', color: '#F5C26B',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    newWords: [
+      { w: 'chirp', zh: '唧唧叫' },
+      { w: 'bird', zh: '鸟' },
+      { w: 'first', zh: '先' },
+      { w: 'dirt', zh: '泥土' },
+      { w: 'fall', zh: '掉' }
+    ],
+    pages: [
+      { art: '🐤', en: 'Chirp, chirp, chirp!', zh: '唧唧，唧唧，唧唧！' },
+      { art: '🐤🪺', en: 'A bird in a nest.', zh: '窝里有只小鸟。' },
+      { art: '🐛🐤', en: 'It chirps for a bug.', zh: '它叫着要虫子吃。' },
+      { art: '🐤🪱', en: 'First a big bug!', zh: '先来一条大虫子！' },
+      { art: '🐤💧', en: 'Then it falls in the dirt.', zh: '然后它掉进泥里。' },
+      { art: '😂🐤', en: 'Now it chirps for a bath!', zh: '这下它叫着要洗澡了！' }
+    ],
+    quiz: [
+      { q: '小鸟在哪儿？', opts: ['窝里', '树上', '地上'], a: 0 },
+      { q: '小鸟想吃什么？', opts: ['虫子', '面包', '玉米'], a: 0 },
+      { q: '掉进泥里后它想要什么？', opts: ['洗澡', '睡觉', '玩耍'], a: 0 }
+    ]
+  },
+  {
+    id: 'b77', lv: 'L7', tag: 'ar', title: 'The Farm at Night', zh: '夜里的农场',
+    emoji: '🌙', color: '#8FB8DE',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'at', 'night'],
+    newWords: [
+      { w: 'farm', zh: '农场' },
+      { w: 'dark', zh: '黑' },
+      { w: 'star', zh: '星星' },
+      { w: 'park', zh: '停放' },
+      { w: 'asleep', zh: '睡着的' },
+      { w: 'half', zh: '一半' }
+    ],
+    pages: [
+      { art: '🌙🚜', en: 'The farm is dark at night.', zh: '夜里农场黑漆漆的。' },
+      { art: '⭐🌌', en: 'Stars are up in the dark.', zh: '星星挂在天上。' },
+      { art: '🚜🌙', en: 'The cart is in the park.', zh: '大车停在车棚里。' },
+      { art: '🐴😴', en: 'The horse is half asleep.', zh: '马半睡着。' },
+      { art: '🐔🌙', en: 'A hen is not asleep.', zh: '有只母鸡还醒着。' },
+      { art: '😂🐔', en: 'It is first up in the dark!', zh: '它起得比谁都早——天还黑着呢！' }
+    ],
+    quiz: [
+      { q: '夜里的农场怎么样？', opts: ['很黑', '很亮', '很吵'], a: 0 },
+      { q: '大车停在哪儿？', opts: ['车棚里', '田里', '路上'], a: 0 },
+      { q: '谁还没睡？', opts: ['一只母鸡', '马', '全部'], a: 0 }
+    ]
+  },
+  {
+    id: 'b78', lv: 'L7', tag: 'ir / th', title: 'Thirty Birds', zh: '三十只鸟',
+    emoji: '🕊️', color: '#A9B7C6',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    newWords: [
+      { w: 'thirty', zh: '三十' },
+      { w: 'bird', zh: '鸟' },
+      { w: 'first', zh: '第一' },
+      { w: 'third', zh: '第三' },
+      { w: 'fly', zh: '飞' },
+      { w: 'come', zh: '来' }
+    ],
+    pages: [
+      { art: '🕊️🕊️', en: 'Thirty birds in a tree.', zh: '树上三十只鸟。' },
+      { art: '🎵🕊️', en: 'The first one sings.', zh: '第一只开始唱。' },
+      { art: '🎶🕊️', en: 'The third one comes in.', zh: '第三只跟着唱。' },
+      { art: '🎼🕊️', en: 'Soon all thirty sing!', zh: '很快三十只一起唱！' },
+      { art: '👂🎶', en: 'Such a loud song!', zh: '好响亮的合唱！' },
+      { art: '😂🕊️', en: 'Then they all fly off!', zh: '然后一哄而散！' }
+    ],
+    quiz: [
+      { q: '树上有几只鸟？', opts: ['三十只', '三只', '十三只'], a: 0 },
+      { q: '谁最先唱？', opts: ['第一只', '第三只', '全部一起'], a: 0 },
+      { q: '最后鸟做了什么？', opts: ['全飞走了', '睡着了', '继续唱'], a: 0 }
+    ]
+  },
+  {
+    id: 'b79', lv: 'L8', tag: '视觉词 where', title: 'Where Is My Hat?', zh: '我的帽子在哪',
+    emoji: '🎩', color: '#8FB8DE',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'where'],
+    newWords: [
+      { w: 'hat', zh: '帽子' },
+      { w: 'look', zh: '看' },
+      { w: 'under', zh: '在……下面' },
+      { w: 'chair', zh: '椅子' }
+    ],
+    pages: [
+      { art: '🎩❌', en: 'Where is my hat?', zh: '我的帽子在哪？' },
+      { art: '👀🛏️', en: 'I look on the bed.', zh: '我在床上找。' },
+      { art: '👀🪑', en: 'I look under the chair.', zh: '我在椅子下面找。' },
+      { art: '👀🚪', en: 'I look by the door.', zh: '我在门边找。' },
+      { art: '😕🎩', en: 'It is not there.', zh: '哪儿都没有。' },
+      { art: '😂🐱', en: 'My cat has it on!', zh: '原来我的猫戴着它！' }
+    ],
+    quiz: [
+      { q: '我在找什么？', opts: ['我的帽子', '我的鞋', '我的书'], a: 0 },
+      { q: '我找了哪些地方？', opts: ['床上、椅子下、门边', '学校、公园', '厨房'], a: 0 },
+      { q: '帽子最后在哪儿？', opts: ['猫头上', '床下', '门外'], a: 0 }
+    ]
+  },
+  {
+    id: 'b80', lv: 'L8', tag: '视觉词 what / was', title: 'What Was That?', zh: '那是什么声音',
+    emoji: '🌙', color: '#7B8FA8',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'what', 'was', 'that', 'in', 'be', 'bit', 'with'],
+    newWords: [
+      { w: 'sound', zh: '声音' },
+      { w: 'dark', zh: '黑' },
+      { w: 'scared', zh: '害怕的' },
+      { w: 'brave', zh: '勇敢的' }
+    ],
+    pages: [
+      { art: '🌙🏠', en: 'It is dark in my room.', zh: '我的房间黑漆漆的。' },
+      { art: '👂❓', en: 'What was that sound?', zh: '刚才那是什么声音？' },
+      { art: '😨🛏️', en: 'I am a bit scared.', zh: '我有点害怕。' },
+      { art: '💪😤', en: 'But I can be brave.', zh: '不过我可以勇敢一点。' },
+      { art: '🔦🚪', en: 'I go out with a lamp.', zh: '我提着灯走出去。' },
+      { art: '😂🐈', en: 'It was my cat!', zh: '原来一直是我的猫！' }
+    ],
+    quiz: [
+      { q: '房间里怎么样？', opts: ['很黑', '很亮', '很吵'], a: 0 },
+      { q: '我听到什么？', opts: ['一个声音', '有人叫我', '音乐'], a: 0 },
+      { q: '最后发现是谁？', opts: ['我的猫', '小偷', '风'], a: 0 }
+    ]
+  },
+  {
+    id: 'b81', lv: 'L8', tag: '视觉词 they / come', title: 'They Come at Night', zh: '它们夜里来',
+    emoji: '🦇', color: '#8E8E9A',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'they', 'come', 'at', 'night', 'out', 'their'],
+    newWords: [
+      { w: 'dark', zh: '黑' },
+      { w: 'wing', zh: '翅膀' },
+      { w: 'quiet', zh: '安静的' },
+      { w: 'sleep', zh: '睡' },
+      { w: 'those', zh: '那些' },
+      { w: 'very', zh: '非常' }
+    ],
+    pages: [
+      { art: '🌙🦇', en: 'They come out at night.', zh: '它们夜里出来。' },
+      { art: '🦇🌑', en: 'The dark is their time.', zh: '黑夜是它们的时间。' },
+      { art: '🪽🦇', en: 'Look at those wings!', zh: '看那些翅膀！' },
+      { art: '🤫🦇', en: 'They are very quiet.', zh: '它们非常安静。' },
+      { art: '🌅🦇', en: 'Then the sun comes up.', zh: '然后太阳出来了。' },
+      { art: '😂💤', en: 'Now they all sleep!', zh: '现在它们全睡了！' }
+    ],
+    quiz: [
+      { q: '它们什么时候出来？', opts: ['夜里', '中午', '早上'], a: 0 },
+      { q: '它们有什么？', opts: ['翅膀', '长尾巴', '角'], a: 0 },
+      { q: '太阳出来后它们做什么？', opts: ['睡觉', '继续飞', '唱歌'], a: 0 }
+    ]
+  },
+  {
+    id: 'b82', lv: 'L8', tag: '视觉词 some', title: 'Some Cake and Jam', zh: '蛋糕和果酱',
+    emoji: '🍰', color: '#F2A0A0',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'some', 'on', 'have', 'with', 'whole'],
+    newWords: [
+      { w: 'cake', zh: '蛋糕' },
+      { w: 'jam', zh: '果酱' },
+      { w: 'plate', zh: '盘子' },
+      { w: 'share', zh: '分享' },
+      { w: 'only', zh: '只' },
+      { w: 'whole', zh: '整个' }
+    ],
+    pages: [
+      { art: '🍰🍯', en: 'Some cake and jam!', zh: '一些蛋糕和果酱！' },
+      { art: '🍽️🍰', en: 'I have it on a plate.', zh: '我把它放在盘子里。' },
+      { art: '🐕👀', en: 'My dog wants some.', zh: '我的狗也想要。' },
+      { art: '🤝🐕', en: 'I can share with it.', zh: '我可以和它分着吃。' },
+      { art: '🐕💨', en: 'It takes the whole cake!', zh: '它把整个蛋糕叼走了！' },
+      { art: '😂🍯', en: 'Now only jam is left.', zh: '现在只剩果酱了。' }
+    ],
+    quiz: [
+      { q: '盘子里有什么？', opts: ['蛋糕和果酱', '面包和牛奶', '苹果'], a: 0 },
+      { q: '谁想要一些？', opts: ['我的狗', '我的猫', '我朋友'], a: 0 },
+      { q: '最后剩下什么？', opts: ['果酱', '蛋糕', '什么都没有'], a: 0 }
+    ]
+  },
+  {
+    id: 'b83', lv: 'L8', tag: '视觉词 here / there', title: 'Here and There', zh: '这里和那里',
+    emoji: '🧭', color: '#7FC8A9',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'here', 'there', 'look', 'with'],
+    newWords: [
+      { w: 'map', zh: '地图' },
+      { w: 'mark', zh: '标记' },
+      { w: 'path', zh: '小路' },
+      { w: 'find', zh: '找到' }
+    ],
+    pages: [
+      { art: '🗺️', en: 'A map with a mark.', zh: '一张画着标记的地图。' },
+      { art: '📍🗺️', en: 'Here is the mark.', zh: '标记在这里。' },
+      { art: '👀🛤️', en: 'There is a path.', zh: '那里有一条小路。' },
+      { art: '🚶🌳', en: 'We look here and there.', zh: '我们到处找。' },
+      { art: '💎🌿', en: 'We find it at last!', zh: '我们终于找到了！' },
+      { art: '😂🪨', en: 'It is just a stone!', zh: '原来只是块石头！' }
+    ],
+    quiz: [
+      { q: '地图上有什么？', opts: ['一个标记', '一只鸟', '一棵树'], a: 0 },
+      { q: '小路在哪里？', opts: ['标记旁边', '河边', '山顶'], a: 0 },
+      { q: '最后找到的是什么？', opts: ['一块石头', '宝石', '箱子'], a: 0 }
+    ]
+  },
+  {
+    id: 'b84', lv: 'L8', tag: '视觉词 look', title: 'Look at the Moon', zh: '看月亮',
+    emoji: '🌕', color: '#8FB8DE',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'look', 'at', 'up', 'so', 'with'],
+    newWords: [
+      { w: 'moon', zh: '月亮' },
+      { w: 'round', zh: '圆的' },
+      { w: 'bright', zh: '明亮的' },
+      { w: 'sky', zh: '天空' },
+      { w: 'wide', zh: '宽的' }
+    ],
+    pages: [
+      { art: '🌕', en: 'Look at the moon!', zh: '看那月亮！' },
+      { art: '🌕✨', en: 'It is so round and bright.', zh: '它又圆又亮。' },
+      { art: '🌌👦', en: 'The sky is dark and wide.', zh: '天空又黑又宽。' },
+      { art: '🔭👦', en: 'I look up with my glass.', zh: '我举起望远镜看。' },
+      { art: '🌕🔍', en: 'It has marks on it!', zh: '上面有好多斑纹！' },
+      { art: '😂🐕', en: 'My dog looks up too!', zh: '我的狗也抬头看！' }
+    ],
+    quiz: [
+      { q: '月亮什么样？', opts: ['又圆又亮', '又小又暗', '是方的'], a: 0 },
+      { q: '我用什么看月亮？', opts: ['望远镜', '眼镜', '镜子'], a: 0 },
+      { q: '谁也抬头看？', opts: ['我的狗', '我的猫', '我爸爸'], a: 0 }
+    ]
+  },
+  {
+    id: 'b85', lv: 'L8', tag: '视觉词 have', title: 'I Have a Wish', zh: '我有一个愿望',
+    emoji: '🌟', color: '#F5C26B',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'have', 'for', 'do'],
+    newWords: [
+      { w: 'wish', zh: '愿望' },
+      { w: 'star', zh: '星星' },
+      { w: 'night', zh: '夜晚' }
+    ],
+    pages: [
+      { art: '🌟👦', en: 'I have a wish for the star.', zh: '我向星星许了一个愿。' },
+      { art: '🌙⭐', en: 'It is a bright night.', zh: '夜里星星很亮。' },
+      { art: '🙏⭐', en: 'I wish and wish.', zh: '我许了又许。' },
+      { art: '💭🐕', en: 'Do you have a wish too?', zh: '你也想要一个愿望吗？' },
+      { art: '🐕🌟', en: 'My dog has one!', zh: '我的狗也有一个！' },
+      { art: '😂🦴', en: 'Its wish is a big bone!', zh: '它的愿望是一根大骨头！' }
+    ],
+    quiz: [
+      { q: '我向谁许愿？', opts: ['星星', '月亮', '太阳'], a: 0 },
+      { q: '夜里怎么样？', opts: ['星星很亮', '下雨', '很冷'], a: 0 },
+      { q: '狗的愿望是什么？', opts: ['一根大骨头', '一个球', '睡觉'], a: 0 }
+    ]
+  },
+  {
+    id: 'b86', lv: 'L8', tag: '视觉词 said', title: 'Said the Cat', zh: '猫说',
+    emoji: '🐈', color: '#F2B04E',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'said', 'to', 'me', 'you', 'with'],
+    newWords: [
+      { w: 'cat', zh: '猫' },
+      { w: 'hat', zh: '帽子' },
+      { w: 'sit', zh: '坐' },
+      { w: 'nap', zh: '小睡' }
+    ],
+    pages: [
+      { art: '🐈💬', en: '"Sit with me," said the cat.', zh: '“坐我旁边，”猫说。' },
+      { art: '🪑🐈', en: 'I sit on the mat.', zh: '我坐在垫子上。' },
+      { art: '🎩🐈', en: '"Not with that hat," said the cat.', zh: '“别戴那顶帽子，”猫说。' },
+      { art: '😕🎩', en: 'I take my hat off.', zh: '我把帽子摘下来。' },
+      { art: '😴🐈', en: '"Now a nap," said the cat.', zh: '“现在睡一觉，”猫说。' },
+      { art: '😂🐈', en: 'It naps on my hat!', zh: '它睡在我的帽子上！' }
+    ],
+    quiz: [
+      { q: '猫让我做什么？', opts: ['坐在它旁边', '喂它', '带它出去'], a: 0 },
+      { q: '猫不喜欢什么？', opts: ['我戴帽子', '我坐着', '垫子'], a: 0 },
+      { q: '最后猫睡在哪儿？', opts: ['我的帽子上', '垫子上', '床上'], a: 0 }
+    ]
+  },
+  {
+    id: 'b87', lv: 'L8', tag: '视觉词 one / two', title: 'One, Two, Three', zh: '一二三',
+    emoji: '🔢', color: '#B99BE0',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'one', 'two', 'three', 'then', 'counting'],
+    newWords: [
+      { w: 'count', zh: '数' },
+      { w: 'step', zh: '步' },
+      { w: 'jump', zh: '跳' },
+      { w: 'spin', zh: '转' }
+    ],
+    pages: [
+      { art: '🔢👦', en: 'I can count to three.', zh: '我能数到三。' },
+      { art: '1️⃣🚶', en: 'One step. Two steps.', zh: '一步。两步。' },
+      { art: '3️⃣🤸', en: 'Three! Then I jump.', zh: '三！然后我跳。' },
+      { art: '🌀🤸', en: 'I jump and spin.', zh: '我边跳边转。' },
+      { art: '😵🌀', en: 'One, two, three... flop!', zh: '一、二、三……扑通！' },
+      { art: '😂🌱', en: 'Counting is hard on grass!', zh: '在草地上数数真难！' }
+    ],
+    quiz: [
+      { q: '我能数到几？', opts: ['三', '十', '一百'], a: 0 },
+      { q: '数完三我做什么？', opts: ['跳', '坐', '跑'], a: 0 },
+      { q: '最后怎么了？', opts: ['摔在草地上', '赢了比赛', '睡着了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b88', lv: 'L8', tag: '视觉词 come / see', title: 'Come and See', zh: '来看呀',
+    emoji: '👀', color: '#7FC97F',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'come', 'see', 'and', 'what', 'be'],
+    newWords: [
+      { w: 'garden', zh: '花园' },
+      { w: 'grow', zh: '生长' },
+      { w: 'seed', zh: '种子' },
+      { w: 'tall', zh: '高的' },
+      { w: 'weed', zh: '野草' }
+    ],
+    pages: [
+      { art: '🌱👦', en: 'Come and see my garden!', zh: '来看我的花园！' },
+      { art: '🌱📏', en: 'My seed can grow.', zh: '我的种子会发芽。' },
+      { art: '🌿📈', en: 'It grows and grows.', zh: '它长了又长。' },
+      { art: '🌳😮', en: 'Now it is so tall!', zh: '现在它好高！' },
+      { art: '❓🌳', en: 'What can it be?', zh: '它会是什么呢？' },
+      { art: '😂🌻', en: 'Just a big weed!', zh: '原来是棵大野草！' }
+    ],
+    quiz: [
+      { q: '我种了什么？', opts: ['一颗种子', '一棵树', '一朵花'], a: 0 },
+      { q: '它长得怎么样？', opts: ['又高又大', '没长', '枯了'], a: 0 },
+      { q: '最后发现是什么？', opts: ['一棵野草', '向日葵', '大树'], a: 0 }
+    ]
+  },
+  {
+    id: 'b89', lv: 'L8', tag: '视觉词 was', title: 'Was It a Bug?', zh: '那是只虫吗',
+    emoji: '🐛', color: '#8CC084',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'what', 'on', 'so'],
+    newWords: [
+      { w: 'bug', zh: '小虫' },
+      { w: 'wall', zh: '墙' },
+      { w: 'small', zh: '小的' },
+      { w: 'spot', zh: '斑点' },
+      { w: 'moved', zh: '移动（过去式）' }
+    ],
+    pages: [
+      { art: '🐛🧱', en: 'A spot was on the wall.', zh: '墙上有个小点。' },
+      { art: '👀❓', en: 'What was it?', zh: '那是什么呢？' },
+      { art: '🔍🧱', en: 'It was so small.', zh: '它太小了。' },
+      { art: '👣🐛', en: 'Then it moved!', zh: '然后它动了！' },
+      { art: '🐛😮', en: 'It was a bug!', zh: '原来是一只虫子！' },
+      { art: '😂🧱', en: 'Now it is on me!', zh: '现在它爬到我身上了！' }
+    ],
+    quiz: [
+      { q: '墙上有什么？', opts: ['一个小点', '一幅画', '一只猫'], a: 0 },
+      { q: '那个小点怎么样？', opts: ['非常小', '很大', '会发光'], a: 0 },
+      { q: '最后小虫在哪儿？', opts: ['我身上', '墙上', '地上'], a: 0 }
+    ]
+  },
+  {
+    id: 'b90', lv: 'L9', tag: '综合', title: 'The Best Day', zh: '最好的一天',
+    emoji: '☀️', color: '#F5C26B',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'day', 'all', 'with', 'high'],
+    newWords: [
+      { w: 'best', zh: '最好的' },
+      { w: 'park', zh: '公园' },
+      { w: 'kite', zh: '风筝' },
+      { w: 'sun', zh: '太阳' },
+      { w: 'had', zh: '有（过去式）' },
+      { w: 'went', zh: '去（过去式）' },
+      { w: 'rained', zh: '下雨（过去式）' },
+      { w: 'once', zh: '一下子' },
+      { w: 'lunch', zh: '午饭' },
+      { w: 'warm', zh: '暖和的' }
+    ],
+    pages: [
+      { art: '☀️👦', en: 'It was the best day.', zh: '那是最好的一个日子。' },
+      { art: '🌳🏞️', en: 'We went to the park.', zh: '我们去了公园。' },
+      { art: '🪁💨', en: 'My kite went up high.', zh: '我的风筝飞得很高。' },
+      { art: '☀️😎', en: 'The sun was warm.', zh: '太阳暖暖的。' },
+      { art: '🍎🥪', en: 'We had lunch on the grass.', zh: '我们在草地上吃午饭。' },
+      { art: '🌧️😅', en: 'Then it rained all at once!', zh: '然后突然下起雨来！' },
+      { art: '😂🏠', en: 'Still the best day!', zh: '不过还是最好的一天！' }
+    ],
+    quiz: [
+      { q: '我们去了哪儿？', opts: ['公园', '学校', '海边'], a: 0 },
+      { q: '风筝飞得怎么样？', opts: ['很高', '很低', '没飞起来'], a: 0 },
+      { q: '后来天气怎么了？', opts: ['下雨了', '下雪了', '起风了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b91', lv: 'L9', tag: '综合', title: 'A Wish for the King', zh: '给国王的愿望',
+    emoji: '👑', color: '#C8A2E0',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'for', 'said', 'was', 'so', 'bread', 'he', 'his'],
+    newWords: [
+      { w: 'king', zh: '国王' },
+      { w: 'wish', zh: '愿望' },
+      { w: 'gold', zh: '金子' },
+      { w: 'share', zh: '分享' },
+      { w: 'had', zh: '有（过去式）' },
+      { w: 'went', zh: '去（过去式）' },
+      { w: 'wished', zh: '许愿（过去式）' },
+      { w: 'came', zh: '来（过去式）' },
+      { w: 'once', zh: '一下子' },
+      { w: 'warm', zh: '暖和的' }
+    ],
+    pages: [
+      { art: '👑💭', en: 'The king had a wish.', zh: '国王有一个愿望。' },
+      { art: '💰👑', en: 'He wished for gold.', zh: '他想要金子。' },
+      { art: '🏰✨', en: 'Gold came all at once.', zh: '金子一下子全来了。' },
+      { art: '😕👑', en: 'But gold is not warm.', zh: '可金子不暖和。' },
+      { art: '🍞👑', en: 'He wished to share his bread.', zh: '他宁愿把面包分给大家。' },
+      { art: '😂🍞', en: 'So the gold went away!', zh: '于是金子全没了！' }
+    ],
+    quiz: [
+      { q: '国王许了什么愿？', opts: ['想要金子', '想要面包', '想要马'], a: 0 },
+      { q: '得到金子后他觉得怎么样？', opts: ['金子不暖和', '很开心', '很富有'], a: 0 },
+      { q: '最后金子怎么了？', opts: ['消失了', '变多了', '被埋起来'], a: 0 }
+    ]
+  },
+  {
+    id: 'b92', lv: 'L9', tag: '综合', title: 'The Lost Bone', zh: '丢了的骨头',
+    emoji: '🦴', color: '#C8B58A',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'where', 'said', 'on'],
+    newWords: [
+      { w: 'bone', zh: '骨头' },
+      { w: 'lost', zh: '丢的' },
+      { w: 'dug', zh: '挖（过去式）' },
+      { w: 'had', zh: '有（过去式）' }
+    ],
+    pages: [
+      { art: '🐕😕', en: 'My dog lost its bone.', zh: '我的狗把骨头丢了。' },
+      { art: '🐕🕳️', en: 'It dug and dug.', zh: '它挖了又挖。' },
+      { art: '👀🌱', en: 'Where was the bone?', zh: '骨头到底在哪呢？' },
+      { art: '🐈🦴', en: 'My cat had it!', zh: '原来被我的猫拿走了！' },
+      { art: '🐕🐈', en: '"Give it back," said my dog.', zh: '“还给我，”我的狗说。' },
+      { art: '😂🦴', en: 'The cat just sat on it!', zh: '猫干脆坐在骨头上不还！' }
+    ],
+    quiz: [
+      { q: '狗丢了什么？', opts: ['骨头', '球', '项圈'], a: 0 },
+      { q: '狗做了什么找骨头？', opts: ['挖土', '叫', '跑'], a: 0 },
+      { q: '骨头最后在谁那儿？', opts: ['猫', '狗', '我'], a: 0 }
+    ]
+  },
+  {
+    id: 'b93', lv: 'L9', tag: '综合', title: 'Rain on the Roof', zh: '屋顶上的雨',
+    emoji: '🌧️', color: '#8FB8DE',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'on', 'all', 'night', 'could'],
+    newWords: [
+      { w: 'rain', zh: '雨' },
+      { w: 'roof', zh: '屋顶' },
+      { w: 'sound', zh: '声音' },
+      { w: 'sleep', zh: '睡' },
+      { w: 'made', zh: '发出（过去式）' },
+      { w: 'new', zh: '新的' },
+      { w: 'soft', zh: '轻柔的' }
+    ],
+    pages: [
+      { art: '🌧️🏠', en: 'Rain on the roof all night.', zh: '雨在屋顶上下了一整夜。' },
+      { art: '👂💧', en: 'It was a soft sound.', zh: '那声音轻轻的。' },
+      { art: '🛏️😴', en: 'I could sleep with it.', zh: '我听着它睡着了。' },
+      { art: '🌅💧', en: 'Then the rain was gone.', zh: '然后雨停了。' },
+      { art: '🤫😕', en: 'It was too quiet now.', zh: '现在又太安静了。' },
+      { art: '😂🐈', en: 'My cat made a new sound!', zh: '我的猫弄出了新声音！' }
+    ],
+    quiz: [
+      { q: '雨下在哪里？', opts: ['屋顶上', '窗户上', '树上'], a: 0 },
+      { q: '雨声怎么样？', opts: ['轻轻的', '很响', '没有声音'], a: 0 },
+      { q: '雨停后我觉得怎么样？', opts: ['太安静了', '很高兴', '很冷'], a: 0 }
+    ]
+  },
+  {
+    id: 'b94', lv: 'L9', tag: '综合', title: 'The Thirsty Crow', zh: '口渴的乌鸦',
+    emoji: '🐦‍⬛', color: '#7B8FA8',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'but', 'so', 'then', 'found', 'low'],
+    newWords: [
+      { w: 'crow', zh: '乌鸦' },
+      { w: 'thirsty', zh: '口渴的' },
+      { w: 'clever', zh: '聪明的' },
+      { w: 'came', zh: '来（过去式）' },
+      { w: 'had', zh: '有（过去式）' },
+      { w: 'dropped', zh: '丢下（过去式）' },
+      { w: 'water', zh: '水' }
+    ],
+    pages: [
+      { art: '🐦‍⬛☀️', en: 'A crow was thirsty.', zh: '一只乌鸦口渴了。' },
+      { art: '🏺💧', en: 'It found a jar with water.', zh: '它找到一个装水的罐子。' },
+      { art: '🐦‍⬛📏', en: 'But the water was too low.', zh: '可水面太低了。' },
+      { art: '🪨💭', en: 'It had a clever wish.', zh: '它想出一个聪明的办法。' },
+      { art: '🪨🏺', en: 'It dropped stones in.', zh: '它把石子一颗颗丢进去。' },
+      { art: '💧🐦‍⬛', en: 'The water came up!', zh: '水升上来了！' },
+      { art: '😂🐦‍⬛', en: 'Clever crow, full jar!', zh: '聪明的乌鸦，满满一罐水！' }
+    ],
+    quiz: [
+      { q: '乌鸦为什么发愁？', opts: ['口渴', '饿了', '迷路了'], a: 0 },
+      { q: '罐子里的水怎么样？', opts: ['太低了够不着', '很多', '是脏的'], a: 0 },
+      { q: '乌鸦想了什么办法？', opts: ['丢石子让水升高', '把罐子推倒', '叫别的鸟'], a: 0 }
+    ]
+  },
+  {
+    id: 'b95', lv: 'L9', tag: '综合', title: 'My Little Seed', zh: '我的小种子',
+    emoji: '🌱', color: '#7FC97F',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'so', 'day', 'then'],
+    newWords: [
+      { w: 'seed', zh: '种子' },
+      { w: 'water', zh: '水' },
+      { w: 'mud', zh: '泥' },
+      { w: 'tall', zh: '高的' },
+      { w: 'got', zh: '变得（过去式）' },
+      { w: 'gave', zh: '给（过去式）' }
+    ],
+    pages: [
+      { art: '🌱🤲', en: 'A seed so small.', zh: '我的小种子小小的。' },
+      { art: '🕳️🌱', en: 'I put it in the mud.', zh: '我把它放进泥里。' },
+      { art: '💧🌱', en: 'I gave it water.', zh: '我每天给它浇水。' },
+      { art: '🌱📈', en: 'Then it got tall.', zh: '然后它开始长大。' },
+      { art: '🌿😮', en: 'It is tall now!', zh: '它长了又长！' },
+      { art: '🌳😄', en: 'My seed is a tree!', zh: '现在它比我还高了！' }
+    ],
+    quiz: [
+      { q: '种子一开始怎么样？', opts: ['很小', '很大', '是坏的'], a: 0 },
+      { q: '我每天给它什么？', opts: ['水', '阳光', '肥料'], a: 0 },
+      { q: '最后它长成什么样？', opts: ['比我还高', '还是很小', '枯了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b96', lv: 'L9', tag: '综合', title: 'The Night Train', zh: '夜里的火车',
+    emoji: '🚂', color: '#6FB1D9',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'night', 'all', 'on', 'could', 'wheels'],
+    newWords: [
+      { w: 'train', zh: '火车' },
+      { w: 'dark', zh: '黑的' },
+      { w: 'hill', zh: '小山' },
+      { w: 'still', zh: '仍然' },
+      { w: 'ran', zh: '跑（过去式）' },
+      { w: 'sang', zh: '唱（过去式）' }
+    ],
+    pages: [
+      { art: '🚂🌙', en: 'The train ran all night.', zh: '火车跑了一整夜。' },
+      { art: '🚂🌑', en: 'It was dark on the hill.', zh: '山上黑漆漆的。' },
+      { art: '👀🪟', en: 'I could not sleep.', zh: '我一点也睡不着。' },
+      { art: '🎵🚂', en: 'The wheels sang.', zh: '车轮唱起了歌。' },
+      { art: '🌅🚂', en: 'Then the sun came up.', zh: '然后太阳升起来了。' },
+      { art: '😴🚂', en: 'Now the train is still!', zh: '火车停了，我却睡着了！' }
+    ],
+    quiz: [
+      { q: '火车跑了多久？', opts: ['一整夜', '一小时', '一整天'], a: 0 },
+      { q: '我睡得着吗？', opts: ['睡不着', '睡得很好', '睡了又醒'], a: 0 },
+      { q: '天亮后火车怎么样？', opts: ['停了', '开更快了', '坏了'], a: 0 }
+    ]
+  },
+  {
+    id: 'b97', lv: 'L9', tag: '综合', title: 'A Home for a Snail', zh: '蜗牛的家',
+    emoji: '🐌', color: '#C8B58A',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'for', 'so', 'with'],
+    newWords: [
+      { w: 'snail', zh: '蜗牛' },
+      { w: 'home', zh: '家' },
+      { w: 'shell', zh: '壳' },
+      { w: 'carry', zh: '背着' },
+      { w: 'came', zh: '来（过去式）' },
+      { w: 'had', zh: '有（过去式）' }
+    ],
+    pages: [
+      { art: '🐌', en: 'A snail was on the path.', zh: '小路上有一只蜗牛。' },
+      { art: '🏠🐌', en: 'It had a home with it.', zh: '它随身带着一个家。' },
+      { art: '🐚👀', en: 'Its shell was so small.', zh: '它的壳那么小。' },
+      { art: '🐌🚶', en: 'It had to carry it all day.', zh: '它整天都得背着它。' },
+      { art: '🌧️🐌', en: 'Then the rain came.', zh: '然后下起雨来。' },
+      { art: '😂🐌', en: 'Now it is glad for its shell!', zh: '这下它可庆幸有壳了！' }
+    ],
+    quiz: [
+      { q: '蜗牛的家在哪儿？', opts: ['就在它身上', '树下', '石头下'], a: 0 },
+      { q: '它的壳怎么样？', opts: ['很小', '很大', '是空的'], a: 0 },
+      { q: '下雨后它为什么高兴？', opts: ['壳能挡雨', '可以喝水', '能跑得快'], a: 0 }
+    ]
+  },
+  {
+    id: 'b98', lv: 'L9', tag: '综合', title: 'The Big Storm', zh: '大风暴',
+    emoji: '🌪️', color: '#7B8FA8',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'all', 'then', 'so'],
+    newWords: [
+      { w: 'storm', zh: '风暴' },
+      { w: 'wind', zh: '风' },
+      { w: 'hard', zh: '猛烈' },
+      { w: 'safe', zh: '安全的' },
+      { w: 'bit', zh: '有点' },
+      { w: 'done', zh: '结束' },
+      { w: 'were', zh: '是（过去式）' }
+    ],
+    pages: [
+      { art: '🌪️🏠', en: 'A big storm was on us.', zh: '一场大风暴来了。' },
+      { art: '🌬️💨', en: 'The wind hit so hard.', zh: '风刮得太猛了。' },
+      { art: '🏠🕯️', en: 'We sat in the dark.', zh: '我们坐在黑屋里。' },
+      { art: '😨👦', en: 'I was a bit scared.', zh: '我有点害怕。' },
+      { art: '🤗🏠', en: 'We were all safe here.', zh: '我们在这儿都很安全。' },
+      { art: '🌅😄', en: 'Then it was all done!', zh: '然后风暴就过去了！' }
+    ],
+    quiz: [
+      { q: '外面怎么了？', opts: ['刮大风暴', '下雪', '很热'], a: 0 },
+      { q: '风暴里我们怎么样？', opts: ['都安全', '跑出去了', '很害怕地哭'], a: 0 },
+      { q: '最后风暴怎么样？', opts: ['过去了', '更大了', '一直不停'], a: 0 }
+    ]
+  },
+  {
+    id: 'b99', lv: 'L9', tag: '综合', title: 'Three Little Bugs', zh: '三只小虫',
+    emoji: '🐞', color: '#8CC084',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'three', 'on', 'was', 'then'],
+    newWords: [
+      { w: 'bug', zh: '小虫' },
+      { w: 'leaf', zh: '叶子' },
+      { w: 'crawl', zh: '爬' },
+      { w: 'fly', zh: '飞' },
+      { w: 'came', zh: '来（过去式）' },
+      { w: 'over', zh: '到处' },
+      { w: 'little', zh: '小小的' }
+    ],
+    pages: [
+      { art: '🐞🐞🐞', en: 'Three little bugs on a leaf.', zh: '叶子上有三只小虫。' },
+      { art: '🍃🐞', en: 'They crawl all over it.', zh: '它们在叶子上爬来爬去。' },
+      { art: '🌧️🐞', en: 'Then the rain came.', zh: '然后下雨了。' },
+      { art: '🍃💧', en: 'The leaf was so wet.', zh: '叶子全湿了。' },
+      { art: '🪽🐞', en: 'It was time to fly!', zh: '该飞走了！' },
+      { art: '😂🐞', en: 'Three bugs, one wet leaf!', zh: '三只小虫，一片湿叶子！' }
+    ],
+    quiz: [
+      { q: '小虫在哪儿？', opts: ['叶子上', '树上', '水里'], a: 0 },
+      { q: '下雨后叶子怎么样？', opts: ['湿了', '干了', '飞了'], a: 0 },
+      { q: '最后小虫做什么？', opts: ['飞走', '睡觉', '继续爬'], a: 0 }
+    ]
+  },
+  {
+    id: 'b100', lv: 'L9', tag: '综合', title: 'A Book for Me', zh: '送给我的书',
+    emoji: '📖', color: '#B99BE0',
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'for', 'me', 'was', 'all'],
+    newWords: [
+      { w: 'book', zh: '书' },
+      { w: 'read', zh: '读' },
+      { w: 'page', zh: '页' },
+      { w: 'word', zh: '字；单词' },
+      { w: 'every', zh: '每一个' }
+    ],
+    pages: [
+      { art: '📖👦', en: 'This book is for me!', zh: '这本书是给我的！' },
+      { art: '👀📄', en: 'I can read it all.', zh: '我全都能读下来。' },
+      { art: '📄🔤', en: 'Every word is on a page.', zh: '每个词都在页上。' },
+      { art: '😄📚', en: 'I read and read.', zh: '我读了又读。' },
+      { art: '🌙📖', en: 'It was dark and late.', zh: '天黑了，很晚了。' },
+      { art: '😂🔦', en: 'But I still read on!', zh: '可我还想接着读！' }
+    ],
+    quiz: [
+      { q: '这本书是给谁的？', opts: ['我的', '老师的', '弟弟的'], a: 0 },
+      { q: '我能读吗？', opts: ['全都能读', '只能读一点', '读不了'], a: 0 },
+      { q: '天黑了我在做什么？', opts: ['还在读书', '睡觉', '玩'], a: 0 }
     ]
   }
 ];

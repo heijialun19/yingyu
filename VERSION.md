@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v160 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v161 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/books-data.js | v3 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
 | js/phonics.js | v9 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
@@ -38,7 +38,7 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v219 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v220 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
 
 ## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
@@ -77,6 +77,44 @@
 版本链：SENTENCE_VER 5→6、PHRASE_VER 3→4、app v154→v155、CACHE v213→v214、
 BUILD 2026-11-14.18→.19，11 个正式页与 SW CORE/BOOT 同步。AUDIO_VER / WEAK_VER /
 PHONICS_VER 零改动，2912 条单词与母语者字母音字节不动。
+
+## 2026-11-15.6 · 读书馆扩容 15 → 100 本
+
+**为什么。** 全站内容体检发现读书馆只有 15 本、共 111 词——一个入门级分级读物应有
+1000–3000 词，差距 10–30 倍；而词库（999 词）、拼读（20+ 音素组）、语法（23 关）都已够用。
+所以只补最短板。
+
+**新增 85 本（b16–b100），8 级各 12–13 本：**
+
+| 级别 | 音素重点 | 新增 |
+|---|---|---|
+| L2 | 短元音 CVC | 7 |
+| L3 | sh/ch/th/ck/ng | 10 |
+| L4 | 连缀 bl/cr/st/fr/sp/gr/tr/sn/sk | 11 |
+| L5 | 元音组合 ee/oo/ai/ay/oa | 11 |
+| L6 | 魔法 e a_e/i_e/o_e/u_e | 12 |
+| L7 | 卷舌音 ar/or/ir | 12 |
+| L8 | 视觉词扩展 | 11 |
+| L9 | 综合收官 | 11 |
+
+**每本的硬标准（沿用并强化 books-data.js 顶部铁律）：**
+- 每页 ≤8 词，全书 4–25 个不重复词，6–7 页
+- 每个词要么能用该级（及以下）音素完整切分，要么在 `sight` 里显式声明
+- `newWords` 必须真的在正文出现（校验器强制）
+- 生词表带中文；读后 3 道理解题，答案索引合法
+- 故事有转折、以荒诞小笑点收尾（如「一袋袜子里有只鸭子」「金子全没了」）
+
+**校验。** `_check_books.py` 全量 100 本通过：可解码 / 音素可拼 / 结构自洽。
+过程中拦下并修掉的问题：未声明词（`glad`/`with`/`went` 等 60+ 处）、
+L5 超纲词（`giraffe`→`zebra`、`soil`→`mud`、`bread`→`cake`）、
+两本不重复词超 25、以及生成器 bug 造成的 84 个数组空槽（双逗号）。
+
+**音频。** 新增 505 条整句（8 本内句子重复、1 条已存在，故去重后 505）。
+ljspeech-medium / length_scale 1.1 / 128kbps / 峰值 −2dB，与全站同规格。
+**SENTENCE_VER 保持 8**——新 slug 本来没有缓存条目，AUDIO_CACHE 按完整 URL 匹配，
+老用户只会下载新句子，已有 934 条不重下。
+
+app v161 / CACHE v220 / books-data v4 / BUILD .15.6。
 
 ## 2026-11-15.5 · 单词发音修复（pe / with）
 
