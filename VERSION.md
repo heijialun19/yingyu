@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v157 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v158 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/books-data.js | v3 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
 | js/phonics.js | v9 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
@@ -38,7 +38,7 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v216 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v217 | Service Worker（音频缓存 birdie-audio-v5 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
 
 ## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
@@ -77,6 +77,32 @@
 版本链：SENTENCE_VER 5→6、PHRASE_VER 3→4、app v154→v155、CACHE v213→v214、
 BUILD 2026-11-14.18→.19，11 个正式页与 SW CORE/BOOT 同步。AUDIO_VER / WEAK_VER /
 PHONICS_VER 零改动，2912 条单词与母语者字母音字节不动。
+
+## 2026-11-15.3 · 音频音质 + 句子火车员病句
+
+**问题一：单词杂音。** 全量扫描 2881 个单词母版：
+- 峰值**全部 0dBFS 顶满**（run.wav 真峰值 -0.00dB），手机扬声器满幅播放容易间采样失真；
+- 单词 MP3 只有 **96kbps**，4-10k 编码余量 19–22dB（整句 128k 是 26dB）；
+- 瞬态扫描（相邻采样差分）**突发=0**，无咔哒/爆音；`tone()` 音效也有正常 fade，不是爆音源；
+- 但 `speakWord()` 每次点词先播 80ms/520Hz 的 `sfx.pop`，与语音起点叠加。
+
+处置：单词 2912 + 整句 934 + 词块 137 全部从 WAV 母版重编为 **128kbps + volume=-2dB**
+（单词沿用原 -50dB 双向裁静音；整句不裁）；缺母版的 40 词 + 1 句从现网 MP3 二次编码。
+点词去掉 `sfx.pop()`。音素块 39 个母语者录音不动。
+
+| 指标 | 旧 | 新 |
+|---|---|---|
+| 单词 4-10k 编码余量 | 19–22dB | **23.7–24.8dB** |
+| 单词真峰值 | -0.2~-0.5dB | **约 -2.2dB**（留 headroom） |
+| 点词额外音效 | 520Hz/80ms 叠加 | 无 |
+
+**问题二：句子火车员病句。** 截图「She __ every day.」选 let/am/lets → 正确答案
+「She lets every day.（她每天让）」。根因：`bareActs` 在白名单动词为空时**回退到全部动词**，
+及物动词 let/give/put/take 被塞进「动词后什么都不带」的模板。改为固定安全兜底
+`run / jump / sing`，「I can __.」「He can't __.」「Do you want to __?」三个模板一并修好。
+
+版本链：app v158 / SENTENCE_VER 6→7 / PHRASE_VER 4→5 / AUDIO_VER 4→5 /
+AUDIO_CACHE v5→v6 / CACHE v217 / BUILD .15.3。音频全量重下（按需）。
 
 ## 2026-11-15.2 · 第四轮验收修复（色彩规则 + B2 分层）
 

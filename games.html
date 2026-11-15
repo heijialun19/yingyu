@@ -53,7 +53,7 @@
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=45"></script>
 <script src="js/build-data.js?v=3"></script>
-<script src="js/app.js?v=157"></script>
+<script src="js/app.js?v=158"></script>
 <script defer src="js/audio-list.js?v=9"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/grammar-engine.js?v=9"></script>
@@ -656,7 +656,12 @@ function gSentence(pool, level) {
   const foods = nonEmpty(anyFoods, anyCountable);
   const drinks = nonEmpty(anyDrinks, foods);
   const acts = nonEmpty(anyActions, []);
-  const bareActs = nonEmpty(acts.filter(w => BARE_VERBS.has(String(w.w).toLowerCase())), acts);
+  /* ★ 2026-11-15.3（第四轮验收截图）：兜底绝不能用全部动词。
+     及物动词（let / give / put / take / make…）塞进「动词后什么都不带」的模板
+     就是半截话：She lets every day.（她每天让）/ I can put. —— 孩子会照学。
+     白名单为空时改用三个确定能单独成立的动词。 */
+  const SAFE_BARE = [{ w: 'run', zh: '跑', e: '🏃' }, { w: 'jump', zh: '跳', e: '🐰' }, { w: 'sing', zh: '唱歌', e: '🎤' }];
+  const bareActs = nonEmpty(acts.filter(w => BARE_VERBS.has(String(w.w).toLowerCase())), SAFE_BARE);
   const nnn = nonEmpty(anyNouns, anyCountable);
   /* 「This is a X.」「There is a X.」「Is this a X?」都要 a/an —— 专有名词/方位/学科
      不能加冠词（This is a south. / an America. 都是错句），所以再过一道 canArt。 */

@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-15.2';
+const BUILD = '2026-11-15.3';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -543,7 +543,7 @@ function renderGradePicker(sel) {
    单词/整句/词块三类一起换，各自版本号 +1；字母音是母语者录音，不动。 */
 /* ★ 2026-11-09.8：只修 pep.html 拼词复习的泄底，音频零改动，
    所以 AUDIO_VER / SENTENCE_VER / PHRASE_VER 都不动。 */
-const AUDIO_VER = 4;
+const AUDIO_VER = 5;
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
    有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
@@ -618,7 +618,7 @@ __registerAudioList();          /* audio-list.js 比 app.js 先执行时直接�
    128k 后余量 ~26dB（实测 +14~16dB）。934 条字节全变，必须升版本——老用户按需
    重下（预取每页最多 24 条、低优先级，不是一次性全量 20MB）。词音频 96k 不动，
    AUDIO_VER 不升；本条只影响 audio/sentences/。 */
-const SENTENCE_VER = 6;
+const SENTENCE_VER = 7;
 const SENTENCE_AUDIO = new Set([
   "a_bee_is_in_the_tree", "a_big_day_for_my_duck_and_pig", "a_big_fish_a_big_fish", "a_bird_is_on_the_car", "a_cake_on_a_plate", "a_car_is_on_the_farm",
   "a_cat_a_hat", "a_cheetah_can_run_fast", "a_chick_is_on_the_duck", "a_crab_a_crab", "a_dish_on_the_ship", "a_duck_and_a_pig",
@@ -793,7 +793,7 @@ const sentenceAudioURL = t => {
    ★ PHRASE_VER 独立于 AUDIO_VER / SENTENCE_VER，重做词块只升它。
    2026-11-14.19 v4：137 条 64kbps → 128kbps 重编（同整句降噪，词块是
    整句缺失时的连读兜底，码率必须与整句同规格才没有音质断层）。 */
-const PHRASE_VER = 4;
+const PHRASE_VER = 5;
 const PHRASE_AUDIO = new Set([
   "a_boy","a_girl","are_these","are_they","birds_fly","can_he",
   "can_i","can_she","can_they","can_you","did_you","do_you",
@@ -1846,7 +1846,9 @@ function phonicsText(word) {
 
 /* 点单词：点一下读一遍，点几次读几次（不自动连读） */
 function speakWord(word) {
-  sfx.pop();
+  /* 2026-11-15.3：点词只出人声，不再先播 520Hz 的 sfx.pop。
+     家长反馈「很多单词有杂音」——这个 80ms 短音在语音起点叠着响，
+     连续点词就是「啵-词-啵-词」，容易被当成底噪。 */
   speak(String(word).trim(), 'en-US', 1);
 }
 
