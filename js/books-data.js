@@ -547,7 +547,7 @@ const BOOKS = [
   {
     id: 'b20', lv: 'L2', tag: '短元音 u', title: 'A Bug in a Mug', zh: '杯子里的虫子',
     emoji: '🐛', color: '#8CC084',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'you'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'you', 'glad'],
     newWords: [
       { w: 'bug', zh: '小虫子' },
       { w: 'mug', zh: '马克杯' },
@@ -623,7 +623,7 @@ const BOOKS = [
   {
     id: 'b23', lv: 'L3', tag: 'sh', title: 'Fish in a Dish', zh: '盘子里的鱼',
     emoji: '🐟', color: '#6FB3D9',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no', 'see'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'no', 'see', 'glad'],
     newWords: [
       { w: 'fish', zh: '鱼' },
       { w: 'dish', zh: '盘子' },
@@ -647,7 +647,7 @@ const BOOKS = [
   {
     id: 'b24', lv: 'L3', tag: 'sh / ck', title: 'The Big Ship', zh: '大船',
     emoji: '🚢', color: '#5B9BD5',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'on'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'on', 'glad'],
     newWords: [
       { w: 'ship', zh: '船' },
       { w: 'deck', zh: '甲板' },
@@ -725,7 +725,7 @@ const BOOKS = [
   {
     id: 'b27', lv: 'L3', tag: 'ng', title: 'The Singing King', zh: '爱唱歌的国王',
     emoji: '👑', color: '#C8A2E0',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'too'],
     newWords: [
       { w: 'sing', zh: '唱歌' },
       { w: 'king', zh: '国王' },
@@ -752,7 +752,7 @@ const BOOKS = [
   {
     id: 'b28', lv: 'L3', tag: 'ch', title: 'Chop, Chop!', zh: '切切切',
     emoji: '🔪', color: '#E88C7D',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'see'],
     newWords: [
       { w: 'chop', zh: '切' },
       { w: 'chip', zh: '薯片' },
@@ -802,7 +802,7 @@ const BOOKS = [
   {
     id: 'b30', lv: 'L3', tag: 'th', title: 'Thick Fog', zh: '浓浓的大雾',
     emoji: '🌫️', color: '#A9B7C6',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'this'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'this', 'see'],
     newWords: [
       { w: 'thick', zh: '浓的' },
       { w: 'fog', zh: '雾' },
@@ -827,7 +827,7 @@ const BOOKS = [
   {
     id: 'b31', lv: 'L3', tag: 'sh / th', title: 'Wish, Wish, Wish', zh: '许愿许愿',
     emoji: '🌟', color: '#F5C26B',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'this', 'but'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'am', 'not', 'my', 'can', 'no', 'this', 'but', 'swim'],
     newWords: [
       { w: 'wish', zh: '愿望' },
       { w: 'fish', zh: '鱼' },
@@ -906,7 +906,7 @@ const BOOKS = [
   {
     id: 'b34', lv: 'L4', tag: '连缀 st', title: 'Stop the Bus!', zh: '拦住公交车',
     emoji: '🚌', color: '#F2B04E',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'road'],
     newWords: [
       { w: 'stop', zh: '停' },
       { w: 'bus', zh: '公交车' },
@@ -954,7 +954,7 @@ const BOOKS = [
   {
     id: 'b36', lv: 'L4', tag: '连缀 tw / mb', title: 'Twin Lambs', zh: '双胞胎小羊',
     emoji: '🐑', color: '#D9C7A7',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'two'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'two', 'lambs'],
     newWords: [
       { w: 'twin', zh: '双胞胎' },
       { w: 'lamb', zh: '小羊' },
@@ -1005,7 +1005,7 @@ const BOOKS = [
   {
     id: 'b38', lv: 'L4', tag: '连缀 sn / cr', title: 'Snap! Snap!', zh: '咔嚓咔嚓',
     emoji: '🦀', color: '#E88C7D',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'too'],
     newWords: [
       { w: 'snap', zh: '咔嚓；夹' },
       { w: 'crab', zh: '螃蟹' },
@@ -1029,7 +1029,7 @@ const BOOKS = [
   {
     id: 'b39', lv: 'L4', tag: '连缀 dr / mp', title: 'The Big Drum', zh: '大鼓',
     emoji: '🥁', color: '#D98C6B',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'too'],
     newWords: [
       { w: 'drum', zh: '鼓' },
       { w: 'stamp', zh: '跺脚' },
@@ -1077,7 +1077,7 @@ const BOOKS = [
   {
     id: 'b41', lv: 'L4', tag: '连缀 st / br', title: 'A Nest of Eggs', zh: '一窝蛋',
     emoji: '🪺', color: '#C8B58A',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'bird'],
     newWords: [
       { w: 'nest', zh: '鸟窝' },
       { w: 'egg', zh: '蛋' },
@@ -1102,7 +1102,7 @@ const BOOKS = [
   {
     id: 'b42', lv: 'L4', tag: '连缀 bl / tr', title: 'The Black Cat', zh: '黑猫',
     emoji: '🐈‍⬛', color: '#8E8E9A',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on', 'dark', 'see'],
     newWords: [
       { w: 'black', zh: '黑色的' },
       { w: 'track', zh: '足迹；小路' },
@@ -1255,7 +1255,7 @@ const BOOKS = [
   {
     id: 'b48', lv: 'L5', tag: 'ay', title: 'Play All Day', zh: '玩一整天',
     emoji: '🎈', color: '#F5C26B',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'all'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'all', 'now'],
     newWords: [
       { w: 'play', zh: '玩' },
       { w: 'day', zh: '白天' },
@@ -1329,7 +1329,7 @@ const BOOKS = [
   {
     id: 'b51', lv: 'L5', tag: 'ee', title: 'Sleep, Sheep!', zh: '睡吧，小羊',
     emoji: '😴', color: '#B9C7D9',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'all', 'eyes', 'night'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'all', 'eyes', 'night', 'now'],
     newWords: [
       { w: 'sheep', zh: '绵羊' },
       { w: 'sleep', zh: '睡觉' },
@@ -1354,7 +1354,7 @@ const BOOKS = [
   {
     id: 'b52', lv: 'L5', tag: 'oo', title: 'Food at the Zoo', zh: '动物园的饭',
     emoji: '🦒', color: '#F2B04E',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'at'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'at', 'eats'],
     newWords: [
       { w: 'food', zh: '食物' },
       { w: 'zoo', zh: '动物园' },
@@ -1381,7 +1381,7 @@ const BOOKS = [
   {
     id: 'b53', lv: 'L5', tag: 'ee', title: 'A Green Seed', zh: '一颗绿种子',
     emoji: '🌱', color: '#7FC97F',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'from'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'from', 'now'],
     newWords: [
       { w: 'green', zh: '绿色的' },
       { w: 'seed', zh: '种子' },
@@ -1533,7 +1533,7 @@ const BOOKS = [
   {
     id: 'b59', lv: 'L6', tag: 'o_e', title: 'The Bone in the Stone', zh: '石头里的骨头',
     emoji: '🦴', color: '#C8B58A',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'now'],
     newWords: [
       { w: 'bone', zh: '骨头' },
       { w: 'stone', zh: '石头' },
@@ -1610,7 +1610,7 @@ const BOOKS = [
   {
     id: 'b62', lv: 'L6', tag: 'o_e', title: 'The Rope and the Nose', zh: '绳子和鼻子',
     emoji: '🐘', color: '#B9C7D9',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'on', 'now'],
     newWords: [
       { w: 'rope', zh: '绳子' },
       { w: 'nose', zh: '鼻子' },
@@ -1687,7 +1687,7 @@ const BOOKS = [
   {
     id: 'b65', lv: 'L6', tag: 'u_e / o_e', title: 'The Huge Stone', zh: '巨大的石头',
     emoji: '🪨', color: '#A9B7C6',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'will'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'will', 'car'],
     newWords: [
       { w: 'huge', zh: '巨大的' },
       { w: 'stone', zh: '石头' },
@@ -1739,7 +1739,7 @@ const BOOKS = [
   {
     id: 'b67', lv: 'L7', tag: 'ar', title: 'The Star in the Jar', zh: '罐子里的星星',
     emoji: '⭐', color: '#F5C26B',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'just'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'just', 'now'],
     newWords: [
       { w: 'star', zh: '星星' },
       { w: 'jar', zh: '玻璃罐' },
@@ -1763,7 +1763,7 @@ const BOOKS = [
   {
     id: 'b68', lv: 'L7', tag: 'ir / ar', title: 'A Bird in the Park', zh: '公园里的小鸟',
     emoji: '🐦', color: '#7FC97F',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'now'],
     newWords: [
       { w: 'bird', zh: '小鸟' },
       { w: 'park', zh: '公园' },
@@ -1899,7 +1899,7 @@ const BOOKS = [
   {
     id: 'b73', lv: 'L7', tag: 'ir', title: 'The Girl in the Red Skirt', zh: '红裙子女孩',
     emoji: '👗', color: '#E5707E',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'her'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'her', 'now'],
     newWords: [
       { w: 'girl', zh: '女孩' },
       { w: 'skirt', zh: '裙子' },
@@ -1977,7 +1977,7 @@ const BOOKS = [
   {
     id: 'b76', lv: 'L7', tag: 'ir', title: 'Chirp, Chirp!', zh: '唧唧唧',
     emoji: '🐤', color: '#F5C26B',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'now'],
     newWords: [
       { w: 'chirp', zh: '唧唧叫' },
       { w: 'bird', zh: '鸟' },
@@ -2029,7 +2029,7 @@ const BOOKS = [
   {
     id: 'b78', lv: 'L7', tag: 'ir / th', title: 'Thirty Birds', zh: '三十只鸟',
     emoji: '🕊️', color: '#A9B7C6',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'in', 'loud'],
     newWords: [
       { w: 'thirty', zh: '三十' },
       { w: 'bird', zh: '鸟' },
@@ -2055,7 +2055,7 @@ const BOOKS = [
   {
     id: 'b79', lv: 'L8', tag: '视觉词 where', title: 'Where Is My Hat?', zh: '我的帽子在哪',
     emoji: '🎩', color: '#8FB8DE',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'where'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'where', 'door'],
     newWords: [
       { w: 'hat', zh: '帽子' },
       { w: 'look', zh: '看' },
@@ -2103,7 +2103,7 @@ const BOOKS = [
   {
     id: 'b81', lv: 'L8', tag: '视觉词 they / come', title: 'They Come at Night', zh: '它们夜里来',
     emoji: '🦇', color: '#8E8E9A',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'they', 'come', 'at', 'night', 'out', 'their'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'they', 'come', 'at', 'night', 'out', 'their', 'now'],
     newWords: [
       { w: 'dark', zh: '黑' },
       { w: 'wing', zh: '翅膀' },
@@ -2129,7 +2129,7 @@ const BOOKS = [
   {
     id: 'b82', lv: 'L8', tag: '视觉词 some', title: 'Some Cake and Jam', zh: '蛋糕和果酱',
     emoji: '🍰', color: '#F2A0A0',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'some', 'on', 'have', 'with', 'whole'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'some', 'on', 'have', 'with', 'whole', 'now'],
     newWords: [
       { w: 'cake', zh: '蛋糕' },
       { w: 'jam', zh: '果酱' },
@@ -2204,7 +2204,7 @@ const BOOKS = [
   {
     id: 'b85', lv: 'L8', tag: '视觉词 have', title: 'I Have a Wish', zh: '我有一个愿望',
     emoji: '🌟', color: '#F5C26B',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'have', 'for', 'do'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'have', 'for', 'do', 'bright'],
     newWords: [
       { w: 'wish', zh: '愿望' },
       { w: 'star', zh: '星星' },
@@ -2227,7 +2227,7 @@ const BOOKS = [
   {
     id: 'b86', lv: 'L8', tag: '视觉词 said', title: 'Said the Cat', zh: '猫说',
     emoji: '🐈', color: '#F2B04E',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'said', 'to', 'me', 'you', 'with'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'said', 'to', 'me', 'you', 'with', 'now'],
     newWords: [
       { w: 'cat', zh: '猫' },
       { w: 'hat', zh: '帽子' },
@@ -2275,7 +2275,7 @@ const BOOKS = [
   {
     id: 'b88', lv: 'L8', tag: '视觉词 come / see', title: 'Come and See', zh: '来看呀',
     emoji: '👀', color: '#7FC97F',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'come', 'see', 'and', 'what', 'be'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'come', 'see', 'and', 'what', 'be', 'grows', 'now'],
     newWords: [
       { w: 'garden', zh: '花园' },
       { w: 'grow', zh: '生长' },
@@ -2300,7 +2300,7 @@ const BOOKS = [
   {
     id: 'b89', lv: 'L8', tag: '视觉词 was', title: 'Was It a Bug?', zh: '那是只虫吗',
     emoji: '🐛', color: '#8CC084',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'what', 'on', 'so'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'what', 'on', 'so', 'now'],
     newWords: [
       { w: 'bug', zh: '小虫' },
       { w: 'wall', zh: '墙' },
@@ -2410,7 +2410,7 @@ const BOOKS = [
   {
     id: 'b93', lv: 'L9', tag: '综合', title: 'Rain on the Roof', zh: '屋顶上的雨',
     emoji: '🌧️', color: '#8FB8DE',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'on', 'all', 'night', 'could'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'on', 'all', 'night', 'could', 'now', 'quiet'],
     newWords: [
       { w: 'rain', zh: '雨' },
       { w: 'roof', zh: '屋顶' },
@@ -2465,7 +2465,7 @@ const BOOKS = [
   {
     id: 'b95', lv: 'L9', tag: '综合', title: 'My Little Seed', zh: '我的小种子',
     emoji: '🌱', color: '#7FC97F',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'so', 'day', 'then'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'so', 'day', 'then', 'now'],
     newWords: [
       { w: 'seed', zh: '种子' },
       { w: 'water', zh: '水' },
@@ -2491,7 +2491,7 @@ const BOOKS = [
   {
     id: 'b96', lv: 'L9', tag: '综合', title: 'The Night Train', zh: '夜里的火车',
     emoji: '🚂', color: '#6FB1D9',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'night', 'all', 'on', 'could', 'wheels'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'night', 'all', 'on', 'could', 'wheels', 'now'],
     newWords: [
       { w: 'train', zh: '火车' },
       { w: 'dark', zh: '黑的' },
@@ -2517,7 +2517,7 @@ const BOOKS = [
   {
     id: 'b97', lv: 'L9', tag: '综合', title: 'A Home for a Snail', zh: '蜗牛的家',
     emoji: '🐌', color: '#C8B58A',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'for', 'so', 'with'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'for', 'so', 'with', 'now'],
     newWords: [
       { w: 'snail', zh: '蜗牛' },
       { w: 'home', zh: '家' },
@@ -2543,7 +2543,7 @@ const BOOKS = [
   {
     id: 'b98', lv: 'L9', tag: '综合', title: 'The Big Storm', zh: '大风暴',
     emoji: '🌪️', color: '#7B8FA8',
-    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'all', 'then', 'so'],
+    sight: ['the', 'a', 'is', 'and', 'it', 'I', 'can', 'not', 'my', 'no', 'we', 'was', 'all', 'then', 'so', 'scared'],
     newWords: [
       { w: 'storm', zh: '风暴' },
       { w: 'wind', zh: '风' },
@@ -2617,6 +2617,156 @@ const BOOKS = [
       { q: '这本书是给谁的？', opts: ['我的', '老师的', '弟弟的'], a: 0 },
       { q: '我能读吗？', opts: ['只能读一点', '读不了', '全都能读'], a: 2 },
       { q: '天黑了我在做什么？', opts: ['玩', '睡觉', '还在读书'], a: 2 }
+    ]
+  },
+  {
+    id: 'b101', lv: 'L2', tag: '短元音 a · 韵尾 /t/ /d/ /g/', title: 'Bad Cat!', zh: '坏猫！',
+    emoji: '🐱', color: '#F5B7B1',
+    track: 'drill',
+    goal: '尾音 /t/ /d/ /g/ 都要读出来',
+    trap: 'cat 不要读成「卡特」，也不要吞掉尾音读成「ca」。舌尖顶住上齿龈，轻轻放气就停。',
+    pep: '人教三上 U3 动物',
+    summary: '这本书每句话的最后一个词都带「尾音」：cat /t/、hid /d/、bag /g/。中文里没有这种收尾的辅音，孩子很容易读成「ca」「hi」「ba」——一到句尾就省掉，别人就听不懂了。读的时候让他把每个尾音都「点一下」。',
+    pre: [
+      { art: '🐱', en: 'cat', zh: '猫' },
+      { art: '🐀', en: 'rat', zh: '老鼠' },
+      { art: '👜', en: 'bag', zh: '袋子' },
+      { art: '🟫', en: 'mat', zh: '垫子' }
+    ],
+    sight: ['the', 'a', 'on', 'in', 'at', 'said'],
+    newWords: [
+      { w: 'fat', zh: '胖的' },
+      { w: 'cat', zh: '猫' },
+      { w: 'sat', zh: '坐（过去式）' },
+      { w: 'mat', zh: '垫子' },
+      { w: 'rat', zh: '老鼠' },
+      { w: 'ran', zh: '跑（过去式）' },
+      { w: 'hid', zh: '藏（过去式）' },
+      { w: 'bag', zh: '袋子' },
+      { w: 'bad', zh: '坏的' }
+    ],
+    pages: [
+      { art: '🐱🟫', en: 'A fat cat sat on a mat.', zh: '一只胖猫坐在垫子上。' },
+      { art: '🐀', en: 'A rat ran in.', zh: '一只老鼠跑了进来。' },
+      { art: '🐱💨🐀', en: 'The cat ran at the rat.', zh: '猫朝老鼠冲了过去。' },
+      { art: '🐀👜', en: 'The rat hid in a bag.', zh: '老鼠躲进了一个袋子。' },
+      { art: '🐱👜', en: 'The cat sat on the bag!', zh: '猫一屁股坐在了袋子上！' },
+      { art: '🐀😤', en: '"Bad cat!" said the rat.', zh: '「坏猫！」老鼠说。' }
+    ],
+    quiz: [
+      { q: '猫坐在什么上面？', opts: ['垫子上', '袋子上', '帽子上'], a: 0 },
+      { q: '老鼠躲到哪里去了？', opts: ['袋子里', '床底下', '树上'], a: 0 },
+      { q: '最后谁坐在了袋子上？', opts: ['猫', '老鼠', '奶奶'], a: 0 }
+    ]
+  },
+  {
+    id: 'b102', lv: 'L6', tag: '魔法 e · a_e / i_e / o_e', title: 'The Red Packet', zh: '红包',
+    emoji: '🧧', color: '#E05B4B',
+    track: 'story',
+    goal: '魔法 e：cake / bike / note —— 末尾的 e 不发音，但让前面的元音「说出字母名」',
+    trap: 'packet 是两拍「帕克-特」，不要读成「怕克」；note 的 /t/ 要轻轻送出来。',
+    pep: '人教三下 U3 节日',
+    summary: '魔法 e 是英语里最划算的一条规则：末尾加一个不发音的 e，前面的元音就读「字母名」——cake 的 a 读 /eɪ/、bike 的 i 读 /aɪ/、note 的 o 读 /oʊ/。中文没有「字母名」这个概念，所以要让孩子先记住 a-e-i-o-u 五个名字，再去看词尾有没有 e。',
+    pre: [
+      { art: '🧧', en: 'packet', zh: '红包' },
+      { art: '📄', en: 'note', zh: '纸条' },
+      { art: '🎂', en: 'cake', zh: '蛋糕' },
+      { art: '🚲', en: 'bike', zh: '自行车' }
+    ],
+    sight: ['the', 'a', 'is', 'in', 'it', 'I', 'my', 'and', 'for', 'you', 'says', 'what', 'has', 'get', 'big', 'book', 'Ha', 'Grandma', 'she', 'her'],
+    newWords: [
+      { w: 'red', zh: '红色的' },
+      { w: 'bed', zh: '床' },
+      { w: 'packet', zh: '红包' },
+      { w: 'shake', zh: '摇一摇' },
+      { w: 'open', zh: '打开' },
+      { w: 'note', zh: '纸条' },
+      { w: 'bike', zh: '自行车' },
+      { w: 'ride', zh: '骑' },
+      { w: 'shop', zh: '商店' },
+      { w: 'cake', zh: '蛋糕' },
+      { w: 'smile', zh: '笑' },
+      { w: 'fast', zh: '快地' },
+      { w: 'top', zh: '顶部' }
+    ],
+    pages: [
+      { art: '🧧🛏️', en: 'A red packet on my bed. It is for me!', zh: '床上有一个红包。是给我的！' },
+      { art: '👵🧧', en: '"For you," says Grandma. She has a big smile.', zh: '「给你的。」奶奶说，笑得眼睛都弯了。' },
+      { art: '🧧🤲', en: 'What is in it? I shake it. Shake, shake!', zh: '里面是什么？我摇了摇。摇啊摇！' },
+      { art: '🧧📄', en: 'I open the packet. A note!', zh: '我打开红包。是一张纸条！' },
+      { art: '📄✍️', en: 'The note says: "Get a book."', zh: '纸条上写着：「去买本书。」' },
+      { art: '🚲', en: 'I get my bike and ride. I ride fast.', zh: '我骑上自行车出发，骑得飞快。' },
+      { art: '🏪🎂', en: 'The shop has a big cake. The cake has a red top.', zh: '店里有一个大蛋糕，顶上红红的。' },
+      { art: '🎂👵😂', en: 'I get the cake. "A book?" says Grandma. Ha!', zh: '我买回了蛋糕。「书呢？」奶奶问。哈！' }
+    ],
+    quiz: [
+      { q: '红包是谁给的？', opts: ['奶奶', '老师', '同学'], a: 0 },
+      { q: '纸条上写的是什么？', opts: ['去买本书', '去买个蛋糕', '早点睡觉'], a: 0 },
+      { q: '我最后买回了什么？', opts: ['蛋糕', '书', '自行车'], a: 0 }
+    ]
+  },
+  {
+    id: 'b103', lv: 'L9', tag: '综合 · 非虚构', title: 'The Panda', zh: '大熊猫',
+    emoji: '🐼', color: '#3A4A5A',
+    track: 'info',
+    goal: '长句阅读 · 科普类 · 复习 ar/or（hard、for）',
+    trap: 'panda 重音在第一拍 PAN-da，不要读成 pan-DA；bamboo 重音在第二拍 bam-BOO。',
+    pep: '人教五上 U4 动物',
+    summary: '科普书和故事书不一样：它不靠笑点，靠「一个事实接一个事实」。这本书里 bamboo、mountain、baby 这些词会反复出现，读第二遍时孩子就认得了。读完可以问他：「熊猫为什么一天要吃那么久？」——让他用中文回答也算读懂。',
+    pre: [
+      { art: '🐼', en: 'panda', zh: '熊猫' },
+      { art: '🎋', en: 'bamboo', zh: '竹子' },
+      { art: '⛰️', en: 'mountain', zh: '山' },
+      { art: '🍼', en: 'baby', zh: '宝宝' }
+    ],
+    sight: ['a', 'is', 'and', 'it', 'in', 'the', 'of', 'has', 'can', 'not', 'are', 'they', 'their', 'with', 'all', 'day', 'for', 'very', 'small', 'big', 'new', 'as', 'at', 'to', 'many', 'now', 'china'],
+    newWords: [
+      { w: 'panda', zh: '熊猫' },
+      { w: 'black', zh: '黑色的' },
+      { w: 'white', zh: '白色的' },
+      { w: 'spots', zh: '斑点' },
+      { w: 'lives', zh: '生活（第三人称）' },
+      { w: 'mountains', zh: '群山' },
+      { w: 'green', zh: '绿色的' },
+      { w: 'eats', zh: '吃（第三人称）' },
+      { w: 'bamboo', zh: '竹子' },
+      { w: 'long', zh: '长的' },
+      { w: 'tall', zh: '高的' },
+      { w: 'grass', zh: '草' },
+      { w: 'eat', zh: '吃' },
+      { w: 'hours', zh: '小时' },
+      { w: 'needs', zh: '需要（第三人称）' },
+      { w: 'lot', zh: '许多' },
+      { w: 'food', zh: '食物' },
+      { w: 'baby', zh: '宝宝' },
+      { w: 'pandas', zh: '熊猫（复数）' },
+      { w: 'see', zh: '看见' },
+      { w: 'first', zh: '最初' },
+      { w: 'stay', zh: '待着' },
+      { w: 'mother', zh: '妈妈' },
+      { w: 'grow', zh: '长大' },
+      { w: 'soon', zh: '很快' },
+      { w: 'climb', zh: '爬' },
+      { w: 'cup', zh: '杯子' },
+      { w: 'play', zh: '玩' },
+      { w: 'safe', zh: '安全的' },
+      { w: 'sends', zh: '送去（第三人称）' },
+      { w: 'zoos', zh: '动物园（复数）' }
+    ],
+    pages: [
+      { art: '🐼', en: 'A panda is black and white. It has big black spots.', zh: '熊猫是黑白两色的。它有大大的黑斑点。' },
+      { art: '⛰️🐼', en: 'It lives in the mountains of China. The mountains are green.', zh: '它住在中国的大山里。那些山是绿的。' },
+      { art: '🎋🐼', en: 'A panda eats bamboo all day long. Bamboo is a tall grass.', zh: '熊猫一整天都在吃竹子。竹子是一种长得很高的草。' },
+      { art: '🎋⏰', en: 'A big panda can eat for hours and hours. It needs a lot of food.', zh: '一只成年熊猫能一连吃好几个小时，它需要很多食物。' },
+      { art: '🐼🍼', en: 'Baby pandas are very small. A new baby is as small as a cup.', zh: '熊猫宝宝非常小。刚出生的宝宝只有一只杯子那么大。' },
+      { art: '🐼👀', en: 'They can not see at first. They stay with their mother.', zh: '它们刚出生时看不见，一直待在妈妈身边。' },
+      { art: '📈🐼', en: 'They grow and grow. Soon they can climb trees and play.', zh: '它们长啊长，很快就能爬树、玩耍了。' },
+      { art: '🐼🛡️', en: 'Now the panda is safe. China sends pandas to many zoos.', zh: '现在熊猫安全了。中国把熊猫送到很多动物园。' }
+    ],
+    quiz: [
+      { q: '熊猫是什么颜色的？', opts: ['黑白两色', '全身白色', '棕色'], a: 0 },
+      { q: '熊猫主要吃什么？', opts: ['竹子', '苹果', '小鱼'], a: 0 },
+      { q: '刚出生的熊猫宝宝有多大？', opts: ['像一只杯子那么大', '像一只猫那么大', '像妈妈那么大'], a: 0 }
     ]
   }
 ];

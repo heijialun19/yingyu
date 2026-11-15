@@ -46,8 +46,32 @@
 .bk-sent .w.hl{background:#FFE28A}
 .bk-zh{margin:2px 4px 10px;font-size:.92rem;color:var(--ink2)}
 .bk-tools{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0 2px}
+/* 读前看图说词 */
+.bk-prepage{padding-top:14px}
+.bk-pretitle{font-size:1.05rem;font-weight:800;color:var(--ink);margin:2px 0 14px}
+.bk-pregrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 2px}
+.bk-prew{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 8px;
+  background:#FBF8FF;border:2px solid #E8E3F5;border-radius:16px;cursor:pointer;transition:.12s}
+.bk-prew:hover{border-color:var(--grape);background:#F5F0FF}
+.bk-prew.said{border-color:var(--leaf);background:#EFF9F1}
+.bk-preart{font-size:38px;line-height:1.15}
+.bk-prew b{font-size:1.15rem;color:var(--ink)}
+.bk-prew small{font-size:.8rem;color:var(--ink2)}
+.bk-prehint{margin:14px 4px 2px;font-size:.86rem;color:var(--ink2)}
+/* 发音提示 */
+.bk-trap{margin:12px 4px 2px;padding:10px 12px;border-radius:14px;background:#FFF6E5;
+  border:2px solid #FFE0A3;font-size:.88rem;line-height:1.65;color:#6B4E00;text-align:left}
+.bk-trap b{color:#8A5A00}
+/* 读后小结 */
+.bk-summary{margin:14px 6px 4px;padding:12px 14px;border-radius:16px;background:#F1F7FF;
+  border:2px solid #CFE4FA;font-size:.9rem;line-height:1.75;color:#22405C;text-align:left}
+.bk-summary b{color:#14304A}
+.bk-goal{display:block;font-size:.96rem;line-height:1.55}
+.bk-meta2{display:block;margin-top:3px;font-size:.84rem;color:var(--ink2)}
 .bk-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:14px 2px 2px}
-.bk-dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;flex:1}
+.bk-dots{display:flex;gap:4px;flex-wrap:nowrap;justify-content:center;flex:1;min-width:0}
+.bk-dot{flex:0 0 auto}
+#bkNum{font-size:26px;line-height:1.1;display:inline-block;margin-bottom:2px}
 .bk-dot{width:9px;height:9px;border-radius:50%;background:#DDE2EC}
 .bk-dot.on{background:var(--grape)}
 .bk-quiz{background:#fff;border:3px solid var(--grape);border-radius:22px;padding:18px 16px 16px;box-shadow:0 4px 0 rgba(45,49,66,.08)}
@@ -140,8 +164,8 @@
 
 <script src="js/words-data.js?v=46"></script>
 <script src="js/data.js?v=45"></script>
-<script src="js/app.js?v=162"></script>
-<script src="js/books-data.js?v=5"></script>
+<script src="js/app.js?v=163"></script>
+<script src="js/books-data.js?v=6"></script>
 <script defer src="js/audio-list.js?v=9"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>
@@ -158,6 +182,7 @@ let CUR = null;      // 当前书
 let PAGE = 0;        // 当前页码
 let QUIZI = 0;       // 当前题号
 let QUIZ_OK = 0;     // 答对数
+let SEQ = [];        // 当前书的渲染序列（读前页 + 正文页）
 
 /* esc 使用 app.js 的全局版本（本地重复声明会与 app.js 的 const esc 冲突导致整段脚本解析失败） */
 
@@ -192,6 +217,10 @@ function renderShelf() {
 function openBook(id) {
   CUR = BOOKS.find(b => b.id === id);
   if (!CUR) return;
+  /* 读前页（若该书带 pre）：渲染序列 = [读前] + 正文；老书没有 pre 就与 pages 完全等价 */
+  SEQ = [];
+  if (CUR.pre && CUR.pre.length) SEQ.push({ __pre: true });
+  CUR.pages.forEach(p => SEQ.push(p));
   PAGE = 0;
   document.getElementById('shelf').style.display = 'none';
   document.querySelector('.hero').classList.add('compact');
@@ -199,9 +228,14 @@ function openBook(id) {
   document.getElementById('quiz').style.display = 'none';
   document.getElementById('bkNum').textContent = CUR.emoji;
   document.getElementById('bkTitle').textContent = CUR.title + ' · ' + CUR.zh;
-  document.getElementById('bkMeta').innerHTML =
-    `🎯 练习：<b>${esc(CUR.tag)}</b> · 共 ${CUR.pages.length} 页 · 读后 3 题 · ` +
-    `点句子听整句，点<span style="background:#FFE28A;border-radius:6px;padding:0 4px">单词</span>听发音`;
+  const TRK = { drill: '🔬 发音专项', story: '📖 故事', info: '🌍 科普' };
+  document.getElementById('bkMeta').innerHTML = CUR.goal
+    ? `<span class="bk-goal">🎯 <b>${esc(CUR.goal)}</b></span>` +
+      `<span class="bk-meta2">${TRK[CUR.track] ? TRK[CUR.track] + ' · ' : ''}` +
+      `${CUR.pages.length} 页 · ${CUR.quiz.length} 题` +
+      `${CUR.pep ? ' · ' + esc(CUR.pep) : ''}</span>`
+    : `🎯 练习：<b>${esc(CUR.tag)}</b> · 共 ${CUR.pages.length} 页 · 读后 3 题 · ` +
+      `点句子听整句，点<span style="background:#FFE28A;border-radius:6px;padding:0 4px">单词</span>听发音`;
   document.getElementById('bkWords').innerHTML =
     CUR.newWords.map(w => `<button class="bk-wchip" data-w="${esc(w.w)}">${esc(w.w)}<small>${esc(w.zh)}</small></button>`).join('') +
     CUR.sight.map(w => `<button class="bk-wchip" data-w="${esc(w)}" style="border-color:var(--lemon);background:#FFF9E3">${esc(w)}<small>视觉词</small></button>`).join('');
@@ -211,7 +245,8 @@ function openBook(id) {
 }
 
 function paintPage() {
-  const p = CUR.pages[PAGE];
+  const p = SEQ[PAGE];
+  if (p && p.__pre) { paintPre(); return; }
   const stage = document.getElementById('bkStage');
   stage.innerHTML = `
     <div class="bk-page">
@@ -235,21 +270,54 @@ function paintPage() {
   document.getElementById('bkPlay').onclick = () => speakSentence(p.en, sentEl);
   const zhEl = stage.querySelector('.bk-zh');
   document.getElementById('bkZh').onclick = () => { zhEl.style.display = zhEl.style.display === 'none' ? '' : 'none'; };
+  /* 没有读前页时，第 1 页顶部给一次发音提示 */
+  if (CUR.trap && !(CUR.pre && CUR.pre.length) && PAGE === 0) {
+    const tip = document.createElement('div');
+    tip.className = 'bk-trap';
+    tip.innerHTML = '🔈 <b>发音提示</b> ' + esc(CUR.trap);
+    stage.querySelector('.bk-page').appendChild(tip);
+  }
   /* 翻页点 */
   document.getElementById('bkNav').innerHTML = `
     <button class="btn ghost" id="bkPrev" ${PAGE === 0 ? 'disabled' : ''}>← 上一页</button>
-    <div class="bk-dots">${CUR.pages.map((_, i) => `<span class="bk-dot ${i === PAGE ? 'on' : ''}"></span>`).join('')}</div>
-    <button class="btn grape" id="bkNext">${PAGE === CUR.pages.length - 1 ? '读后小测 →' : '下一页 →'}</button>`;
+    <div class="bk-dots">${SEQ.map((_, i) => `<span class="bk-dot ${i === PAGE ? 'on' : ''}"></span>`).join('')}</div>
+    <button class="btn grape" id="bkNext">${PAGE === SEQ.length - 1 ? '读后小测 →' : '下一页 →'}</button>`;
   document.getElementById('bkPrev').onclick = () => { if (PAGE > 0) { PAGE--; paintPage(); prewarm(); } };
   document.getElementById('bkNext').onclick = () => {
-    if (PAGE < CUR.pages.length - 1) { PAGE++; paintPage(); prewarm(); sfx.pop(); }
+    if (PAGE < SEQ.length - 1) { PAGE++; paintPage(); prewarm(); sfx.pop(); }
     else { startQuiz(); }
   };
 }
 
+/* ============ 读前看图说词 ============ */
+function paintPre() {
+  const stage = document.getElementById('bkStage');
+  stage.innerHTML = `
+    <div class="bk-page bk-prepage">
+      <div class="bk-pretitle">👀 先看图，说一说</div>
+      <div class="bk-pregrid">
+        ${CUR.pre.map(w => `<button class="bk-prew" data-w="${esc(w.en)}">
+            <span class="bk-preart">${w.art}</span>
+            <b>${esc(w.en)}</b><small>${esc(w.zh)}</small></button>`).join('')}
+      </div>
+      ${CUR.trap ? `<div class="bk-trap">🔈 <b>发音提示</b> ${esc(CUR.trap)}</div>` : ''}
+      <div class="bk-prehint">每个词点一下听一遍，再翻页读故事。读的时候注意这些词。</div>
+    </div>`;
+  stage.querySelectorAll('.bk-prew').forEach(b => b.onclick = () => {
+    speak(b.dataset.w, 'en-US', 1);
+    b.classList.add('said');
+    setTimeout(() => b.classList.remove('said'), 600);
+  });
+  document.getElementById('bkNav').innerHTML = `
+    <button class="btn ghost" id="bkPrev" disabled>← 上一页</button>
+    <div class="bk-dots">${SEQ.map((_, i) => `<span class="bk-dot ${i === PAGE ? 'on' : ''}"></span>`).join('')}</div>
+    <button class="btn grape" id="bkNext">开始读 →</button>`;
+  document.getElementById('bkNext').onclick = () => { PAGE++; paintPage(); prewarm(); };
+}
+
 function prewarm() {
-  const p = CUR.pages[PAGE + 1];
-  if (p && typeof prewarmSentence === 'function') prewarmSentence(p.en);
+  const p = SEQ[PAGE + 1];
+  if (p && p.en && typeof prewarmSentence === 'function') prewarmSentence(p.en);
 }
 
 /* ============ 读后小测 ============ */
@@ -298,6 +366,7 @@ function finishBook() {
     <div style="text-align:center;padding:12px 4px 6px">
       <div style="font-size:64px">${QUIZ_OK === CUR.quiz.length ? '🏆' : '📖'}</div>
       <h3>${QUIZ_OK === CUR.quiz.length ? '太棒了，全对！' : '读完啦！'}</h3>
+      ${CUR.summary ? `<div class="bk-summary"><b>这本书练了什么</b><br>${esc(CUR.summary)}</div>` : ''}
       <p style="margin:8px 4px;color:var(--ink2);line-height:1.7">
         《${esc(CUR.title)}》· 答对 <b>${QUIZ_OK}</b> / ${CUR.quiz.length} 题
         ${first ? ' · 奖励 ⭐+2' : ''}

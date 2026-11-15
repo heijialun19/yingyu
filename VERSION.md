@@ -14,7 +14,7 @@
 
 | 文件 | 版本 | 说明 |
 |---|---|---|
-| js/app.js | v162 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
+| js/app.js | v163 | 全站共享运行时：发音系统（只用站内音频 + 系统语音兜底）、词图、星星、档案、导航 |
 | js/books-data.js | v3 | 读书馆 15 本分级拼读小书（2026-11-14.16 新增）：严格可解码（已教音素可拼校验），每本 4-25 词、读后 3 题；read.html 消费 |
 | js/phonics.js | v9 | 自然拼读数据与发音助手：PHONICS 24 词族 + PH_BLEND_OK + PH_BLOCKS 13 块 + 视觉词/可解码句/拼写词表；v7 新增 **PH_LEVELS / PH_L1_BATCHES 分级闯关数据**（纯新增，games/index 向后兼容）。拼读课 / 首页专栏 / 拼读闯关三方同源 |
 | svg/emoji-core.js | v3 | 轻页面核心表情库（界面核心 ~80 条；视觉簇扫描含 👨‍👩‍👧 家庭组合与 6 个年级 emoji，尾部 __emojiSvgReady 回调触发替换；app.js inject 加 onload 兜底） |
@@ -38,7 +38,7 @@
 | svg/emoji-svg.js | v6 | 内置 emoji SVG **基础库 626 条**。**用 async 加载，不挡首屏**，挂 `window.WORD_EMOJI` |
 | svg/emoji-svg2.js | v3 | 内置 emoji SVG **课程扩展 227 条**（含 13 面国旗）。getsmart.html / pep.html 加载，async |
 | audio/phonics/ | v2 | **26 个字母音 + 13 个拼读块**（母语者录音，s5s5/phonics，MIT，见 THIRD-PARTY-NOTICES.txt）。不进 audio-list 清单，用 app.js 的 `PHONICS_VER` 独立版本号；重做时只升它，不动 AUDIO_VER |
-| sw.js | birdie-abc-v221 | Service Worker（音频缓存 birdie-audio-v7 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
+| sw.js | birdie-abc-v222 | Service Worker（音频缓存 birdie-audio-v7 不随发版清；换名时自动删旧音频缓存）；CORE 含两个 async 图库 |
 ---
 
 ## 2026-11-14.19 · 整句/词块「轻微啫啫/电流声」修复（64k → 128k 全量重编）
@@ -77,6 +77,33 @@
 版本链：SENTENCE_VER 5→6、PHRASE_VER 3→4、app v154→v155、CACHE v213→v214、
 BUILD 2026-11-14.18→.19，11 个正式页与 SW CORE/BOOT 同步。AUDIO_VER / WEAK_VER /
 PHONICS_VER 零改动，2912 条单词与母语者字母音字节不动。
+
+## 2026-11-15.8 · 读书馆面向中国学生改造（第一步）
+
+**为什么改。** 原 100 本按 Bob Books 标准写（每页 ≤8 词、全书 ≤25 不重复词），
+结果 8 个级别全都是 27–34 词/本、5 词/页——**没有梯度**。
+RAZ A→J 是 30→300 词，我们整个书库只相当于人家一个级别。
+
+**这一版做了四件事：**
+
+1. **校验器按级别分档**（`LIMITS`）：L2 7 词/页 → L9 16 词/页、20 → 64 不重复词。
+   原来的一刀切 8 词/页正是梯度上不去的根因。
+2. **接入真字素规则**（`gpc_violations`）：原来 `tokenize` 允许任何词拆成单字母，
+   `elephant` 也能过；现在本级未教的 ea/igh/ow/ou/oi/ph/gl/st… 出现即报错。
+   用法：把该词写进 `sight` 显式声明为视觉词，或换词。顺带修了 40 处历史违规。
+3. **阅读页加三块支架**（老书无字段则照旧渲染）：
+   `pre` 读前看图说词（图+中文+点读）· `trap` 中文发音提示（针对中国学生）·
+   `summary` 读后中文小结（这本书练了什么音、什么规则）。
+4. **三本样书验证三轨**：
+   | 书 | 级别 | 轨 | 词数 | 特点 |
+   |---|---|---|---|---|
+   | b101 Bad Cat! | L2 | 发音专项 | 33 | 六页全以 /t/ /d/ /g/ 尾音收尾 |
+   | b102 The Red Packet | L6 | 故事 | 66 | 红包 → 奶奶写字条 → 孩子买蛋糕 |
+   | b103 The Panda | L9 | 科普 | 93 | 一页 2 句、事实递进 |
+
+三个长度档（33 / 66 / 93）是梯度的样板；正式铺开时按 L2 25 → L9 150 走。
+
+app v163 / CACHE v222 / books-data v6 / BUILD .15.8。
 
 ## 2026-11-15.7 · 读书馆 100 本内容审查
 

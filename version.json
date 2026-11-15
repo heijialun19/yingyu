@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-15.7",
-  "note": "2026-11-15.7 读书馆全量内容审查：通读 100 本，修 15 处真错误 + 打散答案位置。题意不符 4（b52 正文 zebra 但配图题干还是长颈鹿 / b68 蛋糕答成面包 / b73 正文改成 third girl 但题干问第几排 / b77 正文 park 但答案车棚）；语法 5（So much chip / Them fish / a nest in a branch / rope is on the go / goat and train in the rain 缺谓语）；常识 6（火车开马路 / 儿歌 go again / 答非所问 too green / 蛋糕浮湖上 / 床不高兴 / 戒指不高兴）。另修正题干无正文支撑 3 处（b36/b59/b95）。答案位置原来 271/300 在 A 位（90%，孩子只点第一个就能全对），现打散为 93/106/101。b37 标题 Milk on the Glass → Milk on the Desk。19 条正文改动全部重新合成音频（ljspeech 1.1 / 128k / -2dB）。app v161 / CACHE v220 / BUILD .15.7。"
+  "build": "2026-11-15.8",
+  "note": "2026-11-15.8 读书馆「面向中国学生」改造第一步：新增长度梯度、三轨样书、读前/发音提示/小结三块支架。校验器改为按级别分档（原来一律 ≤8 词/页、≤25 不重复词，等于把长书全卡死），并接入真字素规则（本级未教的 ea/igh/ow/ou/gl/st 等出现即报错）；顺带把 40 处历史违规按「声明为视觉词」修掉。新样书 b101 Bad Cat!（L2 韵尾专项 33 词）/ b102 The Red Packet（L6 故事 66 词·红包）/ b103 The Panda（L9 科普 93 词）。22 条整句音频。app v163 / CACHE v222 / BUILD .15.8。"
 }
