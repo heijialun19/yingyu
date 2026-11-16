@@ -49,6 +49,9 @@
 .bk-track.review{background:#FFF2DA;color:#8A5A00}
 .bk-track.drill{background:#F3EAFF;color:#5B3E86}
 .bk-track.info{background:#E6F7EE;color:#1E6647}
+.bk-track.fantasy{background:#F6E9FF;color:#6B3FA0}
+.bk-track.humor{background:#FFEDE0;color:#A04B1E}
+.bk-track.rhyme{background:#FFF8D8;color:#8A6A00}
 .bk-sent{margin:14px 4px 6px;font-size:clamp(1.35rem,4.6vw,2rem);font-weight:800;line-height:1.75;color:var(--ink)}
 .bk-sent .w{cursor:pointer;border-radius:8px;padding:1px 3px;transition:.12s}
 .bk-sent .w:hover{background:#FFF3C4}
@@ -188,9 +191,9 @@
 
 <script src="js/words-data.js?v=47"></script>
 <script src="js/data.js?v=47"></script>
-<script src="js/app.js?v=184"></script>
-<script src="js/books-data.js?v=24"></script>
-<script defer src="js/audio-list.js?v=17"></script>
+<script src="js/app.js?v=185"></script>
+<script src="js/books-data.js?v=25"></script>
+<script defer src="js/audio-list.js?v=18"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>
 renderNav('read'); renderDecor();
@@ -247,7 +250,8 @@ function wc(b) {
   return (b.pages || []).reduce((n, p) => n + String(p.en || '').split(/\s+/).filter(Boolean).length, 0);
 }
 const TRACK_LABEL = { story:'📖 故事', drill:'🔬 发音专项',
-                      info:'🌍 小科普', review:'🔁 复习册' };
+                      info:'🌍 小科普', review:'🔁 复习册',
+                      fantasy:'🧚 想象', humor:'😄 好笑', rhyme:'🎵 韵文' };
 function renderShelf() {
   const prog = bkProg();
   const order = ['L1','L2','L3','L4','L5','L6','L7','L8','L9','L10'];
@@ -378,7 +382,8 @@ function openBook(id) {
   document.getElementById('bkNum').textContent = CUR.emoji;
   document.getElementById('bkTitle').textContent = CUR.title + ' · ' + CUR.zh;
   const TRK = { drill: '🔬 发音专项', story: '📖 故事',
-                info: '🌍 小科普', review: '🔁 复习册' };
+                info: '🌍 小科普', review: '🔁 复习册',
+                fantasy: '🧚 想象', humor: '😄 好笑', rhyme: '🎵 韵文' };
   document.getElementById('bkMeta').innerHTML = CUR.goal
     ? `<span class="bk-goal">🎯 <b>${esc(CUR.goal)}</b></span>` +
       `<span class="bk-meta2">${TRK[CUR.track] ? TRK[CUR.track] + ' · ' : ''}` +
