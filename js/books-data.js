@@ -587,24 +587,24 @@ const BOOKS = [
     id: 'b17', lv: 'L2', tag: '厨房', title: 'A Big Pot', zh: '一口大锅',
     emoji: '🍲', color: '#E0CFF3',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 4 个新词（锅、厨房、盖子、摸）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 4 个新词（锅、厨房、盖子、微笑）。',
     trap: '短元音要收住韵尾：cap 的 p 是双唇轻轻一闭，不要加「呃」读成「卡普呃」。',
-    summary: '《一口大锅》：这是一个完整的小故事。读前先看词卡（锅、厨房、盖子、摸）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《一口大锅》：这是一个完整的小故事。读前先看词卡（锅、厨房、盖子、微笑）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '指着分镜，用英文说出这一页的东西，再把整本连起来读一遍。',
     think: '说说你家厨房里的一样东西。',
     pre: [
       { art: '🍲', en: 'pot', zh: '锅' },
       { art: '🍳', en: 'kitchen', zh: '厨房' },
       { art: '📦', en: 'lid', zh: '盖子' },
-      { art: '🏃', en: 'touch', zh: '摸' },
+      { art: '🏃', en: 'smile', zh: '微笑' },
       { art: '✋', en: 'hand', zh: '手' }
     ],
-    sight: [],
+    sight: ['smiles'],
     newWords: [
       { w: 'pot', zh: '锅' },
       { w: 'kitchen', zh: '厨房' },
       { w: 'lid', zh: '盖子' },
-      { w: 'touch', zh: '摸' }
+      { w: 'smile', zh: '微笑' }
     ],
     pages: [
       { art: 'kitchen|mom,ming|pot|·', en: 'I see a big pot. It is in the kitchen.', zh: '我看见一个大锅。它在厨房里。' },
@@ -613,7 +613,7 @@ const BOOKS = [
       { art: 'kitchen|mom,ming|pot|?', en: 'I put my hand on the lid. It is hot!', zh: '我把手放在盖子上。好烫！' },
       { art: 'kitchen|mom,ming|pot|·', en: 'I do not put my hand there again.', zh: '我不再把手放上去了。' },
       { art: 'kitchen|mom,ming|pot|!', en: 'Mom comes in. She looks in the pot.', zh: '妈妈进来。她看了看锅里。' },
-      { art: 'kitchen|mom,ming|pot|♥', en: 'Mom puts the lid back on. I do not touch it.', zh: '妈妈把盖子盖回去。我不再去碰它。' }
+      { art: 'kitchen|mom,ming|pot|♥', en: 'Mom puts the lid back on. She smiles at me.', zh: '妈妈把盖子盖回去。她朝我笑了笑。' }
     ],
     quiz: [
       { q: '明明的手为什么缩了回来？', opts: ['锅太高了', '盖子很烫', '妈妈不让他碰'], a: 1, kind: 'recall' },
@@ -674,7 +674,7 @@ const BOOKS = [
     ],
     pages: [
       { art: 'street|ming,grandma|map|·', en: 'Ming has a map.', zh: '明明有一张地图。' },
-      { art: 'street|ming,grandma|map|♪', en: 'The map is for Ming.', zh: '地图是给明明的。' },
+      { art: 'street|ming,grandma|map|♪', en: 'It is a small map.', zh: '这是一张小小的地图。' },
       { art: 'street|ming,grandma|map|👀', en: 'What is on the map?', zh: '地图上有什么？' },
       { art: 'street|ming,grandma|map|?', en: 'A hill is on the map.', zh: '地图上有一座小山。' },
       { art: 'street|ming,grandma|map|·', en: 'Ming looks at the map.', zh: '明明看着地图。' },
@@ -1101,7 +1101,7 @@ const BOOKS = [
       { art: 'kitchen|ming,grandma|dish|·', en: 'The dish is clean now!', zh: '盘子现在干净了！' },
       { art: 'kitchen|ming,grandma|dish|!', en: 'I put the dish away.', zh: '我把盘子放好。' },
       { art: 'kitchen|ming,grandma|dish|♥', en: 'A clean dish is good.', zh: '干净的盘子看着真舒服。' },
-      { art: 'kitchen|ming,grandma|dish|★', en: 'I like a clean dish.', zh: '我喜欢干净的盘子。' }
+      { art: 'kitchen|ming,grandma|dish|★', en: 'My hands are clean too.', zh: '我的手也洗干净了。' }
     ],
     quiz: [
       { q: '盘子一开始是什么样？', opts: ['不干净', '破了', '太烫'], a: 0, kind: 'recall' },
@@ -1183,19 +1183,21 @@ const BOOKS = [
     id: 'b34', lv: 'L3', tag: '小知识', title: 'A Long Wing', zh: '长长的翅膀',
     emoji: '🕊️', color: '#FAD3B6',
     track: 'info',
-    goal: '读懂一个真实的小知识，能说出「为什么会这样」。认读 1 个新词（飞）。',
+    goal: '读懂一个真实的小知识，能说出「为什么会这样」。认读 2 个新词（飞、乐趣）。',
     trap: 'sh 把嘴唇撅圆、th 把舌尖轻轻放在上下门牙中间；ck 只发一个 k，别读两遍。',
-    summary: '《长长的翅膀》：这一本从一件小事讲起，说说为什么会这样。读前先看词卡（飞）；读的时候留意先看到什么、为什么会这样、后来怎么弄明白。',
+    summary: '《长长的翅膀》：这一本从一件小事讲起，说说为什么会这样。读前先看词卡（飞、乐趣）；读的时候留意先看到什么、为什么会这样、后来怎么弄明白。',
     retell: '合上书，按「先看到什么 → 为什么会这样 → 后来怎么弄明白」讲一遍。',
     think: '说说鸟是怎么飞起来的。',
     pre: [
       { art: '🏃', en: 'fly', zh: '飞' },
+      { art: '💡', en: 'fun', zh: '乐趣' },
       { art: '🕊️', en: 'wing', zh: '翅膀' },
       { art: '🐦', en: 'bird', zh: '鸟' }
     ],
     sight: ['arms', 'bird', 'flies', 'watch'],
     newWords: [
-      { w: 'fly', zh: '飞' }
+      { w: 'fly', zh: '飞' },
+      { w: 'fun', zh: '乐趣' }
     ],
     pages: [
       { art: 'library|grandpa,dad|wing|·', en: 'A bird has a long wing. It is long and thin.', zh: '一只鸟有长长的翅膀。又长又薄。' },
@@ -1205,7 +1207,7 @@ const BOOKS = [
       { art: 'library|grandpa,dad|wing|·', en: 'I jump up, but I cannot fly.', zh: '我往上跳，可飞不起来。' },
       { art: 'library|grandpa,dad|wing|!', en: 'My arms are not wings.', zh: '我的胳膊不是翅膀。' },
       { art: 'library|grandpa,dad|wing|♥', en: 'I am not sad. I can run!', zh: '我不难过。我会跑！' },
-      { art: 'library|grandpa,dad|wing|★', en: 'I run and run. I am not sad at all.', zh: '我跑啊跑。跑起来也很痛快。' }
+      { art: 'library|grandpa,dad|wing|★', en: 'I run and run. It is fun to run.', zh: '我跑啊跑。跑起来真痛快。' }
     ],
     quiz: [
       { q: '「我」希望自己能做什么？', opts: ['游得很远', '飞起来', '跑得很快'], a: 1, kind: 'recall' },
@@ -1551,9 +1553,9 @@ const BOOKS = [
     id: 'b44', lv: 'L4', tag: '游戏', title: 'Clap and Spin', zh: '拍手转圈',
     emoji: '🌀', color: '#F2E2A8',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 5 个新词（鼓、打、拍手、转圈、乐趣）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 4 个新词（鼓、打、拍手、转圈）。',
     trap: '连缀中间不加元音：tree 是「tr-ee」一个词，不是「特-瑞」两个音。',
-    summary: '《拍手转圈》：这是一个完整的小故事。读前先看词卡（鼓、打、拍手、转圈、乐趣）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《拍手转圈》：这是一个完整的小故事。读前先看词卡（鼓、打、拍手、转圈）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '合上书，按「开头 → 后来 → 最后」把这件事讲一遍。',
     think: '说说你会玩的一种乐器或一种声音。',
     pre: [
@@ -1561,7 +1563,6 @@ const BOOKS = [
       { art: '🏃', en: 'hit', zh: '打' },
       { art: '🏃', en: 'clap', zh: '拍手' },
       { art: '🏃', en: 'spin', zh: '转圈' },
-      { art: '💡', en: 'fun', zh: '乐趣' },
       { art: '✋', en: 'hand', zh: '手' }
     ],
     sight: ['friend', 'hears', 'laugh'],
@@ -1569,8 +1570,7 @@ const BOOKS = [
       { w: 'drum', zh: '鼓' },
       { w: 'hit', zh: '打' },
       { w: 'clap', zh: '拍手' },
-      { w: 'spin', zh: '转圈' },
-      { w: 'fun', zh: '乐趣' }
+      { w: 'spin', zh: '转圈' }
     ],
     pages: [
       { art: 'playground|lili,grandpa|drum|·', en: 'I have a drum.', zh: '我有一面鼓。' },
@@ -1653,7 +1653,7 @@ const BOOKS = [
       { art: 'garden|grandpa,dad|stem|!', en: 'The stem grows up to the light.', zh: '茎朝着光往上长。' },
       { art: 'garden|grandpa,dad|stem|♥', en: 'A flower is on the stem.', zh: '茎上开了一朵花。' },
       { art: 'garden|grandpa,dad|stem|★', en: 'The stem is tall now.', zh: '茎现在很高了。' },
-      { art: 'garden|grandpa,dad|stem|…', en: 'It was small at first. Now the stem is tall.', zh: '它一开始很小。现在茎长高了。' }
+      { art: 'garden|grandpa,dad|stem|…', en: 'It was small at first. Look at it now!', zh: '它一开始很小。现在你看看它！' }
     ],
     quiz: [
       { q: '茎往上长，最后上面开了什么？', opts: ['一朵花', '一个果子', '一片叶子'], a: 0, kind: 'recall' },
@@ -3777,21 +3777,23 @@ const BOOKS = [
     id: 'b101', lv: 'L9', tag: '工具', title: 'A Knife and a Wheel', zh: '刀和轮子',
     emoji: '⚙️', color: '#E0CFF3',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 2 个新词（刀、轮子）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 3 个新词（刀、轮子、摸）。',
     trap: 'kn / wr / ph 里的第一个字母不发音；读长句时先找主句，再读从句。',
-    summary: '《刀和轮子》：这是一个完整的小故事。读前先看词卡（刀、轮子）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《刀和轮子》：这是一个完整的小故事。读前先看词卡（刀、轮子、摸）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '不看书写一段 5 句的口头小结，再说说这件事让你想到什么。',
     think: '说说两种用处不同的工具。',
     pre: [
       { art: '🔪', en: 'knife', zh: '刀' },
       { art: '⚙️', en: 'wheel', zh: '轮子' },
+      { art: '🏃', en: 'touch', zh: '摸' },
       { art: '📦', en: 'cart', zh: '手推车' },
       { art: '🍎', en: 'apple', zh: '苹果' }
     ],
     sight: [],
     newWords: [
       { w: 'knife', zh: '刀' },
-      { w: 'wheel', zh: '轮子' }
+      { w: 'wheel', zh: '轮子' },
+      { w: 'touch', zh: '摸' }
     ],
     pages: [
       { art: 'library|mom,ming|knife|·', en: 'A knife and a wheel are on the table. One cuts, and one turns.', zh: '桌上有一把刀和一个轮子。一个用来切，一个用来转。' },
