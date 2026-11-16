@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-16.5",
-  "note": "2026-11-16.5 读书馆 L9 句法升级。L9 十二本改写 88 页（每页仍 2 句，其中一句复合句）：because 0→20、so 1→25、but 4→8、when 0→4、that 0→12，含从句页 5/144→45/168（3%→27%），L9 141→181 词/本、6.5 词/句。同时给 L10 补 24 句具体细节与 13 处因果/2 处条件（if）句，L10 173→185 词/本，避免 L9 与 L10 梯度倒挂。仍未做：L8 只有 8% 从句页、4.7 词/句；L7 3%；L5/L6、L4 断档未动。125 条新整句音频，AUDIO_VER/SENTENCE_VER/AUDIO_CACHE 全不动。app v173→174 / books-data v13→14 / CACHE v232→v233 / SENTENCE_AUDIO 5598→5723 / BUILD .4→.5"
+  "build": "2026-11-16.6",
+  "note": "2026-11-16.6 读书馆 L7/L8 句法升级。L7 十二本改写 96 页、L8 十二本改写 96 页，仍是每页 2 句、其中一句复合句：L7 100→138 词/本、4.6→6.1 词/句、从句页 3%→30%（because 11 / so 16 / when 22）；L8 120→158 词/本、4.7→6.2 词/句、从句页 8%→33%（because 19 / so 20 / when 15）。修掉 21 个非词库词（neck/cool/elsewhere/danger/surprise/heavy/fruit/somewhere/speak/weak/loves 等）。诚实遗留：L7/L8 的从句密度一度高于 L9/L10（27%/26%），属级别倒挂，下一版给 L9/L10 补 if 与从句页修正。仍未做：L5/L6（1%/3% 从句页）、L4 断档。190 条新整句 + 3 个新词音频，AUDIO_VER/SENTENCE_VER/AUDIO_CACHE 全不动。app v174→175 / books-data v14→15 / audio-list v14→15 / CACHE v233→v234 / SENTENCE_AUDIO 5723→5913 / BUILD .5→.6"
 }
