@@ -4158,3 +4158,46 @@ RAZ 是 50%），主角几乎都是「明明 + 家人」的现实生活，没有
 
 **发版**：22 条新整句音频，无新词；app v180→181 / books-data v20→21 /
 audio-list v17 不动 / CACHE v239→v240 / SENTENCE_AUDIO 6504→6526 / BUILD .11→.12。
+
+---
+
+## 2026-11-16.13 · 语法 / 搭配 / 逻辑复查
+
+上一版我说「文字层算第一梯队」。这一版专门用**语法透镜**再过一遍，找出的是
+语法检查器不报、但母语者读着别扭的句子。
+
+### 一、时态漂移（3 处）
+
+| 书 | 原文 | 问题 |
+|---|---|---|
+| b40 | The clock **helped** me again. | 全书现在时，这里突然过去 |
+| b92 | It **was** the wind. It **pushes** at the window. | 过去 + 现在混在一段 |
+| b46 | It **started** small. | 说明生长过程却用过去式 |
+
+### 二、搭配 / 语域（4 处）
+
+- b15 `The day is not dry.` → **There is fog. The day is cold.**（英文不这么说）
+- b95 `They make them into long lines.` → **pull them into long lines**（面条本来就是条）
+- b71 `It made the sock no good.` → **The sock was no good.**
+- b61 `because he wants it done` → **because he wants to finish**（wants it done 超出 L6 语域）
+
+### 三、指代 / POV（2 处）
+
+- b88 把 `cousin` 当人名大写（Cousin gets the letter），且第三人称叙述里出现
+  `The drawing is for **my** cousin` —— 与「Ming draws...」打架，统一为 his cousin。
+- b22 `The ant pulls the nut **up the hill**.` —— 全书没有山，凭空出现地形。
+
+### 四、逻辑（2 处）
+
+- **b112**：计划是「一盆晒太阳、一盆不晒」，第 7 页却把不晒的那盆搬到太阳下 ——
+  中途换变量，实验不成立。改成「明明不去动那两个盆」，推理题「做不通就改一改」
+  与迁移题「做不通就调整」同步改掉（原文与答案已经相反）。
+- **b15**：推理题「为什么路上有泥？」答案写「因为又湿又有雾」——雾不产生泥，只有湿。
+
+### 五、常识与语序（2 处）
+
+- b94 `The bright part grows` → **The bright part we see grows**（月亮亮的部分不长大）
+- b102 `Three weeks of notes are in her book` → **Her book has three weeks of notes**
+
+**发版**：22 条新整句音频，无新词；app v181→182 / books-data v21→22 /
+audio-list v17 不动 / CACHE v240→v241 / SENTENCE_AUDIO 6526→6548 / BUILD .12→.13。

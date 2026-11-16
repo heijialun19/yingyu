@@ -508,34 +508,34 @@ const BOOKS = [
     id: 'b15', lv: 'L2', tag: '天气', title: 'Mud and Fog', zh: '泥和雾',
     emoji: '🌫️', color: '#CDE7C6',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 7 个新词（干、雾、路、湿、泥、腿）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 7 个新词（雾、路、湿、泥、腿、打扫）。',
     trap: '短元音要收住韵尾：cap 的 p 是双唇轻轻一闭，不要加「呃」读成「卡普呃」。',
-    summary: '《泥和雾》：这是一个完整的小故事。读前先看词卡（干、雾、路、湿、泥、腿）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《泥和雾》：这是一个完整的小故事。读前先看词卡（雾、路、湿、泥、腿、打扫）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '指着分镜，用英文说出这一页的东西，再把整本连起来读一遍。',
     think: '说说一个有雾或下雨的日子。',
     pre: [
-      { art: '✨', en: 'dry', zh: '干' },
       { art: '🌫️', en: 'fog', zh: '雾' },
       { art: '🛣️', en: 'road', zh: '路' },
       { art: '✨', en: 'wet', zh: '湿' },
       { art: '🟤', en: 'mud', zh: '泥' },
       { art: '✋', en: 'leg', zh: '腿' },
       { art: '🏃', en: 'clean', zh: '打扫' },
+      { art: '✨', en: 'dry', zh: '干' },
       { art: '🏠', en: 'home', zh: '家' },
       { art: '💧', en: 'water', zh: '水' }
     ],
     sight: ['water'],
     newWords: [
-      { w: 'dry', zh: '干' },
       { w: 'fog', zh: '雾' },
       { w: 'road', zh: '路' },
       { w: 'wet', zh: '湿' },
       { w: 'mud', zh: '泥' },
       { w: 'leg', zh: '腿' },
-      { w: 'clean', zh: '打扫' }
+      { w: 'clean', zh: '打扫' },
+      { w: 'dry', zh: '干' }
     ],
     pages: [
-      { art: 'farm|grandma,mom|mud|·', en: 'The day is not dry. There is fog.', zh: '今天潮潮的。有雾。' },
+      { art: 'farm|grandma,mom|mud|·', en: 'There is fog. The day is cold.', zh: '有雾。天冷冷的。' },
       { art: 'farm|grandma,mom|mud|♪', en: 'The road is wet. I see mud.', zh: '路上湿湿的。我看见泥。' },
       { art: 'farm|grandma,mom|mud|👀', en: 'My leg is in the mud!', zh: '我的腿踩进泥里了！' },
       { art: 'farm|grandma,mom|mud|?', en: 'I am not happy. The mud is cold.', zh: '我不高兴。泥是凉的。' },
@@ -545,7 +545,7 @@ const BOOKS = [
     ],
     quiz: [
       { q: '明明的腿怎么了？', opts: ['踩进泥里了', '被雨淋湿了', '摔破了'], a: 0, kind: 'recall' },
-      { q: '为什么路上有泥？', opts: ['因为太阳太大', '因为又湿又有雾', '因为太干了'], a: 1, kind: 'infer' },
+      { q: '为什么路上有泥？', opts: ['因为天上有雾', '因为路上是湿的', '因为太阳很大'], a: 1, kind: 'infer' },
       { q: '路又湿又滑，你会怎么做？', opts: ['不管它', '慢慢走，小心一点', '拔腿就跑'], a: 1, kind: 'transfer' }
     ]
   },
@@ -587,16 +587,16 @@ const BOOKS = [
     id: 'b17', lv: 'L2', tag: '厨房', title: 'A Big Pot', zh: '一口大锅',
     emoji: '🍲', color: '#E0CFF3',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 4 个新词（锅、厨房、盖子、安全）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 4 个新词（锅、厨房、盖子、摸）。',
     trap: '短元音要收住韵尾：cap 的 p 是双唇轻轻一闭，不要加「呃」读成「卡普呃」。',
-    summary: '《一口大锅》：这是一个完整的小故事。读前先看词卡（锅、厨房、盖子、安全）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《一口大锅》：这是一个完整的小故事。读前先看词卡（锅、厨房、盖子、摸）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '指着分镜，用英文说出这一页的东西，再把整本连起来读一遍。',
     think: '说说你家厨房里的一样东西。',
     pre: [
       { art: '🍲', en: 'pot', zh: '锅' },
       { art: '🍳', en: 'kitchen', zh: '厨房' },
       { art: '📦', en: 'lid', zh: '盖子' },
-      { art: '✨', en: 'safe', zh: '安全' },
+      { art: '🏃', en: 'touch', zh: '摸' },
       { art: '✋', en: 'hand', zh: '手' }
     ],
     sight: [],
@@ -604,7 +604,7 @@ const BOOKS = [
       { w: 'pot', zh: '锅' },
       { w: 'kitchen', zh: '厨房' },
       { w: 'lid', zh: '盖子' },
-      { w: 'safe', zh: '安全' }
+      { w: 'touch', zh: '摸' }
     ],
     pages: [
       { art: 'kitchen|mom,ming|pot|·', en: 'I see a big pot. It is in the kitchen.', zh: '我看见一个大锅。它在厨房里。' },
@@ -613,7 +613,7 @@ const BOOKS = [
       { art: 'kitchen|mom,ming|pot|?', en: 'I put my hand on the lid. It is hot!', zh: '我把手放在盖子上。好烫！' },
       { art: 'kitchen|mom,ming|pot|·', en: 'I do not put my hand there again.', zh: '我不再把手放上去了。' },
       { art: 'kitchen|mom,ming|pot|!', en: 'Mom comes in. She looks in the pot.', zh: '妈妈进来。她看了看锅里。' },
-      { art: 'kitchen|mom,ming|pot|♥', en: 'Mom puts the lid back on. The pot is safe now.', zh: '妈妈把盖子盖回去。现在锅安全了。' }
+      { art: 'kitchen|mom,ming|pot|♥', en: 'Mom puts the lid back on. I do not touch it.', zh: '妈妈把盖子盖回去。我不再去碰它。' }
     ],
     quiz: [
       { q: '明明的手为什么缩了回来？', opts: ['锅太高了', '盖子很烫', '妈妈不让他碰'], a: 1, kind: 'recall' },
@@ -766,7 +766,7 @@ const BOOKS = [
     pre: [
       { art: '🐜', en: 'ant', zh: '蚂蚁' },
       { art: '🌰', en: 'nut', zh: '坚果' },
-      { art: '🌿', en: 'hill', zh: '小山' }
+      { art: '🏠', en: 'home', zh: '家' }
     ],
     sight: [],
     newWords: [
@@ -778,7 +778,7 @@ const BOOKS = [
       { art: 'kitchen|grandpa,dad|nut|♪', en: 'The ant is small.', zh: '蚂蚁很小。' },
       { art: 'kitchen|grandpa,dad|nut|👀', en: 'The ant has a nut.', zh: '蚂蚁有一颗坚果。' },
       { art: 'kitchen|grandpa,dad|nut|?', en: 'The nut is big for the ant.', zh: '坚果对蚂蚁来说很大。' },
-      { art: 'kitchen|grandpa,dad|nut|·', en: 'The ant pulls the nut up the hill.', zh: '蚂蚁把坚果往山上拉。' },
+      { art: 'kitchen|grandpa,dad|nut|·', en: 'The ant pulls the nut to its home.', zh: '蚂蚁把坚果拉回家。' },
       { art: 'kitchen|grandpa,dad|nut|!', en: 'The ant is happy.', zh: '蚂蚁很开心。' },
       { art: 'kitchen|grandpa,dad|nut|♥', en: 'A nut for the ant!', zh: '给蚂蚁的坚果！' }
     ],
@@ -966,18 +966,20 @@ const BOOKS = [
     id: 'b28', lv: 'L3', tag: '故事', title: 'The King and a Ring', zh: '国王和戒指',
     emoji: '👑', color: '#C6DEF6',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 1 个新词（小鸡）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 2 个新词（小鸡、安全）。',
     trap: 'sh 把嘴唇撅圆、th 把舌尖轻轻放在上下门牙中间；ck 只发一个 k，别读两遍。',
-    summary: '《国王和戒指》：这是一个完整的小故事。读前先看词卡（小鸡）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《国王和戒指》：这是一个完整的小故事。读前先看词卡（小鸡、安全）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '合上书，按「开头 → 后来 → 最后」把这件事讲一遍。',
     think: '说说一件你觉得很珍贵的东西。',
     pre: [
       { art: '📦', en: 'chick', zh: '小鸡' },
+      { art: '✨', en: 'safe', zh: '安全' },
       { art: '👑', en: 'king', zh: '国王' }
     ],
     sight: ['keeps'],
     newWords: [
-      { w: 'chick', zh: '小鸡' }
+      { w: 'chick', zh: '小鸡' },
+      { w: 'safe', zh: '安全' }
     ],
     pages: [
       { art: 'home|grandpa,dad|ring|·', en: 'A king has a ring.', zh: '一位国王有一枚戒指。' },
@@ -1397,15 +1399,16 @@ const BOOKS = [
     id: 'b40', lv: 'L4', tag: '上学', title: 'The Clock at School', zh: '学校的钟',
     emoji: '🕐', color: '#C6DEF6',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 3 个新词（钟、房间、晚）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 4 个新词（钟、房间、晚、微笑）。',
     trap: '连缀中间不加元音：tree 是「tr-ee」一个词，不是「特-瑞」两个音。',
-    summary: '《学校的钟》：这是一个完整的小故事。读前先看词卡（钟、房间、晚）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《学校的钟》：这是一个完整的小故事。读前先看词卡（钟、房间、晚、微笑）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '合上书，按「开头 → 后来 → 最后」把这件事讲一遍。',
     think: '说说你家里的一口钟或一块表。',
     pre: [
       { art: '🕐', en: 'clock', zh: '钟' },
       { art: '📦', en: 'room', zh: '房间' },
       { art: '✨', en: 'late', zh: '晚' },
+      { art: '🏃', en: 'smile', zh: '微笑' },
       { art: '📖', en: 'book', zh: '书' },
       { art: '🏫', en: 'school', zh: '学校' }
     ],
@@ -1413,7 +1416,8 @@ const BOOKS = [
     newWords: [
       { w: 'clock', zh: '钟' },
       { w: 'room', zh: '房间' },
-      { w: 'late', zh: '晚' }
+      { w: 'late', zh: '晚' },
+      { w: 'smile', zh: '微笑' }
     ],
     pages: [
       { art: 'school|grandpa,dad|clock|·', en: 'There is a clock at school.', zh: '学校有一个钟。' },
@@ -1423,7 +1427,7 @@ const BOOKS = [
       { art: 'school|grandpa,dad|clock|·', en: 'The clock says it is time.', zh: '钟说到时间了。' },
       { art: 'school|grandpa,dad|clock|!', en: 'I leave my book. I go to the room.', zh: '我放下书。我去教室。' },
       { art: 'school|grandpa,dad|clock|♥', en: 'I am not late.', zh: '我没有迟到。' },
-      { art: 'school|grandpa,dad|clock|★', en: 'I am glad. The clock helped me again.', zh: '我很高兴。钟又帮了我。' },
+      { art: 'school|grandpa,dad|clock|★', en: 'I am glad. I look at the clock and smile.', zh: '我很高兴。我看看钟，笑了。' },
       { art: 'school|grandpa,dad|clock|…', en: 'It helps me every day.', zh: '它每天都帮我。' }
     ],
     quiz: [
@@ -1649,7 +1653,7 @@ const BOOKS = [
       { art: 'garden|grandpa,dad|stem|!', en: 'The stem grows up to the light.', zh: '茎朝着光往上长。' },
       { art: 'garden|grandpa,dad|stem|♥', en: 'A flower is on the stem.', zh: '茎上开了一朵花。' },
       { art: 'garden|grandpa,dad|stem|★', en: 'The stem is tall now.', zh: '茎现在很高了。' },
-      { art: 'garden|grandpa,dad|stem|…', en: 'It started small. Now the stem is tall.', zh: '它一开始很小。现在茎长高了。' }
+      { art: 'garden|grandpa,dad|stem|…', en: 'It was small at first. Now the stem is tall.', zh: '它一开始很小。现在茎长高了。' }
     ],
     quiz: [
       { q: '茎往上长，最后上面开了什么？', opts: ['一朵花', '一个果子', '一片叶子'], a: 0, kind: 'recall' },
@@ -2212,7 +2216,7 @@ const BOOKS = [
       { art: 'kitchen|ming,grandma|cake|·', en: 'Ming wants to make a cake. He gets up early, before the sun is high.', zh: '明明想做一个蛋糕。他起得很早，太阳还没升高。' },
       { art: 'kitchen|ming,grandma|cake|♪', en: 'The cake is for Grandma. He does not tell her.', zh: '蛋糕是给奶奶的。他没告诉她。' },
       { art: 'kitchen|ming,grandma|cake|👀', en: 'Ming gets the things ready. He puts eggs and milk on the table, and he finds a spoon.', zh: '明明把东西准备好。他把鸡蛋和牛奶放上桌，还找了一把勺子。' },
-      { art: 'kitchen|ming,grandma|cake|?', en: 'Ming mixes and makes. He mixes fast because he wants it done.', zh: '明明又搅又做。他搅得很快，想赶紧做完。' },
+      { art: 'kitchen|ming,grandma|cake|?', en: 'Ming mixes and makes. He mixes fast because he wants to finish.', zh: '明明又搅又做。他搅得很快，想赶紧做完。' },
       { art: 'kitchen|ming,grandma|cake|·', en: 'The cake is not right. It is thin and dry.', zh: '蛋糕不对。它又薄又干。' },
       { art: 'kitchen|ming,grandma|cake|!', en: 'Ming is sad. He sits down and does not want to try again.', zh: '明明很难过。他坐下，不想再试。' },
       { art: 'kitchen|ming,grandma|cake|♥', en: 'Grandma comes and helps. "It is fine," she says. "We will try again together."', zh: '奶奶过来帮忙。「没关系。」她说，「我们再一起试一次。」' },
@@ -2601,7 +2605,7 @@ const BOOKS = [
       { art: 'home|mom,ming|hole|!', en: 'The sock is not good now. The hole is too big.', zh: '袜子现在不能穿了。洞太大了。' },
       { art: 'home|mom,ming|hole|♥', en: 'Ming fixes the hole. He mends it with care.', zh: '明明把洞补好。他补得很小心。' },
       { art: 'home|mom,ming|hole|★', en: 'The sock is good again. It holds together now.', zh: '袜子又好了。现在很结实。' },
-      { art: 'home|mom,ming|hole|…', en: 'One small hole. It made the sock no good.', zh: '一个小小的洞。整只袜子就不能穿了。' },
+      { art: 'home|mom,ming|hole|…', en: 'One small hole. The sock was no good.', zh: '一个小小的洞。整只袜子就不能穿了。' },
       { art: 'home|mom,ming|hole|·', en: 'Ming is careful with his socks. He looks at them first.', zh: '明明对自己的袜子很小心。穿之前先看一看。' },
       { art: 'home|mom,ming|hole|♥', en: 'Ming puts the sock away. Now he can wear it again.', zh: '明明把袜子收好。现在又能穿了。' }
     ],
@@ -3259,17 +3263,17 @@ const BOOKS = [
     ],
     pages: [
       { art: 'school|grandpa,dad|drawing|·', en: 'Ming draws a picture. He sits at the desk because the light is good there.', zh: '明明画一幅画。他坐在书桌前，因为那儿光线好。' },
-      { art: 'school|grandpa,dad|drawing|♪', en: 'The drawing is for Cousin. She lives in another town, far away.', zh: '这幅画是给表姐的。她住在另一个镇子，很远。' },
+      { art: 'school|grandpa,dad|drawing|♪', en: 'The drawing is for his cousin. She lives in another town, far away.', zh: '这幅画是给表姐的。她住在另一个镇子，很远。' },
       { art: 'school|grandpa,dad|drawing|👀', en: 'Ming draws a house. He makes it big and warm.', zh: '明明画了一座房子。他画得又大又暖和。' },
       { art: 'school|grandpa,dad|drawing|?', en: 'Ming draws a window on it. He draws a small Ming that looks out of it.', zh: '他在上面画了一扇窗。他画了个小明明，正从窗里往外看。' },
       { art: 'school|grandpa,dad|drawing|·', en: 'The picture is nice. He paints the sky blue.', zh: '画很好看。他把天空涂成蓝色。' },
       { art: 'school|grandpa,dad|drawing|!', en: 'Ming adds a short note. He tells her about the garden that Grandpa keeps.', zh: '明明又添了张小纸条。他跟她讲爷爷打理的那个园子。' },
       { art: 'school|grandpa,dad|drawing|♥', en: 'The note says hello. It asks how she is.', zh: '纸条上写着你好。还问她近来好不好。' },
       { art: 'school|grandpa,dad|drawing|★', en: 'Ming puts the picture in a letter. He writes her name on it so it will get there.', zh: '明明把画装进信封。他在上面写上她的名字，好让信寄到。' },
-      { art: 'school|grandpa,dad|drawing|…', en: 'The letter goes to Cousin. It goes far away.', zh: '信寄给表姐。要送到很远的地方。' },
-      { art: 'school|grandpa,dad|drawing|·', en: 'Cousin gets the letter. She opens it that day because she sees Ming\'s name on it.', zh: '表姐收到了信。她当天就拆开，因为她看见上面有明明的名字。' },
-      { art: 'school|grandpa,dad|drawing|♥', en: '"I like it very much," Cousin writes. She draws a small picture too.', zh: '「我非常喜欢。」表姐写道。她也画了一幅小画。' },
-      { art: 'school|grandpa,dad|drawing|·', en: 'A picture for Cousin, far away.', zh: '给远方表姐的一幅画。' },
+      { art: 'school|grandpa,dad|drawing|…', en: 'The letter goes to his cousin. It goes far away.', zh: '信寄给表姐。要送到很远的地方。' },
+      { art: 'school|grandpa,dad|drawing|·', en: 'His cousin gets the letter. She opens it that day because she sees Ming\'s name on it.', zh: '表姐收到了信。她当天就拆开，因为她看见上面有明明的名字。' },
+      { art: 'school|grandpa,dad|drawing|♥', en: '"I like it very much," his cousin writes. She draws a small picture too.', zh: '「我非常喜欢。」表姐写道。她也画了一幅小画。' },
+      { art: 'school|grandpa,dad|drawing|·', en: 'A picture for his cousin, far away.', zh: '给远方表姐的一幅画。' },
       { art: 'school|grandpa,dad|drawing|…', en: 'Letters and pictures. They can go a long way when someone waits for them.', zh: '信和画。有人在等的时候，它们能走很远。' }
     ],
     quiz: [
@@ -3423,10 +3427,10 @@ const BOOKS = [
       { art: 'night|lili,grandpa|night|·', en: 'He listens. The house is quiet again.', zh: '他听着。屋里又静下来了。' },
       { art: 'night|lili,grandpa|night|!', en: '"What was that?" Ming asks. He listens hard so he can hear it again.', zh: '「那是什么声音？」明明问。他使劲听，想再听见一次。' },
       { art: 'night|lili,grandpa|night|♥', en: 'He looks at the trees by the window.', zh: '他看窗外的树。' },
-      { art: 'night|lili,grandpa|night|★', en: 'It was the wind. It pushes at the window because it wants to come in.', zh: '是风。它推着窗户，因为它想进来。' },
+      { art: 'night|lili,grandpa|night|★', en: 'It is the wind. It pushes at the window because it wants to come in.', zh: '是风。它推着窗户，因为它想进来。' },
       { art: 'night|lili,grandpa|night|…', en: 'Ming is not afraid. He knows what it is now, so he goes back to bed.', zh: '明明不怕。他现在知道那是什么了，所以又躺下了。' },
       { art: 'night|lili,grandpa|night|·', en: 'He gets into bed again. It is warm.', zh: '他又钻进被窝。被窝里暖暖的。' },
-      { art: 'night|lili,grandpa|night|♥', en: 'A loud shout at night. It was only the wind that pushed the window.', zh: '夜里的一声喊。那只是推窗户的风。' },
+      { art: 'night|lili,grandpa|night|♥', en: 'A loud shout at night. It is only the wind at the window.', zh: '夜里的一声响。不过是窗外的风。' },
       { art: 'night|lili,grandpa|night|·', en: 'The wind can be loud. But it cannot come in because the window is closed.', zh: '风可以很响。但它进不来，因为窗户关着。' },
       { art: 'night|lili,grandpa|night|…', en: 'Ming sleeps well. In the morning he tells Mom.', zh: '明明睡得很好。早上他讲给妈妈听。' }
     ],
@@ -3461,12 +3465,12 @@ const BOOKS = [
       { art: 'table|grandma,mom|house|·', en: 'Say "house". Say it slow.', zh: '读 house。慢慢读。' },
       { art: 'table|grandma,mom|house|!', en: 'Say "cow". Say it again.', zh: '读 cow。再读一遍。' },
       { art: 'table|grandma,mom|house|♥', en: 'House is not cow. They are different things, but the sound is the same.', zh: '房子不是牛。它们是不同的东西，可音是一样的。' },
-      { art: 'table|grandma,mom|house|★', en: 'The "ow" sounds the same. The first sounds do not, so listen carefully.', zh: 'ow 的音一样。开头的音不一样，所以要仔细听。' },
+      { art: 'table|grandma,mom|house|★', en: 'The "ow" sounds the same. The first sounds are different, so listen carefully.', zh: 'ow 的音一样。开头的音不同，所以要仔细听。' },
       { art: 'table|grandma,mom|house|…', en: 'You can say both. Say them together, and keep the "ow" the same.', zh: '两个词你都能说。连起来说，ow 的音保持一样。' },
       { art: 'table|grandma,mom|house|·', en: 'House, cow, house, cow.', zh: 'house，cow，house，cow。' },
       { art: 'table|grandma,mom|house|♥', en: 'Good!', zh: '真棒！' },
       { art: 'table|grandma,mom|house|·', en: 'A house and a cow. Now find two more that have "ow".', zh: '一座房子和一头牛。现在再找两个带 ow 的词。' },
-      { art: 'table|grandma,mom|house|…', en: 'Say each one slowly, and check the "ow".', zh: '一个一个慢慢说，看看 ow 读得对不对。' }
+      { art: 'table|grandma,mom|house|…', en: 'Say each one slowly, and check the "ow" sound.', zh: '一个一个慢慢说，看看 ow 的音读得对不对。' }
     ],
     quiz: [
       { q: 'house 和 cow 都有哪个音？', opts: ['ow 的音', 'ou 的音', 'oo 的音'], a: 0, kind: 'recall' },
@@ -3499,7 +3503,7 @@ const BOOKS = [
       { art: 'kitchen|grandpa,dad|mooncake|·', en: 'When we see the bright half, the moon looks round, like a mooncake.', zh: '我们看到亮的那一半时，月亮就圆圆的，像月饼。' },
       { art: 'kitchen|grandpa,dad|mooncake|!', en: 'Sometimes we see only a thin part of it. Then the moon looks thin.', zh: '有时我们只看到它细细的一条。那时月亮就变细了。' },
       { art: 'kitchen|grandpa,dad|mooncake|♥', en: 'But it is the same moon. Nothing about it changes, only what we see.', zh: '可它还是同一个月亮。它本身没变，变的只是我们看到的。' },
-      { art: 'kitchen|grandpa,dad|mooncake|★', en: 'The bright part grows, and then it gets small again, night after night.', zh: '亮的部分一夜夜变大，又一夜夜变小。' },
+      { art: 'kitchen|grandpa,dad|mooncake|★', en: 'The bright part we see grows, and then it gets small again, night after night.', zh: '我们看到的亮部一夜夜变大，又一夜夜变小。' },
       { art: 'kitchen|grandpa,dad|mooncake|…', en: 'Why the moon looks round. Now you can tell a friend when you see it.', zh: '月亮为什么看起来圆。现在你看见它的时候，能讲给朋友听了。' },
       { art: 'kitchen|grandpa,dad|mooncake|·', en: 'The moon is far away. It is much bigger than it looks.', zh: '月亮离我们很远。它比看上去大得多。' },
       { art: 'kitchen|grandpa,dad|mooncake|♥', en: 'Look at the moon tonight. See which part is bright, and which part is dark.', zh: '今晚看看月亮。看看哪一部分亮，哪一部分暗。' },
@@ -3536,7 +3540,7 @@ const BOOKS = [
       { art: 'kitchen|mom,ming|noodle|·', en: 'Some people eat noodles. In the south, many do, and they eat them often.', zh: '有些人吃面条。在南方，很多人都吃，而且常吃。' },
       { art: 'kitchen|mom,ming|noodle|♪', en: 'The noodles are long. They are thin and soft, so they cook fast.', zh: '面条很长。它们又细又软，所以熟得快。' },
       { art: 'kitchen|mom,ming|noodle|👀', en: 'Noodles are good to eat. They are warm in winter when the air is cold.', zh: '面条很好吃。冬天空气冷的时候，吃下去暖暖的。' },
-      { art: 'kitchen|mom,ming|noodle|?', en: 'People make noodles. They make them into long lines.', zh: '人们做面条。他们把面拉成长长的条。' },
+      { art: 'kitchen|mom,ming|noodle|?', en: 'People make noodles. They pull them into long lines.', zh: '人们做面条。他们把面拉成长长的条。' },
       { art: 'kitchen|mom,ming|noodle|·', en: 'The noodles go in the pot. The water boils, and they move in it.', zh: '面条下到锅里。水开着，它们在锅里翻滚。' },
       { art: 'kitchen|mom,ming|noodle|!', en: 'The noodles are ready soon. They do not take long at all.', zh: '面条很快就熟。一点也不用等。' },
       { art: 'kitchen|mom,ming|noodle|♥', en: 'People eat the noodles. They eat them hot because they taste best then.', zh: '人们吃面条。他们趁热吃，因为那时最好吃。' },
@@ -3771,23 +3775,21 @@ const BOOKS = [
     id: 'b101', lv: 'L9', tag: '工具', title: 'A Knife and a Wheel', zh: '刀和轮子',
     emoji: '⚙️', color: '#E0CFF3',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 3 个新词（刀、轮子、摸）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 2 个新词（刀、轮子）。',
     trap: 'kn / wr / ph 里的第一个字母不发音；读长句时先找主句，再读从句。',
-    summary: '《刀和轮子》：这是一个完整的小故事。读前先看词卡（刀、轮子、摸）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《刀和轮子》：这是一个完整的小故事。读前先看词卡（刀、轮子）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '不看书写一段 5 句的口头小结，再说说这件事让你想到什么。',
     think: '说说两种用处不同的工具。',
     pre: [
       { art: '🔪', en: 'knife', zh: '刀' },
       { art: '⚙️', en: 'wheel', zh: '轮子' },
-      { art: '🏃', en: 'touch', zh: '摸' },
       { art: '📦', en: 'cart', zh: '手推车' },
       { art: '🍎', en: 'apple', zh: '苹果' }
     ],
     sight: [],
     newWords: [
       { w: 'knife', zh: '刀' },
-      { w: 'wheel', zh: '轮子' },
-      { w: 'touch', zh: '摸' }
+      { w: 'wheel', zh: '轮子' }
     ],
     pages: [
       { art: 'library|mom,ming|knife|·', en: 'A knife and a wheel are on the table. One cuts, and one turns.', zh: '桌上有一把刀和一个轮子。一个用来切，一个用来转。' },
@@ -3840,7 +3842,7 @@ const BOOKS = [
       { art: 'library|dad,lili|answer|★', en: 'At last, the answer comes. The wet pot has a green stem, and the others stay dry.', zh: '最后答案来了。湿的那盆长出了绿芽，别的还是干的。' },
       { art: 'library|dad,lili|answer|…', en: 'The answer is good. Seeds need water to grow, and now she can show why.', zh: '这个答案站得住。种子需要水才能生长，现在她能说明为什么了。' },
       { art: 'library|dad,lili|answer|·', en: 'She tells the class what she found. They look at the three pots.', zh: '她把发现讲给班上的同学听。大家看那三只花盆。' },
-      { art: 'library|dad,lili|answer|♥', en: 'Three weeks of notes are in her book. She counts them with the class so they can see the time.', zh: '三个星期的记录都在本子上。她和全班一起数，让大家看到时间。' },
+      { art: 'library|dad,lili|answer|♥', en: 'Her book has three weeks of notes. She counts them with the class so they can see the time.', zh: '她的本子上记了三个星期。她和全班一起数，让大家看到时间。' },
       { art: 'library|dad,lili|answer|·', en: 'The two dry pots are there too. She tells the class why they did not grow.', zh: '两只干盆也摆在那儿。她讲给同学听它们为什么没长。' },
       { art: 'library|dad,lili|answer|…', en: 'Ming asks about the dry pots. She writes his question down because it is a good one.', zh: '明明问起那两盆干的。她把他的问题记下来，因为问得好。' },
       { art: 'library|dad,lili|answer|?', en: 'Ming takes a pot home. He puts a seed in it that night.', zh: '明明带了一只盆回家。当晚就种下一粒种子。' }
@@ -4244,20 +4246,20 @@ const BOOKS = [
       { art: 'library|grandpa,dad|plan|?', en: 'Ming follows the plan because he wants to know why.', zh: '明明照着计划做，因为他想知道为什么。' },
       { art: 'library|grandpa,dad|plan|·', en: 'Some things go well. The warm pot has a green stem.', zh: '有些事很顺利。暖和的那盆长出了绿芽。' },
       { art: 'library|grandpa,dad|plan|!', en: 'Some things do not. The other pot stays dark and dry, because it gets no sun.', zh: '有些事不顺利。另一盆一直又暗又干，因为它晒不到太阳。' },
-      { art: 'library|grandpa,dad|plan|♥', en: 'Ming changes the plan a little. He puts that pot in the sun and marks the day on the board.', zh: '明明把计划改了一点。他把那盆搬到太阳下，并在板上记下这一天。' },
+      { art: 'library|grandpa,dad|plan|♥', en: 'Ming does not move the pots. He wants to see what will happen.', zh: '明明不去动那两个盆。他想看看会怎么样。' },
       { art: 'library|grandpa,dad|plan|★', en: 'Ming goes on. Each morning he marks what he sees.', zh: '明明继续做。每天早上记下看到的。' },
       { art: 'library|grandpa,dad|plan|…', en: 'At last, Ming finds it out. The pot with no sun did not grow.', zh: '最后明明弄明白了。晒不到太阳的那盆没有长。' },
       { art: 'library|grandpa,dad|plan|·', en: 'He writes the answer in his note. Grandma reads it. "That is a good answer," she says.', zh: '他把答案写在本子上。奶奶读了读。「这个答案很好。」她说。' },
       { art: 'library|grandpa,dad|plan|♥', en: 'He reads his first three steps again. He did not forget one, because they are on the board.', zh: '他把最早写下的三步又读了一遍。一步也没忘，因为都写在板上。' },
-      { art: 'library|grandpa,dad|plan|·', en: 'He draws a line to the new step. The board still makes sense.', zh: '他画一条线连到新加的那步。板上仍然讲得通。' },
+      { art: 'library|grandpa,dad|plan|·', en: 'He draws a line to the pot with no sun. The board still makes sense.', zh: '他画一条线，连到没晒太阳的那盆。板上仍然讲得通。' },
       { art: 'library|grandpa,dad|plan|…', en: 'Ming shows the two pots to Grandma.', zh: '明明把两个盆拿给奶奶看。' },
       { art: 'library|grandpa,dad|plan|?', en: 'She asks which one grew first, and Ming shows her the marks.', zh: '她问哪一个先长，明明把记号指给她看。' },
       { art: 'library|grandpa,dad|plan|·', en: 'Ming writes the answer on the board. Tomorrow he will try three pots, so he can compare them.', zh: '明明把答案写在板上。明天他要试三个盆，好做比较。' }
     ],
     quiz: [
       { q: '明明最后发现两个盆的差别是什么？', opts: ['种子不一样', '一个水多，一个水少', '一个有太阳，一个没有'], a: 2, kind: 'recall' },
-      { q: '明明是怎么弄清楚的？', opts: ['订了计划，做不通就改一改，继续做', '等别人告诉', '随便乱试'], a: 0, kind: 'infer' },
-      { q: '想弄清一件事，你会怎么做？', opts: ['没有计划乱做', '订个计划，做不通就调整，坚持', '不弄了'], a: 1, kind: 'transfer' }
+      { q: '明明是怎么弄清楚的？', opts: ['定了计划就照着做，每天记下看到的变化', '等别人告诉他答案', '做不通就马上换一个做法'], a: 0, kind: 'infer' },
+      { q: '想弄清一件事，你会怎么做？', opts: ['没有计划乱做', '订个计划，一步一步做，坚持下去', '不弄了'], a: 1, kind: 'transfer' }
     ]
   },
   {
@@ -4296,7 +4298,7 @@ const BOOKS = [
       { art: 'library|mom,ming|patience|♥', en: 'Ming is glad that he waited. He did not try too hard.', zh: '明明庆幸自己等了。他没有太使劲逼自己。' },
       { art: 'library|mom,ming|patience|·', en: 'Grandma says it is patience. Ming says it is a quiet kind of strength that comes when you wait.', zh: '奶奶说这就叫耐心。明明说这是一种等一等才来的、安安静静的力量。' },
       { art: 'library|mom,ming|patience|…', en: 'Ming will remember this. He writes the song name down so it stays with him.', zh: '明明要记住这件事。他把歌名写下来，免得忘了。' },
-      { art: 'library|mom,ming|patience|?', en: 'The memory is safe now. It is on a note that sits by his bed.', zh: '这段记忆安全了。它写在一张放在床边的纸条上。' },
+      { art: 'library|mom,ming|patience|?', en: 'The memory is there now. It is on a note that sits by his bed.', zh: '这段记忆留住了。它写在一张放在床边的纸条上。' },
       { art: 'library|mom,ming|patience|·', en: 'That night Grandma sings it once more. Ming goes to sleep with the song.', zh: '那晚奶奶又唱了一遍。明明听着歌睡着了。' }
     ],
     quiz: [

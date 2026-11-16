@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-16.12",
-  "note": "2026-11-16.12 对话层 + 补齐上一版丢失的修订。① 120 本里 61 本故事册一句台词都没有，读起来像旁白稿：给 18 本各加一句本来就该有人开口的台词（奶奶「没关系，我们再一起试一次」、爸爸「你能行」、奶奶在车站招手「你们到了」、奶奶答「太阳在动，影子就跟着动」），有对话的书 28→45。② 上一版修订层被同书号的第二个 dict 整本覆盖，b92/b93/b95/b96/b99/b101 共 13 页修订（夜里「sits up in bed」三页重复、影子那本「太阳很高」前后矛盾等）没上线，本版补齐；新增 _v4_polish_lint.py：断言每本书只出现一次、六本页数下限、每条修订真的落地、中文引号配对。22 条新整句音频，无新词。app v180→181 / books-data v20→21 / audio-list v17 不动 / CACHE v239→v240 / SENTENCE_AUDIO 6504→6526 / BUILD .11→.12"
+  "build": "2026-11-16.13",
+  "note": "2026-11-16.13 语法 / 搭配 / 逻辑复查（22 条整句，无新词）。① 时态漂移：b40「The clock helped me again.」在通篇现在时里突然过去；b92「It was the wind. It pushes...」过去+现在混用；b46「It started small.」。② 搭配：b15「The day is not dry.」英文不这么说；b95「make noodles into long lines」（面条本来就是条）；b71「made the sock no good」；b61「wants it done」超出本级语域。③ 指代/POV：b88 把 cousin 当人名大写、叙述里又写「my cousin」与第三人称打架；b22「up the hill」凭空出现一座山。④ 逻辑：b112 中途把没晒太阳的盆搬到太阳下，等于换变量、实验不成立 —— 改成「不动那两个盆」，推理题与迁移题同步改；b15 推理题把「雾」当成泥的成因。⑤ 常识与语序：b94「The bright part grows」→「我们看到的亮部」；b102「Three weeks of notes are in her book」→「Her book has...」。app v181→182 / books-data v21→22 / audio-list v17 不动 / CACHE v240→v241 / SENTENCE_AUDIO 6526→6548 / BUILD .12→.13"
 }
