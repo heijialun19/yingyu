@@ -58,8 +58,8 @@ const BOOKS = [
       { art: 'home|ming,grandma|hat|!', en: 'Ming laughs. The hat is back.', zh: '明明笑了。帽子回来了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['苹果', '鸭子', '帽子'], a: 2, kind: 'recall' },
-      { q: '帽子最后在哪里？', opts: ['在猫身上', '在桌子下面', '在水里'], a: 0, kind: 'infer' },
+      { q: '明明的帽子最后在哪儿？', opts: ['床上', '书包里', '猫身上'], a: 2, kind: 'recall' },
+      { q: '明明找到帽子时，心情怎么样？', opts: ['觉得好笑，笑了起来', '很生气', '很难过'], a: 0, kind: 'infer' },
       { q: '东西不见了，你会先做什么？', opts: ['想一想它可能在哪里，再找找', '不管它了', '马上哭一场'], a: 0, kind: 'transfer' }
     ]
   },
@@ -90,7 +90,7 @@ const BOOKS = [
       { art: 'library|lili,grandpa|cat|!', en: 'I like my cat.', zh: '我喜欢我的猫。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['盒子', '牛奶', '帽子'], a: 1, kind: 'recall' },
+      { q: '这只猫喜欢喝什么？', opts: ['水', '牛奶', '茶'], a: 1, kind: 'recall' },
       { q: '猫喜欢什么？', opts: ['水', '牛奶', '茶'], a: 1, kind: 'infer' },
       { q: '想知道小动物喜欢什么，你会怎么做？', opts: ['一直追它', '静静看它做什么、吃什么', '不理它'], a: 1, kind: 'transfer' }
     ]
@@ -120,7 +120,7 @@ const BOOKS = [
       { art: 'library|grandma,mom|red|!', en: 'We like red and blue.', zh: '我们喜欢红色和蓝色。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['红色', '鸡蛋', '一'], a: 0, kind: 'recall' },
+      { q: '这一本里，明明说他喜欢哪个颜色？', opts: ['红色', '绿色', '黄色'], a: 0, kind: 'recall' },
       { q: '这一本讲了哪两种颜色？', opts: ['红色和绿色', '红色和蓝色', '蓝色和黄色'], a: 1, kind: 'infer' },
       { q: '看到一样东西的颜色，你会怎么做？', opts: ['用英文说出它的颜色', '只看不说', '跳过去'], a: 0, kind: 'transfer' }
     ]
@@ -129,33 +129,35 @@ const BOOKS = [
     id: 'b4', lv: 'L1', tag: '吃饭', title: 'I Eat', zh: '我吃东西',
     emoji: '🍚', color: '#C6DEF6',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 3 个新词（吃、米饭、苹果）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 4 个新词（米饭、热、吃、苹果）。',
     trap: '这一级是整体认读：词不用拼，先听整句，再跟着说；别一个字母一个字母念。',
-    summary: '《我吃东西》：这是一个完整的小故事。读前先看词卡（吃、米饭、苹果）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《我吃东西》：这是一个完整的小故事。读前先看词卡（米饭、热、吃、苹果）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '指着分镜，用英文说出这一页的东西，再把整本连起来读一遍。',
     think: '说说你最喜欢吃的一样东西。',
     pre: [
-      { art: '🏃', en: 'eat', zh: '吃' },
       { art: '🍚', en: 'rice', zh: '米饭' },
+      { art: '🔥', en: 'hot', zh: '热' },
+      { art: '🏃', en: 'eat', zh: '吃' },
       { art: '🍎', en: 'apple', zh: '苹果' }
     ],
     sight: [],
     newWords: [
-      { w: 'eat', zh: '吃' },
       { w: 'rice', zh: '米饭' },
+      { w: 'hot', zh: '热' },
+      { w: 'eat', zh: '吃' },
       { w: 'apple', zh: '苹果' }
     ],
     pages: [
-      { art: 'kitchen|grandpa,dad|rice|·', en: 'I eat rice.', zh: '我吃米饭。' },
-      { art: 'kitchen|grandpa,dad|rice|♪', en: 'I like rice.', zh: '我喜欢米饭。' },
-      { art: 'kitchen|grandpa,dad|rice|👀', en: 'I eat an apple too.', zh: '我还吃了一个苹果。' },
-      { art: 'kitchen|grandpa,dad|rice|?', en: 'The apple is good.', zh: '苹果很好吃。' },
-      { art: 'kitchen|grandpa,dad|rice|·', en: 'I eat and eat.', zh: '我吃啊吃。' },
-      { art: 'kitchen|grandpa,dad|rice|!', en: 'I am happy.', zh: '我很开心。' }
+      { art: 'kitchen|grandpa,dad|rice|·', en: 'I have rice. I like rice.', zh: '我有米饭。我喜欢米饭。' },
+      { art: 'kitchen|grandpa,dad|rice|♪', en: 'The rice is hot. It is too hot to eat.', zh: '米饭很烫。烫得没法吃。' },
+      { art: 'kitchen|grandpa,dad|rice|👀', en: 'I have an apple too.', zh: '我还有一个苹果。' },
+      { art: 'kitchen|grandpa,dad|rice|?', en: 'I eat the apple first.', zh: '我先吃苹果。' },
+      { art: 'kitchen|grandpa,dad|rice|·', en: 'Now the rice is good.', zh: '现在米饭不烫了。' },
+      { art: 'kitchen|grandpa,dad|rice|!', en: 'I eat and eat. I am happy.', zh: '我吃啊吃。我很开心。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['苹果', '帽子', '茶'], a: 0, kind: 'recall' },
-      { q: '我吃了什么？', opts: ['米饭和苹果', '米饭和鸡蛋', '苹果和鱼'], a: 0, kind: 'infer' },
+      { q: '米饭太烫的时候，明明先吃了什么？', opts: ['一个苹果', '一个鸡蛋', '一块面包'], a: 0, kind: 'recall' },
+      { q: '明明为什么先吃苹果？', opts: ['米饭太烫，得等它凉一点', '因为他不喜欢米饭', '因为苹果更甜'], a: 0, kind: 'infer' },
       { q: '吃东西时，你会怎么做？', opts: ['一口全吞下去', '慢慢吃，尝尝味道', '不吃了'], a: 1, kind: 'transfer' }
     ]
   },
@@ -163,32 +165,36 @@ const BOOKS = [
     id: 'b5', lv: 'L1', tag: '上学', title: 'My Bag', zh: '我的书包',
     emoji: '🎒', color: '#E0CFF3',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 2 个新词（书包、笔）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 4 个新词（书包、笔、球、拿）。',
     trap: '这一级是整体认读：词不用拼，先听整句，再跟着说；别一个字母一个字母念。',
-    summary: '《我的书包》：这是一个完整的小故事。读前先看词卡（书包、笔）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《我的书包》：这是一个完整的小故事。读前先看词卡（书包、笔、球、拿）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '指着分镜，用英文说出这一页的东西，再把整本连起来读一遍。',
     think: '说说你的书包里有什么。',
     pre: [
       { art: '🎒', en: 'bag', zh: '书包' },
       { art: '🖊️', en: 'pen', zh: '笔' },
+      { art: '⚽', en: 'ball', zh: '球' },
+      { art: '🏃', en: 'take', zh: '拿' },
       { art: '📖', en: 'book', zh: '书' }
     ],
     sight: [],
     newWords: [
       { w: 'bag', zh: '书包' },
-      { w: 'pen', zh: '笔' }
+      { w: 'pen', zh: '笔' },
+      { w: 'ball', zh: '球' },
+      { w: 'take', zh: '拿' }
     ],
     pages: [
-      { art: 'home|mom,ming|bag|·', en: 'I have a bag.', zh: '我有一个书包。' },
-      { art: 'home|mom,ming|bag|♪', en: 'My bag is big.', zh: '我的书包很大。' },
-      { art: 'home|mom,ming|bag|👀', en: 'What is in my bag?', zh: '我的书包里有什么？' },
-      { art: 'home|mom,ming|bag|?', en: 'A pen is in my bag.', zh: '书包里有一支笔。' },
-      { art: 'home|mom,ming|bag|·', en: 'A book is in my bag too.', zh: '书包里还有一本书。' },
-      { art: 'home|mom,ming|bag|!', en: 'I like my bag.', zh: '我喜欢我的书包。' }
+      { art: 'home|mom,ming|bag|·', en: 'I have a bag. My bag is big.', zh: '我有一个书包。我的书包很大。' },
+      { art: 'home|mom,ming|bag|♪', en: 'I put a pen in my bag.', zh: '我把一支笔放进书包。' },
+      { art: 'home|mom,ming|bag|👀', en: 'I put a book in my bag too.', zh: '我还把一本书放进书包。' },
+      { art: 'home|mom,ming|bag|?', en: 'I put my ball in it. Now it is too big!', zh: '我把球也放进去。现在它太鼓了！' },
+      { art: 'home|mom,ming|bag|·', en: 'I take the ball out.', zh: '我把球拿出来。' },
+      { art: 'home|mom,ming|bag|!', en: 'My bag is good now. I like my bag.', zh: '我的书包现在刚好。我喜欢它。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['球', '猪', '书包'], a: 2, kind: 'recall' },
-      { q: '书包里有什么？', opts: ['笔和书', '书和苹果', '笔和帽子'], a: 0, kind: 'infer' },
+      { q: '书包太鼓了，明明把什么拿了出来？', opts: ['书', '笔', '球'], a: 2, kind: 'recall' },
+      { q: '书包为什么变得太鼓了？', opts: ['因为明明把球也塞了进去', '因为装了太多书', '因为书包本来就小'], a: 0, kind: 'infer' },
       { q: '想找书包里的东西，你会怎么做？', opts: ['把东西全倒出来', '打开书包，一样一样看一看', '不找了'], a: 1, kind: 'transfer' }
     ]
   },
@@ -196,37 +202,38 @@ const BOOKS = [
     id: 'b6', lv: 'L1', tag: '天气', title: 'The Sun', zh: '太阳',
     emoji: '☀️', color: '#F6C9E3',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 5 个新词（太阳、天空、热、暖、手）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 5 个新词（太阳、天空、暖、手、树）。',
     trap: '这一级是整体认读：词不用拼，先听整句，再跟着说；别一个字母一个字母念。',
-    summary: '《太阳》：这是一个完整的小故事。读前先看词卡（太阳、天空、热、暖、手）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《太阳》：这是一个完整的小故事。读前先看词卡（太阳、天空、暖、手、树）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '指着分镜，用英文说出这一页的东西，再把整本连起来读一遍。',
     think: '说说有太阳的时候，你会做什么。',
     pre: [
       { art: '☀️', en: 'sun', zh: '太阳' },
       { art: '🌿', en: 'sky', zh: '天空' },
-      { art: '🔥', en: 'hot', zh: '热' },
       { art: '✨', en: 'warm', zh: '暖' },
-      { art: '✋', en: 'hand', zh: '手' }
+      { art: '✋', en: 'hand', zh: '手' },
+      { art: '🌳', en: 'tree', zh: '树' },
+      { art: '🎩', en: 'hat', zh: '帽子' }
     ],
     sight: [],
     newWords: [
       { w: 'sun', zh: '太阳' },
       { w: 'sky', zh: '天空' },
-      { w: 'hot', zh: '热' },
       { w: 'warm', zh: '暖' },
-      { w: 'hand', zh: '手' }
+      { w: 'hand', zh: '手' },
+      { w: 'tree', zh: '树' }
     ],
     pages: [
-      { art: 'night|dad,lili|sun|·', en: 'The sun is in the sky.', zh: '太阳在天上。' },
-      { art: 'night|dad,lili|sun|♪', en: 'The sun is big and hot.', zh: '太阳又大又热。' },
-      { art: 'night|dad,lili|sun|👀', en: 'The sun is up.', zh: '太阳升起来了。' },
-      { art: 'night|dad,lili|sun|?', en: 'The sun is warm on my hand.', zh: '太阳照在手上，暖暖的。' },
-      { art: 'night|dad,lili|sun|·', en: 'I like the sun.', zh: '我喜欢太阳。' },
-      { art: 'night|dad,lili|sun|!', en: 'The sun is good.', zh: '太阳真好。' }
+      { art: 'night|dad,lili|sun|·', en: 'The sun is in the sky. It is big and hot.', zh: '太阳在天上。它又大又热。' },
+      { art: 'night|dad,lili|sun|♪', en: 'The sun is warm on my hand.', zh: '太阳照在手上暖暖的。' },
+      { art: 'night|dad,lili|sun|👀', en: 'I put my hat on and sit in the sun.', zh: '我戴上帽子坐在太阳下。' },
+      { art: 'night|dad,lili|sun|?', en: 'Then it is too hot!', zh: '后来太热了！' },
+      { art: 'night|dad,lili|sun|·', en: 'I go to the tree. The tree is good.', zh: '我走到树边。树下真好。' },
+      { art: 'night|dad,lili|sun|!', en: 'I like the sun, but I like the tree too.', zh: '我喜欢太阳，可我也喜欢这棵树。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['罐子', '手', '树'], a: 1, kind: 'recall' },
-      { q: '太阳是什么样的？', opts: ['又小又冷', '又小又热', '又大又热'], a: 2, kind: 'infer' },
+      { q: '太阳太热的时候，明明去了哪儿？', opts: ['河边', '树下面', '家里'], a: 1, kind: 'recall' },
+      { q: '明明后来为什么走到树那边去了？', opts: ['他要回家睡觉', '他要去找帽子', '太阳太热，树下凉快'], a: 2, kind: 'infer' },
       { q: '太阳很晒的时候，你会怎么做？', opts: ['一直站在太阳下', '找阴凉的地方待着', '不管它'], a: 1, kind: 'transfer' }
     ]
   },
@@ -234,9 +241,9 @@ const BOOKS = [
     id: 'b7', lv: 'L1', tag: '比一比', title: 'Big and Small', zh: '大和小',
     emoji: '🐘', color: '#BFE6DF',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 1 个新词（球）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。不引入新词，全部是读过的词。',
     trap: '这一级是整体认读：词不用拼，先听整句，再跟着说；别一个字母一个字母念。',
-    summary: '《大和小》：这是一个完整的小故事。读前先看词卡（球）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《大和小》：这是一个完整的小故事。读前先看词卡，都是学过的词；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '指着分镜，用英文说出这一页的东西，再把整本连起来读一遍。',
     think: '找两样东西，说说哪个大、哪个小。',
     pre: [
@@ -244,7 +251,7 @@ const BOOKS = [
     ],
     sight: [],
     newWords: [
-      { w: 'ball', zh: '球' }
+
     ],
     pages: [
       { art: 'playground|ming,grandma|ball|·', en: 'I have a ball.', zh: '我有一个球。' },
@@ -255,7 +262,7 @@ const BOOKS = [
       { art: 'playground|ming,grandma|ball|!', en: 'Big and small, I like them all.', zh: '大的、小的，我都喜欢。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['宝宝', '鸡蛋', '球'], a: 2, kind: 'recall' },
+      { q: '这两个球有什么不一样？', opts: ['一个红一个蓝', '一个有洞', '一个大一个小'], a: 2, kind: 'recall' },
       { q: '这一本讲了球的什么？', opts: ['大的和小的', '新的和旧的', '红的和蓝的'], a: 0, kind: 'infer' },
       { q: '要比两样东西的大小，你会怎么做？', opts: ['只看一个就说', '把它们放在一起比一比', '随便说一个'], a: 1, kind: 'transfer' }
     ]
@@ -264,30 +271,34 @@ const BOOKS = [
     id: 'b8', lv: 'L1', tag: '家里', title: 'My Cup', zh: '我的杯子',
     emoji: '🥛', color: '#F2E2A8',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 1 个新词（杯子）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 3 个新词（杯子、喝、满）。',
     trap: '这一级是整体认读：词不用拼，先听整句，再跟着说；别一个字母一个字母念。',
-    summary: '《我的杯子》：这是一个完整的小故事。读前先看词卡（杯子）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《我的杯子》：这是一个完整的小故事。读前先看词卡（杯子、喝、满）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '指着分镜，用英文说出这一页的东西，再把整本连起来读一遍。',
     think: '说说你用什么杯子喝水。',
     pre: [
       { art: '🥛', en: 'cup', zh: '杯子' },
+      { art: '🏃', en: 'drink', zh: '喝' },
+      { art: '✨', en: 'full', zh: '满' },
       { art: '🥛', en: 'milk', zh: '牛奶' }
     ],
     sight: [],
     newWords: [
-      { w: 'cup', zh: '杯子' }
+      { w: 'cup', zh: '杯子' },
+      { w: 'drink', zh: '喝' },
+      { w: 'full', zh: '满' }
     ],
     pages: [
-      { art: 'home|lili,grandpa|cup|·', en: 'I have a cup.', zh: '我有一个杯子。' },
-      { art: 'home|lili,grandpa|cup|♪', en: 'My cup is red.', zh: '我的杯子是红色的。' },
-      { art: 'home|lili,grandpa|cup|👀', en: 'What is in my cup?', zh: '我的杯子里有什么？' },
-      { art: 'home|lili,grandpa|cup|?', en: 'Milk is in my cup.', zh: '杯子里有牛奶。' },
-      { art: 'home|lili,grandpa|cup|·', en: 'I like milk.', zh: '我喜欢牛奶。' },
-      { art: 'home|lili,grandpa|cup|!', en: 'My cup is good.', zh: '我的杯子真好。' }
+      { art: 'home|lili,grandpa|cup|·', en: 'I have a cup. My cup is red.', zh: '我有一个杯子。我的杯子是红的。' },
+      { art: 'home|lili,grandpa|cup|♪', en: 'Milk is in my cup.', zh: '杯子里有牛奶。' },
+      { art: 'home|lili,grandpa|cup|👀', en: 'I drink the milk. It is good.', zh: '我喝牛奶。很好喝。' },
+      { art: 'home|lili,grandpa|cup|?', en: 'Now my cup is not full.', zh: '现在杯子空了。' },
+      { art: 'home|lili,grandpa|cup|·', en: 'I want more milk. Mom gives me more.', zh: '我还想喝。妈妈又给我倒了。' },
+      { art: 'home|lili,grandpa|cup|!', en: 'My cup is full again!', zh: '我的杯子又满了！' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['猫', '丽丽', '红色'], a: 2, kind: 'recall' },
-      { q: '杯子里有什么？', opts: ['水', '茶', '牛奶'], a: 2, kind: 'infer' },
+      { q: '明明杯子里装的是什么？', opts: ['水', '果汁', '牛奶'], a: 2, kind: 'recall' },
+      { q: '杯子空了以后，明明怎么样了？', opts: ['把杯子放下了', '去拿了一个新杯子', '请妈妈再给他倒一些'], a: 2, kind: 'infer' },
       { q: '想知道杯子里装了什么，你会怎么做？', opts: ['不看', '打开盖子看一看', '猜一猜就算了'], a: 1, kind: 'transfer' }
     ]
   },
@@ -316,8 +327,8 @@ const BOOKS = [
       { art: 'table|grandma,mom|hat|!', en: 'Good! You can say it.', zh: '真棒！你会说了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['朋友', '猪', '帽子'], a: 2, kind: 'recall' },
-      { q: '这一本在练什么？', opts: ['说「书」这个词', '说「猫」这个词', '说「帽子」这个词'], a: 2, kind: 'infer' },
+      { q: '这一本在练哪个词？', opts: ['cat', 'bag', 'hat'], a: 2, kind: 'recall' },
+      { q: 'hat 开头是哪个音？', opts: ['t 的音', 'a 的音', 'h 的音'], a: 2, kind: 'infer' },
       { q: '遇到一个新单词，你会怎么做？', opts: ['跳过去', '不敢说', '跟着大声说出来'], a: 2, kind: 'transfer' }
     ]
   },
@@ -347,8 +358,8 @@ const BOOKS = [
       { art: 'school|grandpa,dad|book|!', en: 'I like to read my book.', zh: '我喜欢读我的书。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['明明', '太阳', '水'], a: 1, kind: 'recall' },
-      { q: '书里有什么？', opts: ['太阳和树', '猫和太阳', '猫和狗'], a: 1, kind: 'infer' },
+      { q: '书里有什么？', opts: ['一辆车', '一只猫', '一棵树'], a: 1, kind: 'recall' },
+      { q: '这本书里既有猫又有太阳，画的大概是什么时候？', opts: ['下雨天', '白天', '夜里'], a: 1, kind: 'infer' },
       { q: '读书的时候，你会怎么做？', opts: ['不看', '随便翻翻就合上', '一页一页慢慢看'], a: 2, kind: 'transfer' }
     ]
   },
@@ -356,20 +367,18 @@ const BOOKS = [
     id: 'b11', lv: 'L1', tag: '认物', title: 'Water and Rice', zh: '水和米饭',
     emoji: '💧', color: '#C8E7F0',
     track: 'info',
-    goal: '读懂一个真实的小知识，能说出「为什么会这样」。认读 2 个新词（水、喝）。',
+    goal: '读懂一个真实的小知识，能说出「为什么会这样」。认读 1 个新词（水）。',
     trap: '这一级是整体认读：词不用拼，先听整句，再跟着说；别一个字母一个字母念。',
-    summary: '《水和米饭》：这一本从一件小事讲起，说说为什么会这样。读前先看词卡（水、喝）；读的时候留意先看到什么、为什么会这样、后来怎么弄明白。',
+    summary: '《水和米饭》：这一本从一件小事讲起，说说为什么会这样。读前先看词卡（水）；读的时候留意先看到什么、为什么会这样、后来怎么弄明白。',
     retell: '合上书，按「先看到什么 → 为什么会这样 → 后来怎么弄明白」讲一遍。',
     think: '说说你吃饭时会喝什么、吃什么。',
     pre: [
       { art: '💧', en: 'water', zh: '水' },
-      { art: '🏃', en: 'drink', zh: '喝' },
       { art: '🍚', en: 'rice', zh: '米饭' }
     ],
-    sight: ['eat'],
+    sight: ['drink', 'eat'],
     newWords: [
-      { w: 'water', zh: '水' },
-      { w: 'drink', zh: '喝' }
+      { w: 'water', zh: '水' }
     ],
     pages: [
       { art: 'beach|mom,ming|water|·', en: 'I see water.', zh: '我看见水。' },
@@ -380,8 +389,8 @@ const BOOKS = [
       { art: 'beach|mom,ming|water|!', en: 'Water and rice are good.', zh: '水和米饭都好。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['水', '球', '笔'], a: 0, kind: 'recall' },
-      { q: '我喝了什么、吃了什么？', opts: ['牛奶和鸡蛋', '茶和苹果', '水和米饭'], a: 2, kind: 'infer' },
+      { q: '明明先喝了什么？', opts: ['水', '汤', '米饭'], a: 0, kind: 'recall' },
+      { q: '明明又喝水又吃饭，说明他当时怎么样？', opts: ['想睡觉', '已经很饱', '又渴又饿'], a: 2, kind: 'infer' },
       { q: '吃饭的时候，你会怎么做？', opts: ['不吃了', '坐好，慢慢吃', '一边跑一边吃'], a: 1, kind: 'transfer' }
     ]
   },
@@ -411,8 +420,8 @@ const BOOKS = [
       { art: 'library|dad,lili|box|!', en: 'They are all together.', zh: '它们都在一起。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['鸭子', '杯子', '黄色'], a: 1, kind: 'recall' },
-      { q: '盒子里有什么？', opts: ['帽子和杯子', '杯子和苹果', '帽子和书'], a: 0, kind: 'infer' },
+      { q: '盒子里有什么？', opts: ['球和盘子', '帽子和杯子', '书和笔'], a: 1, kind: 'recall' },
+      { q: '帽子和杯子都放进盒子，盒子会怎么样？', opts: ['装得满满的', '不见了', '变轻了'], a: 0, kind: 'infer' },
       { q: '想记住几样东西，你会怎么做？', opts: ['不记了', '把它们放在一起，一起看', '随便乱放'], a: 1, kind: 'transfer' }
     ]
   },
@@ -420,32 +429,34 @@ const BOOKS = [
     id: 'b13', lv: 'L2', tag: '农场', title: 'A Pig and a Hen', zh: '小猪和母鸡',
     emoji: '🐷', color: '#F6C6C6',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 2 个新词（母鸡、胖）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 3 个新词（母鸡、胖、害怕）。',
     trap: '短元音要收住韵尾：cap 的 p 是双唇轻轻一闭，不要加「呃」读成「卡普呃」。',
-    summary: '《小猪和母鸡》：这是一个完整的小故事。读前先看词卡（母鸡、胖）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《小猪和母鸡》：这是一个完整的小故事。读前先看词卡（母鸡、胖、害怕）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '指着分镜，用英文说出这一页的东西，再把整本连起来读一遍。',
     think: '说说两种小动物：它们长得一样吗？',
     pre: [
       { art: '🐔', en: 'hen', zh: '母鸡' },
       { art: '✨', en: 'fat', zh: '胖' },
+      { art: '✨', en: 'afraid', zh: '害怕' },
       { art: '🐷', en: 'pig', zh: '猪' }
     ],
     sight: ['friends'],
     newWords: [
       { w: 'hen', zh: '母鸡' },
-      { w: 'fat', zh: '胖' }
+      { w: 'fat', zh: '胖' },
+      { w: 'afraid', zh: '害怕' }
     ],
     pages: [
-      { art: 'farm|ming,grandma|pig|·', en: 'I see a pig.', zh: '我看见一头猪。' },
-      { art: 'farm|ming,grandma|pig|♪', en: 'I see a hen too.', zh: '我还看见一只母鸡。' },
-      { art: 'farm|ming,grandma|pig|👀', en: 'The pig is fat.', zh: '猪胖胖的。' },
-      { art: 'farm|ming,grandma|pig|?', en: 'The hen is small.', zh: '母鸡小小的。' },
-      { art: 'farm|ming,grandma|pig|·', en: 'The pig runs to the hen.', zh: '猪跑向母鸡。' },
-      { art: 'farm|ming,grandma|pig|!', en: 'The hen runs to the pig.', zh: '母鸡跑向猪。' },
-      { art: 'farm|ming,grandma|pig|♥', en: 'The pig and the hen are friends.', zh: '猪和母鸡成了朋友。' }
+      { art: 'farm|ming,grandma|pig|·', en: 'I see a pig. I see a hen too.', zh: '我看见一头猪。还看见一只母鸡。' },
+      { art: 'farm|ming,grandma|pig|♪', en: 'The pig is fat. The hen is small.', zh: '猪胖胖的。母鸡小小的。' },
+      { art: 'farm|ming,grandma|pig|👀', en: 'The pig runs to the hen.', zh: '猪跑向母鸡。' },
+      { art: 'farm|ming,grandma|pig|?', en: 'The hen runs away. She is afraid.', zh: '母鸡跑开了。她害怕。' },
+      { art: 'farm|ming,grandma|pig|·', en: 'The pig stops. He sits down.', zh: '猪停下来。他坐下了。' },
+      { art: 'farm|ming,grandma|pig|!', en: 'The hen looks at him. She comes back.', zh: '母鸡看看他，走了回来。' },
+      { art: 'farm|ming,grandma|pig|♥', en: 'Now they are friends.', zh: '现在他们是朋友了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['杯子', '猪', '蝙蝠'], a: 1, kind: 'recall' },
+      { q: '母鸡为什么跑开了？', opts: ['她去找吃的', '她害怕猪', '她饿了'], a: 1, kind: 'recall' },
       { q: '猪和母鸡最后怎么了？', opts: ['它们打了一架', '它们各自走了', '它们成了朋友'], a: 2, kind: 'infer' },
       { q: '想和小动物交朋友，你会怎么做？', opts: ['吓它一跳', '追着它跑', '轻轻靠近，对它好'], a: 2, kind: 'transfer' }
     ]
@@ -480,8 +491,8 @@ const BOOKS = [
       { art: 'home|lili,grandpa|cap|♥', en: 'I find my cap!', zh: '我找到帽子了！' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['公交车', '鸭舌帽', '奶奶'], a: 1, kind: 'recall' },
-      { q: '我的帽子是什么颜色的？', opts: ['蓝色', '黄色', '红色'], a: 2, kind: 'infer' },
+      { q: '明明的帽子是什么颜色的？', opts: ['蓝色', '红色', '黄色'], a: 1, kind: 'recall' },
+      { q: '帽子不见了，明明是怎么做的？', opts: ['又去买了一顶', '不要了', '到处找，最后找到了'], a: 2, kind: 'infer' },
       { q: '东西不见了，你会怎么做？', opts: ['马上哭', '不要了', '想一想可能在哪儿，再去找'], a: 2, kind: 'transfer' }
     ]
   },
@@ -489,9 +500,9 @@ const BOOKS = [
     id: 'b15', lv: 'L2', tag: '天气', title: 'Mud and Fog', zh: '泥和雾',
     emoji: '🌫️', color: '#CDE7C6',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 5 个新词（干、雾、路、湿、泥）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 7 个新词（干、雾、路、湿、泥、腿）。',
     trap: '短元音要收住韵尾：cap 的 p 是双唇轻轻一闭，不要加「呃」读成「卡普呃」。',
-    summary: '《泥和雾》：这是一个完整的小故事。读前先看词卡（干、雾、路、湿、泥）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《泥和雾》：这是一个完整的小故事。读前先看词卡（干、雾、路、湿、泥、腿）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '指着分镜，用英文说出这一页的东西，再把整本连起来读一遍。',
     think: '说说一个有雾或下雨的日子。',
     pre: [
@@ -499,27 +510,33 @@ const BOOKS = [
       { art: '🌫️', en: 'fog', zh: '雾' },
       { art: '🛣️', en: 'road', zh: '路' },
       { art: '✨', en: 'wet', zh: '湿' },
-      { art: '🟤', en: 'mud', zh: '泥' }
+      { art: '🟤', en: 'mud', zh: '泥' },
+      { art: '✋', en: 'leg', zh: '腿' },
+      { art: '🏃', en: 'clean', zh: '打扫' },
+      { art: '🏠', en: 'home', zh: '家' },
+      { art: '💧', en: 'water', zh: '水' }
     ],
-    sight: [],
+    sight: ['water'],
     newWords: [
       { w: 'dry', zh: '干' },
       { w: 'fog', zh: '雾' },
       { w: 'road', zh: '路' },
       { w: 'wet', zh: '湿' },
-      { w: 'mud', zh: '泥' }
+      { w: 'mud', zh: '泥' },
+      { w: 'leg', zh: '腿' },
+      { w: 'clean', zh: '打扫' }
     ],
     pages: [
-      { art: 'farm|grandma,mom|mud|·', en: 'The day is not dry.', zh: '这一天不干爽。' },
-      { art: 'farm|grandma,mom|mud|♪', en: 'There is fog.', zh: '有雾。' },
-      { art: 'farm|grandma,mom|mud|👀', en: 'The road is wet.', zh: '路是湿的。' },
-      { art: 'farm|grandma,mom|mud|?', en: 'I see mud.', zh: '我看见泥。' },
-      { art: 'farm|grandma,mom|mud|·', en: 'The mud is not dry.', zh: '泥还没干。' },
-      { art: 'farm|grandma,mom|mud|!', en: 'I do not like the mud.', zh: '我不喜欢泥。' },
+      { art: 'farm|grandma,mom|mud|·', en: 'The day is not dry. There is fog.', zh: '今天不干爽。有雾。' },
+      { art: 'farm|grandma,mom|mud|♪', en: 'The road is wet. I see mud.', zh: '路上湿湿的。我看见泥。' },
+      { art: 'farm|grandma,mom|mud|👀', en: 'My leg is in the mud!', zh: '我的腿踩进泥里了！' },
+      { art: 'farm|grandma,mom|mud|?', en: 'I am not happy. The mud is cold.', zh: '我不高兴。泥是凉的。' },
+      { art: 'farm|grandma,mom|mud|·', en: 'I go home and put water on my leg.', zh: '我回家用水冲腿。' },
+      { art: 'farm|grandma,mom|mud|!', en: 'Now my leg is clean.', zh: '现在腿干净了。' },
       { art: 'farm|grandma,mom|mud|♥', en: 'I wait for a dry day.', zh: '我等一个干爽的日子。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['泥', '帽子', '爸爸'], a: 0, kind: 'recall' },
+      { q: '明明的腿怎么了？', opts: ['踩进泥里了', '被雨淋湿了', '摔破了'], a: 0, kind: 'recall' },
       { q: '为什么路上有泥？', opts: ['因为太阳太大', '因为又湿又有雾', '因为太干了'], a: 1, kind: 'infer' },
       { q: '路又湿又滑，你会怎么做？', opts: ['不管它', '慢慢走，小心一点', '拔腿就跑'], a: 1, kind: 'transfer' }
     ]
@@ -553,7 +570,7 @@ const BOOKS = [
       { art: 'garden|grandpa,dad|bug|♥', en: 'The bug hops back to the rock.', zh: '小虫跳回石头上。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['小虫', '奶奶', '盖子'], a: 0, kind: 'recall' },
+      { q: '小虫一开始在哪儿？', opts: ['石头上', '叶子上', '明明的手上'], a: 0, kind: 'recall' },
       { q: '小虫跳到了哪里？', opts: ['我的手上', '树叶上', '水里'], a: 0, kind: 'infer' },
       { q: '看到一只小虫，你会怎么做？', opts: ['轻轻看着它，别吓它', '踩它一脚', '伸手去抓它'], a: 0, kind: 'transfer' }
     ]
@@ -570,7 +587,8 @@ const BOOKS = [
     pre: [
       { art: '🍲', en: 'pot', zh: '锅' },
       { art: '🍳', en: 'kitchen', zh: '厨房' },
-      { art: '📦', en: 'lid', zh: '盖子' }
+      { art: '📦', en: 'lid', zh: '盖子' },
+      { art: '✋', en: 'hand', zh: '手' }
     ],
     sight: [],
     newWords: [
@@ -579,17 +597,17 @@ const BOOKS = [
       { w: 'lid', zh: '盖子' }
     ],
     pages: [
-      { art: 'kitchen|mom,ming|pot|·', en: 'I see a big pot.', zh: '我看见一口大锅。' },
-      { art: 'kitchen|mom,ming|pot|♪', en: 'The pot is in the kitchen.', zh: '锅在厨房里。' },
-      { art: 'kitchen|mom,ming|pot|👀', en: 'What is in the pot?', zh: '锅里有什么？' },
-      { art: 'kitchen|mom,ming|pot|?', en: 'The pot is hot.', zh: '锅很热。' },
-      { art: 'kitchen|mom,ming|pot|·', en: 'A lid is on the pot.', zh: '锅上有个盖子。' },
-      { art: 'kitchen|mom,ming|pot|!', en: 'I like the pot.', zh: '我喜欢这口锅。' },
-      { art: 'kitchen|mom,ming|pot|♥', en: 'The pot is for all of us.', zh: '这口锅是给我们大家用的。' }
+      { art: 'kitchen|mom,ming|pot|·', en: 'I see a big pot. It is in the kitchen.', zh: '我看见一个大锅。它在厨房里。' },
+      { art: 'kitchen|mom,ming|pot|♪', en: 'The pot is hot. A lid is on it.', zh: '锅很烫。上面盖着盖子。' },
+      { art: 'kitchen|mom,ming|pot|👀', en: 'I want to look in the pot.', zh: '我想看看锅里。' },
+      { art: 'kitchen|mom,ming|pot|?', en: 'I put my hand on the lid. It is hot!', zh: '我把手放在盖子上。好烫！' },
+      { art: 'kitchen|mom,ming|pot|·', en: 'I do not put my hand there again.', zh: '我不再把手放上去了。' },
+      { art: 'kitchen|mom,ming|pot|!', en: 'Mom comes in. She looks in the pot.', zh: '妈妈进来。她看了看锅里。' },
+      { art: 'kitchen|mom,ming|pot|♥', en: 'The pot is for all of us.', zh: '这个锅是全家人用的。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['头', '厨房', '妈妈'], a: 1, kind: 'recall' },
-      { q: '锅在哪里？', opts: ['花园里', '卧室里', '厨房里'], a: 2, kind: 'infer' },
+      { q: '明明的手为什么缩了回来？', opts: ['锅太高了', '盖子很烫', '妈妈不让他碰'], a: 1, kind: 'recall' },
+      { q: '明明为什么不再把手放到盖子上了？', opts: ['锅太高了够不着', '妈妈不让他碰', '盖子很烫，会烫到手'], a: 2, kind: 'infer' },
       { q: '锅很烫的时候，你会怎么做？', opts: ['伸手摸一摸', '不管它', '离远一点，别碰它'], a: 2, kind: 'transfer' }
     ]
   },
@@ -619,7 +637,7 @@ const BOOKS = [
       { art: 'street|dad,lili|bus|♥', en: 'I like the bus.', zh: '我喜欢公交车。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['厨房', '坚果', '公交车'], a: 2, kind: 'recall' },
+      { q: '明明上了什么？', opts: ['火车', '船', '公交车'], a: 2, kind: 'recall' },
       { q: '我是怎么去的？', opts: ['坐公交车', '走路', '骑自行车'], a: 0, kind: 'infer' },
       { q: '等公交车的时候，你会怎么做？', opts: ['不等了', '跑到路中间去', '站在安全的地方等它来'], a: 2, kind: 'transfer' }
     ]
@@ -652,8 +670,8 @@ const BOOKS = [
       { art: 'street|ming,grandma|map|♥', en: 'The map is good!', zh: '地图真好！' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['泥', '地图', '石头'], a: 1, kind: 'recall' },
-      { q: '地图上有什么？', opts: ['一个杯子', '一只猫', '一座小山'], a: 2, kind: 'infer' },
+      { q: '地图上画着什么？', opts: ['一条河', '一座小山', '一个公园'], a: 1, kind: 'recall' },
+      { q: '明明看地图，是为了什么？', opts: ['为了画一座小山', '为了学写字', '为了找到路'], a: 2, kind: 'infer' },
       { q: '找不到路的时候，你会怎么做？', opts: ['看看地图，找一找', '随便乱走', '不走了'], a: 0, kind: 'transfer' }
     ]
   },
@@ -669,24 +687,25 @@ const BOOKS = [
     pre: [
       { art: '🍞', en: 'bun', zh: '小面包' },
       { art: '🍯', en: 'jam', zh: '果酱' },
-      { art: '✋', en: 'hand', zh: '手' }
+      { art: '✋', en: 'hand', zh: '手' },
+      { art: '💧', en: 'water', zh: '水' }
     ],
-    sight: ['eat'],
+    sight: ['clean', 'eat', 'water'],
     newWords: [
       { w: 'bun', zh: '小面包' },
       { w: 'jam', zh: '果酱' }
     ],
     pages: [
-      { art: 'kitchen|lili,grandpa|jam|·', en: 'I see a bun.', zh: '我看见一个面包。' },
-      { art: 'kitchen|lili,grandpa|jam|♪', en: 'The bun is in my hand.', zh: '面包在我手上。' },
-      { art: 'kitchen|lili,grandpa|jam|👀', en: 'I put jam on the bun.', zh: '我把果酱放在面包上。' },
-      { art: 'kitchen|lili,grandpa|jam|?', en: 'The jam is good.', zh: '果酱很好吃。' },
-      { art: 'kitchen|lili,grandpa|jam|·', en: 'I like jam on a bun.', zh: '我喜欢面包上的果酱。' },
-      { art: 'kitchen|lili,grandpa|jam|!', en: 'I eat the bun.', zh: '我吃面包。' },
-      { art: 'kitchen|lili,grandpa|jam|♥', en: 'I like jam!', zh: '我喜欢果酱！' }
+      { art: 'kitchen|lili,grandpa|jam|·', en: 'I see a bun. I put jam on the bun.', zh: '我看见一个面包。我把果酱抹上去。' },
+      { art: 'kitchen|lili,grandpa|jam|♪', en: 'The jam is good. I eat the bun.', zh: '果酱很好吃。我吃面包。' },
+      { art: 'kitchen|lili,grandpa|jam|👀', en: 'Now jam is on my hand!', zh: '现在果酱弄到手上了！' },
+      { art: 'kitchen|lili,grandpa|jam|?', en: 'I do not like that. My hand is red.', zh: '我不喜欢这样。手变红了。' },
+      { art: 'kitchen|lili,grandpa|jam|·', en: 'I put my hand in water.', zh: '我把手放进水里。' },
+      { art: 'kitchen|lili,grandpa|jam|!', en: 'Now my hand is clean.', zh: '现在手干净了。' },
+      { art: 'kitchen|lili,grandpa|jam|♥', en: 'I like jam on a bun.', zh: '我喜欢面包上的果酱。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['猪', '手', '树'], a: 1, kind: 'recall' },
+      { q: '明明的手怎么了？', opts: ['被水弄湿了', '沾上了果酱', '弄上了泥'], a: 1, kind: 'recall' },
       { q: '我在面包上放了什么？', opts: ['果酱', '奶酪', '黄油'], a: 0, kind: 'infer' },
       { q: '自己做吃的，你会怎么做？', opts: ['乱放一通', '先看看有什么，放一点尝尝', '不做了'], a: 1, kind: 'transfer' }
     ]
@@ -718,8 +737,8 @@ const BOOKS = [
       { art: 'table|grandma,mom|pen|♥', en: 'Good!', zh: '真棒！' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['黄色', '笔', '米饭'], a: 1, kind: 'recall' },
-      { q: '这一本在比哪两个词？', opts: ['pen 和 pin', 'pin 和 pan', 'pen 和 pan'], a: 0, kind: 'infer' },
+      { q: '这一本在比哪两个词？', opts: ['pin 和 pig', 'pen 和 pin', 'pen 和 pan'], a: 1, kind: 'recall' },
+      { q: 'pen 和 pin 差在哪个音？', opts: ['中间的 e 和 i', '结尾的 n', '开头的 p'], a: 0, kind: 'infer' },
       { q: '两个单词长得很像，你会怎么分清？', opts: ['随便读一个', '一个一个慢慢读，听清哪里不同', '不读了'], a: 1, kind: 'transfer' }
     ]
   },
@@ -751,8 +770,8 @@ const BOOKS = [
       { art: 'kitchen|grandpa,dad|nut|♥', en: 'A nut for the ant!', zh: '给蚂蚁的坚果！' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['陀螺', '蝙蝠', '坚果'], a: 2, kind: 'recall' },
-      { q: '蚂蚁有什么？', opts: ['一颗坚果', '一个面包', '一条虫'], a: 0, kind: 'infer' },
+      { q: '蚂蚁找到了什么？', opts: ['一块面包', '一个苹果', '一颗坚果'], a: 2, kind: 'recall' },
+      { q: '这颗坚果对蚂蚁来说怎么样？', opts: ['很大，搬起来不容易', '小得看不见', '一点也不好吃'], a: 0, kind: 'infer' },
       { q: '东西很重、很难搬，你会怎么做？', opts: ['乱扔', '直接放弃', '一点一点搬，或者找人帮忙'], a: 2, kind: 'transfer' }
     ]
   },
@@ -783,7 +802,7 @@ const BOOKS = [
       { art: 'kitchen|mom,ming|pot|♥', en: 'I like a dry pot.', zh: '我喜欢干干的锅。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['动物', '盒子', '锅'], a: 2, kind: 'recall' },
+      { q: '明明把湿锅放在哪儿了？', opts: ['水里', '桌子上', '太阳下面'], a: 2, kind: 'recall' },
       { q: '锅是怎么变干的？', opts: ['用水冲', '放到太阳下晒干', '放进柜子'], a: 1, kind: 'infer' },
       { q: '东西湿了，你会怎么做？', opts: ['不管它', '放到有太阳或通风的地方晾干', '塞进柜子里'], a: 1, kind: 'transfer' }
     ]
@@ -816,8 +835,8 @@ const BOOKS = [
       { art: 'library|dad,lili|shop|♥', en: 'I like the shop on the hill.', zh: '我喜欢小山上的小店。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['果酱', '蓝色', '扇子'], a: 0, kind: 'recall' },
-      { q: '小店在哪儿？', opts: ['小河边', '小山上', '大树下'], a: 1, kind: 'infer' },
+      { q: '明明在小店里买了什么？', opts: ['面包和果酱', '牛奶和鸡蛋', '鱼和薯条'], a: 0, kind: 'recall' },
+      { q: '明明为什么要爬上山坡？', opts: ['他想看风景', '小店在山上，他要买东西', '他家在山上'], a: 1, kind: 'infer' },
       { q: '去买东西，你会怎么做？', opts: ['先想好要什么，再去看', '随便乱拿', '不看就走'], a: 0, kind: 'transfer' }
     ]
   },
@@ -855,7 +874,7 @@ const BOOKS = [
       { art: 'beach|ming,grandma|ship|★', en: 'The wind turns and the ship comes back.', zh: '风一转，船回来了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['轮船', '陀螺', '锅'], a: 0, kind: 'recall' },
+      { q: '小船被风吹走了，奶奶让明明怎么做？', opts: ['等风转过来', '再买一只', '下水去追'], a: 0, kind: 'recall' },
       { q: '船是怎么回来的？', opts: ['它自己开回来的', '风转了，把它带了回来', '明明游过去拿的'], a: 1, kind: 'infer' },
       { q: '东西被风吹跑了，你会怎么做？', opts: ['等风向变了，别硬追', '再买一个', '一直追着风跑'], a: 0, kind: 'transfer' }
     ]
@@ -864,23 +883,19 @@ const BOOKS = [
     id: 'b26', lv: 'L3', tag: '趣事', title: 'A Duck in the Shop', zh: '店里的一只鸭子',
     emoji: '🦆', color: '#F9DFB4',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 3 个新词（奶酪、害怕、拿）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 1 个新词（奶酪）。',
     trap: 'sh 把嘴唇撅圆、th 把舌尖轻轻放在上下门牙中间；ck 只发一个 k，别读两遍。',
-    summary: '《店里的一只鸭子》：这是一个完整的小故事。读前先看词卡（奶酪、害怕、拿）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《店里的一只鸭子》：这是一个完整的小故事。读前先看词卡（奶酪）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '合上书，按「开头 → 后来 → 最后」把这件事讲一遍。',
     think: '说说你见过的一件好笑的事。',
     pre: [
       { art: '🧀', en: 'cheese', zh: '奶酪' },
-      { art: '✨', en: 'afraid', zh: '害怕' },
-      { art: '🏃', en: 'take', zh: '拿' },
       { art: '🦆', en: 'duck', zh: '鸭子' },
       { art: '🏪', en: 'shop', zh: '小店' }
     ],
-    sight: [],
+    sight: ['afraid'],
     newWords: [
-      { w: 'cheese', zh: '奶酪' },
-      { w: 'afraid', zh: '害怕' },
-      { w: 'take', zh: '拿' }
+      { w: 'cheese', zh: '奶酪' }
     ],
     pages: [
       { art: 'farm|lili,grandpa|duck|·', en: 'A duck is in the shop.', zh: '一家店里有一只鸭子。' },
@@ -893,7 +908,7 @@ const BOOKS = [
       { art: 'farm|lili,grandpa|duck|★', en: 'The duck walks home.', zh: '鸭子走回家了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['动物', '鸭子', '袜子'], a: 1, kind: 'recall' },
+      { q: '商店里的鸭子最后去了哪儿？', opts: ['被带去了公园', '自己走回家了', '留在店里'], a: 1, kind: 'recall' },
       { q: '鸭子在店里看了什么？', opts: ['薯条和奶酪', '鞋子和帽子', '鱼和肉'], a: 0, kind: 'infer' },
       { q: '看到不认识的小动物闯进来，你会怎么做？', opts: ['追着打它', '大声喊叫', '轻轻把它引到外面'], a: 2, kind: 'transfer' }
     ]
@@ -929,8 +944,8 @@ const BOOKS = [
       { art: 'beach|grandma,mom|fish|★', en: 'Fish and chips are good!', zh: '鱼和薯条真好吃！' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['盘子', '太阳', '蚂蚁'], a: 0, kind: 'recall' },
-      { q: '我先吃了什么？', opts: ['薯条', '米饭', '鱼'], a: 2, kind: 'infer' },
+      { q: '明明先吃了什么？', opts: ['鱼', '薯条', '两样一起吃'], a: 0, kind: 'recall' },
+      { q: '鱼是新鲜的、薯条是热的，说明这顿饭怎么样？', opts: ['放凉了', '是昨天剩的', '刚做好，很好吃'], a: 2, kind: 'infer' },
       { q: '吃一顿饭，你会怎么做？', opts: ['不吃了', '全混在一起乱吃', '一样一样慢慢吃'], a: 2, kind: 'transfer' }
     ]
   },
@@ -966,8 +981,8 @@ const BOOKS = [
       { art: 'home|grandpa,dad|ring|★', en: 'The king keeps the ring safe.', zh: '国王把戒指收好了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['沙滩', '水', '小鸡'], a: 2, kind: 'recall' },
-      { q: '戒指最后在哪里？', opts: ['在一只小鸡那儿', '在桌子下面', '再也找不到了'], a: 0, kind: 'infer' },
+      { q: '国王的戒指在谁那儿？', opts: ['一只猫', '一个小孩', '一只小鸡'], a: 2, kind: 'recall' },
+      { q: '国王找到戒指以后，怎么样了？', opts: ['笑了，把戒指收好', '很生气地走了', '把小鸡赶走了'], a: 0, kind: 'infer' },
       { q: '怕重要的东西丢掉，你会怎么做？', opts: ['随便乱放', '放在固定、安全的地方', '藏到自己也找不到'], a: 1, kind: 'transfer' }
     ]
   },
@@ -1008,8 +1023,8 @@ const BOOKS = [
       { art: 'garden|mom,ming|moth|★', en: 'The moth is gone, but I am happy.', zh: '飞蛾飞走了，可我很开心。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['蓝色', '动物', '飞蛾'], a: 2, kind: 'recall' },
-      { q: '飞蛾最后怎么了？', opts: ['飞走了', '被抓住了', '停在我手上'], a: 0, kind: 'infer' },
+      { q: '飞蛾最后怎么了？', opts: ['被明明抓住了', '停在叶子上不动', '飞走了'], a: 2, kind: 'recall' },
+      { q: '飞蛾飞走了，明明为什么还是高兴的？', opts: ['因为他已经好好看过它了', '因为他抓住了它', '因为他不想再看'], a: 0, kind: 'infer' },
       { q: '小虫飞走了，你会怎么做？', opts: ['一直追它', '看着它飞走，不去追', '把它抓回来'], a: 1, kind: 'transfer' }
     ]
   },
@@ -1025,27 +1040,27 @@ const BOOKS = [
     pre: [
       { art: '🌿', en: 'sand', zh: '沙子' },
       { art: '✨', en: 'nice', zh: '好' },
-      { art: '🏖️', en: 'beach', zh: '沙滩' },
-      { art: '🌿', en: 'wind', zh: '风' }
+      { art: '🎩', en: 'hat', zh: '帽子' },
+      { art: '🏖️', en: 'beach', zh: '沙滩' }
     ],
-    sight: ['beach', 'strong', 'water'],
+    sight: ['beach', 'strong'],
     newWords: [
       { w: 'sand', zh: '沙子' },
       { w: 'nice', zh: '好' }
     ],
     pages: [
-      { art: 'beach|dad,lili|beach|·', en: 'We go to the beach.', zh: '我们去海边。' },
-      { art: 'beach|dad,lili|beach|♪', en: 'The sand is nice.', zh: '沙子很好。' },
-      { art: 'beach|dad,lili|beach|👀', en: 'We sit on the sand.', zh: '我们坐在沙子上。' },
-      { art: 'beach|dad,lili|beach|?', en: 'We sing and sing.', zh: '我们唱啊唱。' },
-      { art: 'beach|dad,lili|beach|·', en: 'The wind is strong.', zh: '风很大。' },
-      { art: 'beach|dad,lili|beach|!', en: 'The water is long.', zh: '海水长长的。' },
-      { art: 'beach|dad,lili|beach|♥', en: 'We sing at the beach.', zh: '我们在海边唱歌。' },
-      { art: 'beach|dad,lili|beach|★', en: 'We are happy at the beach.', zh: '我们在海边很开心。' }
+      { art: 'beach|dad,lili|beach|·', en: 'We go to the beach. The sand is nice.', zh: '我们去海边。沙子很好。' },
+      { art: 'beach|dad,lili|beach|♪', en: 'We sit on the sand and sing.', zh: '我们坐在沙子上唱歌。' },
+      { art: 'beach|dad,lili|beach|👀', en: 'The wind is strong. It takes my hat!', zh: '风很大。它把我的帽子吹走了！' },
+      { art: 'beach|dad,lili|beach|?', en: 'The hat goes up and up.', zh: '帽子越飞越高。' },
+      { art: 'beach|dad,lili|beach|·', en: 'I run after my hat.', zh: '我追我的帽子。' },
+      { art: 'beach|dad,lili|beach|!', en: 'I get it back. The sand is on my hat.', zh: '我把它追回来了。帽子上全是沙。' },
+      { art: 'beach|dad,lili|beach|♥', en: 'We sit down again.', zh: '我们又坐下来。' },
+      { art: 'beach|dad,lili|beach|★', en: 'We sing at the beach. We are happy.', zh: '我们在海边唱歌。我们很开心。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['鸟', '薯条', '沙子'], a: 2, kind: 'recall' },
-      { q: '我们在海边做了什么？', opts: ['吃东西', '唱歌', '游泳'], a: 1, kind: 'infer' },
+      { q: '风把什么吹走了？', opts: ['我们的鞋', '我们的伞', '我的帽子'], a: 2, kind: 'recall' },
+      { q: '帽子被吹走以后我马上去追，说明什么？', opts: ['风停了', '我很在意这顶帽子', '我不喜欢海边'], a: 1, kind: 'infer' },
       { q: '在海边玩，你会怎么做？', opts: ['不玩了', '一个人跑得很远', '唱歌、玩沙，注意安全'], a: 2, kind: 'transfer' }
     ]
   },
@@ -1053,21 +1068,19 @@ const BOOKS = [
     id: 'b31', lv: 'L3', tag: '家务', title: 'Wash the Dish', zh: '洗盘子',
     emoji: '🍽️', color: '#BFE6DF',
     track: 'story',
-    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 3 个新词（打扫、洗、用）。',
+    goal: '顺着一条完整的小故事，把起因、卡住、解决读顺。认读 2 个新词（洗、用）。',
     trap: 'sh 把嘴唇撅圆、th 把舌尖轻轻放在上下门牙中间；ck 只发一个 k，别读两遍。',
-    summary: '《洗盘子》：这是一个完整的小故事。读前先看词卡（打扫、洗、用）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
+    summary: '《洗盘子》：这是一个完整的小故事。读前先看词卡（洗、用）；读的时候留意开头发生了什么、后来怎么变化、最后怎样收尾。',
     retell: '合上书，按「开头 → 后来 → 最后」把这件事讲一遍。',
     think: '说说你做过的一件家务。',
     pre: [
-      { art: '🏃', en: 'clean', zh: '打扫' },
       { art: '🏃', en: 'wash', zh: '洗' },
       { art: '🏃', en: 'use', zh: '用' },
       { art: '🍽️', en: 'dish', zh: '盘子' },
       { art: '💧', en: 'water', zh: '水' }
     ],
-    sight: ['water'],
+    sight: ['clean', 'water'],
     newWords: [
-      { w: 'clean', zh: '打扫' },
       { w: 'wash', zh: '洗' },
       { w: 'use', zh: '用' }
     ],
@@ -1082,7 +1095,7 @@ const BOOKS = [
       { art: 'kitchen|ming,grandma|dish|★', en: 'I like a clean dish.', zh: '我喜欢干净的盘子。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['盘子', '书', '杯子'], a: 0, kind: 'recall' },
+      { q: '盘子一开始是什么样？', opts: ['不干净', '破了', '太烫'], a: 0, kind: 'recall' },
       { q: '我用什么洗盘子？', opts: ['水', '沙', '油'], a: 0, kind: 'infer' },
       { q: '东西脏了，你会怎么做？', opts: ['扔掉', '不管它', '用水把它洗干净'], a: 2, kind: 'transfer' }
     ]
@@ -1119,7 +1132,7 @@ const BOOKS = [
       { art: 'farm|lili,grandpa|chick|★', en: 'My wish is good.', zh: '我的心愿真好。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['扇子', '食物', '公交车'], a: 1, kind: 'recall' },
+      { q: '小鸡原来怎么样？', opts: ['迷路了', '又小又瘦，还饿着', '生病了'], a: 1, kind: 'recall' },
       { q: '小鸡一开始怎么了？', opts: ['很胖，在睡觉', '在水里游', '又小又瘦，很饿'], a: 2, kind: 'infer' },
       { q: '看到小动物饿了，你会怎么做？', opts: ['给它合适的食物，照顾它', '吓它', '不理它'], a: 0, kind: 'transfer' }
     ]
@@ -1152,8 +1165,8 @@ const BOOKS = [
       { art: 'table|grandma,mom|ship|★', en: 'Good! You can say both.', zh: '真棒！两个都会说了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['轮船', '鸡蛋', '帽子'], a: 0, kind: 'recall' },
-      { q: '这一本在比哪两个词？', opts: ['chip 和 chop', 'ship 和 shop', 'ship 和 chip'], a: 2, kind: 'infer' },
+      { q: '这一本里，哪个词是吃的东西？', opts: ['chip', 'ship', 'shop'], a: 0, kind: 'recall' },
+      { q: 'ship 和 chip 开头差在哪里？', opts: ['一个有一个没有', '一个长一个短', '一个 sh 一个 ch'], a: 2, kind: 'infer' },
       { q: '两个词都有 sh，你会怎么分清？', opts: ['不读了', '听清后面的部分，一个一个读', '随便读一个'], a: 1, kind: 'transfer' }
     ]
   },
@@ -1171,23 +1184,23 @@ const BOOKS = [
       { art: '🕊️', en: 'wing', zh: '翅膀' },
       { art: '🐦', en: 'bird', zh: '鸟' }
     ],
-    sight: ['bird', 'flies', 'watch'],
+    sight: ['arms', 'bird', 'flies', 'watch'],
     newWords: [
       { w: 'fly', zh: '飞' }
     ],
     pages: [
-      { art: 'library|grandpa,dad|wing|·', en: 'A bird has a long wing.', zh: '一只鸟有一只长翅膀。' },
-      { art: 'library|grandpa,dad|wing|♪', en: 'The wing is long and thin.', zh: '翅膀又长又薄。' },
-      { art: 'library|grandpa,dad|wing|👀', en: 'The bird flies with the wing.', zh: '鸟用翅膀飞。' },
-      { art: 'library|grandpa,dad|wing|?', en: 'Up and up it goes.', zh: '它飞啊飞。' },
-      { art: 'library|grandpa,dad|wing|·', en: 'The wind helps the wing.', zh: '风帮着翅膀。' },
-      { art: 'library|grandpa,dad|wing|!', en: 'The bird flies long and far.', zh: '鸟飞得又久又远。' },
-      { art: 'library|grandpa,dad|wing|♥', en: 'I watch the long wing.', zh: '我看着长长的翅膀。' },
-      { art: 'library|grandpa,dad|wing|★', en: 'I wish I could fly.', zh: '我真希望也能飞。' }
+      { art: 'library|grandpa,dad|wing|·', en: 'A bird has a long wing. It is long and thin.', zh: '一只鸟有长长的翅膀。又长又薄。' },
+      { art: 'library|grandpa,dad|wing|♪', en: 'The bird flies with the wing. Up and up it goes.', zh: '鸟用翅膀飞。越飞越高。' },
+      { art: 'library|grandpa,dad|wing|👀', en: 'The wind helps the wing. The bird flies far.', zh: '风托着翅膀。鸟飞得很远。' },
+      { art: 'library|grandpa,dad|wing|?', en: 'I watch the long wing. I wish I could fly.', zh: '我看着那对长翅膀。我希望自己也能飞。' },
+      { art: 'library|grandpa,dad|wing|·', en: 'I jump up, but I cannot fly.', zh: '我往上跳，可飞不起来。' },
+      { art: 'library|grandpa,dad|wing|!', en: 'My arms are not wings.', zh: '我的胳膊不是翅膀。' },
+      { art: 'library|grandpa,dad|wing|♥', en: 'I am not sad. I can run!', zh: '我不难过。我会跑！' },
+      { art: 'library|grandpa,dad|wing|★', en: 'I run and run. Running is good too.', zh: '我跑啊跑。跑也很好。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['水壶', '鸟', '朋友'], a: 1, kind: 'recall' },
-      { q: '鸟用什么飞？', opts: ['长长的腿', '长长的翅膀', '长长的尾巴'], a: 1, kind: 'infer' },
+      { q: '「我」希望自己能做什么？', opts: ['游得很远', '飞起来', '跑得很快'], a: 1, kind: 'recall' },
+      { q: '明明为什么飞不起来？', opts: ['因为没有风', '因为他的胳膊不是翅膀', '因为他太矮'], a: 1, kind: 'infer' },
       { q: '想做成一件难事，你会怎么做？', opts: ['一次就想学会', '不学了', '先看别人怎么做，再慢慢练'], a: 2, kind: 'transfer' }
     ]
   },
@@ -1205,23 +1218,23 @@ const BOOKS = [
       { art: '🧀', en: 'cheese', zh: '奶酪' },
       { art: '🍽️', en: 'dish', zh: '盘子' }
     ],
-    sight: ['cheese', 'eat', 'fresh'],
+    sight: ['cheese', 'clean', 'eat', 'fresh'],
     newWords: [
       { w: 'soft', zh: '软' }
     ],
     pages: [
-      { art: 'kitchen|mom,ming|cheese|·', en: 'The cheese is fresh.', zh: '奶酪很新鲜。' },
-      { art: 'kitchen|mom,ming|cheese|♪', en: 'It is on a dish.', zh: '它在盘子上。' },
-      { art: 'kitchen|mom,ming|cheese|👀', en: 'I like fresh cheese.', zh: '我喜欢新鲜的奶酪。' },
-      { art: 'kitchen|mom,ming|cheese|?', en: 'The cheese is soft.', zh: '奶酪软软的。' },
-      { art: 'kitchen|mom,ming|cheese|·', en: 'I cut the cheese.', zh: '我切奶酪。' },
-      { art: 'kitchen|mom,ming|cheese|!', en: 'I eat a little.', zh: '我吃了一点。' },
-      { art: 'kitchen|mom,ming|cheese|♥', en: 'Fresh cheese is good.', zh: '新鲜的奶酪真好吃。' },
-      { art: 'kitchen|mom,ming|cheese|★', en: 'I want more fresh cheese.', zh: '我还想再吃点。' }
+      { art: 'kitchen|mom,ming|cheese|·', en: 'The cheese is fresh. It is on a dish.', zh: '奶酪很新鲜。它放在盘子上。' },
+      { art: 'kitchen|mom,ming|cheese|♪', en: 'I like fresh cheese. It is soft.', zh: '我喜欢新鲜奶酪。它软软的。' },
+      { art: 'kitchen|mom,ming|cheese|👀', en: 'I cut the cheese and eat a little.', zh: '我切下一块，尝了一点。' },
+      { art: 'kitchen|mom,ming|cheese|?', en: 'It is good! I want more.', zh: '真好吃！我还想要。' },
+      { art: 'kitchen|mom,ming|cheese|·', en: 'I cut more cheese.', zh: '我又切了一些。' },
+      { art: 'kitchen|mom,ming|cheese|!', en: 'Mom wants some too.', zh: '妈妈也想要一点。' },
+      { art: 'kitchen|mom,ming|cheese|♥', en: 'Now the dish is clean.', zh: '现在盘子空了。' },
+      { art: 'kitchen|mom,ming|cheese|★', en: 'Fresh cheese is good. I like it a lot.', zh: '新鲜奶酪真好。我很喜欢。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['嘴唇', '手', '奶酪'], a: 2, kind: 'recall' },
-      { q: '奶酪是什么样的？', opts: ['又硬又咸', '新鲜、软软的', '又干又苦'], a: 1, kind: 'infer' },
+      { q: '「我」切了多少奶酪？', opts: ['一点也没切', '只切了一小块', '越切越多，盘子空了'], a: 2, kind: 'recall' },
+      { q: '明明觉得这奶酪怎么样？', opts: ['太硬了咬不动', '很好吃，还想要更多', '味道很奇怪'], a: 1, kind: 'infer' },
       { q: '想知道食物新不新鲜，你会怎么做？', opts: ['直接吃', '看一看、闻一闻', '不管它'], a: 1, kind: 'transfer' }
     ]
   },
@@ -1256,8 +1269,8 @@ const BOOKS = [
       { art: 'library|dad,lili|shed|★', en: 'I like the shed and the hen.', zh: '我喜欢棚子和母鸡。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['家人', '一', '丽丽'], a: 0, kind: 'recall' },
-      { q: '我在棚子边看到了什么？', opts: ['一只母鸡', '一条鱼', '一头猪'], a: 0, kind: 'infer' },
+      { q: '我在棚子边捡到了什么？', opts: ['一个新鲜的蛋', '一块木头', '一根羽毛'], a: 0, kind: 'recall' },
+      { q: '明明拿了蛋就走，为什么没有惊动母鸡？', opts: ['他动作轻，没吓到它', '母鸡不在棚子里', '母鸡睡着了'], a: 0, kind: 'infer' },
       { q: '捡到一样东西，你会怎么做？', opts: ['不管它', '自己拿走', '想一想它是谁的，再决定怎么办'], a: 2, kind: 'transfer' }
     ]
   },
@@ -1294,7 +1307,7 @@ const BOOKS = [
       { art: 'library|ming,grandma|frog|…', en: 'The frog is happy.', zh: '青蛙很快乐。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['苹果', '书', '青蛙'], a: 2, kind: 'recall' },
+      { q: '青蛙坐在什么地方等虫子？', opts: ['草里', '池塘里', '石头上'], a: 2, kind: 'recall' },
       { q: '青蛙在等什么？', opts: ['小鸟', '飞过来的小虫', '小鱼'], a: 1, kind: 'infer' },
       { q: '想抓住机会（做成一件事），你会怎么做？', opts: ['不等了', '乱抓一气', '耐心等，看准了再动'], a: 2, kind: 'transfer' }
     ]
@@ -1329,8 +1342,8 @@ const BOOKS = [
       { art: 'school|lili,grandpa|flag|…', en: 'The flags are for all of us. We are glad.', zh: '这些旗是我们大家的。我们很高兴。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['旗子', '刷子', '书包'], a: 0, kind: 'recall' },
-      { q: '我有一面什么颜色的旗？', opts: ['绿色', '红色', '蓝色'], a: 2, kind: 'infer' },
+      { q: '「我」举起來的旗是什么颜色的？', opts: ['蓝色', '绿色', '红色'], a: 0, kind: 'recall' },
+      { q: '明明把旗举得高高的，是因为什么？', opts: ['风把旗吹起来了', '旗太重了', '他很喜欢这面旗，想让人看见'], a: 2, kind: 'infer' },
       { q: '和别人一起做一件事，你会怎么做？', opts: ['自己全占', '不做了', '分一分，大家一起做'], a: 2, kind: 'transfer' }
     ]
   },
@@ -1365,7 +1378,7 @@ const BOOKS = [
       { art: 'night|grandma,mom|star|…', en: 'I like the stars at night.', zh: '我喜欢夜里的星星。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['天空', '罐子', '床'], a: 0, kind: 'recall' },
+      { q: '夜里「我」抬头在看什么？', opts: ['天上的星星', '云', '月亮'], a: 0, kind: 'recall' },
       { q: '我看到了什么？', opts: ['云', '太阳', '好多星星'], a: 2, kind: 'infer' },
       { q: '晚上看星星，你会怎么做？', opts: ['找个安静的地方，慢慢看', '不看', '大声喊'], a: 0, kind: 'transfer' }
     ]
@@ -1404,7 +1417,7 @@ const BOOKS = [
       { art: 'school|grandpa,dad|clock|…', en: 'The clock helps me every day.', zh: '钟每天都帮我。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['房间', '螃蟹', '面包'], a: 0, kind: 'recall' },
+      { q: '学校的钟帮「我」知道了什么？', opts: ['时间还早', '教室在哪儿', '天气怎么样'], a: 0, kind: 'recall' },
       { q: '钟帮我做了什么？', opts: ['写作业', '做饭', '知道时间，不迟到'], a: 2, kind: 'infer' },
       { q: '想知道现在几点，你会怎么做？', opts: ['不管它', '随便猜一猜', '看看钟表'], a: 2, kind: 'transfer' }
     ]
@@ -1441,8 +1454,8 @@ const BOOKS = [
       { art: 'farm|mom,ming|grass|…', en: 'I like the crab.', zh: '我喜欢这只螃蟹。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['草', '薯条', '扇子'], a: 0, kind: 'recall' },
-      { q: '螃蟹躲到哪里去了？', opts: ['水里', '草里', '石头下面'], a: 1, kind: 'infer' },
+      { q: '螃蟹躲到哪儿去了？', opts: ['草里', '沙子里', '石头下面'], a: 0, kind: 'recall' },
+      { q: '螃蟹先躲进草里，后来为什么又出来了？', opts: ['草里太热', '明明没动，它觉得安全了', '明明叫了它'], a: 1, kind: 'infer' },
       { q: '小动物躲起来了，你会怎么做？', opts: ['耐心等它出来', '不管它', '一直翻找吓它'], a: 0, kind: 'transfer' }
     ]
   },
@@ -1478,8 +1491,8 @@ const BOOKS = [
       { art: 'beach|dad,lili|swan|…', en: 'The swan and I are friends.', zh: '天鹅和我是朋友。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['旗子', '手', '云'], a: 1, kind: 'recall' },
-      { q: '天鹅在哪里？', opts: ['树上', '岸上', '水上'], a: 2, kind: 'infer' },
+      { q: '天鹅在哪儿？', opts: ['树下', '水面上', '岸上'], a: 1, kind: 'recall' },
+      { q: '天鹅愿意游到明明身边，是因为什么？', opts: ['明明手里有吃的', '天鹅认识明明', '明明很安静，它不怕他'], a: 2, kind: 'infer' },
       { q: '想和小动物亲近，你会怎么做？', opts: ['大声吓它', '轻轻靠近，让它不怕你', '追它'], a: 1, kind: 'transfer' }
     ]
   },
@@ -1515,8 +1528,8 @@ const BOOKS = [
       { art: 'home|ming,grandma|gift|…', en: 'The basket is empty now.', zh: '篮子现在空了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['鼓', '篮子', '奶奶'], a: 1, kind: 'recall' },
-      { q: '礼物是给谁的？', opts: ['奶奶', '爸爸', '妈妈'], a: 2, kind: 'infer' },
+      { q: '篮子里的礼物是给谁的？', opts: ['奶奶', '妈妈', '老师'], a: 1, kind: 'recall' },
+      { q: '明明一路小心地提着篮子，是因为什么？', opts: ['篮子很贵', '篮子很重', '里面是给妈妈的礼物，怕碰坏'], a: 2, kind: 'infer' },
       { q: '送别人礼物，你会怎么做？', opts: ['想一想他喜欢什么，再送', '不送了', '随便送一个'], a: 0, kind: 'transfer' }
     ]
   },
@@ -1557,7 +1570,7 @@ const BOOKS = [
       { art: 'playground|lili,grandpa|drum|…', en: 'We play the drum all day, and we are glad.', zh: '我们敲了一整天鼓，高兴极了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['手', '头', '雾'], a: 0, kind: 'recall' },
+      { q: '「我」用什么弄出很响的声音？', opts: ['一面鼓', '一只脚', '两只手'], a: 0, kind: 'recall' },
       { q: '我用鼓做什么？', opts: ['敲出声音、玩', '装东西', '切菜'], a: 0, kind: 'infer' },
       { q: '玩一样喜欢的乐器，你会怎么做？', opts: ['不玩了', '乱敲一通', '按节奏来，好好享受'], a: 2, kind: 'transfer' }
     ]
@@ -1591,8 +1604,8 @@ const BOOKS = [
       { art: 'table|grandma,mom|tree|…', en: 'Good! Say it again.', zh: '很好！再说一遍。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['水壶', '树', '奶奶'], a: 1, kind: 'recall' },
-      { q: '这一本在练什么？', opts: ['说「草」这个词', '说「花」这个词', '说「树」这个词'], a: 2, kind: 'infer' },
+      { q: '这一本在练哪个字母组合的音？', opts: ['sh', 'tr', 'th'], a: 1, kind: 'recall' },
+      { q: 'tree 开头那两个字母该怎么读？', opts: ['分成两个音读', '只读 t', '连在一起读成一个音'], a: 2, kind: 'infer' },
       { q: '遇到带 tr 的单词，你会怎么读？', opts: ['跳过去', '把 tr 连成一个音读出来', '一个字母一个字母念'], a: 1, kind: 'transfer' }
     ]
   },
@@ -1629,7 +1642,7 @@ const BOOKS = [
       { art: 'garden|grandpa,dad|stem|…', en: 'How a stem grows, and how it gets tall!', zh: '茎就是这样长的，越长越高！' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['绿色', '地图', '母鸡'], a: 0, kind: 'recall' },
+      { q: '茎往上长，最后上面开了什么？', opts: ['一朵花', '一个果子', '一片叶子'], a: 0, kind: 'recall' },
       { q: '茎是怎么长的？', opts: ['从细小长到粗高，还长出叶子和花', '越长越小', '一直不变'], a: 0, kind: 'infer' },
       { q: '想看着一样东西长大，你会怎么做？', opts: ['每天看看，耐心等', '不看了', '一直拔它'], a: 0, kind: 'transfer' }
     ]
@@ -1665,8 +1678,8 @@ const BOOKS = [
       { art: 'night|mom,ming|snow|…', en: 'Snow on the street is good.', zh: '街上的雪很好。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['国王', '街道', '拖把'], a: 1, kind: 'recall' },
-      { q: '我为什么不冷了？', opts: ['玩雪球，动起来了', '进屋了', '太阳出来了'], a: 0, kind: 'infer' },
+      { q: '「我」后来为什么不冷了？', opts: ['雪停了', '做雪球动起来了', '穿上了外套'], a: 1, kind: 'recall' },
+      { q: '明明玩了一会儿雪球就不冷了，为什么？', opts: ['动起来身上就暖和了', '太阳出来了', '雪变热了'], a: 0, kind: 'infer' },
       { q: '下雪天在外面玩，你会怎么做？', opts: ['穿得很少', '穿暖和，玩一会儿就暖起来', '不出去'], a: 1, kind: 'transfer' }
     ]
   },
@@ -1702,8 +1715,8 @@ const BOOKS = [
       { art: 'library|dad,lili|playground|…', en: 'I like the playground.', zh: '我喜欢这个操场。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['人', '明明', '钟'], a: 2, kind: 'recall' },
-      { q: '我们在操场上玩了什么？', opts: ['鼓', '书', '球'], a: 2, kind: 'infer' },
+      { q: '我们在操场上看见了什么？', opts: ['一只猫和一只狗', '一个钟和一个篮子', '一个球和一面旗'], a: 2, kind: 'recall' },
+      { q: '钟说时间还早，所以他们怎么样了？', opts: ['马上回家了', '去上课了', '又玩了一会儿'], a: 2, kind: 'infer' },
       { q: '和朋友一起玩，你会怎么做？', opts: ['轮流、一起玩，玩得开心', '不玩了', '自己霸占'], a: 0, kind: 'transfer' }
     ]
   },
@@ -1746,8 +1759,8 @@ const BOOKS = [
       { art: 'night|ming,grandma|rain|·', en: 'I like the rain on the farm. I like the sun after it too.', zh: '我喜欢农场上的雨。雨后的太阳我也喜欢。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['草', '手套', '鸭子'], a: 0, kind: 'recall' },
-      { q: '雨停以后出现了什么？', opts: ['太阳', '月亮', '雪'], a: 0, kind: 'infer' },
+      { q: '雨停以后，天上怎么样了？', opts: ['出了太阳，天亮了', '起了大风', '又下起雨'], a: 0, kind: 'recall' },
+      { q: '下过雨以后，农场的种子为什么能长？', opts: ['因为地湿了', '因为太阳出来了', '因为羊走开了'], a: 0, kind: 'infer' },
       { q: '下雨的时候，你会怎么做？', opts: ['一直在雨里跑', '找个地方躲雨，等它停', '不管它'], a: 1, kind: 'transfer' }
     ]
   },
@@ -1784,7 +1797,7 @@ const BOOKS = [
       { art: 'beach|lili,grandpa|boat|·', en: 'I like the boat. I want to go on it one day.', zh: '我喜欢这只船。总有一天我想坐上去。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['海', '爷爷', '鱼'], a: 0, kind: 'recall' },
+      { q: '是什么把小船送回来的？', opts: ['风', '「我」', '海浪'], a: 0, kind: 'recall' },
       { q: '船在什么上面走？', opts: ['海', '河', '路'], a: 0, kind: 'infer' },
       { q: '在水边看船，你会怎么做？', opts: ['不管它', '站远一点，注意安全', '跑到水里去'], a: 1, kind: 'transfer' }
     ]
@@ -1824,8 +1837,8 @@ const BOOKS = [
       { art: 'night|grandma,mom|moon|·', en: 'The night is good. I sleep well under the moon.', zh: '夜晚很好。我在月亮下睡得很香。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['葡萄', '旗子', '月亮'], a: 2, kind: 'recall' },
-      { q: '绵羊在哪儿？', opts: ['小山上', '水里', '树上'], a: 0, kind: 'infer' },
+      { q: '绵羊睡在哪儿？', opts: ['羊圈里', '大树下', '小山上'], a: 2, kind: 'recall' },
+      { q: '夜里绵羊为什么安安静静的？', opts: ['它们在睡觉，夜也很静', '它们被月亮吓到了', '它们在等天亮'], a: 0, kind: 'infer' },
       { q: '晚上睡不着，你会怎么做？', opts: ['看看安静的月亮，慢慢静下来', '一直翻身', '开很亮的灯'], a: 0, kind: 'transfer' }
     ]
   },
@@ -1862,8 +1875,8 @@ const BOOKS = [
       { art: 'garden|grandpa,dad|seed|·', en: 'I like my pot and seed. I will water them tomorrow.', zh: '我喜欢我的盆和种子。明天我还要浇水。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['国王', '奶奶', '茎'], a: 2, kind: 'recall' },
-      { q: '种子长出了什么？', opts: ['什么都没长', '花和果子', '茎和叶子'], a: 2, kind: 'infer' },
+      { q: '种子最后长出了什么？', opts: ['一个果子', '一朵花', '一根茎和一片叶子'], a: 2, kind: 'recall' },
+      { q: '明明等了一个星期才看到茎，说明种子发芽要什么？', opts: ['要搬到屋里', '要更多的土', '要时间，急不来'], a: 2, kind: 'infer' },
       { q: '种下一样东西，你会怎么做？', opts: ['每天挖出来看', '不管它', '浇水、耐心等它长'], a: 2, kind: 'transfer' }
     ]
   },
@@ -1901,7 +1914,7 @@ const BOOKS = [
       { art: 'library|mom,ming|tail|·', en: 'I am happy too. I sit with the dog.', zh: '我也很高兴。我陪着狗坐。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['国王', '链子', '爷爷'], a: 1, kind: 'recall' },
+      { q: '狗脖子上的链子有什么用？', opts: ['给它玩', '把它拦在门口', '拉着它走'], a: 1, kind: 'recall' },
       { q: '狗的尾巴怎么了？', opts: ['卷起来不动', '上下摆动', '掉了'], a: 1, kind: 'infer' },
       { q: '看到一只被链子拴着的狗，你会怎么做？', opts: ['去拉它的链子', '大声吓它', '轻轻看它，别靠近吓它'], a: 2, kind: 'transfer' }
     ]
@@ -1939,7 +1952,7 @@ const BOOKS = [
       { art: 'home|dad,lili|coat|·', en: 'The goat likes the hill. It stays there all day.', zh: '山羊喜欢这座小山。它整天待在那儿。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['红色', '妈妈', '国王'], a: 0, kind: 'recall' },
+      { q: '「我」穿上什么才暖和起来？', opts: ['厚厚的红外套', '一顶帽子', '一条围巾'], a: 0, kind: 'recall' },
       { q: '我穿了什么？', opts: ['鞋子', '帽子', '外套'], a: 2, kind: 'infer' },
       { q: '天冷的时候，你会怎么做？', opts: ['穿上暖和的衣服', '不出门', '穿得很少'], a: 0, kind: 'transfer' }
     ]
@@ -1977,8 +1990,8 @@ const BOOKS = [
       { art: 'garden|ming,grandma|leaf|·', en: 'I like to paint. I will paint again tomorrow.', zh: '我喜欢画画。明天我还要画。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['男人', '小路', '叶子'], a: 2, kind: 'recall' },
-      { q: '我把叶子画成了什么颜色？', opts: ['蓝色', '绿色', '红色'], a: 1, kind: 'infer' },
+      { q: '「我」用什么颜色的笔画叶子？', opts: ['红色的笔', '黄色的笔', '绿色的笔'], a: 2, kind: 'recall' },
+      { q: '明明画得很慢，是为了什么？', opts: ['因为纸太小', '让线条干净好看', '因为笔不好用'], a: 1, kind: 'infer' },
       { q: '画画时，你会怎么做？', opts: ['乱涂几下', '想好画什么，慢慢画', '不画了'], a: 1, kind: 'transfer' }
     ]
   },
@@ -2013,7 +2026,7 @@ const BOOKS = [
       { art: 'library|lili,grandpa|zoo|·', en: 'We like the zoo. We want to come back next week.', zh: '我们喜欢动物园。下周还想再来。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['明明', '人', '山羊'], a: 2, kind: 'recall' },
+      { q: '我们把食物怎么给动物？', opts: ['拿在手里喂', '扔给它们', '放下食物，然后退开'], a: 2, kind: 'recall' },
       { q: '我们给动物什么了？', opts: ['水', '吃的', '玩具'], a: 1, kind: 'infer' },
       { q: '在动物园里，你会怎么做？', opts: ['乱喂东西', '按规定喂食，轻轻看它们', '大声吓它们'], a: 1, kind: 'transfer' }
     ]
@@ -2049,8 +2062,8 @@ const BOOKS = [
       { art: 'table|grandma,mom|rain|·', en: 'Rain, day, rain, day. Now you can read both.', zh: 'rain，day，rain，day。现在两个你都读得了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['飞蛾', '雨', '操场'], a: 1, kind: 'recall' },
-      { q: '这一本在练哪两个词？', opts: ['day 和 night', 'rain 和 day', 'rain 和 night'], a: 1, kind: 'infer' },
+      { q: '这一本在练哪两个词？', opts: ['rain 和 ray', 'rain 和 day', 'day 和 bay'], a: 1, kind: 'recall' },
+      { q: 'rain 和 day 里相同的音是哪个？', opts: ['结尾的音一样', 'ai 和 ay 都读 /eɪ/', '开头的音一样'], a: 1, kind: 'infer' },
       { q: '两个词放在一起，你会怎么读？', opts: ['一个一个读，再连起来', '不读了', '混在一起读'], a: 0, kind: 'transfer' }
     ]
   },
@@ -2084,8 +2097,8 @@ const BOOKS = [
       { art: 'garden|grandpa,dad|seed|·', en: 'Rain is good. Now we know why.', zh: '雨很有用。现在我们知道为什么了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['操场', '学校', '锅'], a: 2, kind: 'recall' },
-      { q: '种子为什么需要雨？', opts: ['雨让种子睡着', '雨让土变湿，种子能喝到水', '雨让土变硬'], a: 1, kind: 'infer' },
+      { q: '种子为什么需要雨？', opts: ['雨把种子冲走', '雨让种子变凉', '雨把地打湿，种子才喝到水'], a: 2, kind: 'recall' },
+      { q: '如果一直不下雨，盆里的种子会怎么样？', opts: ['自己跑到水里', '地一直是干的，长不出来', '长得更快'], a: 1, kind: 'infer' },
       { q: '想知道一件事为什么发生，你会怎么做？', opts: ['不管它', '随便猜', '想一想、问一问、再看看'], a: 2, kind: 'transfer' }
     ]
   },
@@ -2124,8 +2137,8 @@ const BOOKS = [
       { art: 'farm|mom,ming|farm|·', en: 'I want to come back. I will come again next year.', zh: '我想再来。明年我还要来。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['山羊', '雪', '根'], a: 0, kind: 'recall' },
-      { q: '我在农场做了什么？', opts: ['写作业、看书', '坐车、买东西', '喂猪、洗山羊、摘玉米'], a: 2, kind: 'infer' },
+      { q: '在农场这一周，「我」做了什么？', opts: ['喂猪、洗山羊、摘玉米', '一直待在屋里', '只喂了猪'], a: 0, kind: 'recall' },
+      { q: '明明每天做的事都不一样，这样的一周他觉得怎么样？', opts: ['太累了，不想再来', '每天都一样，很无聊', '每天都有新鲜事，很有意思'], a: 2, kind: 'infer' },
       { q: '在农场待几天，你会怎么做？', opts: ['每天做一点不一样的事', '什么都不做', '天天一样'], a: 0, kind: 'transfer' }
     ]
   },
@@ -2159,8 +2172,8 @@ const BOOKS = [
       { art: 'library|dad,lili|road|·', en: 'I am home! Mom is there with cold water.', zh: '我到家了！妈妈在那儿，准备了凉水。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['天鹅', '石头', '贝壳'], a: 1, kind: 'recall' },
-      { q: '路的尽头是什么？', opts: ['学校', '商店', '家'], a: 2, kind: 'infer' },
+      { q: '走到最后，「我」看见了什么？', opts: ['一座桥', '家，妈妈在那儿', '一条河'], a: 1, kind: 'recall' },
+      { q: '明明为什么在石头上坐下来？', opts: ['他在等人', '石头很凉快', '他走累了，要歇一歇'], a: 2, kind: 'infer' },
       { q: '走很长的路，你会怎么做？', opts: ['不走了', '累了就歇一歇，再接着走', '一直不停，累垮'], a: 1, kind: 'transfer' }
     ]
   },
@@ -2198,7 +2211,7 @@ const BOOKS = [
       { art: 'kitchen|ming,grandma|cake|♥', en: 'A cake for Grandma. The second one was good.', zh: '给奶奶的蛋糕。第二个做成功了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['男人', '国王', '蛋糕'], a: 2, kind: 'recall' },
+      { q: '第一个蛋糕出了什么问题？', opts: ['烤糊了', '太甜了', '又薄又干，没做好'], a: 2, kind: 'recall' },
       { q: '蛋糕是给谁的？', opts: ['爸爸', '妈妈', '奶奶'], a: 2, kind: 'infer' },
       { q: '做一件事第一次不成功，你会怎么做？', opts: ['怪别人', '找人帮帮忙，再做一次', '马上放弃'], a: 1, kind: 'transfer' }
     ]
@@ -2239,8 +2252,8 @@ const BOOKS = [
       { art: 'playground|lili,grandpa|kite|♥', en: 'A kite by the lake. They stay there a long time, and Ming does not let go.', zh: '湖边的风筝。他们在那里待了很久，明明一直没松手。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['湖', '妈妈', '纸'], a: 0, kind: 'recall' },
-      { q: '风筝在哪儿飞起来的？', opts: ['湖边', '山顶', '街上'], a: 0, kind: 'infer' },
+      { q: '明明拿着风筝跑的时候，谁跟在后面？', opts: ['爸爸', '妈妈', '奶奶'], a: 0, kind: 'recall' },
+      { q: '风筝为什么能飞得那么高？', opts: ['湖边风大，明明边跑边放', '因为风筝很大', '因为爸爸帮他举着'], a: 0, kind: 'infer' },
       { q: '想让风筝飞起来，你会怎么做？', opts: ['在屋里放', '找个有风的地方，边跑边放', '不放了'], a: 1, kind: 'transfer' }
     ]
   },
@@ -2275,8 +2288,8 @@ const BOOKS = [
       { art: 'home|grandma,mom|name|♥', en: 'I like my name. I can write it on a plate too.', zh: '我喜欢我的名字。我也能把它写在盘子上。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['盘子', '午饭', '一'], a: 0, kind: 'recall' },
-      { q: '盘子上是谁的名字？', opts: ['妈妈的', '奶奶的', '明明的'], a: 1, kind: 'infer' },
+      { q: '盘子上的名字是谁的？', opts: ['奶奶的', '明明的', '妈妈的'], a: 0, kind: 'recall' },
+      { q: '明明看到名字以后，为什么笑了？', opts: ['因为盘子很好看', '那是奶奶的名字，他认出来了', '因为名字写错了'], a: 1, kind: 'infer' },
       { q: '想知道一样东西是谁的，你会怎么做？', opts: ['自己拿走', '看看上面的名字，或问一问', '不管它'], a: 1, kind: 'transfer' }
     ]
   },
@@ -2314,7 +2327,7 @@ const BOOKS = [
       { art: 'street|grandpa,dad|bike|♥', en: 'Ming likes the bike. He wants to ride again tomorrow.', zh: '明明喜欢这辆车。明天他还想骑。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['拖把', '小路', '路'], a: 2, kind: 'recall' },
+      { q: '爸爸一直扶着自行车的哪儿？', opts: ['车把', '车轮', '车后面（后座）'], a: 2, kind: 'recall' },
       { q: '谁跟着车跑？', opts: ['妈妈', '奶奶', '爸爸'], a: 2, kind: 'infer' },
       { q: '学骑车（学一样新本领），你会怎么做？', opts: ['一次就想学会', '不学了', '找人扶着，慢慢练'], a: 2, kind: 'transfer' }
     ]
@@ -2351,8 +2364,8 @@ const BOOKS = [
       { art: 'garden|mom,ming|rose|♥', en: 'Roses are nice. Ming will pick one again next week.', zh: '玫瑰很好看。下周明明还要摘一朵。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['手', '锅', '纸'], a: 0, kind: 'recall' },
-      { q: '玫瑰长在哪里？', opts: ['花园深处', '窗台上', '门口'], a: 2, kind: 'infer' },
+      { q: '明明摘玫瑰是要给谁？', opts: ['奶奶', '老师', '妈妈'], a: 0, kind: 'recall' },
+      { q: '明明为什么挑最好的一朵摘下来？', opts: ['因为那朵最便宜', '因为别的都枯了', '因为这朵要送给奶奶'], a: 2, kind: 'infer' },
       { q: '送一朵花给别人，你会怎么做？', opts: ['挑一朵好的，亲手送给他', '随便摘一朵', '不送了'], a: 0, kind: 'transfer' }
     ]
   },
@@ -2388,8 +2401,8 @@ const BOOKS = [
       { art: 'home|dad,lili|note|♥', en: 'Notes are fun. Grandma will find it and write back.', zh: '纸条很好玩。奶奶会发现它，然后回一张。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['纸条', '石头', '别针'], a: 0, kind: 'recall' },
-      { q: '纸条上写了什么？', opts: ['「你好」', '「谢谢」', '「再见」'], a: 0, kind: 'infer' },
+      { q: '书里那张纸条上写着什么？', opts: ['「你好」，还有一个名字', '一幅小画', '一串电话号码'], a: 0, kind: 'recall' },
+      { q: '书里夹着一张写着「你好」的纸条，说明这本书怎么样？', opts: ['以前有人读过，还留了话', '不是明明的', '是刚买的新书'], a: 0, kind: 'infer' },
       { q: '在书里发现一张纸条，你会怎么做？', opts: ['不看', '读一读，想想是谁写的', '扔掉'], a: 1, kind: 'transfer' }
     ]
   },
@@ -2429,7 +2442,7 @@ const BOOKS = [
       { art: 'playground|ming,grandma|game|♥', en: 'A game for the family. They will play it again next wet day.', zh: '全家的游戏。下一个雨天他们还要玩。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['游戏', '绵羊', '红色'], a: 0, kind: 'recall' },
+      { q: '第一局游戏谁赢了？', opts: ['奶奶', '爸爸', '爷爷'], a: 0, kind: 'recall' },
       { q: '谁赢了这局游戏？', opts: ['奶奶', '明明', '爸爸'], a: 0, kind: 'infer' },
       { q: '自己做一样游戏，你会怎么做？', opts: ['只让自己赢', '想好规则，和大家一起玩', '不做了'], a: 1, kind: 'transfer' }
     ]
@@ -2470,8 +2483,8 @@ const BOOKS = [
       { art: 'library|lili,grandpa|mouse|♥', en: 'The mouse is safe. It eats the bread now, and then it goes home.', zh: '老鼠安全了。它现在吃面包，吃完就回家。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['天空', '食物', '房间'], a: 1, kind: 'recall' },
-      { q: '老鼠为什么躲进洞里？', opts: ['因为猫来了', '因为天黑了', '因为饿了'], a: 0, kind: 'infer' },
+      { q: '老鼠躲进洞里，是因为谁来了？', opts: ['人', '猫', '狗'], a: 1, kind: 'recall' },
+      { q: '老鼠跑得飞快、马上躲起来，说明它怎么样？', opts: ['不怕猫，但也很小心', '一点也不怕', '已经跑不动了'], a: 0, kind: 'infer' },
       { q: '遇到危险，你会怎么做？', opts: ['追上去', '站在原地', '快点躲到安全的地方，找大人帮忙'], a: 2, kind: 'transfer' }
     ]
   },
@@ -2507,8 +2520,8 @@ const BOOKS = [
       { art: 'table|grandma,mom|cap|♥', en: 'Good! Find one more word with a quiet "e".', zh: '很好！再找一个结尾有不发音 e 的词。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['玫瑰', '鸭舌帽', '蛇'], a: 1, kind: 'recall' },
-      { q: '那个「e」做了什么？', opts: ['让「a」读出自己的名字，改变了发音', '让词变短', '没做什么'], a: 0, kind: 'infer' },
+      { q: '结尾那个「e」做了什么？', opts: ['让词变短了', '让 a 读出自己的名字，读音变了', '什么也没做'], a: 1, kind: 'recall' },
+      { q: '结尾加了一个 e，cap 变成了什么？', opts: ['cape，中间的 a 读本音', 'cap 的意思变了', '读音一点没变'], a: 0, kind: 'infer' },
       { q: '两个词只差一个 e，你会怎么分清？', opts: ['看清楚有没有 e，读准音', '不读了', '随便读一个'], a: 0, kind: 'transfer' }
     ]
   },
@@ -2548,8 +2561,8 @@ const BOOKS = [
       { art: 'kitchen|grandpa,dad|cake|♥', en: 'Ming likes the cake. He cuts a piece for Grandma.', zh: '明明喜欢这个蛋糕。他给奶奶切了一块。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['空气', '轮船', '街道'], a: 0, kind: 'recall' },
-      { q: '蛋糕为什么鼓起来？', opts: ['因为加了水', '因为热让它膨胀', '因为放凉了'], a: 1, kind: 'infer' },
+      { q: '蛋糕为什么会鼓起来？', opts: ['里面的热气变大，把它顶起来', '因为放了糖', '因为锅很大'], a: 0, kind: 'recall' },
+      { q: '蛋糕放进热的地方，会怎么样？', opts: ['变小变硬', '鼓起来，又高又软', '没有一点变化'], a: 1, kind: 'infer' },
       { q: '想知道一件事为什么发生，你会怎么做？', opts: ['瞎猜', '不管它', '想一想、查一查、试一试'], a: 2, kind: 'transfer' }
     ]
   },
@@ -2587,7 +2600,7 @@ const BOOKS = [
       { art: 'home|mom,ming|hole|♥', en: 'A good rope is strong. Mend it before it breaks.', zh: '好绳子很结实。断了之前先补好。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['洞', '小店', '太阳'], a: 0, kind: 'recall' },
+      { q: '绳子上的洞带来什么麻烦？', opts: ['绳子不结实了，可能会断', '绳子变长了', '绳子变短了'], a: 0, kind: 'recall' },
       { q: '绳子怎么了？', opts: ['太长了', '太短了', '上面有个洞，不结实了'], a: 2, kind: 'infer' },
       { q: '东西坏了，你会怎么做？', opts: ['看看能不能修好，修不好再想别的办法', '不管它', '直接扔掉'], a: 0, kind: 'transfer' }
     ]
@@ -2623,8 +2636,8 @@ const BOOKS = [
       { art: 'library|dad,lili|plate|♥', en: 'Big and small, both are plates. Both hold a good lunch.', zh: '大的小的都是盘子。两个都能盛一顿好午饭。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['水', '午饭', '球'], a: 1, kind: 'recall' },
-      { q: '两个盘子哪里不一样？', opts: ['一个有一个没有', '颜色不一样', '大小不一样'], a: 2, kind: 'infer' },
+      { q: '两个盘子哪里不一样？', opts: ['颜色不一样', '大小不一样', '一个是碗'], a: 1, kind: 'recall' },
+      { q: '一个大盘子一个小盘子，为什么都能用？', opts: ['因为一个能装一个不能', '因为它们一样大', '都是盘子，都能盛东西'], a: 2, kind: 'infer' },
       { q: '两样东西很像但有差别，你会怎么做？', opts: ['不管它', '只看一个', '看一看哪里不一样，再说一说'], a: 2, kind: 'transfer' }
     ]
   },
@@ -2665,7 +2678,7 @@ const BOOKS = [
       { art: 'home|ming,grandma|letter|·', en: 'Ming wants to go to the farm. He will go in summer when school is out.', zh: '明明想去农场。放暑假的时候他要去。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['水池', '玫瑰', '农场'], a: 2, kind: 'recall' },
+      { q: '信上说农场的什么长大了？', opts: ['玉米', '房子', '山羊'], a: 2, kind: 'recall' },
       { q: '谁给明明写了信？', opts: ['爸爸', '奶奶', '妈妈'], a: 1, kind: 'infer' },
       { q: '想给远方的人说句话，你会怎么做？', opts: ['写一封信或一句话给他', '只在心里想', '什么也不说'], a: 0, kind: 'transfer' }
     ]
@@ -2707,8 +2720,8 @@ const BOOKS = [
       { art: 'home|lili,grandpa|scarf|·', en: 'The scarf is from Mom. He hugs her because he is glad.', zh: '围巾是妈妈做的。他抱住她，因为他很高兴。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['网', '猪', '脸'], a: 2, kind: 'recall' },
-      { q: '围巾是谁做的？', opts: ['妈妈', '明明', '奶奶'], a: 0, kind: 'infer' },
+      { q: '明明的围巾是谁做的？', opts: ['奶奶', '姐姐', '妈妈'], a: 2, kind: 'recall' },
+      { q: '妈妈等到晚上才织围巾，是因为什么？', opts: ['白天忙，等明明睡了才有空', '白天太亮了', '晚上的线更好用'], a: 0, kind: 'infer' },
       { q: '天冷的时候，你会怎么做？', opts: ['不管它', '戴上围巾帽子，穿得暖和', '不出门'], a: 1, kind: 'transfer' }
     ]
   },
@@ -2747,8 +2760,8 @@ const BOOKS = [
       { art: 'garden|grandma,mom|garden|·', en: 'Ming will come back tomorrow. He will bring Grandma so she can see it too.', zh: '明明明天还会来。他要带奶奶来，让她也看看。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['海', '雨', '太阳'], a: 2, kind: 'recall' },
-      { q: '花园里有什么？', opts: ['书和笔', '车和船', '草、虫、花'], a: 2, kind: 'infer' },
+      { q: '明明在早上的花园里看见了什么小东西？', opts: ['一只猫', '一只鸟', '叶子上的一只小虫'], a: 2, kind: 'recall' },
+      { q: '明明为什么一大早就去花园？', opts: ['奶奶让他去的', '他要去浇水', '他想看看花园醒来的样子'], a: 2, kind: 'infer' },
       { q: '早晨在户外，你会怎么做？', opts: ['只看屏幕', '看看花草小虫，感受清晨', '一直睡觉'], a: 1, kind: 'transfer' }
     ]
   },
@@ -2787,7 +2800,7 @@ const BOOKS = [
       { art: 'beach|grandpa,dad|turtle|·', en: 'Slow can be good. Slow can be safe too when a big fish is near.', zh: '慢也有好处。危险靠近的时候，慢也能保命。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['钱包', '围巾', '蓝色'], a: 2, kind: 'recall' },
+      { q: '乌龟靠什么保护自己？', opts: ['游得快', '躲进沙子里', '硬硬的壳'], a: 2, kind: 'recall' },
       { q: '海龟是怎么躲开鲨鱼的？', opts: ['咬鲨鱼', '游得更快', '沉下去躲起来'], a: 2, kind: 'infer' },
       { q: '遇到比你强、有危险的，你会怎么做？', opts: ['冷静，想办法躲开或求助', '站在原地哭', '硬拼'], a: 0, kind: 'transfer' }
     ]
@@ -2824,7 +2837,7 @@ const BOOKS = [
       { art: 'school|mom,ming|picture|·', en: 'Ming draws more pictures. One is for Grandma, and one is for Mom.', zh: '明明又画了几幅。一幅给奶奶，一幅给妈妈。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['小店', '石头', '草'], a: 2, kind: 'recall' },
+      { q: '老师把明明的画放在哪儿了？', opts: ['放进抽屉', '带回家', '挂在墙上'], a: 2, kind: 'recall' },
       { q: '明明画了什么？', opts: ['花园和太阳', '车和船', '书和笔'], a: 0, kind: 'infer' },
       { q: '想送老师或长辈一样东西，你会怎么做？', opts: ['自己动手做，表达心意', '随便买一个', '不送'], a: 0, kind: 'transfer' }
     ]
@@ -2862,8 +2875,8 @@ const BOOKS = [
       { art: 'street|dad,lili|market|·', en: 'The market is good. They will come back next week.', zh: '这个市场很好。下周他们还要来。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['绵羊', '市场', '歌'], a: 1, kind: 'recall' },
-      { q: '妈妈买了什么？', opts: ['米', '苹果', '鱼'], a: 0, kind: 'infer' },
+      { q: '妈妈在街角的市场买了什么？', opts: ['苹果', '米', '葡萄'], a: 1, kind: 'recall' },
+      { q: '他们带篮子去市场，是因为什么？', opts: ['要买的东西不少，得有个东西装', '篮子好看', '市场不给袋子'], a: 0, kind: 'infer' },
       { q: '去市场买东西，你会怎么做？', opts: ['不看就走', '乱拿一通', '想好买什么，一样一样看'], a: 2, kind: 'transfer' }
     ]
   },
@@ -2900,8 +2913,8 @@ const BOOKS = [
       { art: 'farm|ming,grandma|corn|·', en: 'Ming will plant more corn. He will plant it next year when spring comes.', zh: '明明还要种玉米。明年春天他再种。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['茶', '黄色', '鼻涕虫'], a: 1, kind: 'recall' },
-      { q: '玉米什么时候熟的？', opts: ['一直没熟', '等了一阵子以后', '马上就熟了'], a: 1, kind: 'infer' },
+      { q: '玉米熟的时候是什么颜色？', opts: ['红色', '黄色', '绿色'], a: 1, kind: 'recall' },
+      { q: '明明为什么每天早上都去看玉米？', opts: ['他要给它浇水', '他在等它熟，想看它长大', '他怕别人摘走'], a: 1, kind: 'infer' },
       { q: '想让植物长大，你会怎么做？', opts: ['不管它', '浇水、耐心等，不急着拔', '每天拔出来看'], a: 1, kind: 'transfer' }
     ]
   },
@@ -2938,8 +2951,8 @@ const BOOKS = [
       { art: 'library|lili,grandpa|park|·', en: 'Ming is glad to find the ball. He takes it home.', zh: '找到球明明很高兴。他把球带回家。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['街道', '风', '鲸'], a: 1, kind: 'recall' },
-      { q: '球最后在哪里？', opts: ['门边', '水里', '树下'], a: 0, kind: 'infer' },
+      { q: '球最后在哪儿找到的？', opts: ['大树下', '大门边', '草丛里'], a: 1, kind: 'recall' },
+      { q: '明明找了很久都没找到，后来是怎么找到的？', opts: ['问了门口的一位叔叔', '风把它吹过来了', '自己忽然看见了'], a: 0, kind: 'infer' },
       { q: '找东西找遍了还没找到，你会怎么做？', opts: ['问一问别人，或换个地方想', '不要了', '一直乱找'], a: 0, kind: 'transfer' }
     ]
   },
@@ -2975,7 +2988,7 @@ const BOOKS = [
       { art: 'table|grandma,mom|car|·', en: 'Now say them fast. Say them one more time at the end.', zh: '现在说快一点。最后再说一遍。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['小汽车', '衬衫', '茎'], a: 0, kind: 'recall' },
+      { q: 'car 和 bird 结尾都有哪个音？', opts: ['r 的音', 'l 的音', 'n 的音'], a: 0, kind: 'recall' },
       { q: '这一本在练哪个音？', opts: ['「s」的音', '「t」的音', '「r」的音'], a: 2, kind: 'infer' },
       { q: '单词里有 r，你会怎么读？', opts: ['把 r 读得清楚有力', '跳过去', '把 r 念没了'], a: 0, kind: 'transfer' }
     ]
@@ -3012,8 +3025,8 @@ const BOOKS = [
       { art: 'night|grandpa,dad|winter|·', en: 'Warm days will come. We can play in the park.', zh: '暖和的日子会来。我们又能去公园玩。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['空气', '勺子', '浴盆'], a: 0, kind: 'recall' },
-      { q: '冬天为什么冷？', opts: ['太阳不高不热，白天也短', '因为下雪', '因为风大'], a: 0, kind: 'infer' },
+      { q: '冬天为什么冷？', opts: ['太阳不高，光不强', '因为下雪', '因为风从海上来'], a: 0, kind: 'recall' },
+      { q: '冬天太阳不高，所以地面上会怎么样？', opts: ['光和热都少，就冷了', '变得更亮', '一直下雨'], a: 0, kind: 'infer' },
       { q: '想知道自然现象为什么发生，你会怎么做？', opts: ['观察、想一想、查一查', '随便猜', '不管它'], a: 0, kind: 'transfer' }
     ]
   },
@@ -3049,7 +3062,7 @@ const BOOKS = [
       { art: 'farm|mom,ming|farmer|·', en: 'We thank the farmer. We eat it all, and we think of his work.', zh: '我们谢谢农民。我们把饭吃完，也想着他的辛苦。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['老师', '食物', '工人'], a: 1, kind: 'recall' },
+      { q: '农民一大早就去做什么？', opts: ['去市场卖菜', '喂牲口、下地干活', '送孩子上学'], a: 1, kind: 'recall' },
       { q: '农民每天都做什么？', opts: ['坐车、玩', '喂动物、种玉米、干农活', '写作业、看书'], a: 1, kind: 'infer' },
       { q: '看到别人辛勤劳动，你会怎么做？', opts: ['珍惜成果，说声谢谢', '不管', '浪费'], a: 0, kind: 'transfer' }
     ]
@@ -3086,8 +3099,8 @@ const BOOKS = [
       { art: 'library|dad,lili|corner|·', en: 'Ming likes the corner. He will come back.', zh: '明明喜欢这个街角。他还会再来。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['二', '胳膊', '树'], a: 2, kind: 'recall' },
-      { q: '明明回到了哪里？', opts: ['学校', '家', '街角'], a: 2, kind: 'infer' },
+      { q: '明明回到街角，什么还是原来的样子？', opts: ['市场', '学校', '那棵树'], a: 2, kind: 'recall' },
+      { q: '明明站在老树下很久，他在做什么？', opts: ['在等奶奶', '在数叶子', '在想以前的事'], a: 2, kind: 'infer' },
       { q: '回到去过的地方，你会怎么做？', opts: ['看看有什么变化，重新感受一下', '不看', '随便看看'], a: 0, kind: 'transfer' }
     ]
   },
@@ -3127,8 +3140,8 @@ const BOOKS = [
       { art: 'kitchen|ming,grandma|dumpling|…', en: 'Dumplings with Grandma. He wants to make them again because it was fun.', zh: '和奶奶包饺子。他还想再包，因为太有意思了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['猪肉', '比赛', '学校'], a: 0, kind: 'recall' },
-      { q: '明明包的饺子怎么样？', opts: ['不能吃', '特别漂亮', '不太好看，但没关系'], a: 2, kind: 'infer' },
+      { q: '明明包的饺子怎么了？', opts: ['有一边没捏上，开着口', '全破了', '太小了'], a: 0, kind: 'recall' },
+      { q: '饺子有一边没捏上，下锅煮会怎么样？', opts: ['会浮得更高', '会变得更香', '馅可能会跑出来'], a: 2, kind: 'infer' },
       { q: '和家人一起做吃的，你会怎么做？', opts: ['怕做不好就不做', '只吃不做', '跟着学，做不好也没关系'], a: 2, kind: 'transfer' }
     ]
   },
@@ -3172,7 +3185,7 @@ const BOOKS = [
       { art: 'kitchen|lili,grandpa|mooncake|…', en: 'A good night for the family. He keeps the last mooncake.', zh: '全家人的好夜晚。他留着最后一块月饼。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['月亮', '石头', '贝壳'], a: 0, kind: 'recall' },
+      { q: '月饼是什么样子的？', opts: ['像月亮一样圆', '方的', '三角形的'], a: 0, kind: 'recall' },
       { q: '中秋夜里大家做了什么？', opts: ['去看电影', '一起看月亮、吃月饼', '去上学'], a: 1, kind: 'infer' },
       { q: '过节和家人团聚，你会怎么做？', opts: ['不参加', '只顾自己玩', '和家人一起，珍惜在一起的时间'], a: 2, kind: 'transfer' }
     ]
@@ -3211,8 +3224,8 @@ const BOOKS = [
       { art: 'home|grandma,mom|window|…', en: 'Ming is glad. Grandma is there to meet them, and she puts up her hand.', zh: '明明很高兴。奶奶来接他们，在门口招手。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['蛇', '天空', '海'], a: 1, kind: 'recall' },
-      { q: '明明坐在哪里？', opts: ['火车的窗边', '汽车里', '船上'], a: 0, kind: 'infer' },
+      { q: '明明坐火车的时候坐在哪儿？', opts: ['最后一排', '窗边', '过道边'], a: 1, kind: 'recall' },
+      { q: '明明在火车上为什么不肯睡？', opts: ['他怕错过窗外的什么东西', '他一点也不困', '车上太吵了'], a: 0, kind: 'infer' },
       { q: '坐车旅行，你会怎么做？', opts: ['看看窗外的风景，注意安全', '一直睡觉', '乱跑'], a: 0, kind: 'transfer' }
     ]
   },
@@ -3252,8 +3265,8 @@ const BOOKS = [
       { art: 'school|grandpa,dad|drawing|…', en: 'Letters and pictures. They can go a long way when someone waits for them.', zh: '信和画。有人在等的时候，它们能走很远。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['毛巾', '星星', '蓝色'], a: 2, kind: 'recall' },
-      { q: '明明在信里放了什么？', opts: ['一个玩具', '一幅画和一张纸条', '一块月饼'], a: 1, kind: 'infer' },
+      { q: '信送到表姐手上，她当天做了什么？', opts: ['先收进抽屉', '放到第二天才拆', '当天就拆开看了'], a: 2, kind: 'recall' },
+      { q: '明明在信里画了窗和往外看的小明明，是想告诉表姐什么？', opts: ['他很会画画', '他想她了，想见面', '他家的窗户很大'], a: 1, kind: 'infer' },
       { q: '想让远方的家人开心，你会怎么做？', opts: ['画一幅画或写几句话寄给他', '只打电话', '什么也不做'], a: 0, kind: 'transfer' }
     ]
   },
@@ -3291,8 +3304,8 @@ const BOOKS = [
       { art: 'farm|mom,ming|cow|…', en: 'A cow on the farm. He will come back because the cow is his friend now.', zh: '农场里的牛。他还会回来，因为这头牛现在是他的朋友了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['三', '歌', '手'], a: 2, kind: 'recall' },
-      { q: '牛是什么颜色的？', opts: ['黑色', '白色', '棕色'], a: 2, kind: 'infer' },
+      { q: '明明把草放在哪儿给牛吃？', opts: ['放进桶里', '拿在手里', '放在地上'], a: 2, kind: 'recall' },
+      { q: '明明一开始为什么站在门边？', opts: ['奶奶让他在那儿等', '门边有草', '牛太大，他有点怕，好跑开'], a: 2, kind: 'infer' },
       { q: '靠近大动物，你会怎么做？', opts: ['大声吓它', '追它', '轻轻的，让它不怕你'], a: 2, kind: 'transfer' }
     ]
   },
@@ -3330,8 +3343,8 @@ const BOOKS = [
       { art: 'home|dad,lili|house|…', en: 'Ming likes the house. He is glad to be home when the day is over.', zh: '明明喜欢这座房子。一天结束的时候，他很高兴回到家。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['乌龟', '线', '胳膊'], a: 1, kind: 'recall' },
-      { q: '房子里有什么？', opts: ['一辆车', '一条河', '一扇大窗户'], a: 2, kind: 'infer' },
+      { q: '阳光从窗户进来，在地上留下了什么？', opts: ['一片影子', '一条会移动的亮线', '一些水'], a: 1, kind: 'recall' },
+      { q: '明明为什么喜欢待在这扇窗边？', opts: ['窗边有他的床', '窗外有小朋友', '这里能看很远，太阳暖时还能看书'], a: 2, kind: 'infer' },
       { q: '住在有窗户的房子里，你会怎么做？', opts: ['一直拉着窗帘', '看看窗外，让阳光进来', '不看'], a: 1, kind: 'transfer' }
     ]
   },
@@ -3371,7 +3384,7 @@ const BOOKS = [
       { art: 'home|ming,grandma|coin|…', en: 'Ming will count more tomorrow. He wants to get it right.', zh: '明天明明还要数更多。他想数得一点不差。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['老师', '线', '歌'], a: 1, kind: 'recall' },
+      { q: '明明把硬币排成一行，是为了什么？', opts: ['送给奶奶', '数清楚，免得漏掉', '好看'], a: 1, kind: 'recall' },
       { q: '明明在数什么？', opts: ['硬币', '书', '苹果'], a: 0, kind: 'infer' },
       { q: '数数总是数错，你会怎么做？', opts: ['不数了', '随便说一个数', '从头按顺序数，一个一个来'], a: 2, kind: 'transfer' }
     ]
@@ -3410,8 +3423,8 @@ const BOOKS = [
       { art: 'night|lili,grandpa|night|…', en: 'Ming sleeps well. In the morning he tells Mom.', zh: '明明睡得很好。早上他讲给妈妈听。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['街道', '风', '树'], a: 1, kind: 'recall' },
-      { q: '那个大声音是什么？', opts: ['风', '有人喊叫', '打雷'], a: 0, kind: 'infer' },
+      { q: '夜里是什么在推窗户？', opts: ['一只猫', '风', '一只鸟'], a: 1, kind: 'recall' },
+      { q: '弄明白那声响是风以后，明明怎么样了？', opts: ['不怕了，又躺回去睡', '跑去找妈妈', '一直没睡着'], a: 0, kind: 'infer' },
       { q: '夜里听到奇怪的声音，你会怎么做？', opts: ['躲起来不出声', '看一看弄清楚是什么，别慌', '一直哭'], a: 1, kind: 'transfer' }
     ]
   },
@@ -3448,7 +3461,7 @@ const BOOKS = [
       { art: 'table|grandma,mom|house|…', en: 'Now say them together. Say them one more time when you are ready.', zh: '现在连起来说。准备好了再说一遍。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['房子', '星星', '毛巾'], a: 0, kind: 'recall' },
+      { q: 'house 和 cow 都有哪个音？', opts: ['ow 的音', 'ou 的音', 'oo 的音'], a: 0, kind: 'recall' },
       { q: '这一本在练什么？', opts: ['「ou」的音', '「oi」的音', '「ow」的音'], a: 2, kind: 'infer' },
       { q: '遇到带 ow 的单词，你会怎么读？', opts: ['分开读两个字母', '把 ow 读成一个音', '跳过去'], a: 1, kind: 'transfer' }
     ]
@@ -3487,7 +3500,7 @@ const BOOKS = [
       { art: 'kitchen|grandpa,dad|mooncake|…', en: 'Look at it night after night. You will see it change because we see different parts.', zh: '一夜一夜地看。你会看见它变化，因为我们看到的部分不同。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['蚂蚁', '乌龟', '光'], a: 2, kind: 'recall' },
+      { q: '月亮看起来会变，其实变的是什么？', opts: ['太阳的位置', '月亮本身', '我们看见的那一部分'], a: 2, kind: 'recall' },
       { q: '月亮为什么看起来是圆的？', opts: ['因为月亮是球', '太阳照亮了朝我们的一面', '因为天很黑'], a: 1, kind: 'infer' },
       { q: '想知道天象为什么这样，你会怎么做？', opts: ['不管它', '随便猜', '观察、问一问、查一查'], a: 2, kind: 'transfer' }
     ]
@@ -3528,8 +3541,8 @@ const BOOKS = [
       { art: 'kitchen|mom,ming|noodle|…', en: 'Noodles are good food. Ming asks for more.', zh: '面条是好吃的。明明还要再来一碗。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['水', '蜜蜂', '酸奶'], a: 0, kind: 'recall' },
-      { q: '面条是什么样的？', opts: ['长长的', '圆圆的', '方方的'], a: 0, kind: 'infer' },
+      { q: '面条什么时候最好吃？', opts: ['趁热吃', '泡在汤里', '凉了吃'], a: 0, kind: 'recall' },
+      { q: '天冷的时候，人们为什么爱吃面条？', opts: ['热腾腾的，吃下去暖和', '因为面条便宜', '因为别的都卖完了'], a: 0, kind: 'infer' },
       { q: '吃一种新食物，你会怎么做？', opts: ['尝一尝，看看喜不喜欢', '一口不吃', '只吃一种'], a: 0, kind: 'transfer' }
     ]
   },
@@ -3566,7 +3579,7 @@ const BOOKS = [
       { art: 'library|dad,lili|town|…', en: 'A good night in the town. Ming does not want it to end.', zh: '镇上美好的一夜。明明不想让它结束。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['云', '罐子', '公园'], a: 2, kind: 'recall' },
+      { q: '今晚屋里为什么满满的？', opts: ['房子很小', '来了很多客人', '谁也没出门，大家都在'], a: 2, kind: 'recall' },
       { q: '今晚大家在做什么？', opts: ['各干各的', '一起吃饭、说笑', '都不在家'], a: 1, kind: 'infer' },
       { q: '和家人在一起的时光，你会怎么做？', opts: ['只顾自己', '不参加', '珍惜它，好好陪着家人'], a: 2, kind: 'transfer' }
     ]
@@ -3608,7 +3621,7 @@ const BOOKS = [
       { art: 'home|ming,grandma|photo|?', en: 'Ming likes the photo. At home he will show it to Grandma, and she will smile.', zh: '明明喜欢这张照片。回家他要拿给奶奶看，她一定会笑。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['蛋糕', '蛇', '太阳'], a: 0, kind: 'recall' },
+      { q: '照片被风刮走后，是谁捡回来的？', opts: ['一位叔叔', '奶奶', '列车员'], a: 0, kind: 'recall' },
       { q: '照片里有谁？', opts: ['只有奶奶', '只有明明', '全家人'], a: 2, kind: 'infer' },
       { q: '想留住一个好的时刻，你会怎么做？', opts: ['拍张照片或写下来记着', '什么也不做', '马上忘掉'], a: 0, kind: 'transfer' }
     ]
@@ -3648,8 +3661,8 @@ const BOOKS = [
       { art: 'library|lili,grandpa|question|?', en: 'Ming is glad too. He will try the next hard one when it comes.', zh: '明明也很高兴。下一个难题来的时候，他还要试。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['绵羊', '班', '歌'], a: 1, kind: 'recall' },
-      { q: '明明是怎么答对的？', opts: ['别人告诉的', '找到一个小地方，慢慢想出来的', '随便猜的'], a: 1, kind: 'infer' },
+      { q: '明明是怎么找到答案的？', opts: ['问了同桌', '先找出自己认识的那一个词', '翻了课本'], a: 1, kind: 'recall' },
+      { q: '先把认识的一个词找出来，这个办法为什么管用？', opts: ['因为老师会提示', '大难题被拆小，就不那么难了', '因为那个词最简单'], a: 1, kind: 'infer' },
       { q: '遇到一个很难的问题，你会怎么做？', opts: ['直接放弃', '随便猜', '先找一个小地方，一点点想'], a: 2, kind: 'transfer' }
     ]
   },
@@ -3692,7 +3705,7 @@ const BOOKS = [
       { art: 'night|grandma,mom|shadow|?', en: 'At noon it is short again. Grandma was right, and now Ming knows why.', zh: '中午它又变短了。奶奶说得对，现在明明知道为什么了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['光', '裙子', '茎'], a: 0, kind: 'recall' },
+      { q: '中午的时候，影子是什么样？', opts: ['又短又小，就在脚底下', '拉得很长', '看不见了'], a: 0, kind: 'recall' },
       { q: '影子为什么会变？', opts: ['因为风大', '因为太阳在天上移动', '因为影子自己动'], a: 1, kind: 'infer' },
       { q: '想弄清影子的秘密，你会怎么做？', opts: ['只看一次', '不管它', '一天里多看几次，比一比'], a: 2, kind: 'transfer' }
     ]
@@ -3740,8 +3753,8 @@ const BOOKS = [
       { art: 'farm|grandpa,dad|wheat|?', en: 'The harvest feeds many. Now Ming knows why they work.', zh: '收成养活很多人。明明这下懂了他们为什么辛苦。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['工人', '田地', '树'], a: 1, kind: 'recall' },
-      { q: '小麦什么时候收割？', opts: ['刚种下的时候', '长得又高又黄的时候', '下雨的时候'], a: 1, kind: 'infer' },
+      { q: '收下来的小麦最后变成了什么？', opts: ['喂牲口的料', '我们每天吃的面包', '明年的种子'], a: 1, kind: 'recall' },
+      { q: '农民为什么天没亮就下地？', opts: ['因为要赶火车', '白天会热，趁早干活', '因为麦子夜里长'], a: 1, kind: 'infer' },
       { q: '辛苦种的东西有了收获，你会怎么做？', opts: ['不管它', '珍惜它，不浪费', '随便扔掉'], a: 1, kind: 'transfer' }
     ]
   },
@@ -3784,7 +3797,7 @@ const BOOKS = [
       { art: 'library|mom,ming|knife|?', en: 'A knife and a wheel. Ming pushes the cart to the gate.', zh: '一把刀和一个轮子。明明推着车到门口。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['二', '老师', '猪肉'], a: 2, kind: 'recall' },
+      { q: '刀和轮子各自的本事是什么？', opts: ['两个都能转', '两个都能切', '一个切东西，一个让车子走'], a: 2, kind: 'recall' },
       { q: '用刀的时候要注意什么？', opts: ['越快越好', '不用注意', '要小心，别伤到自己'], a: 2, kind: 'infer' },
       { q: '用尖的、快的工具，你会怎么做？', opts: ['小心用，必要时请大人帮忙', '随便乱用', '不用了'], a: 0, kind: 'transfer' }
     ]
@@ -3824,7 +3837,7 @@ const BOOKS = [
       { art: 'library|dad,lili|answer|?', en: 'Ming takes a pot home. He puts a seed in it that night.', zh: '明明带了一只盆回家。当晚就种下一粒种子。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['词', '绿色', '宝宝'], a: 1, kind: 'recall' },
+      { q: '哪一盆种子长出来了？', opts: ['干的那两盆', '湿的那一盆', '三盆都长了'], a: 1, kind: 'recall' },
       { q: '科学家是怎么找到答案的？', opts: ['一次就找到了', '别人给的', '试了很多次，没有停'], a: 2, kind: 'infer' },
       { q: '一个难题很久解不开，你会怎么做？', opts: ['马上放弃', '记下来，慢慢试，不放弃', '不管它'], a: 1, kind: 'transfer' }
     ]
@@ -3866,8 +3879,8 @@ const BOOKS = [
       { art: 'street|ming,grandma|museum|?', en: 'The museum is a good place. He will look at the other rooms.', zh: '博物馆是个好地方。他还要去看别的展厅。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['世界', '家人', '乌龟'], a: 1, kind: 'recall' },
-      { q: '博物馆里的东西有什么特别？', opts: ['它们很老，是很久以前的人用过的', '它们会动', '它们很新'], a: 0, kind: 'infer' },
+      { q: '博物馆里那只旧盆，是什么样子？', opts: ['两边都破了', '有一边破了', '跟新的一样'], a: 1, kind: 'recall' },
+      { q: '明明把手背在身后、慢慢走，是因为什么？', opts: ['这里的东西很老很珍贵，要小心', '奶奶让他别出声', '他怕黑'], a: 0, kind: 'infer' },
       { q: '在博物馆里，你会怎么做？', opts: ['安静看，想一想它背后的事', '大声喧哗', '乱摸乱碰'], a: 0, kind: 'transfer' }
     ]
   },
@@ -3906,7 +3919,7 @@ const BOOKS = [
       { art: 'school|lili,grandpa|board|?', en: 'Ming keeps the board by his desk. He writes the next plan on it because it works.', zh: '明明把板子放在书桌旁。他把下一个计划写上去，因为这办法管用。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['世界', '球', '桌子'], a: 2, kind: 'recall' },
+      { q: '第二天明明忘了怎么做，他怎么办的？', opts: ['问了爷爷', '重新想了一遍', '回去看板子上写的'], a: 2, kind: 'recall' },
       { q: '为什么要写下来？', opts: ['写下来能帮我们记住', '为了好看', '为了给别人看'], a: 0, kind: 'infer' },
       { q: '怕忘掉一个好主意，你会怎么做？', opts: ['不管它', '记在心里就行', '马上写下来或记下来'], a: 2, kind: 'transfer' }
     ]
@@ -3946,7 +3959,7 @@ const BOOKS = [
       { art: 'table|grandma,mom|knee|?', en: 'Knee and write. Now say them together, and keep the quiet letters in.', zh: 'knee 和 write。现在连起来说，别把不发音的字母读出来。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['风', '小镇', '膝盖'], a: 2, kind: 'recall' },
+      { q: 'knee 和 write 里各有哪个字母不发音？', opts: ['两个词都有 i 不发音', '两个词都有 e 不发音', 'knee 的 k 和 write 的 w'], a: 2, kind: 'recall' },
       { q: '这两个词里什么特别？', opts: ['都很短', '都很长', '有些字母不发音'], a: 2, kind: 'infer' },
       { q: '遇到有不发音字母的单词，你会怎么读？', opts: ['每个字母都念', '读出发音的那部分，别念不发音的字母', '跳过去'], a: 1, kind: 'transfer' }
     ]
@@ -3992,8 +4005,8 @@ const BOOKS = [
       { art: 'night|grandpa,dad|season|?', en: 'Ming will mark it on a board. He wants to see the change.', zh: '明明要把变化记在板上。他想亲眼看见它。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['工人', '泥土', '书包'], a: 1, kind: 'recall' },
-      { q: '季节为什么会变？', opts: ['因为月亮变', '地球绕太阳转，我们这边有时朝太阳有时转开', '因为风向变'], a: 1, kind: 'infer' },
+      { q: '季节为什么会变？', opts: ['太阳自己在动', '地球绕着太阳转，我们这一面有时朝着太阳', '风的方向在变'], a: 1, kind: 'recall' },
+      { q: '地球转的时候，我们这一面有时朝着太阳、有时转开，所以会怎么样？', opts: ['太阳会变大变小', '有时热有时冷，有了四季', '有时白天有时黑夜'], a: 1, kind: 'infer' },
       { q: '想知道自然的大变化，你会怎么做？', opts: ['观察、看书、问一问', '随便猜', '不管它'], a: 0, kind: 'transfer' }
     ]
   },
@@ -4034,7 +4047,7 @@ const BOOKS = [
       { art: 'night|mom,ming|rain|?', en: 'Measuring is useful. He wants to measure the snow, and he will use the same cup.', zh: '测量很有用。他想量雪，还用同一个杯子。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['木板', '斗篷', '工具'], a: 2, kind: 'recall' },
+      { q: '明明用什么来量雨？', opts: ['一把尺子', '一个盆', '一个杯子'], a: 2, kind: 'recall' },
       { q: '我们用什么量雨？', opts: ['放在外面的杯子', '尺子', '秤'], a: 0, kind: 'infer' },
       { q: '想测量一样东西，你会怎么做？', opts: ['想一个办法，用工具量一量', '不量了', '随便说一个数'], a: 0, kind: 'transfer' }
     ]
@@ -4073,7 +4086,7 @@ const BOOKS = [
       { art: 'library|dad,lili|story|?', en: 'The whole story, start to end. He will tell Mom at home, and she will want to hear it too.', zh: '整个故事，从头到尾。回家他要讲给妈妈听，她也会想听。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['罐子', '蓝色', '大门'], a: 2, kind: 'recall' },
+      { q: '奶奶说想再听哪一段？', opts: ['结尾的部分', '开头的部分', '公园那一段'], a: 2, kind: 'recall' },
       { q: '故事有哪三个部分？', opts: ['开头、中间、结尾', '问题、努力、答案', '人、地点、时间'], a: 1, kind: 'infer' },
       { q: '要把一件事讲完整，你会怎么做？', opts: ['只讲一句', '随便讲', '从头到尾按顺序讲，不漏部分'], a: 2, kind: 'transfer' }
     ]
@@ -4113,8 +4126,8 @@ const BOOKS = [
       { art: 'library|ming,grandma|question|·', en: 'Next time he will ask a small one. If he asks a small one, he can get an answer.', zh: '下次他要问一个小问题。问得小，才问得出答案。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['行动', '线', '蜜蜂'], a: 1, kind: 'recall' },
-      { q: '明明问的「更好的问题」是什么？', opts: ['「这是什么意思？」', '「哪个词难懂？」', '「我该读吗？」'], a: 1, kind: 'infer' },
+      { q: '明明把大问题换成了哪个小问题？', opts: ['「这句话什么意思？」', '「哪个词难？」', '「这是谁写的？」'], a: 1, kind: 'recall' },
+      { q: '为什么把问题问小一点，反而更容易得到答案？', opts: ['因为大问题太难写', '小问题清楚，奶奶知道该讲哪儿', '因为小问题不重要'], a: 1, kind: 'infer' },
       { q: '看不懂一段话，你会怎么做？', opts: ['跳过去', '先找出具体哪个词或哪句卡住，再问', '整段问「这是什么意思」'], a: 1, kind: 'transfer' }
     ]
   },
@@ -4154,7 +4167,7 @@ const BOOKS = [
       { art: 'library|lili,grandpa|change|·', en: 'Tomorrow he will write one more word. He puts the box back on the desk where he can see it.', zh: '明天他要再写一个词。他把盒子放回书桌上看得见的地方。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['小面包', '纸条', '长椅'], a: 1, kind: 'recall' },
+      { q: '明明每天做的那件小事是什么？', opts: ['每天写一句话', '睡前在盒子里写一个新词', '每天读一页书'], a: 1, kind: 'recall' },
       { q: '小变化是怎么起作用的？', opts: ['一下就变了', '根本没用', '一天天累积，慢慢看出不同'], a: 2, kind: 'infer' },
       { q: '想让一件事慢慢变好，你会怎么做？', opts: ['每天改一点小地方，坚持下去', '一下全改', '不改了'], a: 0, kind: 'transfer' }
     ]
@@ -4195,7 +4208,7 @@ const BOOKS = [
       { art: 'library|grandma,mom|habit|·', en: 'Tomorrow he will do it again. He puts his cap on the bag so it is ready.', zh: '明天他还要这么做。他把帽子放在书包上，这样就都齐了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['鸭舌帽', '木板', '斗篷'], a: 0, kind: 'recall' },
+      { q: '明明把书包和帽子放在哪儿，才不再找不着？', opts: ['门边', '床底下', '桌子上'], a: 0, kind: 'recall' },
       { q: '明明后来再也不用找书包了，为什么？', opts: ['妈妈每天帮他找', '他不再带书包了', '他每晚都把东西放到门边，成了习惯'], a: 2, kind: 'infer' },
       { q: '想养成一个好习惯，你会怎么做？', opts: ['做一次就够了', '等别人提醒', '每天固定做一点，忘了就补上'], a: 2, kind: 'transfer' }
     ]
@@ -4235,7 +4248,7 @@ const BOOKS = [
       { art: 'library|grandpa,dad|plan|·', en: 'Ming writes the answer on the board. Tomorrow he will try three pots, so he can compare them.', zh: '明明把答案写在板上。明天他要试三个盆，好做比较。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['教室', '蛋糕', '线'], a: 2, kind: 'recall' },
+      { q: '明明最后发现两个盆的差别是什么？', opts: ['种子不一样', '一个水多，一个水少', '一个有太阳，一个没有'], a: 2, kind: 'recall' },
       { q: '明明是怎么弄清楚的？', opts: ['订了计划，做不通就改一改，继续做', '等别人告诉', '随便乱试'], a: 0, kind: 'infer' },
       { q: '想弄清一件事，你会怎么做？', opts: ['没有计划乱做', '订个计划，做不通就调整，坚持', '不弄了'], a: 1, kind: 'transfer' }
     ]
@@ -4280,7 +4293,7 @@ const BOOKS = [
       { art: 'library|mom,ming|patience|·', en: 'That night Grandma sings it once more. Ming goes to sleep with the song.', zh: '那晚奶奶又唱了一遍。明明听着歌睡着了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['盘子', '鸭舌帽', '钟'], a: 0, kind: 'recall' },
+      { q: '明明想不起来的那首歌，是什么时候想起来的？', opts: ['洗盘子的时候', '睡觉的时候', '问奶奶的时候'], a: 0, kind: 'recall' },
       { q: '记忆是怎么回来的？', opts: ['放松、想点别的，它自己回来了', '永远不会回来', '使劲想就想起来了'], a: 0, kind: 'infer' },
       { q: '怎么想也想不起来，你会怎么做？', opts: ['一直使劲想', '先放松，做点别的，它会自己回来', '算了不管'], a: 1, kind: 'transfer' }
     ]
@@ -4321,7 +4334,7 @@ const BOOKS = [
       { art: 'library|dad,lili|problem|·', en: 'They put the picture on the wall. It has both of their names, because both of them made it.', zh: '他们把画挂在墙上。上面有两个人的名字，因为这是两人一起做的。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['图画', '城市', '乌鸦'], a: 0, kind: 'recall' },
+      { q: '丽丽要那块板做什么？', opts: ['为班里画画', '自己玩', '写作业'], a: 0, kind: 'recall' },
       { q: '为什么从两面看有帮助？', opts: ['因为问题变小了', '因为别人帮忙了', '换个角度看，问题会变清楚'], a: 2, kind: 'infer' },
       { q: '一个问题看着很难，你会怎么做？', opts: ['只盯着一面想', '换个角度、从另一面看看它', '不做了'], a: 1, kind: 'transfer' }
     ]
@@ -4362,7 +4375,7 @@ const BOOKS = [
       { art: 'library|ming,grandma|promise|·', en: '"Tomorrow we begin again," Ming says. This time he means it.', zh: '「明天我们重新开始。」明明说。这次他是当真的。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['薯片', '天空', '奶牛'], a: 1, kind: 'recall' },
+      { q: '明明第二天重新去放风筝，结果怎么样？', opts: ['又挂到树上', '第一次就飞起来了', '一点风也没有'], a: 1, kind: 'recall' },
       { q: '明明许了什么约定？', opts: ['明天再试一次', '今天就放弃', '什么都不做'], a: 0, kind: 'infer' },
       { q: '今天做得很不顺，你会怎么做？', opts: ['休息一下，明天重新开始', '一直懊恼', '再也不做了'], a: 0, kind: 'transfer' }
     ]
@@ -4403,7 +4416,7 @@ const BOOKS = [
       { art: 'library|lili,grandpa|journey|·', en: 'He sits under the tree for a while. Then he walks home, and the way back feels short.', zh: '他在树下坐了一会儿。然后走回家，回去的路感觉很短。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['王冠', '小镇', '鸡蛋'], a: 1, kind: 'recall' },
+      { q: '明明走到半路回头看，看见了什么？', opts: ['老树就在眼前', '房子变小了，能看见整个镇子', '奶奶追了上来'], a: 1, kind: 'recall' },
       { q: '明明是怎么走完长路的？', opts: ['一小步一小步，慢慢累积', '一下就跳到终点', '别人背他走的'], a: 0, kind: 'infer' },
       { q: '一件很难很远的事，你会怎么做？', opts: ['等别人做', '看着太远就不做', '拆成小步子，一步一步做'], a: 2, kind: 'transfer' }
     ]
@@ -4448,7 +4461,7 @@ const BOOKS = [
       { art: 'table|grandma,mom|reason|·', en: 'Read it all at once. It will make sense.', zh: '一口气读下来。它就讲得通。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['薯片', '队伍', '奶牛'], a: 1, kind: 'recall' },
+      { q: '这一本要你怎么读句子？', opts: ['读得越快越好', '整句连着读，不要一个词一个词读', '只读认识的词'], a: 1, kind: 'recall' },
       { q: '为什么不该一个词一个词读？', opts: ['词是合在一起的，要当一个整体读', '因为词太长', '因为会读错'], a: 0, kind: 'infer' },
       { q: '读一个长句子，你会怎么读？', opts: ['只读一半', '把它当一个整体，连起来读', '一个词一个词蹦'], a: 1, kind: 'transfer' }
     ]
@@ -4489,7 +4502,7 @@ const BOOKS = [
       { art: 'library|grandpa,dad|answer|·', en: 'Keep practicing. Tomorrow he will try a new word because the old one is easy now.', zh: '继续练。明天他要试一个新词，因为旧的现在很容易了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['鼓', '脑子', '旗子'], a: 1, kind: 'recall' },
+      { q: '明明练写名字，一个星期后怎么样？', opts: ['还是歪歪扭扭', '写得好看多了', '不想再练了'], a: 1, kind: 'recall' },
       { q: '练习为什么有用？', opts: ['反复做，脑子会走出一条好走的路', '因为别人看着', '因为练习很快'], a: 0, kind: 'infer' },
       { q: '练一样东西觉得没进步，你会怎么做？', opts: ['不练了', '继续练，它在慢慢成路', '换一样'], a: 1, kind: 'transfer' }
     ]
@@ -4530,7 +4543,7 @@ const BOOKS = [
       { art: 'library|mom,ming|future|·', en: 'Lili wants one of her own. Ming gives her a pen.', zh: '丽丽也想要一本。明明递给她一支笔。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['鸡蛋', '食物', '班'], a: 2, kind: 'recall' },
+      { q: '明明画得太快的那一页后来怎么了？', opts: ['大家都说好', '被丽丽拿走了', '画得不对，只好重画'], a: 2, kind: 'recall' },
       { q: '为什么赶着画反而更费时间？', opts: ['因为慢就不用画了', '因为笔不够好', '画快了容易出错，重画更费工夫'], a: 2, kind: 'infer' },
       { q: '有一件很大的事要做，你会怎么安排？', opts: ['放着不做', '一天全赶完', '分成小份，每天稳稳做一点'], a: 2, kind: 'transfer' }
     ]
@@ -4571,7 +4584,7 @@ const BOOKS = [
       { art: 'library|dad,lili|idea|·', en: 'Lili paints the name on the board. Ming puts the first book in, and the corner is ready.', zh: '丽丽把名字画在板上。明明放进第一本书，读书角就成了。' }
     ],
     quiz: [
-      { q: '下面哪个词在这一本里读到过？', opts: ['家', '书包', '草'], a: 1, kind: 'recall' },
+      { q: '他们最后把读书角建在哪儿？', opts: ['家里', '班里', '图书馆'], a: 1, kind: 'recall' },
       { q: '想法是怎么变清楚的？', opts: ['一下就想清楚了', '说着说着、写着写着，慢慢清楚了', '别人给的'], a: 1, kind: 'infer' },
       { q: '有一个想法但还很模糊，你会怎么做？', opts: ['马上丢掉', '不说', '说出来、写下来，让它慢慢清楚'], a: 2, kind: 'transfer' }
     ]
