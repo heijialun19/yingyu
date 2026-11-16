@@ -6,7 +6,7 @@
      （听过一次就永久零网络；重建音频时换一个缓存名，activate 里删掉旧的那个）
    - 外站请求：v8 起站内不再有任何第三方发音请求，这里也就不再为它留分支。
      历史遗留的 opaque 缓存会在 activate 时随旧缓存一起清掉。 */
-const CACHE = 'birdie-abc-v245';
+const CACHE = 'birdie-abc-v246';
 const AUDIO_CACHE = 'birdie-audio-v7';   // 每次重做音频换新名，旧的在 activate 里删掉
 /* 三个 async 图库都不进 BOOT（会拖慢激活），但都列进 CORE 后台补齐：
    emoji-core.js 给轻页面，emoji-svg.js 是 7 个重页面唯一图库（由 app.js
@@ -16,8 +16,8 @@ const AUDIO_CACHE = 'birdie-audio-v7';   // 每次重做音频换新名，旧的
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './phonics.html', './read.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=55', './js/words-data.js?v=47', './svg/word-svg.js?v=7', './js/data.js?v=47', './js/app.js?v=186', './js/books-data.js?v=26', './js/phonics.js?v=11', './js/sentence.js?v=52', './js/speech.js?v=1', './js/grammar-engine.js?v=10', './js/ipa.js?v=9', './js/ipa-gs.js?v=3', './js/build-data.js?v=3', './js/getsmart-data.js?v=18', './js/pep-data.js?v=2', './js/pep-lessons.js?v=3', './js/pep-points-more.js?v=1', './js/pep-mem.js?v=6', './js/pep-points.js?v=27', './svg/emoji-core.js?v=3', './svg/emoji-svg.js?v=6', './svg/emoji-svg2.js?v=3',
-  './manifest.json', './js/audio-list.js?v=18', './favicon.ico', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
+  './css/style.css?v=55', './js/words-data.js?v=47', './svg/word-svg.js?v=7', './js/data.js?v=47', './js/app.js?v=187', './js/books-data.js?v=27', './js/phonics.js?v=11', './js/sentence.js?v=52', './js/speech.js?v=1', './js/grammar-engine.js?v=10', './js/ipa.js?v=9', './js/ipa-gs.js?v=3', './js/build-data.js?v=3', './js/getsmart-data.js?v=18', './js/pep-data.js?v=2', './js/pep-lessons.js?v=3', './js/pep-points-more.js?v=1', './js/pep-mem.js?v=6', './js/pep-points.js?v=27', './svg/emoji-core.js?v=3', './svg/emoji-svg.js?v=6', './svg/emoji-svg2.js?v=3',
+  './manifest.json', './js/audio-list.js?v=19', './favicon.ico', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
    原 addAll(CORE) 是原子的：32 个文件约 700KB 全下完才激活，跨境慢网要等几十秒；
@@ -25,7 +25,7 @@ const CORE = [
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
   './', './index.html', './css/style.css?v=55',
-  './js/app.js?v=186', './js/data.js?v=47'
+  './js/app.js?v=187', './js/data.js?v=47'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {

@@ -4348,3 +4348,68 @@ v5（.16）把体裁重排上线后，把 **40 本新书**按「英文 → 中�
 
 7 条新整句，0 个新词。app v185→186 / books-data v25→26 / CACHE v244→v245 /
 SENTENCE_AUDIO 6995→7002。audio-list v18 不动，旧音频零改动。
+
+
+---
+
+## 2026-11-16.18 · 母语者逐句校读：135 条建议，采纳 75、驳回 60
+
+用户要求「母语者逐句校读」。我没有母语者可雇，做了两件事把它做实：
+
+### 一、母语语料引擎全扫（LanguageTool，en-US）
+
+1260 页全部跑一遍，57 条命中。分诊：
+
+| 类型 | 条数 | 处理 |
+|---|---|---|
+| 并列句缺逗号（and/so 连接两个独立句） | 6 | **改** |
+| 状语开头缺逗号（At night / At last / In time） | 5 | **改** |
+| 句首三连同词（L7-L10 的 He/She/We） | 6 | **改写其中一句** |
+| 操练体例误报（Say… Say…、tr-ee、mooncake） | 40 | 不改 |
+
+### 二、5 个母语编辑视角的并行复检
+
+按级别派 5 路，只挑「语法没错，但母语者不会这么说」。回 135 条，逐条论证：
+
+**采纳（~75 条）**：
+
+- **搭配不地道**：`do big work`、`let each other go`（=松开彼此，不是让路）、
+  `in a soft way`、`give a big pull`（缺宾语）、`make small sand`、`keep it whole`、
+  `breaks the line`（该是 breaks the thought）、`the pot is on`、`The window is nice`、
+  `light comes to them`（该是 falls on）、`Measuring needs a way`
+- **代词断裂**：`I watch it`（指两物）、`the chain stops it`（it 就近可读成尾巴）、
+  `the dog`/`the clock` 无先行词、`them all` 无先行词、`we→he` 人称跳
+- **时态漂移**：b60 `the road was long`（全书现在时）、b61 `was good`、b64 `was quick`、
+  b111 `is not so hard now. It was...`、b107 `We measure... will compare`
+- **逻辑前后不一致**：
+  - b112 风筝「还在树上」却又「放在门口」→ 补一句「把风筝取下来」
+  - b110 只有一盆长了，却问「哪盆先长」→ 改「长了多高」
+  - b105「你能**听见**不发音的字母」自相矛盾 → 「你认得这些不发音的字母」
+  - b103 记号既表「你在哪」又表「公园在哪」→ 「地图上标的那个位置」
+  - b106 无光≠干燥（实验只有光照一个变量）
+- **俚语**：b35 `I cut the cheese` 在美式英语里是「放屁」，**童书必避** → `I cut a little piece`
+- **冠词/介词**：`Pen is not pin` → `A pen is not a pin`；`on our face` → `on our faces`；
+  `when the summer is hot` → `when summer is hot`；`Car is not bird` → `A car is not a bird`
+- **相邻页/同页复述**：十余处（b53 white 两见、b56 p9/p10、b58 rain=water、
+  b77 p1/p2、b79 make seeds 两遍、b98 grows=gets longer、b102 p4/p5 等）
+
+**驳回（~60 条）**，理由：
+
+- L1-L4 的 `I put... I put...` 句式重复 = decodable reader 刻意设计，不是错
+- 发音专项 `Say X. Say it again.` 是操练体例
+- 押韵本（b6/b29/b42/b65/b78/b101）句末押韵优先，轻微语序让步可接受
+- b55 `a little water` 是可接受英语，不必改成 a little bit of
+- b69/b81/b93 的 `Pen is not pin` 若指**词**可不加冠词，但本书 p1-p2 是实物 → 采纳加冠词
+- 科普为受控词汇做的简化（`the small wheat` 代 flour）不报
+
+### 三、题目跟着正文重核
+
+改正文后必须重核同本题目。本轮抓到 2 处脱节，已改：
+- b91 推理题还问「为什么不容易迷路」，但正文已改成「可以跑得很远」→ 换成
+  「如果铁轨在半路断了，你猜会怎么样？」
+- b4 题干「书包太鼓了」，正文已改「太满」→ 题干跟着改
+
+### 发版
+
+138 条新整句 + 1 个新词（touches）音频。app v186→187 / books-data v26→27 /
+audio-list v18→19 / CACHE v245→v246 / SENTENCE_AUDIO 7002→7140。
