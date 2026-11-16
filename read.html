@@ -4,18 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#534AB7">
-<meta name="keywords" content="小学英语,英语阅读,拼读小书,分级阅读,可解码读物,免费" />
+<meta name="keywords" content="小学英语,英语阅读,分级读物,分级阅读,可解码读物,免费" />
 <meta name="description" content="读书馆 · 120 本受控词汇分级读物：10 站循序渐进，每个词都先教过才进故事，点句听整句、点词听发音，读完有推理题与开口说任务。免费、无广告、断网也能读。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
-<meta property="og:title" content="读书馆 · 分级拼读小书 · 小鸟英语乐园">
+<meta property="og:title" content="读书馆 · 120 本分级读物 · 小鸟英语乐园">
 <meta property="og:description" content="120 本受控词汇分级读物：10 站 × 12 本，每本一条完整小故事 + 3 道分认知层级的小测 + 读后开口说。先读英文，卡住了再按需求助看中文。">
 <meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
 <meta property="og:url" content="https://heijialun19.github.io/yingyu/read.html">
 <meta name="twitter:card" content="summary_large_image">
-<title>读书馆 · 分级拼读小书 · 小鸟英语乐园</title>
+<title>读书馆 · 120 本分级读物 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/read.html">
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="css/style.css?v=55" onerror="this.onerror=null;this.href='css/style.css?v=55&amp;retry=1'">
@@ -127,7 +127,7 @@
 <noscript>
   <section class="card" style="margin-top:18px">
     <h2>📚 读书馆 · 120 本分级读物（不依赖脚本）</h2>
-    <p>10 站 × 12 本，从看图说词一路到桥梁书。每本是一条完整的小故事，
+    <p>10 站 × 12 本，从每页一句短句一路读到长篇故事。每本是一条完整的小故事，
     正文里出现的每一个词都在此前的书里教过、或在这本的读前词卡里先教一遍。
     每本读完有 3 道小题（找得到 / 想得通 / 用得上）与一个开口说的任务。
     进度只保存在自己的浏览器里。</p>
@@ -255,10 +255,13 @@ const TRACK_LABEL = { story:'📖 故事', drill:'🔬 发音专项',
 function renderShelf() {
   const prog = bkProg();
   const order = ['L1','L2','L3','L4','L5','L6','L7','L8','L9','L10'];
-  const lvName = { L1:'第 1 站 · 看图说词', L2:'第 2 站 · 短元音', L3:'第 3 站 · 双辅音',
-                   L4:'第 4 站 · 辅音连缀', L5:'第 5 站 · 元音组合', L6:'第 6 站 · 魔法 e',
-                   L7:'第 7 站 · 卷舌音', L8:'第 8 站 · 视觉词与长句',
-                   L9:'第 9 站 · 综合阅读', L10:'毕业 · 桥梁书' };
+  /* 分级标题描述「读到哪儿了」，不是自然拼读进度（拼读课在 phonics.html 另有一套 L1-L9）。
+     每级实际坡度：L1-L4 每页 1 句、词/本 32→57；L5-L6 每页 2 句、118→133 词；
+     L7-L10 从句页 31%→39%、词/本 159→221。 */
+  const lvName = { L1:'第 1 站 · 短句起步', L2:'第 2 站 · 读小故事', L3:'第 3 站 · 故事更完整',
+                   L4:'第 4 站 · 独立小读本', L5:'第 5 站 · 每页两句话', L6:'第 6 站 · 故事更长了',
+                   L7:'第 7 站 · 开始有从句', L8:'第 8 站 · 复合句',
+                   L9:'第 9 站 · 篇章阅读', L10:'第 10 站 · 长篇读物' };
   let html = '';
   for (const lv of order) {
     /* 同级别按「正文词数」升序：先读短读本练拼读，再读长读本练流利 */

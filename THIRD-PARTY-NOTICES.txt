@@ -9,7 +9,7 @@
 目录
   一、单词配图与界面图形 —— Twemoji（CC-BY 4.0）
   二、音标数据 —— CMUdict（BSD 风格许可）
-  三、语音合成 —— Piper（MIT）+ en_US-libritts-high（训练数据 CC BY 4.0，须署名）
+  三、语音合成 —— Piper（MIT）+ en_US-ljspeech-medium（训练数据 LJSpeech，公有领域）
   三之二、字母音与拼读块录音 —— s5s5/phonics（MIT）
   四、音素化后端 —— eSpeak NG（GPLv3，仅构建期使用，不随站分发）
   五、课程内容与教材名称
@@ -78,38 +78,38 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ----------------------------------------------------------------------
 三、语音合成 —— Piper 与声线
 ----------------------------------------------------------------------
-站内全部英文发音（2903 个单词/拼读块/字母名/派生词/含空格短语 +
-830 句整句 + 137 段连读词块）都是本站用开源引擎合成的静态音频文件，
+站内全部英文发音（3137 个单词/拼读块/字母名/派生词/含空格短语 +
+7141 句整句 + 137 段连读词块）都是本站用开源引擎合成的静态音频文件，
 不使用任何在线发音接口，也不包含从词典或教材网站抓取的录音。
 另有 39 个字母音与拼读块音频（38 个为母语者录音，字母 U 因源库没有 /ʌ/ 由本站
 自合成），见「三之二」，不属于本节。
 
   合成引擎：Piper，版本 2023.11.14（rhasspy/piper），MIT（全文见下）
-  语音模型：en_US-libritts-high（rhasspy/piper-voices），模型权重 MIT
-  说话人：  模型内的 381 号说话人（多说话人模型，全站统一用这一个）
+  语音模型：en_US-ljspeech-medium（rhasspy/piper-voices），模型权重 MIT
+  说话人：  LJSpeech 为单说话人模型，无需指定说话人编号
   生成参数：--noise_scale 0 --noise_w 0（钉死噪声，保证每次重烘逐字节一致）；
-            单词 length_scale 1.0 / 96kbps，整句与词块 1.1 / 64kbps
+            length_scale 1.1 / 128kbps / 22050Hz mono / 响度 −2dB；
+            补 15ms 静音 + 8ms 淡入，尾部 60ms（词）/ 100ms（句）静音
   分发形式：只分发合成出的 mp3 音频文件，不分发数据集、引擎二进制或模型权重
 
-  ── 训练数据署名（CC BY 4.0，按许可第 3(a)(1) 条提供）──────────────
-  作品名称：LibriTTS: A Corpus Derived from LibriSpeech for Text-to-Speech
-  作者：Heiga Zen, Viet Dang, Rob Clark, Yu Zhang, Ron J. Weiss,
-        Ye Jia, Zhifeng Chen, Yonghui Wu（arXiv, 2019）
-  数据集：LibriTTS corpus，OpenSLR 资源编号 SLR60，约 585 小时英语朗读语音，
-          由 LibriVox 的公有领域录音与 Project Gutenberg 文本整理而成
-  许可：Creative Commons Attribution 4.0 International（CC BY 4.0）
-        https://creativecommons.org/licenses/by/4.0/
-  数据集页面：https://www.openslr.org/60/
-  本站用法与改动说明：使用以该数据集训练的多说话人语音模型合成英文音频；
+  ── 训练数据说明 ──────────────────────────────────────────────
+  数据集：LJSpeech（https://keithito.com/LJ-Speech-Dataset/）
+  作者：  Keith Ito（2017），语料取自 LibriVox 有声书与 Project Gutenberg 文本
+  规模：  约 24 小时英语朗读语音，单说话人
+  许可：  公有领域（Public Domain）。LJSpeech 的原始录音来自 LibriVox，
+          LibriVox 录音本身即置于公有领域，无署名义务、无相同方式共享要求。
+  本站用法与改动说明：使用以该数据集训练的单说话人语音模型合成英文音频；
         本站未分发、未改动语料本身，只对合成结果做了 mp3 编码、
-        22050Hz 单声道重采样与首尾静音裁剪（格式处理）。
-        按 CC BY 4.0 在此给出署名、许可链接与改动说明。
+        22050Hz 单声道重采样、首尾静音与淡入处理（格式处理）。
+        因训练数据为公有领域，本节不附署名义务，列此仅为来源可追溯。
 
-  历史声线：2026-11-08 ~ 2026-11-09 曾用 en_US-ljspeech-medium
-        （LJSpeech 数据集，公有领域），现已全部替换，线上不再包含其合成结果。
-        试听阶段还评估过若干声线，因许可或音质原因均未接入线上；
-        其中 Blizzard 2013 研究专用许可、CC BY-NC-SA 及由其微调衍生的声线
-        已明确排除，不得用于公开发布的产品。
+  ── 历史声线（已全部替换，线上不再包含）────────────────────────
+  · 2026-11-08 ~ 2026-11-14：en_US-libritts-high（多说话人，381 号）
+      训练数据 LibriTTS / OpenSLR SLR60，CC BY 4.0，需署名。
+      2026-11-15 起已全量重新合成，线上不再包含其合成结果。
+  · 试听阶段评估过 en_US-lessac-* 等若干声线，因许可或音质原因均未接入线上。
+      其中 Blizzard 2013 研究专用许可、CC BY-NC-SA 及由其微调衍生的声线
+      已明确排除，不得用于公开发布的产品。
 
 MIT 许可全文：
 
@@ -188,7 +188,7 @@ Piper 在**构建阶段**调用 eSpeak NG 做文本音素化。eSpeak NG 以 GPL
   CC BY-NC 4.0 —— 可自由用于个人学习与家庭教育，署名后可转载，
   **不得用于商业用途**（收费课程、付费 App、带广告的转载等）。
 · 站内第三方图形（Twemoji）不在此授权范围内，转载时请一并遵守 CC-BY 4.0。
-· 合成音频所用训练数据 LibriTTS 为 CC BY 4.0，其署名与许可链接见第三节；
+· 合成音频所用训练数据 LJSpeech 为公有领域，来源说明见第三节；
   该许可约束数据集本身，本站已履行署名义务。本站对「原创图文与合成音频」
   附加的 CC BY-NC 4.0 只约束本站原创部分，不减损、也不替代第三方素材
   各自的许可；转载时须同时满足两者。

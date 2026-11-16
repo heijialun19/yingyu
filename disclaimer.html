@@ -102,13 +102,12 @@
            （Copyright 1993-2015 Carnegie Mellon University，BSD 风格许可）转写而来，该许可要求保留版权声明，全文已收录在
            <a href="THIRD-PARTY-NOTICES.txt" target="_blank" rel="noopener">THIRD-PARTY-NOTICES.txt</a>。<br>
            · <b>语音合成</b>：站内音频由开源引擎 <a href="https://github.com/rhasspy/piper" target="_blank" rel="noopener">Piper</a>（MIT）
-           与语音模型 <code>en_US-libritts-high</code>（权重 MIT）生成；其训练数据
-           <b>LibriTTS（OpenSLR 60）采用 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></b>，
-           本站已在《第三方素材与许可说明》中按许可给出署名、许可链接与改动说明。
+           与语音模型 <code>en_US-ljspeech-medium</code>（权重 MIT）生成；其训练数据
+           <b>LJSpeech 为公有领域</b>（无署名义务），说明见《第三方素材与许可说明》。
            只分发合成结果，不分发数据集、引擎与模型。<br>
            · 完整的来源、版权与许可全文见
            <a href="THIRD-PARTY-NOTICES.txt" target="_blank" rel="noopener">THIRD-PARTY-NOTICES.txt</a>。</p>
-        <p><b>5. 开源说明：</b>本站源代码托管于公开仓库，以 MIT 许可提供（见仓库 <code>LICENSE</code>）；原创图文与合成音频按 CC BY-NC 4.0 提供，不得用于商业用途；第三方素材仍受其各自许可约束。合成音频所用的训练数据 LibriTTS 为 CC BY 4.0，其署名义务与本站原创内容的授权范围互不替代，详见《第三方素材与许可说明》第三节与第六节。</p>
+        <p><b>5. 开源说明：</b>本站源代码托管于公开仓库，以 MIT 许可提供（见仓库 <code>LICENSE</code>）；原创图文与合成音频按 CC BY-NC 4.0 提供，不得用于商业用途；第三方素材仍受其各自许可约束。合成音频所用的训练数据 LJSpeech 为公有领域，不附加署名义务。</p>
       </div>
     </div>
   </section>
@@ -119,11 +118,11 @@
       <h2>🔊 语音来源说明</h2>
       <div style="font-size:.88rem;line-height:2;color:var(--ink2)">
         <p><b>全站发音都是静态音频文件，点读即响、断网可用。</b>分两套声源：</p>
-        <p>· <b>单词</b>：2942 个发音文件（词库词、课程词、字母名、拼读块，含复数/三单/进行时等派生形态，以及 26 个字母音 + 13 个拼读块，其中 38 个为母语者录音、字母 U 由本站自合成）<br>
+        <p>· <b>单词</b>：3137 个发音文件（词库词、课程词、字母名、拼读块，含复数/三单/进行时等派生形态，以及 26 个字母音 + 13 个拼读块，其中 38 个为母语者录音、字母 U 由本站自合成）<br>
            · <b>字母音</b>：26 个字母各自的音素（/æ/、/b/、/ks/…），不是字母名、也不是代表词 —— 自然拼读教的就是这个音<br>
-           · <b>整句</b>：830 句固定例句，一次合成整句，有连读和句末语调<br>
+           · <b>整句</b>：7141 句固定例句，一次合成整句，有连读和句末语调<br>
            · <b>连读词块</b>：137 段连读词块，即固定句型前半段（This is a / I have a / He is / They are / Do you have / is on the …），让临时拼出的句子也有弱读冠词和连读<br>
-           · <b>声线</b>：单词、整句与连读词块共用一位说话人（Piper 引擎 + en_US-libritts-high 的 381 号声线自行合成，训练数据 LibriTTS / CC BY 4.0，已署名）；<br>　　　　　字母音与拼读块为另一套母语者录音（开源项目 s5s5/phonics，MIT，仅做响度归一与格式转换；39 个中 38 个来自该库，字母 U 因源库缺 /ʌ/ 由本站自合成），
+           · <b>声线</b>：单词、整句与连读词块共用一位说话人（Piper 引擎 + en_US-ljspeech-medium 自行合成，训练数据 LJSpeech 为公有领域）；<br>　　　　　字母音与拼读块为另一套母语者录音（开源项目 s5s5/phonics，MIT，仅做响度归一与格式转换；39 个中 38 个来自该库，字母 U 因源库缺 /ʌ/ 由本站自合成），
              全站音色统一、语速一致、音量整齐</p>
         <p>这些文件都是站内静态资源，<b>点读即响、不联网、断网也能读</b>，
            也不会向任何在线服务发送请求。程序临时生成、包里没有的句子，
