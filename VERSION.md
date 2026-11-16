@@ -4201,3 +4201,45 @@ audio-list v17 不动 / CACHE v239→v240 / SENTENCE_AUDIO 6504→6526 / BUILD .
 
 **发版**：22 条新整句音频，无新词；app v181→182 / books-data v21→22 /
 audio-list v17 不动 / CACHE v240→v241 / SENTENCE_AUDIO 6526→6548 / BUILD .12→.13。
+
+---
+
+## 2026-11-16.14 · 搭配与语域
+
+语法对了，不等于话说得地道。这一版专挑「每个词都对、母语者不这么说」的句子。
+
+### 一、搭配
+
+| 书 | 原文 | 问题 | 改成 |
+|---|---|---|---|
+| b72 | Both **hold a good lunch**. | 盘子 hold 的是食物，不是「一顿午饭」 | Both hold good food. |
+| b73 | Letters **carry good words**. | carry good words 生硬 | Ming will keep this letter. He puts it in a safe place. |
+| b120 | Ming **keeps the idea safe**. | 能收好的是那张纸，不是抽象的想法 | Ming keeps the paper safe. His idea is on it. |
+
+### 二、语域
+
+| 书 | 原文 | 问题 | 改成 |
+|---|---|---|---|
+| b96 | **Together is good.** | 形容词/副词不能直接作主语 | It is good to be together. |
+| b70 | The cake goes in **the hot place**. | 幼儿语；L6 应该给实词 | the **oven**（新增 L6 词，单词音频早已在包里） |
+| b74 | The scarf **does its work**. | 成人化，且 work 在此不可数搭配生硬 | does its **job** |
+| b92 | **All is quiet.** | 书面/古旧 | **Everything** is quiet. |
+
+### 三、代词与语序
+
+- b78 `Ming helps Mom carry **it**` → **them**（前一句是 things，复数）
+- b119 `in the order **that** he painted them` → 去掉 that，更自然
+
+### 四、方法说明
+
+搭配查不出「规则错」，只能靠两件事：
+1. 把全库的「轻动词 + 宾语」「形容词 + 名词」「动词 + 小品词」抽出来排成表看
+   （`_v4_collocation_audit.py`）；2. 挑出语域标记（习语、抽象名词、被动、书面连接词），
+   看它们出现在哪一级。
+
+这一轮 120 本里只找到 9 处，说明**句子的骨架是稳的**；剩下的问题集中在
+「抽象概念被当成实物来搭配」（keep the idea safe）和「为了避开生词而用幼儿语」
+（the hot place）。
+
+**发版**：10 条新整句，无新词；app v182→183 / books-data v22→23 /
+audio-list v17 不动 / CACHE v241→v242 / SENTENCE_AUDIO 6548→6558 / BUILD .13→.14。

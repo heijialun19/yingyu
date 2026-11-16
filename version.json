@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-16.13",
-  "note": "2026-11-16.13 语法 / 搭配 / 逻辑复查（22 条整句，无新词）。① 时态漂移：b40「The clock helped me again.」在通篇现在时里突然过去；b92「It was the wind. It pushes...」过去+现在混用；b46「It started small.」。② 搭配：b15「The day is not dry.」英文不这么说；b95「make noodles into long lines」（面条本来就是条）；b71「made the sock no good」；b61「wants it done」超出本级语域。③ 指代/POV：b88 把 cousin 当人名大写、叙述里又写「my cousin」与第三人称打架；b22「up the hill」凭空出现一座山。④ 逻辑：b112 中途把没晒太阳的盆搬到太阳下，等于换变量、实验不成立 —— 改成「不动那两个盆」，推理题与迁移题同步改；b15 推理题把「雾」当成泥的成因。⑤ 常识与语序：b94「The bright part grows」→「我们看到的亮部」；b102「Three weeks of notes are in her book」→「Her book has...」。app v181→182 / books-data v21→22 / audio-list v17 不动 / CACHE v240→v241 / SENTENCE_AUDIO 6526→6548 / BUILD .12→.13"
+  "build": "2026-11-16.14",
+  "note": "2026-11-16.14 搭配与语域修订（10 条整句，无新词）。① 搭配错：b72「Both hold a good lunch」（盘子不 hold lunch）→ hold good food；b73「Letters carry good words」→ 改成具体动作；b120「keeps the idea safe」（保的是那张纸，不是抽象的想法）。② 语域：b96「Together is good」形容词不能直接作主语 → It is good to be together；b70「the hot place」幼儿语 → oven（新增 L6 词，单词音频早就在包里）；b74「does its work」→ does its job；b92「All is quiet」→ Everything is quiet。③ 代词数：b78「helps Mom carry it」→ carry them（things 是复数）。④ 语序：b119「in the order that he painted them」→ 去掉 that。app v182→183 / books-data v22→23 / audio-list v17 不动 / CACHE v241→v242 / SENTENCE_AUDIO 6548→6558 / BUILD .13→.14"
 }
