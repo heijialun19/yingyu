@@ -1413,7 +1413,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs5-m02r', mod: 2, kind: 'review', title: 'Module 2 复习闯关', zh: '本领 · 探险 · 航海',
         from: ['gs5-m02l1', 'gs5-m02l2', 'gs5-m02l3'], count: 10 },
-      { id: 'gs5-m03l1', mod: 3, modName: 'Module 3 · Try hard 努力拼搏', modEmoji: '🏅', modTip: 'Phonics: /ʌ/ /uː/ · 品德: 奥运精神', kind: 'unit',
+      { id: 'gs5-m03l1', mod: 3, modName: 'Module 3 · Try hard 努力拼搏', modEmoji: '🏅', modTip: 'Phonics: /ʌ/ /u/ · 品德: 奥运精神', kind: 'unit',
         title: 'M3-L1 · Extreme Sports', zh: '极限运动',
         words: [
           { w: 'bungee jumping', zh: '蹦极', e: '🪢' }, { w: 'scuba diving', zh: '深潜', e: '🤿' },
@@ -1484,7 +1484,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs5-m04r', mod: 4, kind: 'review', title: 'Module 4 复习闯关', zh: '动物 · 机器 · 故事',
         from: ['gs5-m04l1', 'gs5-m04l2', 'gs5-m04l3'], count: 10 },
-      { id: 'gs5-m05l1', mod: 5, modName: 'Module 5 · Its natural 自然万物', modEmoji: '🌱', modTip: 'Phonics: /ʌ/ /ɑː/ · 品德: 爱护自然', kind: 'unit',
+      { id: 'gs5-m05l1', mod: 5, modName: 'Module 5 · Its natural 自然万物', modEmoji: '🌱', modTip: 'Phonics: /ʌ/ /ɑ/ · 品德: 爱护自然', kind: 'unit',
         title: 'M5-L1 · Plants', zh: '植物怎么长',
         words: [
           { w: 'soil', zh: '土壤', e: '🟤' }, { w: 'seed', zh: '种子', e: '🌰' },
@@ -1590,7 +1590,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs5-m07r', mod: 7, kind: 'review', title: 'Module 7 复习闯关', zh: '募款 · 健身 · 品格',
         from: ['gs5-m07l1', 'gs5-m07l2', 'gs5-m07l3'], count: 8 },
-      { id: 'gs5-m08l1', mod: 8, modName: 'Module 8 · Whats up? 走走看看', modEmoji: '🧭', modTip: 'Phonics: /ɔːr/ /oʊ/ · 品德: 讲礼貌', kind: 'unit',
+      { id: 'gs5-m08l1', mod: 8, modName: 'Module 8 · Whats up? 走走看看', modEmoji: '🧭', modTip: 'Phonics: /ɔr/ /oʊ/ · 品德: 讲礼貌', kind: 'unit',
         title: 'M8-L1 · Around Town', zh: '城镇各处',
         words: [
           { w: 'bridge', zh: '桥', e: '🌉' }, { w: 'windmill', zh: '风车', e: '🌬️' },
@@ -1747,7 +1747,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs6-m01r', mod: 1, kind: 'review', title: 'Module 1 复习闯关', zh: '业余 · 家务 · 工作',
         from: ['gs6-m01l1', 'gs6-m01l2', 'gs6-m01l3', 'gs6-m01l4'], count: 10 },
-      { id: 'gs6-m02l1', mod: 2, modName: 'Module 2 · Faces and places 各地风情', modEmoji: '🌏', modTip: 'Phonics: /ʌ/ /ɑː/ /æ/ · 品德: 入乡随俗', kind: 'unit',
+      { id: 'gs6-m02l1', mod: 2, modName: 'Module 2 · Faces and places 各地风情', modEmoji: '🌏', modTip: 'Phonics: /ʌ/ /ɑ/ /æ/ · 品德: 入乡随俗', kind: 'unit',
         title: 'M2-L1 · Materials', zh: '材料与服饰',
         words: [
           { w: 'cotton', zh: '棉', e: '🧵' }, { w: 'leather', zh: '皮革', e: '👟' },
@@ -1782,7 +1782,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs6-m02r', mod: 2, kind: 'review', title: 'Module 2 复习闯关', zh: '材料 · 传统 · 礼仪',
         from: ['gs6-m02l1', 'gs6-m02l2', 'gs6-m02l3'], count: 10 },
-      { id: 'gs6-m03l1', mod: 3, modName: 'Module 3 · Adventures 冒险', modEmoji: '🧗', modTip: 'Phonics: /aɪ/ /ɪ/ /ɜːr/ · 品德: 外表会骗人', kind: 'unit',
+      { id: 'gs6-m03l1', mod: 3, modName: 'Module 3 · Adventures 冒险', modEmoji: '🧗', modTip: 'Phonics: /aɪ/ /ɪ/ /ɜr/ · 品德: 外表会骗人', kind: 'unit',
         title: 'M3-L1 · Outdoor Fun', zh: '户外冒险',
         words: [
           { w: 'rock climbing', zh: '攀岩', e: '🧗' }, { w: 'white-water rafting', zh: '激流漂流', e: '🛶' },
@@ -1817,7 +1817,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs6-m03r', mod: 3, kind: 'review', title: 'Module 3 复习闯关', zh: '冒险 · 童子军 · 经历',
         from: ['gs6-m03l1', 'gs6-m03l2', 'gs6-m03l3'], count: 10 },
-      { id: 'gs6-m04l1', mod: 4, modName: 'Module 4 · Material world 材料世界', modEmoji: '💍', modTip: 'Phonics: /ʊ/ /uː/ /oʊ/ · 品德: 了解发明', kind: 'unit',
+      { id: 'gs6-m04l1', mod: 4, modName: 'Module 4 · Material world 材料世界', modEmoji: '💍', modTip: 'Phonics: /ʊ/ /u/ /oʊ/ · 品德: 了解发明', kind: 'unit',
         title: 'M4-L1 · Materials', zh: '材料',
         words: [
           { w: 'silk', zh: '丝绸', e: '🧣' }, { w: 'wool', zh: '羊毛', e: '🐑' },
@@ -1863,7 +1863,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs6-m04r', mod: 4, kind: 'review', title: 'Module 4 复习闯关', zh: '材料 · 饰品 · 发明',
         from: ['gs6-m04l1', 'gs6-m04l2', 'gs6-m04l3', 'gs6-m04l4'], count: 10 },
-      { id: 'gs6-m05l1', mod: 5, modName: 'Module 5 · Looking back 回望过去', modEmoji: '🏺', modTip: 'Phonics: /æ/ /ɑː/ /ə/ · 品德: 了解历史', kind: 'unit',
+      { id: 'gs6-m05l1', mod: 5, modName: 'Module 5 · Looking back 回望过去', modEmoji: '🏺', modTip: 'Phonics: /æ/ /ɑ/ /ə/ · 品德: 了解历史', kind: 'unit',
         title: 'M5-L1 · Prehistoric', zh: '史前时代',
         words: [
           { w: 'animal skin', zh: '兽皮', e: '🐅' }, { w: 'mammoth', zh: '猛犸', e: '🦣' },
@@ -2047,7 +2047,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs6-m08r', mod: 8, kind: 'review', title: 'Module 8 复习闯关', zh: '太空 · 电脑 · 场馆',
         from: ['gs6-m08l1', 'gs6-m08l2', 'gs6-m08l3', 'gs6-m08l4'], count: 10 },
-      { id: 'gs6-m09l1', mod: 9, modName: 'Module 9 · Go green! 环保行动', modEmoji: '♻️', modTip: 'Phonics: /ʌ/ /uː/ /ɜːr/ · 品德: 公平游戏', kind: 'unit',
+      { id: 'gs6-m09l1', mod: 9, modName: 'Module 9 · Go green! 环保行动', modEmoji: '♻️', modTip: 'Phonics: /ʌ/ /u/ /ɜr/ · 品德: 公平游戏', kind: 'unit',
         title: 'M9-L1 · Pollution', zh: '污染',
         words: [
           { w: 'destroy', zh: '破坏', e: '💥' }, { w: 'pollute', zh: '污染（动词）', e: '🏭' },

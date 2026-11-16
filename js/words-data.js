@@ -81,7 +81,7 @@ const GRADES = [
     W('head','头','','head 头——脑袋'), W('hair','头发','','hair 头发——丝丝头发'), W('face','脸','😊','face 脸——脸面'),
     W('arm','手臂','','arm 手臂——手臂（也有「武装」的意思）'), W('leg','腿','🦵','leg 腿——桌椅的腿也叫 leg'), W('foot','脚','🦶','foot 脚——脚（复数 feet）'),
     W('tooth','牙齿','🦷','tooth 牙——牙（复数 teeth）'), W('finger','手指','👆','finger 手指；从 thumb 大拇指到 little finger 小指'), W('neck','脖子','','neck 脖子；necklace 项链（lace 带子）'),
-    W('knee','膝盖','','knee 膝盖；k 不发音，读 /niː/；kneel 跪下'), W('shoulder','肩膀','','shoulder 肩膀；should（应该）长得像但不同源') ]},
+    W('knee','膝盖','','knee 膝盖；k 不发音，读 /ni/；kneel 跪下'), W('shoulder','肩膀','','shoulder 肩膀；should（应该）长得像但不同源') ]},
   { id: 'toy', name: '玩具', emoji: '🧸', color: '#FF8FAB', pos: 'n', words: [
     W('ball','球','','ball 球家族：basketball、football、volleyball'), W('kite','风筝','🪁','kite 风筝；kite 也是『鸢』（一种鹰）'),
     W('doll','娃娃','','doll 娃娃；doll 原指玩偶'), W('toy','玩具','','toy 玩具；像个小玩意儿'), W('teddy bear','泰迪熊','🧸','teddy 来自美国总统罗斯福（Teddy）的昵称 + bear 熊'), W('yo-yo','悠悠球','🪀','yo-yo 是拟声：悠悠球甩上甩下『yo——yo』'),

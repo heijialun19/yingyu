@@ -3649,3 +3649,65 @@ LOT–CLOTH split 让 dog / long / soft / chocolate 系统性读 /ɔ/ —— 这
 
 仅文本改动，无新音频。版本链：BUILD .1 → .2 / app v170→171 / data v45→46 /
 phonics v9→10 / CACHE v229→v230 / AUDIO_CACHE v7 不动。
+
+---
+
+## 2026-11-16.3 · 自然拼读全量审计（26 字母 / 24 族 / 13 块）
+
+**背景**：用户问「现在所有的自然拼读都对了么」，并要求
+「人教教材和课本一致就行，不用非用美式读音，其他都用美式的」。
+本轮把口径边界定死，并把拼读数据全量过了一遍。
+
+### 口径边界（写进 `parents.html`，勿再混）
+
+| 范围 | 记法 | 例 |
+|---|---|---|
+| 「人教课本」页（pep.*） | 课本英式 DJ | /ɒ/ /iː/ /uː/ /ɑː/ /ɔː/，词尾不写 r |
+| 其余全部（字母岛/拼读/单词镇/学堂/Get Smart/读书馆） | 美式紧凑 | /ɑ/ /i/ /u/ /ɑr/ /ɔr/ /ɜr/，不写 ː |
+
+短 e 例外说明：美式词典多记 /ɛ/（bed /bɛd/），本站与人教课本统一写 /e/，同一个音。
+
+### 修掉的七类不一致
+
+1. **拼读页 50 处英式长音符**（`ee /iː/`、`oo /uː/`、`ar /ɑːr/`、`or /ɔːr/`、
+   `ir /ɜːr/`、`u_e /uː/ /juː/`，含 PH_BLOCKS、SIGHT_WORDS 的 ipa、PH_EXTRA 的 note、
+   PH_LEVELS 的 intro），而 `ipa.js` 1000 词 **0 处 ː** → 全部改美式。
+2. **`PH_LETTER_HINT.o` 仍写「嘴巴张圆张大」** —— /ɑ/ 不圆唇，与上一版字母卡
+   「张大嘴」直接矛盾；`u` 仍写「短促『啊』」，与 short o 撞字 → 改「不圆」「厄」。
+3. **`u_e` tip 说「u 念本名」** —— 对 cute/use（/ju/）成立，对 rule（/u/）不成立
+   → 改为「多数读 /ju/，r 后面读 /u/」。
+4. **三个族缺关键补充**：th 只教清音 /θ/（the/this 的 /ð/ 没提）、
+   oo 只教长音 /u/（book/look 的 /ʊ/ 没提）、short o 的 dog/long 受
+   LOT–CLOTH 影响读 /ɔ/ 没解释 → 三族加 `note`，并给 `phonics.html` 接入族级 note 渲染
+   （此前只渲染 PH_BLOCKS 的 note，族的 note 加了也不显示）。
+5. **14 个字母卡「读波 / 别读波」字面自相矛盾**：szh 用汉字近似、warn 又叫人别读那个汉字
+   → warn 统一改「别读成**完整的**『波』」，点明错在多出一个元音。
+6. **`PH_BLOCKS` 的 ai/ay tip 与 `PHONICS` 族 tip 不一致**（注释承诺逐字一致）→ 统一为
+   「ai / ay 都发 /eɪ/」。
+7. **其他页残留英式**：`getsmart-data.js` 9 处 modTip、`words-data.js` 的 knee /niː/、
+   `grammar-engine.js` 注释 /juː/ → 清成美式；
+   人教 `pep-mem.js` 的音标补充表注释还写着「美式、用 e 不用 ɛ」，与实际英式 DJ 表相反 → 改写。
+
+### 机器可证的部分（`_audit_phonics.py` 固化 A–G 七组）
+
+- 24 族 210 个例词：音标含目标音，**真错误 0**（dog /dɔɡ/、long /lɔŋ/ 是合法 LOT–CLOTH）
+- 48 处 `segs` 全部能拼回原词；例词拼写都含对应字母组合
+- 26 字母例词首音 = 字母音标注（G 需注意 `ɡ`/`g` 两个 Unicode 字形）
+- 10 个分级正好覆盖 24 族；各关句子都在 DECODE_SENTENCES
+- 35 个视觉词关卡与表一一对应；33 个拼写词都有现成切分
+- `PH_BLOCKS` 与 `PHONICS` 同名块 tip 逐字一致
+
+### 音频实测（诚实边界）
+
+拉线上 `audio/phonics/` 10 个音素（a/e/i/o/u/ee/ar/ir/sh/th）用 Praat Burg 测：
+a 前低（F2 2085）、o 后低（F2 1373）、i/e 前高、u 央低、ar/ir 带 r 色彩、sh 清擦音无周期——
+**9 个方向与标注一致**。唯一异常是 `ee`：Burg 给出 F2 1305（偏低），
+倒谱包络又给出 323/479 或 345/700/1044，两种算法互相矛盾；频谱图显示高频有谐波能量
+（像前高元音），但短促高音调录音的共振峰测量不可靠。
+**结论：不据此判定音频对错、也不改音频**。可确认的是：有人声谐波、单元音、时长 0.3–0.8s 合理。
+
+### 版本链
+
+app v171→172 / data v46→47 / phonics v10→11 / words-data v46→47 /
+getsmart-data v17→18 / grammar-engine v9→10 / pep-mem v5→6 / pep-points v26→27 /
+CACHE v230→v231 / BUILD 2026-11-16.2→.3。无新音频，AUDIO_CACHE v7 不动。

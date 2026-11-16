@@ -917,12 +917,14 @@ const PEP_POS = {
   phrase: ['in class', 'piggy bank', 'a lot of', 'make the bed', 'bus stop', 'office worker', 'factory worker', 'delivery worker', 'police officer', 'get together', 'living room', 'green bean', 'a box of', 'turn off', 'hand out', 'try on', 'green bean', 'look after', 'get up', 'go to school', 'go home', 'go to bed', 'hurry up', 'turn off', 'ice cream', 'take care of', 'run out', 'stay up', 'save up', 'count down', 'for example', 'outer space', 'space station', 'air conditioner', 'runny nose', 'had a cold', 'went camping', 'went fishing', 'took pictures', 'go cycling', 'ice-skate', 'look up', 'dining hall', 'feel like', 'on foot', 'in class', 'each other'],
 };
 
-/* ---- 音标补充表：只收 ipa.js 主表没有的词 ----
+/* ---- 音标补充表：**人教版课本口径（英式 DJ）**，与下面主表同一套 ----
    ★ 2026-11-14.13：原来这里同时收了 202 个主表已有的词，而且写法不一致
      （ɛ vs e、ə 尾 vs ər 尾、Wednesday 写成 wɛnzdeɪ）。pepIpaOf 先查这张表，
-     于是同一个词在「课本」页和「单词镇」显示两套音标。现已删除重复项，
-     一律回退主表；保留的 328 条是 PEP 课本特有、主表确实没有的词。
-     符号口径与主表一致：美式、用 e 不用 ɛ、多音节词必须标主重音 ˈ。 */
+     于是同一个词在「课本」页和「单词镇」显示两套音标。现已删除重复项。
+   ★ 2026-11-16.3：口径边界定死——**人教课本页跟课本走英式 DJ**
+     （/ɒ/、/iː/、/uː/、/ɑː/、/ɔː/、词尾不写 r），
+     其余页面（单词镇/学堂/拼读/读书馆）一律美式紧凑记法。
+     本文件属课本页，别再往这里加美式词条。 */
 /* ---- 音标表：**人教版课本口径（英式 DJ）**，894 条全覆盖 ----
    ★ 2026-11-14.2：口径从「英式 RP 近似」改成「按人教版课本」。做法不是拍脑袋换一套转写，
      而是拿 7 份公开的人教版 PEP 词表（以 2024 新版为主，含 2025/2026 新册）

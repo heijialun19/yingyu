@@ -328,7 +328,7 @@ function pepIpaOf(w) {
   /* ★ 2026-11-08 修两个 bug（用户截图 Thursday 没音标 / start 有字没斜杠）：
      ① 大小写不敏感——原来只用 toLowerCase() 查，PEP_IPA 和 ipa.js 的键是
         「Thursday」（大写 T），小写查两边都落空 → 音标整行没了。
-     ② 不许剥斜杠——原来 replace(/^\/+|\/+$/g,'') 把 /stɑrt/ 剥成 stɑrt，
+     ② 不许剥斜杠——原来 replace(/^\/+|\/+$/g,'') 把 /stɑːt/ 剥成 stɑːt，
         看起来像把单词又打一遍。PEP_IPA 的值本身不带斜杠，所以统一在这包一层：
         输出永远是 /…/ 一对斜杠，显示端直接印。 */
   const raw = String(w.w || w);

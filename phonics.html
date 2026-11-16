@@ -234,13 +234,13 @@
   </div>
 </main>
 
-<script src="js/words-data.js?v=46"></script>
+<script src="js/words-data.js?v=47"></script>
 <script src="svg/word-svg.js?v=7"></script>
-<script src="js/data.js?v=46"></script>
-<script src="js/app.js?v=171"></script>
+<script src="js/data.js?v=47"></script>
+<script src="js/app.js?v=172"></script>
 <script defer src="js/audio-list.js?v=14"></script>
 <script src="js/sentence.js?v=52"></script>
-<script src="js/phonics.js?v=10"></script>
+<script src="js/phonics.js?v=11"></script>
 <script>
 renderNav('phonics'); renderDecor();
 
@@ -631,7 +631,9 @@ function levelHTML(lv) {
       return {
         title: `🧩 ${esc(f.name)}`,
         small: f.words.length + ' 个词 · ' + esc(f.tip),
-        body: famInnerHTML(f)
+        // 2026-11-16.3：族级 note（th 的浊音 /ð/、oo 的短音 /ʊ/、short o 的 LOT–CLOTH）
+        body: (f.note ? `<div class="pb-note" style="margin:0 6px 10px">📌 ${esc(f.note)}</div>` : '')
+              + famInnerHTML(f)
       };
     });
     body = `<div class="ph-sec-label">🧩 拼一拼 <small>点开词族，一个一个练</small></div>` + foldsHTML(famItems);

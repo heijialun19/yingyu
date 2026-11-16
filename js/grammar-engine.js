@@ -541,7 +541,7 @@ const canTakeArticle = takesArticle;   // 语义别名，模板里读起来更�
      这必然错 —— 冠词看的是**读音首音素**，不是首字母：
        a hour（h 不发音，实际 /aʊə/ 元音开头）→ 应该 an hour
        a honest boy（同上）→ 应该 an honest
-       a useful book（u 发 /juː/，辅音开头）→ 现在给的是 an useful（错）
+       a useful book（u 发 /ju/，辅音开头）→ 现在给的是 an useful（错）
        a one-way street（o 发 /w/）→ 现在给的是 an one（错）
      例外表比规则可靠：小学词库会踩坑的就这几个，穷举掉最稳。 */
 const AN_WORDS = new Set(['hour','honest','honor','honour','heir','herb','honorary']);
