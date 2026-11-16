@@ -6,7 +6,7 @@
      （听过一次就永久零网络；重建音频时换一个缓存名，activate 里删掉旧的那个）
    - 外站请求：v8 起站内不再有任何第三方发音请求，这里也就不再为它留分支。
      历史遗留的 opaque 缓存会在 activate 时随旧缓存一起清掉。 */
-const CACHE = 'birdie-abc-v247';
+const CACHE = 'birdie-abc-v248';
 const AUDIO_CACHE = 'birdie-audio-v7';   // 每次重做音频换新名，旧的在 activate 里删掉
 /* 三个 async 图库都不进 BOOT（会拖慢激活），但都列进 CORE 后台补齐：
    emoji-core.js 给轻页面，emoji-svg.js 是 7 个重页面唯一图库（由 app.js

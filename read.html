@@ -102,7 +102,7 @@
 .bk-wchip{background:#F4F2FF;border:2px solid var(--grape);border-radius:999px;padding:5px 11px;
   font-size:.82rem;font-weight:700;cursor:pointer;color:#3C3489;font-family:inherit}
 .bk-wchip small{font-weight:600;color:var(--ink2);margin-left:4px}
-/* 桥梁书每页是一个自然段：按句长自动降字号、改左对齐，别把 20 词挤成一坨 */
+/* 长篇读物每页是一个自然段：按句长自动降字号、改左对齐，别把 20 词挤成一坨 */
 .bk-sent.long{font-size:clamp(1.08rem,3.6vw,1.55rem);line-height:1.72}
 .bk-sent.para{font-size:clamp(.98rem,3.1vw,1.34rem);line-height:1.85;text-align:left;
   max-width:36em;margin:14px auto 6px;letter-spacing:.01em}
@@ -154,7 +154,7 @@
     </div>
     <div id="bkShelf"></div>
     <div class="ph-map-note" style="margin:12px 4px 2px;font-size:.78rem;color:var(--ink2);line-height:1.7">
-      💡 v4 的四条标准：① 正文每个词都教过（不靠「拼得出来」糊弄）；② 每本一条完整小故事，
+      💡 读书馆的四条标准：① 正文每个词都教过（不靠「拼得出来」糊弄）；② 每本一条完整小故事，
       页数梯度来自讲得多细；③ 3 道题分别练「找得到 / 想得通 / 用得上」；④ 读后必须开口复述。
       每站第 12 本不引入新词，专门把这一站的词再读一遍。进度只存在自己的浏览器里。
     </div>
@@ -415,7 +415,7 @@ function paintPage() {
   const p = SEQ[PAGE];
   if (p && p.__pre) { paintPre(); return; }
   const stage = document.getElementById('bkStage');
-  /* 桥梁书整本统一用段落版式（不要同一本里字号忽大忽小）；
+  /* 长篇读物整本统一用段落版式（不要同一本里字号忽大忽小）；
      L9 里特别长的单页也降一级。低级别按句长轻微缩放即可。 */
   const para = CUR.lv === 'L10' || String(p.en).length > 110;
   const long = !para && String(p.en).length > 58;
