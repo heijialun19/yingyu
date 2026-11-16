@@ -238,7 +238,7 @@ const BOOKS = [
     ],
     quiz: [
       { q: '小猪的球怎么样？', opts: ['是红色的', '很小', '很大'], a: 1, kind: 'recall' },
-      { q: '小猪为什么跑回家找爸爸？', opts: ['他想吃东西了', '他要去公园', '他想爸爸了'], a: 2, kind: 'infer' },
+      { q: '小猪后来为什么开心起来了？', opts: ['他不想要球了', '球自己变大了', '爸爸有个大球'], a: 2, kind: 'infer' },
       { q: '心里难过的时候，你会怎么做？', opts: ['一个人躲起来不说', '找爸爸妈妈说一说', '把东西乱扔'], a: 1, kind: 'transfer' }
     ]
   },
@@ -1125,7 +1125,7 @@ const BOOKS = [
       { art: 'garden|ming,grandma|bug|·', en: 'Some bugs have wings and fly.', zh: '有些虫子长着翅膀，会飞。' },
       { art: 'garden|ming,grandma|bug|!', en: 'A snail moves very slowly.', zh: '蜗牛爬得很慢很慢。' },
       { art: 'garden|ming,grandma|bug|♥', en: 'Some bugs jump up and down.', zh: '有些虫子能跳上跳下。' },
-      { art: 'garden|ming,grandma|bug|★', en: 'Now you know how all the bugs move.', zh: '现在你知道虫子怎么走了。' }
+      { art: 'garden|ming,grandma|bug|★', en: 'Now you know how these bugs move.', zh: '现在你知道这些虫子怎么走了。' }
     ],
     quiz: [
       { q: '有些虫子用几条腿走路？', opts: ['六条', '四条', '八条'], a: 0, kind: 'recall' },
@@ -1532,7 +1532,7 @@ const BOOKS = [
       { art: 'library|dad,lili|run|!', en: 'We look up at the sky.', zh: '我们抬头看看天空。' },
       { art: 'library|dad,lili|run|♥', en: 'We run and play all day.', zh: '我们跑啊玩啊，玩了一整天。' },
       { art: 'library|dad,lili|run|★', en: 'I like to play this way.', zh: '我喜欢这样玩。' },
-      { art: 'library|dad,lili|run|…', en: 'We run together every day.', zh: '我们每天一起跑步。' }
+      { art: 'library|dad,lili|run|…', en: 'Come and run outside with me.', zh: '出来跟我一起跑吧。' }
     ],
     quiz: [
       { q: '书里的我们在什么地方跑？', opts: ['在雪地上', '在太阳底下', '在雨里'], a: 1, kind: 'recall' },
@@ -1939,7 +1939,7 @@ const BOOKS = [
     ],
     pages: [
       { art: 'kitchen|mom,ming|cake|·', en: 'Ming makes a cake for Grandma. It is big and very sweet.', zh: '明明给奶奶做了一个蛋糕。它又大又甜。' },
-      { art: 'kitchen|mom,ming|cake|♪', en: 'Grandma will come today. Ming wants to put the cake in a good place.', zh: '奶奶今天要来我们家。明明想把蛋糕放个好地方。' },
+      { art: 'kitchen|mom,ming|cake|♪', en: 'Grandma will come today. Ming wants to put the cake in a good place.', zh: '奶奶今天要来。明明想把蛋糕放个好地方。' },
       { art: 'kitchen|mom,ming|cake|👀', en: 'He looks at the table first. The table is small, and it is full of things.', zh: '他先看了看桌子。桌子又小，上面还放满了东西。' },
       { art: 'kitchen|mom,ming|cake|?', en: 'Then Ming looks at the white wall. It is clean and white by the door.', zh: '然后明明看了看那面白墙。墙就在门边，又干净又白。' },
       { art: 'kitchen|mom,ming|cake|·', en: 'Ming has a very good idea. He puts the cake on the wall.', zh: '明明想到了一个好主意。他把蛋糕放到了墙上。' },
@@ -2396,7 +2396,7 @@ const BOOKS = [
       { art: 'library|mom,ming|lake|!', en: 'We sit down under a tall green tree. It is nice here, as you can see.', zh: '我们坐在一棵高高的绿树下。这儿真不错，你瞧。' },
       { art: 'library|mom,ming|lake|♥', en: 'The white clouds go up so high. They sit up in the blue sky.', zh: '白云升得那么高。它们就待在蓝蓝的天上。' },
       { art: 'library|mom,ming|lake|★', en: 'When the wind comes, the leaves fall. The trees by the water are tall.', zh: '风一吹，树叶就落下来。水边的树长得高高的。' },
-      { art: 'library|mom,ming|lake|…', en: 'We have fun with a red ball. It is very small.', zh: '我们玩一个红球，玩得很开心。这球不大，个头小小的。' },
+      { art: 'library|mom,ming|lake|…', en: 'We have fun with a red ball. It is very small.', zh: '我们玩一个红球，玩得很开心。这球个头小小的。' },
       { art: 'library|mom,ming|lake|·', en: 'The first star comes out, and it is far. We look up and see a star.', zh: '天上出来第一颗星星，离我们很远。我们抬头，就看见了它。' },
       { art: 'library|mom,ming|lake|♥', en: 'Then it is time to say good night. The moon is big and the water is bright.', zh: '然后到了说晚安的时候。月亮大大的，水面亮亮的。' }
     ],
@@ -2508,7 +2508,7 @@ const BOOKS = [
       { art: 'beach|lili,grandpa|boat|?', en: 'Inside the boat there is a lot of room. The room is full of air.', zh: '船的里面有很大的空间。里面满满都是空气。' },
       { art: 'beach|lili,grandpa|boat|·', en: 'The air inside is very light. Light air helps the boat stay up.', zh: '里面的空气很轻很轻。轻空气帮着把船托起来。' },
       { art: 'beach|lili,grandpa|boat|!', en: 'The water holds the boat up. It pushes up on the boat all the time.', zh: '水把船托着。它一直在下面向上托船。' },
-      { art: 'beach|lili,grandpa|boat|♥', en: 'A stone has no room inside. It is not light, so it goes down.', zh: '石头里面没有空间。所以水托不住它。' },
+      { art: 'beach|lili,grandpa|boat|♥', en: 'A stone has no room inside. It is not light, so it goes down.', zh: '石头里面没有空间，也不够轻，所以会沉下去。' },
       { art: 'beach|lili,grandpa|boat|★', en: 'A big ship has much room inside too. That is why the ship stays up on the water.', zh: '大轮船里面也有很多空间。所以大船也能浮在水上。' },
       { art: 'beach|lili,grandpa|boat|…', en: 'Even a very big ship can go on the sea. The air inside keeps it light enough.', zh: '很大的轮船也能在海上开。里面的空气让它够轻。' },
       { art: 'beach|lili,grandpa|boat|·', en: 'Look at a boat on the water next time. Its shape and its room keep it up.', zh: '下次看到水上的船，仔细看看它。它的样子和里面的空间，让它浮着。' },
@@ -2894,7 +2894,7 @@ const BOOKS = [
       { art: 'library|dad,lili|wind|★', en: 'When the night is quiet, we see the moon. Then the wind will come back again soon.', zh: '夜里静下来的时候，我们看见月亮。风很快又会回来。' },
       { art: 'library|dad,lili|wind|…', en: 'The wind says hello to a little bee. The bee goes home to the tall tree.', zh: '风跟小蜜蜂打了个招呼。蜜蜂飞回高高的大树，那儿是它的家。' },
       { art: 'library|dad,lili|wind|·', en: 'The wind and the leaves like to play. They play together on a fine summer day.', zh: '风和叶子喜欢一起玩。整个夏天，它们都在一起玩。' },
-      { art: 'library|dad,lili|wind|♥', en: 'Ming and Lili go out to see. And they find a little yellow bee.', zh: '明明和丽丽跑出去看。他们看见了一只黄色的小蜜蜂。' },
+      { art: 'library|dad,lili|wind|♥', en: 'The wind is playing with the tree. Ming and Grandpa stop to see.', zh: '风和树一起玩。明明和爷爷停下来看。' },
       { art: 'library|dad,lili|wind|·', en: 'The wind is good to us and kind. We like the tree and we like the wind.', zh: '风很好，也很温柔。我们喜欢树，也喜欢风。' }
     ],
     quiz: [
@@ -3792,9 +3792,9 @@ const BOOKS = [
     think: '说说风吹过你身边时的样子。',
     pre: [
       { art: '🌿', en: 'wind', zh: '风' },
-      { art: '🌙', en: 'moon', zh: '月亮' }
+      { art: '🌿', en: 'night', zh: '夜晚' }
     ],
-    sight: [],
+    sight: ['eyes'],
     newWords: [
 
     ],
@@ -3805,14 +3805,14 @@ const BOOKS = [
       { art: 'library|mom,ming|wind|?', en: 'Ming and the wind like to run. They run together under the sun.', zh: '明明和风都爱跑。他们一起在太阳底下跑。' },
       { art: 'library|mom,ming|wind|·', en: 'Ming can see the stars at night. The moon gives just enough soft light.', zh: '夜里能看见星星。月亮洒下刚刚好的柔光。' },
       { art: 'library|mom,ming|wind|!', en: 'When night comes, the moon comes up soon. Ming looks up to find the big round moon.', zh: '夜一到，月亮很快就升起来。明明抬头找那轮又大又圆的月亮。' },
-      { art: 'library|mom,ming|wind|♥', en: 'A yellow leaf starts to fall. It falls down by the trees that stand so tall.', zh: '一片黄叶子开始往下掉。它飘啊飘，飘过高高的树。' },
+      { art: 'library|mom,ming|wind|♥', en: 'A yellow leaf starts to fall. It falls down by the trees that stand so tall.', zh: '一片黄叶子开始往下掉。它飘啊飘，飘到高高的树旁。' },
       { art: 'library|mom,ming|wind|★', en: 'The wind pushes a little ball. Across the park it looks so small.', zh: '风推着一颗小球。滚到公园那头，看着好小。' },
       { art: 'library|mom,ming|wind|…', en: 'The wind takes hold of the big old hat. It comes down just next to a black cat.', zh: '风一下子卷走了那顶大旧帽子。帽子落下来，正好掉在一只黑猫旁边。' },
       { art: 'library|mom,ming|wind|·', en: 'The wind goes through the tall green tree. Ming looks up there because he wants to see.', zh: '风穿过高高的绿树。明明抬头看，因为他想看个仔细。' },
       { art: 'library|mom,ming|wind|♥', en: 'Ming walks home with the wind across the park. It goes along beside him in the dark.', zh: '明明和风一起穿过公园回家。黑夜里，风还陪在他身边。' },
       { art: 'library|mom,ming|wind|·', en: 'The wind sleeps after a long, long day. Tomorrow it will come again to play.', zh: '风睡了，长长的一天过去了。明天它还会来玩。' },
-      { art: 'library|mom,ming|wind|…', en: 'When the day is done, the wind comes down. The whole town is quiet, without a sound.', zh: '白天过完，风落了下来。整个小镇安安静静，一点声音都没有。' },
-      { art: 'library|mom,ming|wind|?', en: 'Tomorrow the wind will come to play. Ming will run with it all day.', zh: '明天风还会来玩。明明要和它跑上一整天。' }
+      { art: 'library|mom,ming|wind|…', en: 'The wind goes down to the ground. The whole town is quiet, without a sound.', zh: '风落到地面上。整个小镇安安静静，一点声音都没有。' },
+      { art: 'library|mom,ming|wind|?', en: 'Ming closes his eyes and goes to sleep. The wind is quiet and the night is deep.', zh: '明明闭上眼睛，睡着了。风也安静下来，夜色正浓。' }
     ],
     quiz: [
       { q: '风把什么东西吹到了黑猫旁边？', opts: ['一片黄叶子', '明明的小球', '爷爷的大旧帽子'], a: 2, kind: 'recall' },
@@ -3846,7 +3846,7 @@ const BOOKS = [
       { art: 'kitchen|dad,lili|noodle|!', en: 'The cat comes to look at the noodle. She walks on it because it looks like a line.', zh: '猫咪咪过来看面条。它在面条上走来走去，因为面条像一条线。' },
       { art: 'kitchen|dad,lili|noodle|♥', en: 'Grandpa comes to the door and sees it. He laughs when he steps over the long noodle.', zh: '爷爷走到门口，看见了它。他笑着从长面条上跨过去。' },
       { art: 'kitchen|dad,lili|noodle|★', en: 'They try to put it in the pot. But the pot is too small when the noodle is this long.', zh: '他们想把面条放进锅里。可面条这么长，锅怎么装得下。' },
-      { art: 'kitchen|dad,lili|noodle|…', en: 'Ming goes back to the kitchen with his end. Grandma takes the other end to the door.', zh: '明明拿着自己这头走回厨房。奶奶拿着另一头走到门口。' },
+      { art: 'kitchen|dad,lili|noodle|…', en: 'Ming holds his end near the door. Grandma holds the other end in the kitchen.', zh: '明明拿着自己这一头，站在门口。奶奶拿着另一头，站在厨房。' },
       { art: 'kitchen|dad,lili|noodle|·', en: 'Now the noodle goes from room to room. Nothing else in the house is this long.', zh: '现在面条从一个房间拖到另一个房间。房子里再没有这么长的东西了。' },
       { art: 'kitchen|dad,lili|noodle|♥', en: 'They cannot cook it in the small pot. So they eat it where it is, end to end.', zh: '小锅煮不下它了。他们就站在原地吃，一人一头。' },
       { art: 'kitchen|dad,lili|noodle|·', en: 'Ming eats at the door on this end. Grandma eats in the kitchen at that end.', zh: '明明在门口吃这一头。奶奶在厨房吃那一头。' },
@@ -4412,7 +4412,7 @@ const BOOKS = [
       { art: 'library|lili,grandpa|sound|!', en: 'Every sound comes from something that moves. A quiet room is quiet because nothing moves.', zh: '每个声音背后，都有东西在动。房间安静，是因为什么都没动。' },
       { art: 'library|lili,grandpa|sound|♥', en: 'Sounds can be loud, and sounds can be quiet. A shout is loud, and a soft song is quiet.', zh: '声音有大有小。大声喊是响的，轻轻唱歌是轻的。' },
       { art: 'library|lili,grandpa|sound|★', en: 'Ming can hear the loud sounds across the street. He can hear the quiet ones when he is close.', zh: '响的声音，明明隔着街都听得到。轻的声音，要走近了才听得见。' },
-      { art: 'library|lili,grandpa|sound|…', en: 'Sound goes through the air to your head. You can hear a thing far away in this way.', zh: '声音穿过空气，传到你这里。远处的东西，你就是这样听见的。' },
+      { art: 'library|lili,grandpa|sound|…', en: 'Sound goes through the air to your ears. You can hear a thing far away in this way.', zh: '声音穿过空气，传到你耳朵里。远处的东西，你就是这样听见的。' },
       { art: 'library|lili,grandpa|sound|·', en: 'A small bird makes a small, high sound. A big drum makes a deep and loud sound.', zh: '小鸟的声音又小又高。大鼓的声音又低又响。' },
       { art: 'library|lili,grandpa|sound|♥', en: 'When night comes, the town gets quiet. You can hear sounds from far away then.', zh: '夜里，小镇安静下来。那时，远处的声音都听得见。' },
       { art: 'library|lili,grandpa|sound|·', en: 'Ming can hear the clock in his room at night. The little sound goes on all night.', zh: '夜里，明明听得见屋里的钟。钟一下一下，小声音响个不停。' },
