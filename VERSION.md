@@ -3937,3 +3937,64 @@ b6 全篇讲太阳好、b8 只说杯里有奶、b13 两只动物互相跑一下�
 **发版**：70 条新整句音频（L1-L3 正文改动），无新词；
 app v176→177 / books-data v16→17 / audio-list 不动 / CACHE v235→v236 /
 SENTENCE_AUDIO 6280→6350 / BUILD .7→.8。AUDIO_CACHE v7 不动。
+
+---
+
+## 2026-11-16.9 · 内容一致性修补（逐本核对 120 道题 + 全文机械扫描）
+
+用户问「还有错误么」。这次不查指标，而是把 120 道细节题逐本和正文放在一起核对，
+再扫全文的机械错误。查出 5 类真问题，全部修掉。
+
+### 一、跨书重复句 9 条
+
+同一句 5 词以上的话出现在两本不同的书里，是改写时顺手复用的：
+
+| 重复句 | 出现在 |
+|---|---|
+| It is taller than Ming, and it moves in the wind. | b79 / b100（两本都讲植物） |
+| Ming sits by the window. | b87 / b90 / b92 |
+| Ming is at the station. | b97 / b108 |
+| It was there all the time. | b63 / b80 |
+| Ming writes a note too. | b66 / b88 |
+| Ming looks at the name. | b63 / b66 |
+| I put the pot in the sun. | b23 / b52 |
+| I look for a long time. | b39 / b50 |
+| It is one short word. | b57 / b69 |
+
+每对只改一边，保留更贴合那本书的一句。现在 **0 条**。
+
+### 二、细节题与推理题近重复 2 本
+
+- **b47**：细节题问「为什么不冷了」，推理题也问「为什么玩雪球就不冷了」——同一件事。
+  细节题改为「在街上做了什么」。
+- **b94**：两题都在问月亮为什么看起来会变。细节题改为「能看到月亮的几面」。
+
+### 三、英文语法错
+
+b88 第 10 页 `she sees Ming name on it` 缺所有格 → `Ming's name`。
+
+### 四、繁体字混用
+
+b38 题目「举**起**來」用了繁体「來」→ 已改。全库复扫只此 1 处。
+
+### 五、冗余句
+
+- b76 `The shark swims fast. It is much bigger.` 与下一句 `It is bigger than the turtle`
+  重复 → 改为 `It comes up from below.`
+- b78 结尾 `They will come back. They come here every week.` 与末句
+  `They will come back next week.` 同义反复 → 改为提着篮子回家。
+
+### 新增三条红线
+
+1. **繁简混用**（正文 / 题目 / 支架）
+2. **跨书重复句**（≥5 词完全相同）
+3. **细节题与推理题近重复**（去停用词后共享 4 字以上；3 字会误报 9 本同主题题）
+
+### 这一轮核对的方法（可复用）
+
+把每本的「细节题 + 正确答案 + 全文」打出来逐本读，120 本分三批过。
+自动化只能查「有没有 / 唯一 / 不撞车」，**答案对不对只能人读**——
+这次就是这样抓出 b103「后来补上了」不在正文、b38 繁体、b47 撞车的。
+
+**发版**：13 条新整句音频，无新词；app v177→178 / books-data v17→18 /
+audio-list 不动 / CACHE v236→v237 / SENTENCE_AUDIO 6350→6363 / BUILD .8→.9。
