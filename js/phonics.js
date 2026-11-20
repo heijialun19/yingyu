@@ -125,7 +125,7 @@ const PHONICS = [
     segs: { ship:['sh','i','p'], fish:['f','i','sh'], sheep:['sh','ee','p'], shelf:['sh','e','l','f'],
             brush:['b','r','u','sh'], shop:['sh','o','p'] } },
   { name: 'ch · /tʃ/', id: 'ch', sounds: ['ch'], tip: 'ch 发 /tʃ/（「吃——」）', words: ['chair','peach','lunch','catch','teacher','chess'],
-    segs: { lunch:['l','u','n','ch'], catch:['c','a','t','ch'], chess:['ch','e','s','s'] } },
+    segs: { lunch:['l','u','n','ch'], catch:['c','a','t','ch'] } },
   { name: 'th · /θ/', id: 'th', sounds: ['th'], tip: 'th 发 /θ/（轻咬舌尖吐气，声带不振动）', words: ['teeth','thumb','third','thin','birthday'],
     note: 'th 有两种声音：这里的 /θ/ 轻咬舌尖、声带不振动（think、thin）；the、this 里是浊音 /ð/（舌尖位置一样，但声带振动），那些词先整体认读。',
     segs: { teeth:['t','ee','th'], thin:['th','i','n'], third:['th','ir','d'], birthday:['b','ir','th','d','ay'] } },
@@ -170,8 +170,8 @@ const PHONICS = [
   { name: 'r 连缀 · 两个音', id: 'blends-r', sounds: [], rule: '连缀没有「一块」的音——每个字母都出声，连着读',
     tip: 'cr / dr / fr / gr / tr：r 和前面的辅音连着读，两个音都出声',
     words: ['crab','drum','dress','frog','fresh','trip','truck','grass'],
-    segs: { crab:['c','r','a','b'], drum:['d','r','u','m'], dress:['d','r','e','s','s'], frog:['f','r','o','g'],
-            fresh:['f','r','e','sh'], trip:['t','r','i','p'], truck:['t','r','u','ck'], grass:['g','r','a','s','s'] } },
+    segs: { crab:['c','r','a','b'], drum:['d','r','u','m'], frog:['f','r','o','g'],
+            fresh:['f','r','e','sh'], trip:['t','r','i','p'], truck:['t','r','u','ck'],  } },
   { name: 's 连缀 · 两个音', id: 'blends-s', sounds: [], rule: '连缀没有「一块」的音——每个字母都出声，连着读',
     tip: 'st / sw / sk：s 和后面的辅音连着读，两个音都出声',
     words: ['stop','swim','swing','skirt','strong'],
@@ -181,9 +181,85 @@ const PHONICS = [
   { name: 'ir · /ɜr/', id: 'ir', sounds: ['ir'], tip: 'ir 发 /ɜr/（卷舌）',
     words: ['bird','girl','shirt','skirt','sir'],
     segs: { bird:['b','ir','d'], girl:['g','ir','l'], shirt:['sh','ir','t'], skirt:['s','k','ir','t'], sir:['s','ir'] } },
+  /* ---- 2026-11-20.2 增补：Phase 5 剩下的写法（17 个规则族） ----
+     ★ 这些块（ea / igh / ou / ow / oi / oy / er / ur / au / aw / ew / ue / y /
+       软音 c / 软音 g / 不发音字母）站内**没有母语者单音录音**，按发音铁律
+       绝不能用 TTS 顶替（espeak 会把 ea 念成字母名 E A）。
+     所以整族走「规则卡 + 关键词 + 整词」：sounds 留空、不给 segs（不切块），
+     每个词都有站内整词 mp3——孩子听的是真词，不是机器音。
+     关键词 key 用来听这个音在真实单词里的样子；将来补了块录音，
+     再给 sounds 加上、给 segs 切块即可，数据形状不变。 */
+  { name: 'ea · /i/', id: 'ea', sounds: [], key: 'eat',
+    rule: 'ea 多数读 /i/（长「衣」）—— eat、tea 里的音',
+    note: 'ea 也有例外：head /hed/、bread /bred/、bear /ber/ 读 /e/；这些遇到先整体认读。',
+    words: ['eat','tea','sea','read','peach','leaf','clean','teacher'] },
+  { name: 'igh · /aɪ/', id: 'igh', sounds: [], key: 'night',
+    rule: 'igh 读 /aɪ/（「爱」）—— gh 不发音，i 念本名',
+    note: 'eight /eɪt/、neighbour 里的 eigh 读 /eɪ/，不是 /aɪ/——别混。',
+    words: ['night','light','right','high','tight'] },
+  { name: 'ou · /aʊ/', id: 'ou', sounds: [], key: 'house',
+    rule: 'ou 常读 /aʊ/（「嗷」）—— house、mouse 里的音',
+    note: 'ou 花样最多：you /u/、four /ɔr/、young /ʌ/、soup /u/ —— 这几个先整体认读。',
+    words: ['house','mouse','mouth','out','cloud','round','loud','about'] },
+  { name: 'ow · /aʊ/', id: 'ow-au', sounds: [], key: 'cow',
+    rule: 'ow 有两个音：cow、now 里读 /aʊ/（「嗷」）',
+    note: '同一个 ow，在 snow、window 里却读 /oʊ/ —— 下一族就是它。',
+    words: ['cow','now','how','down','town','brown','flower'] },
+  { name: 'ow · /oʊ/', id: 'ow-oh', sounds: [], key: 'snow',
+    rule: 'ow 的第二个音：snow、window 里读 /oʊ/（「欧」）',
+    note: '判断口诀：词尾的 ow 多是 /oʊ/（snow、yellow），词中/短词多是 /aʊ/（down、how）。',
+    words: ['snow','window','yellow','show','slow','grow'] },
+  { name: 'oi / oy · /ɔɪ/', id: 'oi-oy', sounds: [], key: 'boy',
+    rule: 'oi 和 oy 都读 /ɔɪ/（「奥衣」连读）—— boy、toy 里的音',
+    note: 'oy 常在词尾（boy、toy），oi 常在词中（choice）；读音完全一样。',
+    words: ['boy','toy','choice'] },
+  { name: 'er · /ər/', id: 'er', sounds: [], key: 'teacher',
+    rule: '词尾的 er 读轻声 /ər/（「儿」化）—— teacher、water 结尾的音',
+    note: '重读的 her 才读 /ɜr/；teacher /ˈtitʃər/、water /ˈwɔtər/ 是轻声。',
+    words: ['teacher','water','sister','brother','father','mother','tiger','paper'] },
+  { name: 'ur · /ɜr/', id: 'ur', sounds: [], key: 'nurse',
+    rule: 'ur 读 /ɜr/（卷舌「厄」）—— 和 ir 同音',
+    note: 'nurse、turn、purple 的 ur 和 bird 的 ir 是同一个音，写法不同。',
+    words: ['nurse','purple','turtle','hurt','Thursday'] },
+  { name: 'au · /ɔ/', id: 'au', sounds: [], key: 'autumn',
+    rule: 'au 多读 /ɔ/（圆唇「奥」）—— autumn、August 里的音',
+    note: '美音 /ɔ/ 略带卷舌，英音更接近 /ɔː/；because /bɪˈkɔz/ 也是这个音。',
+    words: ['autumn','August','because','Australia'] },
+  { name: 'aw · /ɔ/', id: 'aw', sounds: [], key: 'draw',
+    rule: 'aw 也读 /ɔ/ —— draw、yawn 里的音，和 au 同音',
+    note: 'au 和 aw 读音一样，只是出现的位置不同（au 多在词中，aw 多在词尾）。',
+    words: ['draw','yawn','strawberry','law'] },
+  { name: 'ew · /ju/、/u/', id: 'ew', sounds: [], key: 'new',
+    rule: 'ew 在 n / f 后面读 /ju/（new、few），其他时候读 /u/',
+    note: 'news /njuz/ 是 /ju/；blew、grew 是 /u/（本站词库暂时没有这两个词）。',
+    words: ['new','few','news','review'] },
+  { name: 'ue · /u/', id: 'ue', sounds: [], key: 'blue',
+    rule: 'ue 读 /u/（长「乌」）—— blue、true 里的音',
+    note: 'continue /kənˈtɪnju/ 里的 ue 读 /ju/，是例外。',
+    words: ['blue','glue','true','statue','Tuesday'] },
+  { name: 'y 结尾 · /aɪ/', id: 'y-ai', sounds: [], key: 'my',
+    rule: '单音节词尾的 y 读 /aɪ/（「爱」）—— my、fly、sky',
+    note: 'y 在词尾当元音用，不是辅音 /j/。',
+    words: ['my','why','fly','sky','cry','try'] },
+  { name: 'y 结尾 · /i/', id: 'y-i', sounds: [], key: 'happy',
+    rule: '多音节词尾的 y 读 /i/（长「衣」）—— happy、baby',
+    note: '前面音节多、y 不重读时读 /i/；单音节才读 /aɪ/。',
+    words: ['happy','baby','candy','sunny','funny','family','story'] },
+  { name: '软音 c · /s/', id: 'soft-c', sounds: [], key: 'city',
+    rule: 'c 在 e / i / y 前读 /s/（city、ice），其他时候读 /k/（cat）',
+    note: 'ice、rice、face 的 c 都在词尾的 e 前，所以读 /s/，不读 /k/。',
+    words: ['city','ice','rice','face','dance','juice','pencil'] },
+  { name: '软音 g · /dʒ/', id: 'soft-g', sounds: [], key: 'giraffe',
+    rule: 'g 在 e / i / y 前常读 /dʒ/（giraffe、magic）',
+    note: '但 get、give、girl、gift 仍读 /g/——这几个要单独记。',
+    words: ['giraffe','orange','bridge','magic','fridge','change','gentle'] },
+  { name: '不发音字母', id: 'silent', sounds: [], key: 'knife',
+    rule: '有些字母在词里不出声：knife 的 k、write 的 w、comb 的 b、hour 的 h',
+    note: 'igh / light 里的 gh 也不发音（L8 学过）；eight 的 gh 同样不出声。',
+    words: ['knee','know','knife','write','wrong','climb','comb','hour'] },
 ];
 
-/* ---- 词族里不在 999 主词库的词（Get Smart Phonics 线的 25 个词） ----
+/* ---- 词族里不在 999 主词库的词（Get Smart Phonics 线的 26 个词） ----
    这些词人教/Get Smart 课本词表里有、主词库没有。中文释义前 19 个**照抄课本数据**
    （pep-data.js / getsmart-data.js，程序抽取不手翻），vest/king/gum/hut/thumb/gate
    六个课本词表也没有，按小学词义补：vest 背心 / king 国王 / gum 口香糖 /
@@ -204,6 +280,7 @@ const PH_EXTRA = {
   room: { zh: '房间', e: '\u{1F6CB}\uFE0F' }, afternoon: { zh: '下午', e: '\u{1F307}' },
   tail: { zh: '尾巴', e: '\u{1F415}' }, sport: { zh: '体育运动', e: '\u26BD' },
   morning: { zh: '早上', e: '\u{1F305}' },
+  night: { zh: '夜晚', e: '\u{1F319}' },
 };
 
 /* ================= 发音助手（拼读课 / 首页专栏共用） ================= */
@@ -318,16 +395,55 @@ const SIGHT_WORDS = [
 /* 可解码短文（全部自编句）：只用「已教规则可拼的词 + 上面的视觉词」。
    tags 标注用到的规则，便于家长知道这句在练什么。 */
 const DECODE_SENTENCES = [
-  { s: 'The fish can swim.',        zh: '这条鱼会游泳。',    tags: '视觉词 the · 短元音 a、i · sh · 连缀 sw' },
-  { s: 'A frog can jump.',          zh: '一只青蛙会跳。',    tags: '视觉词 a · 连缀 fr · 短元音 o、u' },
-  { s: 'The bird can sing.',        zh: '这只鸟会唱歌。',    tags: '视觉词 the · 卷舌音 ir · ng · 短元音 a、i' },
-  { s: 'My dog can run.',           zh: '我的狗会跑。',      tags: '视觉词 my · 短元音 a、o、u' },
-  { s: 'We play in the rain.',      zh: '我们在雨里玩。',    tags: '视觉词 we/the · 连缀 pl · ai · 短元音 i' },
-  { s: 'The sun is hot.',           zh: '太阳很热。',        tags: '视觉词 the/is · 短元音 u、o' },
-  { s: 'See the green tree.',       zh: '看那棵绿树。',      tags: '视觉词 the · ee · 连缀 gr' },
-  { s: 'He can see the moon.',      zh: '他能看见月亮。',    tags: '视觉词 he/the · oo · 短元音 a' },
-  { s: 'She has a red hen.',        zh: '她有一只红母鸡。',  tags: '视觉词 she/has/a · sh · 短元音 e' },
-  { s: 'The cake is on the plate.', zh: '蛋糕在盘子上。',    tags: '视觉词 the/is · 魔法 e · 短元音 o' },
+  /* ---- L2 短元音 ---- */
+  { s: 'My dog can run.',            zh: '我的狗会跑。',        tags: '视觉词 my · 短元音 o、u' },
+  { s: 'The sun is hot.',            zh: '太阳很热。',          tags: '视觉词 the/is · 短元音 u、o' },
+  { s: 'The cat is big.',            zh: '这只猫很大。',        tags: '视觉词 the/is · 短元音 a、i' },
+  { s: 'The fox is in the box.',     zh: '狐狸在盒子里。',      tags: '视觉词 the/is · 短元音 o · 连缀 x' },
+  { s: 'A cat can run.',             zh: '猫会跑。',            tags: '视觉词 a · 短元音 a、u' },
+  /* ---- L3 双辅音 ---- */
+  { s: 'She has a red hen.',         zh: '她有一只红母鸡。',    tags: '视觉词 she/has/a · sh · 短元音 e' },
+  { s: 'He can see the ship.',       zh: '他能看见那艘船。',    tags: '视觉词 he/the · sh · 短元音 i' },
+  { s: 'This is my fish.',           zh: '这是我的鱼。',        tags: '视觉词 this/is/my · sh · 短元音 i' },
+  /* ---- L4 连缀 ---- */
+  { s: 'The fish can swim.',         zh: '这条鱼会游泳。',      tags: '视觉词 the · sh · 连缀 sw · 短元音 i' },
+  { s: 'A frog can jump.',           zh: '一只青蛙会跳。',      tags: '视觉词 a · 连缀 fr · 短元音 o、u' },
+  { s: 'The crab is in the sand.',   zh: '螃蟹在沙子里。',      tags: '视觉词 the/is · 连缀 cr · 短元音 a' },
+  { s: 'I can jump and swim.',       zh: '我会跳，也会游泳。',  tags: '连缀 jmp/sw · 短元音 u' },
+  /* ---- L5 元音组合 ---- */
+  { s: 'See the green tree.',        zh: '看那棵绿树。',        tags: '视觉词 the · ee · 连缀 gr' },
+  { s: 'He can see the moon.',       zh: '他能看见月亮。',      tags: '视觉词 he/the · oo · 短元音 a' },
+  { s: 'We play in the rain.',       zh: '我们在雨里玩。',      tags: '视觉词 we/the · ay、ai · 连缀 pl' },
+  { s: 'The goat is on the road.',   zh: '山羊在路上。',        tags: '视觉词 the/is · oa · 短元音 o' },
+  { s: 'I can see the boat.',        zh: '我能看见那条船。',    tags: 'oa · 视觉词 the' },
+  { s: 'The bee is in the tree.',    zh: '蜜蜂在树上。',        tags: 'ee · 视觉词 the/is' },
+  /* ---- L6 魔法 e ---- */
+  { s: 'The cake is on the plate.',  zh: '蛋糕在盘子上。',      tags: '视觉词 the/is · 魔法 e · 连缀 pl · 短元音 o' },
+  { s: 'The rose is red.',           zh: '玫瑰是红色的。',      tags: '魔法 e o_e · 短元音 e' },
+  { s: 'I can ride a bike.',         zh: '我会骑自行车。',      tags: '魔法 e i_e · 视觉词 a' },
+  { s: 'The stone is big.',          zh: '这块石头很大。',      tags: '魔法 e o_e · 连缀 st · 短元音 i' },
+  /* ---- L7 卷舌音 ---- */
+  { s: 'The bird can sing.',         zh: '这只鸟会唱歌。',      tags: '视觉词 the · ir · ng · 短元音 a、i' },
+  { s: 'The horse can run.',         zh: '马会跑。',            tags: 'or · 短元音 a、u' },
+  { s: 'My shirt is red.',           zh: '我的衬衫是红色的。',  tags: '视觉词 my/is · ir · 短元音 e' },
+  { s: 'I can see the star.',        zh: '我能看见那颗星星。',  tags: 'ar · 视觉词 the' },
+  /* ---- L8 元音组合 II ---- */
+  { s: 'I can see the sea.',         zh: '我能看见大海。',      tags: 'ea · 视觉词 the' },
+  { s: 'The light is on.',           zh: '灯亮着。',            tags: 'igh · 视觉词 the/is · 短元音 o' },
+  { s: 'The mouse is in the house.', zh: '老鼠在房子里。',      tags: 'ou · 视觉词 the/is' },
+  { s: 'The boy has a toy.',         zh: '男孩有一个玩具。',    tags: 'oy · 视觉词 the/has/a' },
+  { s: 'The cow is brown.',          zh: '奶牛是棕色的。',      tags: 'ow /aʊ/ · 视觉词 the/is' },
+  /* ---- L9 更多元音 ---- */
+  { s: 'My sister is a teacher.',    zh: '我的姐姐是老师。',    tags: 'er · ea · 视觉词 my/is/a' },
+  { s: 'The turtle is slow.',        zh: '乌龟很慢。',          tags: 'ur · ow /oʊ/ · 视觉词 the/is' },
+  { s: 'I can draw a cat.',          zh: '我会画猫。',          tags: 'aw · 视觉词 a' },
+  { s: 'The sky is blue.',           zh: '天空是蓝色的。',      tags: 'y /aɪ/ · ue · 视觉词 the/is' },
+  { s: 'I have a new book.',         zh: '我有一本新书。',      tags: 'ew · oo · 视觉词 have/a' },
+  /* ---- L11 规则例外 ---- */
+  { s: 'The city is big.',           zh: '城市很大。',          tags: '软音 c · 短元音 i' },
+  { s: 'I know the girl.',           zh: '我认识那个女孩。',    tags: '不发音 k · ir' },
+  { s: 'I can climb.',               zh: '我会爬。',            tags: '不发音 b · 短元音 i' },
+  { s: 'The giraffe is tall.',       zh: '长颈鹿很高。',        tags: '软音 g · 短元音 a' },
 ];
 
 /* 听音能写（拼写编码）词表：3-4 个字母、站内有音频、字母级可拼。
@@ -341,6 +457,74 @@ const SPELL_WORDS = ['cat','hat','man','pen','hen','ten','pig','big','six','dog'
    · 可解码句按「用到的最难规则」挂到对应关卡，视觉词随句早批引入、第 8 关全表认读；
    · 仅新增数据，PHONICS / SIGHT_WORDS / DECODE_SENTENCES 原形状不动
      （games.html / index.html 共用，向后兼容）。 */
+
+/* ================= 同音异拼（Phase 5b：一个音、几种写法） =================
+   2026-11-20.3：SSP 里最容易被漏掉的一环 —— 孩子学会了 ai，还要知道 /eɪ/
+   还能写成 ay、a_e；只教「一个音一种写法」，遇到真实单词就卡住（rain 会读，
+   play 就懵）。这一关把「同一个音的不同写法」摆在一起对比，
+   再用「听一个词、选它用的是哪种写法」来检验。
+   ★ 每组只放**已经学过**的写法；词全部来自 999 词库（有图有声）。 */
+const SAME_SOUNDS = [
+  { sound: '/eɪ/', zh: '「诶」', groups: [
+    { sp: 'ai', words: ['rain', 'train', 'paint'] },
+    { sp: 'ay', words: ['play', 'day', 'away'] },
+    { sp: 'a_e', words: ['cake', 'name', 'game'] } ] },
+  { sound: '/i/', zh: '「衣」', groups: [
+    { sp: 'ee', words: ['see', 'tree', 'green'] },
+    { sp: 'ea', words: ['eat', 'tea', 'sea'] },
+    { sp: 'y', words: ['happy', 'baby', 'candy'] },
+    { sp: 'e', words: ['he', 'she', 'we'] } ] },
+  { sound: '/aɪ/', zh: '「爱」', groups: [
+    { sp: 'i_e', words: ['kite', 'bike', 'five'] },
+    { sp: 'igh', words: ['night', 'light', 'high'] },
+    { sp: 'y', words: ['my', 'fly', 'sky'] } ] },
+  { sound: '/oʊ/', zh: '「欧」', groups: [
+    { sp: 'oa', words: ['boat', 'coat', 'goat'] },
+    { sp: 'o_e', words: ['nose', 'home', 'rose'] },
+    { sp: 'ow', words: ['snow', 'window', 'yellow'] } ] },
+  { sound: '/u/', zh: '「乌」', groups: [
+    { sp: 'oo', words: ['moon', 'food', 'zoo'] },
+    { sp: 'ue', words: ['blue', 'true'] },
+    { sp: 'ew', words: ['new', 'few'] },
+    { sp: 'u_e', words: ['rule', 'cute'] } ] },
+  { sound: '/ɜr/', zh: '卷舌「厄」', groups: [
+    { sp: 'ir', words: ['bird', 'girl', 'shirt'] },
+    { sp: 'er', words: ['her', 'person'] },
+    { sp: 'ur', words: ['nurse', 'purple'] } ] },
+  { sound: '/aʊ/', zh: '「嗷」', groups: [
+    { sp: 'ou', words: ['house', 'mouse'] },
+    { sp: 'ow', words: ['cow', 'now'] } ] },
+  { sound: '/ɔɪ/', zh: '「奥衣」', groups: [
+    { sp: 'oi', words: ['choice'] },
+    { sp: 'oy', words: ['boy', 'toy'] } ] },
+];
+
+/* 每块「什么时候教」——关卡分档用。
+   单字母在 L1；双辅音 L3；元音组合 L5；卷舌 L7；其余（无录音的规则块）L8。 */
+const BLOCK_STAGE = {
+  sh: 'L3', ch: 'L3', th: 'L3', ck: 'L3', ng: 'L3',
+  ee: 'L5', oo: 'L5', ai: 'L5', ay: 'L5', oa: 'L5',
+  ar: 'L7', or: 'L7', ir: 'L7',
+};
+function blockStage(b) {
+  const k = String(b || '').toLowerCase();
+  if (!k) return 'L1';
+  if (BLOCK_STAGE[k]) return BLOCK_STAGE[k];
+  return k.length === 1 ? 'L1' : 'L8';
+}
+/* 这个词在某一关能不能逐块拼：块都得是这一关或更早教的 */
+function wordInStage(word, segs, lvId) {
+  if (!segs || !segs.length) return true;          // 整体认读的词不涉及块
+  const rank = id => parseInt(String(id).replace(/[^0-9]/g, ''), 10) || 0;
+  return segs.every(b => rank(blockStage(b)) <= rank(lvId));
+}
+/* 这个词里最先「超纲」的那一块（给页面提示用）*/
+function firstLaterBlock(segs, lvId) {
+  if (!segs) return null;
+  const rank = id => parseInt(String(id).replace(/[^0-9]/g, ''), 10) || 0;
+  for (const b of segs) if (rank(blockStage(b)) > rank(lvId)) return { b: b, lv: blockStage(b) };
+  return null;
+}
 
 const PH_L1_BATCHES = [
   { title: '第 1 批 · 起步六音', hint: 's a t i p n——学完这 6 个，sat / pin / tap 就能拼！', letters: ['s', 'a', 't', 'i', 'p', 'n'] },
@@ -357,46 +541,71 @@ const PH_LEVELS = [
   { id: 'L2', icon: '🧱', name: '短元音拼读', kind: 'words',
     goal: '元音发短音，c-a-t 一拼就会',
     intro: '元音发短音，一个一个音拼起来就是词：c + a + t → cat。点<b>蓝块</b>听单个音，点「🔊 拼一拼」先逐音、后整词——整词发音是唯一的标准音。',
-    goals: ['听出 5 个短元音', '拼出 cat / hen / pig 这样的词', '读 2 句可解码小句'],
+    goals: ['听出 5 个短元音', '拼出 cat / hen / pig 这样的词', '读 4 句可解码小句'],
     fams: ['short-a', 'short-e', 'short-i', 'short-o', 'short-u'],
     sight: ['the', 'a', 'is', 'my'],
-    sents: ['My dog can run.', 'The sun is hot.'] },
+    sents: ['My dog can run.', 'The sun is hot.', 'The cat is big.', 'The fox is in the box.', 'A cat can run.'] },
   { id: 'L3', icon: '🧩', name: '双辅音', kind: 'words',
     goal: '两个字母一个音：sh 不是 s+h，就是一声「嘘」',
     intro: 'sh / ch / th / ck / ng 都是「两个字母，<b>一个音</b>」，把它们当<b>一整块</b>拼进词里。（连缀正好相反：两个字母<b>两个音</b>，都出声——下一关见。）',
-    goals: ['把 sh/ch/th/ck/ng 当一整块认', '拼 fish / chick 这类词', '读 1 句可解码小句'],
+    goals: ['把 sh/ch/th/ck/ng 当一整块认', '拼 fish / chick 这类词', '读 3 句可解码小句'],
     fams: ['sh', 'ch', 'th', 'ck', 'ng'],
     sight: ['he', 'she', 'has'],
-    sents: ['She has a red hen.'] },
+    sents: ['She has a red hen.', 'He can see the ship.', 'This is my fish.'] },
   { id: 'L4', icon: '🔗', name: '辅音连缀', kind: 'words',
     goal: '两个辅音各自出声、连着读',
     intro: 'fl / pl / bl、cr / dr / fr、st / sw / sk……和双辅音<b>正好相反</b>：两个辅音<b>各自出声</b>、连着读（f-l、c-r、s-t），中间不停。逐块听一遍再连读。',
-    goals: ['分清「一个音」和「两个音」', '连读 fl / pl / cr / st', '读 2 句可解码小句'],
+    goals: ['分清「一个音」和「两个音」', '连读 fl / pl / cr / st', '读 4 句可解码小句'],
     fams: ['blends-l', 'blends-r', 'blends-s'],
     sight: [],
-    sents: ['The fish can swim.', 'A frog can jump.'] },
+    sents: ['The fish can swim.', 'A frog can jump.', 'The crab is in the sand.', 'I can jump and swim.'] },
   { id: 'L5', icon: '🌈', name: '元音组合', kind: 'words',
     goal: '两个元音手拉手，发一个长音',
     intro: '两个元音字母手拉手发一个长音：ee 长「衣」、oo 长「乌」、ai / ay 都是 /eɪ/、oa 是 o 的本名。',
-    goals: ['认出 ee/oo/ai-ay/oa 的长音', '拼 rain / moon / boat', '读 3 句可解码小句'],
+    goals: ['认出 ee/oo/ai-ay/oa 的长音', '拼 rain / moon / boat', '读 6 句可解码小句'],
     fams: ['ee', 'oo', 'ai-ay', 'oa'],
     sight: ['we'],
-    sents: ['See the green tree.', 'He can see the moon.', 'We play in the rain.'] },
+    sents: ['See the green tree.', 'He can see the moon.', 'We play in the rain.', 'The goat is on the road.', 'I can see the boat.', 'The bee is in the tree.'] },
   { id: 'L6', icon: '🪄', name: '魔法 e', kind: 'words',
     goal: '结尾的 e 不出声，让元音念本名',
     intro: '结尾的 e <b>不出声</b>，它像个小魔法师，让前面的元音念自己的<b>本名</b>：a_e 读 /eɪ/、i_e 读 /aɪ/、o_e 读 /oʊ/、u_e 读 /u/（或 /ju/）。这些词先<b>整体认读</b>（硬拆成 c-a-k-e 会读错）。',
-    goals: ['知道「哑巴 e」的魔法', '整体认读 cake / kite / nose', '读 1 句可解码小句'],
+    goals: ['知道「哑巴 e」的魔法', '整体认读 cake / kite / nose', '读 4 句可解码小句'],
     fams: ['a_e', 'i_e', 'o_e', 'u_e'],
     sight: [],
-    sents: ['The cake is on the plate.'] },
+    sents: ['The cake is on the plate.', 'The rose is red.', 'I can ride a bike.', 'The stone is big.'] },
   { id: 'L7', icon: '🐻', name: '卷舌音', kind: 'words',
     goal: 'r 跟着元音一起卷舌头',
     intro: 'r 跟着元音一起卷舌头：ar /ɑr/、or /ɔr/，还有 ir /ɜr/（bird、girl、third）。',
-    goals: ['听出 ar/or/ir 的卷舌音', '拼 car / horse / bird', '读 1 句可解码小句'],
+    goals: ['听出 ar/or/ir 的卷舌音', '拼 car / horse / bird', '读 4 句可解码小句'],
     fams: ['ar', 'or', 'ir'],
     sight: [],
-    sents: ['The bird can sing.'] },
-  { id: 'L8', icon: '⭐', name: '视觉词', kind: 'sight',
+    sents: ['The bird can sing.', 'The horse can run.', 'My shirt is red.', 'I can see the star.'] },
+  { id: 'L8', icon: '🌊', name: '元音组合 II', kind: 'words',
+    goal: 'ea / igh / ou / ow / oi / oy——多出来的长音写法',
+    intro: '元音组合不止 ee / oo / ai / oa。这一关补上 <b>ea、igh、ou、ow、oi、oy</b>：eat 的 ea、night 的 igh、house 的 ou、cow 和 snow 的两个 ow、boy 的 oy。它们<b>没有单块录音</b>，用<b>关键词</b>感受这个音，再点整词听。',
+    goals: ['认 ea / igh / ou / ow / oi / oy', '知道 ow 有两个音', '读 5 句可解码小句'],
+    fams: ['ea', 'igh', 'ou', 'ow-au', 'ow-oh', 'oi-oy'],
+    sight: [],
+    sents: ['I can see the sea.', 'The light is on.', 'The mouse is in the house.', 'The boy has a toy.', 'The cow is brown.'] },
+  { id: 'L9', icon: '🐢', name: '更多元音', kind: 'words',
+    goal: 'er / ur / au / aw / ew / ue / y 结尾',
+    intro: '再补一批：<b>er</b>（teacher）、<b>ur</b>（nurse）、<b>au</b>（autumn）、<b>aw</b>（draw）、<b>ew</b>（new）、<b>ue</b>（blue），还有词尾的 <b>y</b>——my 读 /aɪ/、happy 读 /i/。同样用关键词听音、整词收口。',
+    goals: ['分出 er/ur 都是 /ɜr/', '知道 au/aw 同音', 'y 结尾两种读法'],
+    fams: ['er', 'ur', 'au', 'aw', 'ew', 'ue', 'y-ai', 'y-i'],
+    sight: [],
+    sents: ['My sister is a teacher.', 'The turtle is slow.', 'I can draw a cat.', 'The sky is blue.', 'I have a new book.'] },
+  { id: 'L10', icon: '🎭', name: '同音异拼', kind: 'sameSound',
+    goal: '同一个音，好几种写法——见到哪个都能读',
+    intro: '同一个音常有好几种写法：/eɪ/ 能写成 ai、ay、a_e。只学一种，遇到 play 就会卡。这一关把<b>同一个音的不同写法</b>摆在一起，<b>听一个词，判断它用的是哪种写法</b>。',
+    goals: ['同一个音能认出 2~4 种写法', '看到 ai/ay/a_e 都读 /eɪ/', '听词判断它用哪种写法'] },
+  { id: 'L11', icon: '⚡', name: '规则例外', kind: 'words',
+    goal: 'c/g 的软音、不发音的字母',
+    intro: '规则也有例外：<b>c</b> 在 e/i/y 前读 /s/（city、ice），<b>g</b> 在 e/i/y 前常读 /dʒ/（giraffe、magic）；<b>knife 的 k、write 的 w、comb 的 b、hour 的 h</b> 都不出声。这些词整体认读，记住样子最省事。',
+    goals: ['city 的 c 读 /s/ 不读 /k/', '知道 get / give 仍是 /g/', '认出不发音的字母'],
+    fams: ['soft-c', 'soft-g', 'silent'],
+    sight: [],
+    sents: ['The city is big.', 'I know the girl.', 'I can climb.', 'The giraffe is tall.'] },
+  { id: 'L12', icon: '⭐', name: '视觉词', kind: 'sight',
     goal: '35 个高频词，先整体认住',
     intro: '这些词太常用了，而且<b>不按规则出牌</b>（或用到还没学的规则）——先整个认住、听音就懂，学到对应规则再回头「认领」它们。点词听音，📌 提示讲「为什么不按字母拼」。',
     goals: ['整体认读 35 个视觉词', '知道「为什么不按字母拼」', '听音就能认词'],
@@ -405,7 +614,7 @@ const PH_LEVELS = [
       { title: '第 2 批 · 很常用', words: ['said', 'one', 'two', 'was', 'has', 'were', 'come', 'some', 'have', 'do', 'does', 'of', 'to'] },
       { title: '第 3 批 · 也要会', words: ['them', 'there', 'what', 'where', 'who', 'why', 'out', 'now', 'all', 'her'] },
     ] },
-  { id: 'L9', icon: '✍️', name: '听音能写', kind: 'spell',
+  { id: 'L13', icon: '✍️', name: '听音能写', kind: 'spell',
     goal: '反过来练：听声音，把字母按顺序点出来',
     intro: '反过来练：<b>听声音，把字母按顺序点出来</b>。词都来自前面的词族——会拼读了，拼写也会。点错了点字母格可以退回去。',
     goals: ['听音拆出字母', '按顺序拼出 3-4 字母词', '拿下拼写小达人'] },
@@ -425,4 +634,9 @@ window.SPELL_WORDS = SPELL_WORDS;
 window.PH_L1_BATCHES = PH_L1_BATCHES;
 window.PH_LEVELS = PH_LEVELS;
 window.PH_LETTER_HINT = PH_LETTER_HINT;
+window.SAME_SOUNDS = SAME_SOUNDS;
+window.BLOCK_STAGE = BLOCK_STAGE;
+window.blockStage = blockStage;
+window.wordInStage = wordInStage;
+window.firstLaterBlock = firstLaterBlock;
 
