@@ -4499,3 +4499,54 @@ BUILD .18→.19 / CACHE v246→v247。app v187 / books-data v27 / audio-list v19
 
 纯文本（read.html + sw.js + version.json + app.js + VERSION.md）。
 BUILD .19→.20 / CACHE v247→v248。
+
+---
+
+## 2026-11-20.1 · 三处收尾：软 404 / 键盘可达 / 拼读题头
+
+用户问「网站还有没有什么问题」，全站再过一遍（12 页真浏览器 + 仓库源码核对），
+确认无报错、无 404、无横向溢出后，修了三处此前 48 项检查覆盖不到的。
+
+### 一、软 404（SW 把 404 当成断网，拿首页顶替）
+
+`sw.js` 的导航分支只有 `res.ok` 才返回响应，其余（含 404）一路掉进「断网兜底」，
+最后 `caches.match('./index.html')`。结果是回访用户打开不存在的网址得到
+**200 + 首页**，站里精心做的 `404.html` 永远看不到；首访用户（SW 还没接管）却正常，
+行为还前后不一致。
+
+修：拿到响应就原样返回（`if (res) return res;`），只有 `netP === null`（真断网）
+才回退缓存 / 首页。
+
+### 二、主要入口卡片键盘 / 读屏点不到（a11y）
+
+单词卡 `.word-card`、游戏岛 `.island`、关卡卡 `.level-card`、册卡 `.gs-level`、
+字母词卡 `.word-mini`、书卡 `.bk-card` 都是纯 `<div onclick>`：Tab 走不到、读屏不念成按钮。
+而首页主卡 `#mainCard` 早就补了 `role` + `tabindex`，其余页面没跟上。
+
+修：`app.js` 末尾加一段统一升级（`role="button"` + `tabindex="0"` + Enter/空格触发 `click()`），
+用 MutationObserver 盯 childList，动态渲染出来的卡片也一并生效；
+视觉焦点直接复用 css 里已有的全局 `:focus-visible` 4px 描边，不新增样式。
+**不自动写 aria-label**：卡片内部本来就有词、中文、音标文本，读屏按内容念
+比一律念「点一下，读一遍」有用。
+
+### 三、拼读游戏题头误导
+
+「📢 听字母音（A 读 /æ/）」是**这一类**的说明（选项可能是 Ss / Ff / Ii / Hh），
+但孩子和家长容易当成题目提示去找 A。
+→ 改成「（例如 A 读 /æ/）—— 这一轮都考这一类，答案不一定是 A 哦」。
+
+### 一个假阳性（记录一下）
+
+巡检时在浏览器里读到 `manifest.json` 是「1000词」，与站内 999 条不一致。
+复核**线上原文**（与 GitHub HEAD 逐字节 sha256 对比）后确认 manifest 早就是 999 条词条，
+读到的旧文案来自 **SW 缓存里的旧 manifest**（manifest.json 没有 `?v=`，
+只有 CACHE 换名时才会更新）。不是网站 bug，未改。
+
+### 发版
+
+纯文本（app.js + sw.js + 11 个 HTML + version.json + VERSION.md）。
+BUILD 2026-11-16.20 → 2026-11-20.1 / CACHE v248 → v249 / app v187 → v188。
+
+本地起了一个 404 语义与 GitHub Pages 一致的测试服务器（未知路径回 404.html + 404 状态），
+真浏览器验证：404 透传后显示「页面飞走了」、正常导航与离线缓存照旧、
+11 页零报错、word-card 的 role / tabindex / Enter / Space 全部生效。

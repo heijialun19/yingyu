@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-16.20';
+const BUILD = '2026-11-20.1';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -3668,4 +3668,47 @@ function prewarmBatch(list, gap) {
   const hideOnce = () => { clearTimeout(slowTimer); hide(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hideOnce, { once: true });
   else hideOnce();
+})();
+
+/* ================= 键盘可达性：把「div 按钮」升级成真按钮 =================
+   ★ 2026-11-20：单词卡 / 游戏岛 / 关卡卡 / 字母词卡 / 书卡原来是纯 <div onclick>，
+     Tab 走不到、读屏也不念成按钮 —— 首页主卡（mainCard）早就补了 role+tabindex，
+     这些主要内容入口却没跟上。这里统一补，动态渲染出来的也一并管。
+   · 视觉焦点不用另加：css 里已有全局 :focus-visible 4px 描边
+   · 只补三样：role="button" / tabindex="0" / Enter·空格 触发 click()
+   · 已有 role / tabindex 的元素不覆盖（页面自己写了更好的就听页面的）；也不写 aria-label，
+   · MutationObserver 只盯 childList，不改属性，不会自激；一轮变更只跑一次 upgrade */
+(function () {
+  const SELECTOR = '.word-card, .island, .level-card, .gs-level, .word-mini, .bk-card, .gs-catch';
+  const FLAG = '__kbBtn';
+  const upgrade = (root) => {
+    if (!root || !root.querySelectorAll) return;
+    const list = root.querySelectorAll(SELECTOR);
+    for (let i = 0; i < list.length; i++) {
+      const el = list[i];
+      if (el[FLAG]) continue;
+      el[FLAG] = true;                                   // 原生属性缺失时才补，重复调用无副作用
+      if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      el.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+        if (e.target !== el) return;                     // 焦点在卡片内部的小按钮上时，交给它自己处理
+        e.preventDefault();
+        el.click();
+      });
+    }
+  };
+  const start = () => {
+    upgrade(document);
+    if (typeof MutationObserver !== 'function') return;
+    let queued = false;
+    const mo = new MutationObserver(() => {
+      if (queued) return;
+      queued = true;
+      Promise.resolve().then(() => { queued = false; upgrade(document); });
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+  else start();
 })();

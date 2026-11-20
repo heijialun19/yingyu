@@ -1,12 +1,12 @@
 /* 小鸟英语乐园 Service Worker：离线可用 + 秒开
    缓存策略：
-   - 页面导航：网络优先（在线永远拿到最新版页面，发版即生效；断网回退缓存）
+   - 页面导航：缓存优先 + 后台更新（老用户秒开，新版本靠 version.json 的更新条；断网才回退缓存）
    - 带版本号的静态资源：缓存优先（版本号变更即新 URL，天然绕开旧缓存）
    - 本地离线音频 audio/：独立缓存 AUDIO_CACHE，**正常发版不清**
      （听过一次就永久零网络；重建音频时换一个缓存名，activate 里删掉旧的那个）
    - 外站请求：v8 起站内不再有任何第三方发音请求，这里也就不再为它留分支。
      历史遗留的 opaque 缓存会在 activate 时随旧缓存一起清掉。 */
-const CACHE = 'birdie-abc-v248';
+const CACHE = 'birdie-abc-v249';
 const AUDIO_CACHE = 'birdie-audio-v7';   // 每次重做音频换新名，旧的在 activate 里删掉
 /* 三个 async 图库都不进 BOOT（会拖慢激活），但都列进 CORE 后台补齐：
    emoji-core.js 给轻页面，emoji-svg.js 是 7 个重页面唯一图库（由 app.js
@@ -16,7 +16,7 @@ const AUDIO_CACHE = 'birdie-audio-v7';   // 每次重做音频换新名，旧的
 const CORE = [
   './', './index.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './phonics.html', './read.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=55', './js/words-data.js?v=47', './svg/word-svg.js?v=7', './js/data.js?v=47', './js/app.js?v=187', './js/books-data.js?v=27', './js/phonics.js?v=11', './js/sentence.js?v=52', './js/speech.js?v=1', './js/grammar-engine.js?v=10', './js/ipa.js?v=9', './js/ipa-gs.js?v=3', './js/build-data.js?v=3', './js/getsmart-data.js?v=18', './js/pep-data.js?v=2', './js/pep-lessons.js?v=3', './js/pep-points-more.js?v=1', './js/pep-mem.js?v=6', './js/pep-points.js?v=27', './svg/emoji-core.js?v=3', './svg/emoji-svg.js?v=6', './svg/emoji-svg2.js?v=3',
+  './css/style.css?v=55', './js/words-data.js?v=47', './svg/word-svg.js?v=7', './js/data.js?v=47', './js/app.js?v=188', './js/books-data.js?v=27', './js/phonics.js?v=11', './js/sentence.js?v=52', './js/speech.js?v=1', './js/grammar-engine.js?v=10', './js/ipa.js?v=9', './js/ipa-gs.js?v=3', './js/build-data.js?v=3', './js/getsmart-data.js?v=18', './js/pep-data.js?v=2', './js/pep-lessons.js?v=3', './js/pep-points-more.js?v=1', './js/pep-mem.js?v=6', './js/pep-points.js?v=27', './svg/emoji-core.js?v=3', './svg/emoji-svg.js?v=6', './svg/emoji-svg2.js?v=3',
   './manifest.json', './js/audio-list.js?v=19', './favicon.ico', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
@@ -25,7 +25,7 @@ const CORE = [
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
   './', './index.html', './css/style.css?v=55',
-  './js/app.js?v=187', './js/data.js?v=47'
+  './js/app.js?v=188', './js/data.js?v=47'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -140,7 +140,12 @@ self.addEventListener('fetch', e => {
       const cached = force ? null : await c.match(e.request, { ignoreSearch: true });
       if (good(cached)) return cached;                  // 秒开，新版本靠更新条
       const res = await netP;
-      if (res && res.ok) return res;
+      /* ★ 2026-11-20：404 / 5xx 也是服务器的真实回答，不能再拿首页顶替。
+         原来只有 res.ok 才返回，404 会一路掉进下面的「断网兜底」，
+         于是打开不存在的网址（回访用户）得到的是 200 + 首页 —— 软 404，
+         连站点自己精心做的 404.html 都永远看不到。
+         现在只要拿得到响应就原样返回，只有 netP === null（真断网）才回退。 */
+      if (res) return res;
       /* 断网且没缓存：先找同页（忽略查询串，别把 ?flow=1 的深链变首页），
          实在没有才回首页；连首页都没有就明确报离线，不静默装作成功。 */
       const same = await c.match(e.request, { ignoreSearch: true });
