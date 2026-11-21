@@ -10,7 +10,7 @@
 /* ---- PEP 特有词精写记忆法（词源故事 / 拆分联想 / 规律口诀，全孩子语言） ---- */
 const PEP_MEM = {
   nice: 'nice（奈斯）：对人和和气气，别人就会夸你「奈斯」',
-  can: 'can 是万能钥匙：能、可以，后面跟的动词不变身；小写 can 还是「罐头」——金属罐能装东西',
+  can: 'can 有两个常用意思：① 能、会、可以（后面跟的动词不变身）② 罐头、金属罐。看句子判断是哪一个',
   mum: 'm 和 o 像两张门——mum：妈妈守在家门口',
   cousin: 'cou（靠）+ sin：靠得近的兄弟姐妹——堂（表）亲',
   pet: '要拍拍（p）哄哄的小动物——宠物。pet 还有「最爱」的意思：pet dog 宠物狗',
@@ -143,7 +143,7 @@ const PEP_MEM = {
   direct: 'di + rect——直接给你指路 = 指挥、指方向',
   lost: 'lose（丢失）的过去式——迷路的',
   sign: 'sign 指示牌——s（视）ign（认）：看见认得',
-  note: 'not + e——笔记；note 还有「注意到」的意思',
+  note: 'note 来自拉丁 nota（记号、字）——把要紧的事记成记号，就是笔记；note 也有「注意到」的意思',
   visitor: 'visit（参观）+ or（的人）——参观的人 = 游客',
   January: '门神 Janus 有两张脸，一张看旧年一张看新年——一月',
   February: 'February 二月——一年里最短的月份',
@@ -243,7 +243,7 @@ const PEP_MEM = {
   reduce: 're（往回）+ duce（引导）——往回收 = 减少',
   drive: 'drive 驾驶——driver（司机）就是「开车的人」',
   reuse: 're（再）+ use（用）——重复使用',
-  bottle: 'bott + le——瓶子（a bottle of water 才是「一瓶水」；bottle water 是「给水装瓶」）',
+  bottle: 'bottle 来自古法语 boteille（小桶），再往前是拉丁 buttis「桶」——装水的小桶就是瓶子；a bottle of water = 一瓶水，动词 bottle = 装瓶',
   top: 'top 顶部——op 往上顶到头',
   side: 'side 一面——left side 左边 / right side 右边',
   younger: 'young（年轻）+ er（更）——更年轻的',

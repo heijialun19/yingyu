@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-21.1",
-  "note": "2026-11-21.1 · 第三方全站复检修正：21 条确定错误 + 词性徽章按单元语境 + 拼读口径统一（pep 卡改用 phonicsLine）+ 拼词结算口径 + 20 个孤儿音频清理。BUILD .3→2026-11-21.1 / CACHE v251→v252 / app v190→v191 / data v47→48 / words v47→48 / books v27→28 / phonics v13→14 / pep-data v2→3 / pep-mem v6→7 / pep-points v27→28 / pep-points-more v1→2 / ipa-gs v3→4 / getsmart-data v18→19。"
+  "build": "2026-11-21.2",
+  "note": "2026-11-21.2 · 插画与「改完之后的新 bug」复查：重画 43 页图里有乱码字/假汉字/与正文打架的插画（图里写字的页改成写对那个词，不该写字的页改成画/干净面）；绘本插画改独立缓存 ART_CACHE（原来图片同名替换后老用户永远刷不到新图）；books-data 修掉 b58/b70 两道一模一样的题干；pep-mem 修 can/bottle/note 三条假词源。BUILD 2026-11-21.1→2026-11-21.2 / CACHE v252→v253 / app v191→v192 / books v28→v29 / pep-mem v7→v8。音频未重做，AUDIO_VER / AUDIO_CACHE 不动。"
 }
