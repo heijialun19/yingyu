@@ -4738,6 +4738,41 @@ pep-points v27→28 / pep-points-more v1→2 / ipa-gs v3→4 / getsmart-data v18
 插画是静态文件、不占版本号；音频没重做，`AUDIO_VER` / `SENTENCE_VER` / `AUDIO_CACHE` 一个没动
 （老用户不该为这一版重下 7140 句）。
 
+## 2026-11-21.4 · 补：b114/p04 那一页摞反了
+
+`.3` 上线后回看自己重画的那 51 张，`b114/p04` 这一页仍然不对，而且是两类错同时犯：
+
+| 错 | 正文 | .3 的图 |
+|---|---|---|
+| 上下顺序反了 | 「他先戴上那顶红帽子。再把那顶大的摞在上面。」 | 棕帽扣在头上，红帽浮在棕帽顶上 |
+| 该藏脸却给了正脸 | 「明明对着窗户看这两顶帽子。帽子看得见，**脸都看不见了**。」 | 标准正脸，眼睛鼻子全在 |
+
+**为什么前后三次都画出正脸**（这一页此前在 `.2` 与 `.3` 各失败过两轮）：
+
+1. 提示词里只要出现 `face` / `ears` / `eyes`，模型就把它们画出来 —— 这是同一条
+   「提及即出现」的规律（`.2` 时表现是「提示词里有 ball 就凭空放一个球」）。
+   `.3` 那版写的是「both pulled down over his ears so that **no part of his face** can be seen」，
+   否定句同样触发它。
+2. 这一页除了窗户没有别的支点，模型需要一个焦点，于是把脸当焦点。
+3. **本轮新发现**：一旦补上服装（`red shirt under blue denim overalls`），
+   模型为了展示这身衣服，会把整个人转到正面 —— 服装细节与背后视角互相拉扯。
+   实测 c2（带服装）四次里四次正脸，c3（服装只写布料颜色、动作写「趴在窗台上抬头看玻璃」）一次成立。
+
+**成立的那一版**（`_art/test_p04b.py` 的 c3）：
+
+> seen from behind and slightly to one side: a 7-year-old Chinese boy, seen from behind,
+> wearing a red long-sleeved shirt under blue denim overalls … stands at a tall window with
+> both hands flat on the wooden windowsill and his head tipped up toward the glass. On the
+> back of his head sit exactly two hats … one small soft red hat … underneath, and one big
+> brown felt hat … on top of it …
+
+出来的图：只见后脑勺，红帽在下棕帽在上，红上衣蓝背带裤，窗外天空与矮灌木。
+脸只剩嘴角附近一点点侧影，正好对应「帽子看得见，脸看不见」。
+
+**发版**：只动 4 个文件（sw.js / version.json / VERSION.md / 这一张 webp）。
+`ART_CACHE v2→v3`（插画同名替换，不换名老用户永远看旧图）、`CACHE v254→v255`、
+`BUILD 2026-11-21.4`。app.js 没改，所以 11 个 HTML 的 `?v=` 全都不动。
+
 ## 2026-11-21.3 · 插画一致性：同一个物件跨页走样 + 纸上的字朝错方向
 
 这一版重画 51 页（12 本书）。不再找「图里有没有字」，而是查「同一个东西在 120 页里是不是同一个东西」。
