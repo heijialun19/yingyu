@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-20.3",
-  "note": "2026-11-20.3 · L1 字母挑战改成「累计批次」：学第 2 批时考第 1+2 批（复习 + 新学），到第 4 批就是 26 个全考；只考当前批会漏复习、26 个全混又超纲。BUILD .2→.3 / CACHE v250→v251 / app v189→v190 / phonics v12→v13。"
+  "build": "2026-11-21.1",
+  "note": "2026-11-21.1 · 第三方全站复检修正：21 条确定错误 + 词性徽章按单元语境 + 拼读口径统一（pep 卡改用 phonicsLine）+ 拼词结算口径 + 20 个孤儿音频清理。BUILD .3→2026-11-21.1 / CACHE v251→v252 / app v190→v191 / data v47→48 / words v47→48 / books v27→28 / phonics v13→14 / pep-data v2→3 / pep-mem v6→7 / pep-points v27→28 / pep-points-more v1→2 / ipa-gs v3→4 / getsmart-data v18→19。"
 }

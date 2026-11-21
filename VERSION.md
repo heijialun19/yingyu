@@ -4641,3 +4641,51 @@ L1 批次切换、L10 写法选择题、旧进度迁移、40 句渲染、拼读�
 实测池大小 6 / 13 / 19 / 26。
 
 发版：BUILD .2→.3 / CACHE v250→v251 / app v189→v190 / phonics v12→v13。
+
+---
+
+## 2026-11-21.1 · 第三方全站复检修正 + 读书馆 1260 页插画
+
+**A. 21 条确定错误（逐条核对后修正）**
+
+| 编号 | 位置 | 修法 |
+|---|---|---|
+| E01/E02 | data.js 句子工厂 L20、grammar.html 解析表 | 「以 t 结尾加 -ed」→「以 -ch 结尾加 -ed」（watch 的尾字母是 h） |
+| E03 | pep-points-more.js 六下 U1 | 度量单位改回正确规则：「超过 1 就加 s」：two metres / three kilograms |
+| E04–E08 | words-data / pep-mem 词源 | thank 与 think 同根兄弟（非派生）、chicken 早于 chick、island 与 isle 不同源（假同源经典案例）、China 国名先于瓷器、rescue←excutere |
+| E09 | pep-mem.js can 重复键 | 删除覆盖用的罐头条目，合并为一条（情态 + 罐头） |
+| E10/E11 | phonics.html noscript / 推荐顺序 | 9 关→13 关；推荐顺序补到 L13（视觉词 L12、听音能写 L13） |
+| E12 | phonics.js SAME_SOUNDS | /u/ 组剔出 new/few/cute，新增独立的 /ju/ 组（与 L9 教的口径一致） |
+| E13–E15 | books-data b59/b62/b63 | 补三处漏译（同时改 _v5_books.py 源文件） |
+| E16 | getsmart.html 三处 | 「六册 47 个单元」→「六册 237 课（176 正课 + 61 复习）」 |
+| E17 | disclaimer / parents / README / NOTICES | 7141 → 7140 句（清单实际 7140） |
+| E18 | audio/sentences | 删除 19 个孤儿音频（清单无、永不播放），磁盘与清单重新对齐 7140 |
+| E19 | phonics.js 注释 | 注明 night 来自 PH_EXTRA |
+| E20 | pep-data 四上 U4 | 补 important（官方附录 15 词，站内原 14 词）；补 DJ 音标 /ɪmˈpɔːtnt/ |
+| E21 | pep-data 四下 U6 | 单元名改「From farm to table · 从农场到餐桌」（2026 新版官方名） |
+
+**B. 系统性缺陷：词性徽章**
+
+`pepPosKey` 原来按 `for...in PEP_POS` 的键序取首个命中，且没有 n 键，导致同时登记在 v/adj 的词必然标错，也无法处理「同词不同单元词性不同」。
+现改为**词条级 pos 优先**，并在 pep-data 给 29 个词按单元语境标注：
+can(三上 动词/四下 名词)、milk(奶 n / 挤奶 v)、cool、still、dress、fall、light、watch、study、take、star、both、show、trip、on foot、dry、drink。
+
+**C. 口径与逻辑**
+
+- pep.html 词卡「🔤 拼读」行改用 `phonicsLine()`（与 words.html 同口径：整词认读 / 音节 / 音素三层判定）。
+- grammar.html `beTransform` 的形容词池改用 `gxPosOf()`（词库 pos 优先，不再用已弃用的 gxPos）。
+- pep-points 的 hamburger 词源对齐 words-data（Hamburg + -er，与 ham 无关）。
+- 拼词：错几次才拼对的词进「重拼错词」，不再计「正确」；正确率改称「一次拼对」；整册闯关按钮标注「每轮 20 词」。
+
+**D. 待商榷项按通行说法改写（12 条）**
+
+smog = smoke+fog（1905）、gold 与 yellow 同根兄弟、ugly←古诺斯语、award←盎格鲁-法语 awarder、cream←古法语 cresme、test←拉丁 testum 坩埚、north 词根义、shark 存疑、chopsticks 洋泾浜、maze/tiny 存疑、parasailing 的 para- 来自 parachute、destroy 与 story 音近不同源、however 改 adv、vegetarian 音标、GS modTip /eər/→/er/、b73 小测题面去歧义。
+
+**E. 读书馆插画**
+
+120 本 1260 页全部换成手绘水彩 + 彩铅插画（本地开源模型生成，每本角色锚点固定），
+`read.html` 按 `art/books/<书号>/pNN.webp` 加载，缺图/断网自动回落到原 SVG 分镜，并预取下一页。
+
+发版：BUILD .3→2026-11-21.1 / CACHE v251→v252 / app v190→v191 / data v47→48 /
+words v47→48 / books v27→28 / phonics v13→14 / pep-data v2→3 / pep-mem v6→7 /
+pep-points v27→28 / pep-points-more v1→2 / ipa-gs v3→4 / getsmart-data v18→19。

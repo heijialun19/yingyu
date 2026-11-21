@@ -170,7 +170,7 @@ const IPA_GS = {
   "turn into":"/tɜrn ˈɪntu/", "turn left":"/tɜrn left/", "turn off":"/tɜrn ɔf/", "turn on":"/tɜrn ɑn/",
   "turn right":"/tɜrn raɪt/", "TV guide":"/ˌtiˈvi ɡaɪd/", "type":"/taɪp/", "typhoon":"/taɪˈfun/",
   "typist":"/ˈtaɪpɪst/", "ugly":"/ˈʌɡli/", "unhealthy":"/ənˈhelθi/", "uniform":"/ˈjunəˌfɔrm/",
-  "upstairs":"/əpˈsterz/", "vegetarian":"/ˌvedʒəˈteˌriən/", "veggie burger":"/ˈvedʒi ˈbɜrɡər/", "vitamins":"/ˈvaɪtəmənz/",
+  "upstairs":"/əpˈsterz/", "vegetarian":"/ˌvedʒəˈteriən/", "veggie burger":"/ˈvedʒi ˈbɜrɡər/", "vitamins":"/ˈvaɪtəmənz/",
   "voyage":"/ˈvɔɪədʒ/", "wake up":"/weɪk ʌp/", "warrior":"/ˈwɔriər/", "wash the car":"/wɑʃ ðə kɑr/",
   "washing machine":"/ˈwɑʃɪŋ məˈʃin/", "washing the dishes":"/ˈwɑʃɪŋ ðə ˈdɪʃəz/", "water-skiing":"/ˈwɔtər ˈskiɪŋ/", "watering the plants":"/ˈwɔtərɪŋ ðə plænts/",
   "wax":"/wæks/", "wax model":"/wæks ˈmɑdəl/", "whisper":"/ˈwɪspər/", "white-water rafting":"/waɪt ˈwɔtər ˈræftɪŋ/",

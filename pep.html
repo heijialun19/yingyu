@@ -131,7 +131,7 @@
   <noscript>
     <section class="card" style="margin-top:18px">
       <h2>🏫 人教课本同步速览（不依赖脚本）</h2>
-      <p>8 册 / 47 个单元 / 965 词，词表按教材附录「Words in each unit」逐词对齐，
+      <p>8 册 / 47 个单元 / 966 词，词表按教材附录「Words in each unit」逐词对齐，
       配套拼词复习与整句朗读。</p>
       <ul style="line-height:1.9">
       <li><b>三年级上册</b>：6 个单元 · 107 词</li>
@@ -147,20 +147,20 @@
   </noscript>
 </main>
 
-<script src="js/words-data.js?v=47"></script>
+<script src="js/words-data.js?v=48"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script async src="svg/emoji-svg2.js?v=3"></script>
 <script src="js/ipa.js?v=9"></script>
-<script src="js/data.js?v=47"></script>
-<script src="js/app.js?v=190"></script>
+<script src="js/data.js?v=48"></script>
+<script src="js/app.js?v=191"></script>
 <script defer src="js/sentence.js?v=52"></script>
 <script defer src="js/audio-list.js?v=19"></script>
-<script src="js/pep-data.js?v=2"></script>
+<script src="js/pep-data.js?v=3"></script>
 <!-- 2026-11-12.3：课本页是唯一用到全部三块的页面；数据先载、工具后载。 -->
 <script src="js/pep-lessons.js?v=3"></script>
-<script src="js/pep-points-more.js?v=1"></script>
-<script src="js/pep-mem.js?v=6"></script>
-<script src="js/pep-points.js?v=27"></script>
+<script src="js/pep-points-more.js?v=2"></script>
+<script src="js/pep-mem.js?v=7"></script>
+<script src="js/pep-points.js?v=28"></script>
 <script>
 renderNav('pep'); renderDecor();
 
@@ -324,7 +324,7 @@ function renderLevelHome() {
         <div style="flex:1;min-width:160px"><b style="font-size:1.1rem">人教版 ${esc(lv.name)}</b>
           <div style="color:#4A5162;font-size:.8rem">${lv.units.length} 个单元 · ${totalWords} 词 · 已完成 ${pepLevelProgress(lv)}</div></div>
       </div>
-      <button class="btn coral big" style="width:100%;margin-top:12px" onclick="startSpell('${lv.id}-all')">🚂 整册拼词大闯关（${totalWords} 词混合）</button>
+      <button class="btn coral big" style="width:100%;margin-top:12px" onclick="startSpell('${lv.id}-all')">🚂 整册拼词大闯关（${totalWords} 词池${totalWords > 20 ? ' · 每轮 20 词' : ''}）</button>
     </div>
     ${units}
     <div style="text-align:center;margin-top:14px"><a href="getsmart.html" style="color:#4A5162;font-size:.8rem">去 Get Smart 学堂 →</a></div>`;
@@ -426,7 +426,7 @@ function renderLearnCard() {
         <button class="pw-word" onclick="speakWord('${jsq(w.w)}')" title="点我发音">${esc(w.w)}</button>
         <div class="pw-ipa">${pos ? `<span class="pos-badge">${pos.emoji} ${pos.zh}</span>` : ''} ${ipa ? esc(ipa) : ''}</div>
         <div class="pw-zh">${esc(w.zh)}</div>
-        <div class="spell-line"><small>🔤 拼读</small>${splitPhrase(w.w).map(p => splitBlocks(p).join(' · ')).join(' ／ ')}</div>
+        <div class="spell-line"><small>🔤 拼读</small>${phonicsLine(w.w)}</div>
         ${dec ? `<div class="mem-box"><b>🧠 趣味记：</b>${esc(dec)}</div>` : ''}
         ${famLine(w.w)}
       </div>
@@ -592,7 +592,10 @@ function checkSpell() {
       return;
     }
     const firstTry = !S.tries[cur.w];
-    if (firstTry) { S.ok.push(cur); addStars(1); } else if (!S.bad.includes(cur) && !S.ok.includes(cur)) S.ok.push(cur);
+    if (firstTry) { S.ok.push(cur); addStars(1); }
+    /* ★ 2026-11-21.1（复检 L2）：错了几次才拼对的词，原来既算「正确」又进不了
+       「重拼错词」——两边都占，自相矛盾。现在只进 bad，正确率按「一次拼对」算。 */
+    else if (!S.bad.includes(cur) && !S.ok.includes(cur)) S.bad.push(cur);
     document.getElementById('spellTip').innerHTML = '✅ <b>' + esc(cur.w) + '</b> 拼对啦！';
     const tk = __token;
     setTimeout(() => { if (tk === __token) spellNext(); }, 1200);
@@ -659,7 +662,7 @@ function spellFinish() {
       <div style="font-size:56px">${pct === 100 ? '🏆' : pct >= 60 ? '🎉' : '💪'}</div>
       <h2 style="justify-content:center">${pct === 100 ? '全部拼对，太棒了！' : '拼词完成！'}</h2>
       <div class="res-nums">
-        <div><b class="g">${okN}</b><small>拼写正确</small></div>
+        <div><b class="g">${okN}</b><small>一次拼对</small></div>
         <div><b class="o">${badN}</b><small>还需练习</small></div>
         <div><b class="p">${pct}%</b><small>正确率</small></div>
       </div>

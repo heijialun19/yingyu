@@ -88,10 +88,10 @@
   </noscript>
 </main>
 
-<script src="js/words-data.js?v=47"></script>
+<script src="js/words-data.js?v=48"></script>
 <script src="svg/word-svg.js?v=7"></script>
-<script src="js/data.js?v=47"></script>
-<script src="js/app.js?v=190"></script>
+<script src="js/data.js?v=48"></script>
+<script src="js/app.js?v=191"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/grammar-engine.js?v=10"></script>
@@ -100,7 +100,7 @@ renderNav('grammar'); renderDecor();
 
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const pick = a => a[Math.floor(Math.random() * a.length)];
-const ROLES = ['谁 👦', '干什么 🏃', '什么 📦', '什么 📦'];
+const ROLES = ['谁 👦', '干什么 🏃', '冠词 a / an 🏷️', '什么 📦'];
 
 /* ============================================================
    人工校对的句子解析（2026-11-13.2 / 第二轮复检 N1，P0）
@@ -127,7 +127,7 @@ const MANUAL_PARSE = {
     note: 'played 是 play 的过去式（动作 +ed）；yesterday 是时间状语。',
     cells: [['I','代词','主语'],['played','动词','谓语'],['football','名词','宾语'],['yesterday','副词','状语']] },
   'She watched TV yesterday.': {
-    note: 'watched 以 t 结尾，直接加 -ed；过去式不分人称，不用再加 s。',
+    note: 'watched 以 -ch 结尾，直接加 -ed；过去式不分人称，不用再加 s。',
     cells: [['She','代词','主语'],['watched','动词','谓语'],['TV','名词','宾语'],['yesterday','副词','状语']] },
   "I wasn't at home yesterday.": {
     note: "wasn't = was not。be 动词的否定直接加 not，不用 didn't。",
@@ -630,7 +630,7 @@ const GEN = {
       explain: `疑问句要把助动词 Does 搬到最前面，后面动词回原形 ${v}。` };
   },
   beTransform(ws) {
-    const adjs = ws.filter(w => gxPos(w.w).pos === '形容词');
+    const adjs = ws.filter(w => gxPosOf(w) === '形容词');
     const pool = adjs.length >= 2 ? adjs : [{ w: 'happy', zh: '开心' }, { w: 'tired', zh: '累' }, { w: 'hungry', zh: '饿' }];
     const a = pick(pool);
     const s = pick(['he', 'she', 'it', 'they']);

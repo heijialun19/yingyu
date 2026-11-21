@@ -21,7 +21,7 @@ const GRADES = [
     W('hello','你好','👋','hello 原是喊人的『喂喽！』，和 hi 一样都是招呼声'), W('hi','嗨','🙋','hi 是短促一声『嗨！』——招呼就喊它'), W('goodbye','再见','🤚','goodbye 原是 God be with ye（愿上帝与你同行）缩成的'),
     W('bye','拜拜','🖐️','bye 是 goodbye 的尾巴，再见的简称'), W('good','好的','👍','good 好，well 也是「好」——但 good 形容人/物（a good boy），well 形容做得怎么样（sing well）；不是同一个词的变形','adj'), W('good morning','早上好','🌅','morning 的 morn 就是『早晨』，morrow（明日）同根'),
     W('good afternoon','下午好','','noon 原指中午的祷告时刻；after noon = 午后'), W('good night','晚安','','night 夜晚；knight 骑士和它长得像、读音一样，但意思无关——knight 的 k 不发音，记住「有个暗 k」就不会拼错'),
-    W('thank','感谢','🙏','thank 来自 think（th↔k 音变）：心里想着你的好，才开口道谢','v'), W('thanks','谢谢','🙇','thanks = thank + s：谢意一串串'), W('please','请','🤲','please 来自拉丁『取悦』：说 please 是想让你高兴；pleasant（愉快的）同根','adv'),
+    W('thank','感谢','🙏','thank 和 think 是同根兄弟词（古英语 þancian / þencan 同出一支，都是「想、感受」）：心里想着别人的好，才开口道谢','v'), W('thanks','谢谢','🙇','thanks = thank + s：谢意一串串'), W('please','请','🤲','please 来自拉丁『取悦』：说 please 是想让你高兴；pleasant（愉快的）同根','adv'),
     W('sorry','对不起','😞','sorry 和 sore（疼）同根：弄疼了别人，才说对不起'), W('welcome','欢迎','🎊','welcome = well(好) + come(来)：好，来吧'), W('yes','是的','✅','yes 是——点头说「yes！」'),
     W('no','不','❌','no 不——用力摇头'), W('OK','好的','👌','OK 原是 1839 年美国人把 all correct 玩笑写成 oll korrect，缩成 OK') ]},
   { id: 'self', name: '我和你', emoji: '🧒', color: '#4EC5F1', pos: 'pron', words: [
@@ -109,7 +109,7 @@ const GRADES = [
     W('water', '水', '💧', 'water 水——w- 水（wave/wash/wet）'), W('juice', '果汁', '🧃', 'juice 果汁——来自拉丁「汁液」：挤出来的东西'),
     W('tea', '茶', '🍵', 'tea 茶——读音来自中国闽南语「茶」'), W('hamburger', '汉堡包', '🍔', 'hamburger = Hamburg（德国汉堡城）+ -er：汉堡城传出来的肉饼（跟火腿 ham 无关）'), W('hot dog', '热狗', '🌭', 'hot dog 的来历：面包夹香肠像一只腊肠狗（dachshund），美国人给它起外号叫 hot dog'),
     W('French fries', '薯条', '🍟', 'French 法式的 + fries 炸的东西（fry 炸的复数）：法式炸薯条'), W('breakfast', '早餐', '', 'break 打破 + fast 禁食：打破一夜禁食'), W('lunch', '午餐', '', 'lunch 原来是 lump（一大块）：午饭就是「一大块」吃下去'),
-    W('dinner', '晚餐', '', 'dinner 来自拉丁「打破禁食」——和 breakfast 是同一个意思，古人一天的主餐'), W('food', '食物', '🍱', 'food 食物——和 feed 是亲兄弟（oo→ee）'), W('chicken', '鸡肉', '🍗', 'chick 小鸡 + -en 表小：chicken 原指小鸡，后来鸡肉也叫 chicken'),
+    W('dinner', '晚餐', '', 'dinner 来自拉丁「打破禁食」——和 breakfast 是同一个意思，古人一天的主餐'), W('food', '食物', '🍱', 'food 食物——和 feed 是亲兄弟（oo→ee）'), W('chicken', '鸡肉', '🍗', 'chicken 是老词（古英语 ċīcen），chick 是它的缩略形式——先有 chicken，后有 chick'),
     W('beef', '牛肉', '🥩', 'beef 来自拉丁 bōs（牛），和 bull（公牛）是亲戚。贵族吃肉说法语，农民养牛说英语——所以「牛」和「牛肉」长得不像'), W('pork', '猪肉', '🥓', 'pork 来自法语 porc（猪）——同样，贵族吃肉说法语（pork），农民养猪说英语（pig）'), W('soup', '汤', '', 'soup 来自「吸/啜」的声音：sup（啜）、sorb（吸）、soup（汤）同一族'),
     W('dumpling', '饺子', '🥟', 'dumpling = dumpl（面团）+ -ling（小东西）：一小团面'), W('mooncake', '月饼', '🥮', 'moon 月亮 + cake 饼：中秋圆月的饼'), W('candy', '糖果', '🍬', 'candy 来自阿拉伯语 qand（糖块），和 cane（甘蔗）同根——糖是从甘蔗里熬出来的'), W('sweet', '甜的', '🍯', 'sweet 甜——和 sweat（汗）只差一个字母，别拼错','adj'),
     W('chocolate', '巧克力', '🍫', 'chocolate 来自墨西哥阿兹特克语 xocolātl（苦的水）——可可豆本来是苦的，加了糖才变甜'), W('biscuit', '饼干', '🍪', 'biscuit = bis（两次）+ cook（烤）：烤两次的饼干，古代保存食物的方法'), W('porridge', '粥', '🍲', 'porridge 和 pot（锅）有关：锅里煮出来的稠粥') ]},
@@ -218,7 +218,7 @@ const GRADES = [
     W('Chinese', '语文', '🀄', 'China 中国 + -ese 表「某国的」'), W('English', '英语', '🔠', 'England 英格兰 + -ish 表「某国的」'), W('math', '数学', '➗', 'math 是 mathematics 的缩写，来自希腊语 manthanein（学习）——数学就是「学习」的学问'), W('music', '音乐', '🎵', 'music 来自希腊语 Mousa（缪斯）——和 museum（缪斯的庙）同源！艺术一家'),
     W('art', '美术', '', 'art 来自拉丁 ars（技能）——art 原是「手艺/技能」'), W('PE', '体育', '', 'PE 是 Physical Education（体育教育）的缩写'), W('science', '科学', '', 'science 来自拉丁 scire（知道）——science 就是「知道的东西」。conscious（有意识的）同根'), W('computer', '电脑', '💻', 'computer = compute（计算）+ -er（机器）：计算的机器。compute = com + putare'),
     W('lesson', '课', '', 'lesson 来自拉丁 lectio（读的东西）——lecture（讲座）同根'), W('homework', '作业', '', 'home 家 + work 工作：回家做的作业'), W('subject', '学科', '', 'subject = sub-（下）+ ject（扔）：「扔在下面」让你学的科目'), W('classmate', '同学', '', 'class 班 + mate 伴：同班同伴'),
-    W('test', '测验', '', 'test 来自拉丁 testum（陶片）——古人用陶片投票表决'), W('grade', '年级', '🎖️', 'grade 来自拉丁 gradus（步）——gradual（渐进的）同根：一步一步升年级') ]},
+    W('test', '测验', '', 'test 来自拉丁 testum（陶罐、坩埚）——炼金人用陶罐验金属，验一验就成了「测验」'), W('grade', '年级', '🎖️', 'grade 来自拉丁 gradus（步）——gradual（渐进的）同根：一步一步升年级') ]},
   { id: 'month', name: '月份', emoji: '🗓️', color: '#FF9F45', pos: 'n', tip: '💡 规律：九至十二月都以 -ber 结尾！', words: [
     W('January', '一月', '1️⃣', 'January = Janus（双面神，一张脸看过去一张看未来）——一年的开头'), W('February', '二月', '2️⃣', 'February = Februa（古罗马净化节）——净化身心的月份'), W('March', '三月', '3️⃣', 'March = Mars（战神）——古罗马打仗的月份'), W('April', '四月', '4️⃣', 'April = aperire（拉丁「打开」）——花儿「打开」的月份'),
     W('May', '五月', '5️⃣', 'May = Maia（生长女神）——万物生长的月份'), W('June', '六月', '6️⃣', 'June = Juno（天后赫拉）——天后的月份'), W('July', '七月', '7️⃣', 'July = Julius Caesar（凯撒大帝）——以他命名的月份'), W('August', '八月', '8️⃣', 'August = Augustus（奥古斯都皇帝）——以他命名的月份'),
@@ -230,7 +230,7 @@ const GRADES = [
     W('ice', '冰', '🧊', 'ice 来自古英语 is，和拉丁 glacies（冰）无关'), W('dry', '干的', '🏜️', 'dry 干——晒干的毛巾','adj'), W('wet', '湿的', '💦', 'wet 湿——刚淋过雨湿漉漉','adj'), W('shower', '阵雨', '🌦️', 'shower 来自古英语 scūr（阵雨），和 shoot 同源——「射下来」的雨'),
     W('temperature', '温度', '', 'temperature 来自 temper（调和）——温度是冷热「调和」出来的'), W('degree', '度数', '', 'degree 和 grade 同根（拉丁 gradus 步）——一度就是「一小步」') ]},
   { id: 'household', name: '生活用品', emoji: '🥢', color: '#6BCB77', pos: 'n', words: [
-    W('cup', '杯子', '☕', 'cup 来自拉丁 cupa（桶/杯）'), W('plate', '盘子', '', 'plate 来自希腊语 platus（平的）——plate 就是「平的」盘子'), W('bowl', '碗', '🥣', 'bowl 和 ball 同源：碗就是「圆的」东西'), W('chopsticks', '筷子', '🥢', 'chop 砍/剁 + sticks 棍：两根小棍子夹菜'),
+    W('cup', '杯子', '☕', 'cup 来自拉丁 cupa（桶/杯）'), W('plate', '盘子', '', 'plate 来自希腊语 platus（平的）——plate 就是「平的」盘子'), W('bowl', '碗', '🥣', 'bowl 和 ball 同源：碗就是「圆的」东西'), W('chopsticks', '筷子', '🥢', 'chopsticks 来自洋泾浜英语 chop chop（快快的，仿汉语「快子」）+ sticks 棍：两根小棍子夹菜'),
     W('spoon', '勺子', '🥄', 'spoon 来自古英语 spōn（木片）——古人用木片当勺'), W('fork', '叉子', '🍴', 'fork 来自拉丁 furca（叉/岔）——fork 也指「岔路」'), W('knife', '刀', '🔪', 'knife 的 k 不发音；knife 来自古英语 cnīf（刀）'),
     W('fridge', '冰箱', '', 'fridge 是 refrigerator 的缩写：re-（再）+ friger（冷）——「再冷下来」的箱子'), W('clock', '钟', '🕰️', 'clock 来自法语 cloche（钟/铃）——clock 和 bell 同源'), W('watch', '手表', '⌚', 'watch 原意是「守望/看」——手表就是「看时间」的东西'), W('mirror', '镜子', '🪞', 'mirror 来自拉丁 mirari（惊奇）——照镜子惊叹自己'),
     W('towel', '毛巾', '', 'towel 来自法语 toaille（布）'), W('toothbrush', '牙刷', '🪥', 'tooth 牙 + brush 刷'), W('soap', '香皂', '🧼', 'soap 来自拉丁 sapo（肥皂）'), W('comb', '梳子', '💇', 'comb 来自古英语 camb（梳子/鸡冠）——梳子和鸡冠是同一个词！'), W('key', '钥匙', '🔑', 'key 来自古英语 cǣg，key 的 k 像钥匙的齿（象形）') ]},
@@ -261,21 +261,21 @@ const GRADES = [
     W('yawn', '打哈欠', '🥱', 'yawn 是拟声词——打哈欠「啊——」的声音'), W('vitamin', '维生素', '', 'vitamin = vita（拉丁「生命」）+ amine（胺）：生命胺'), W('body', '身体', '', 'body 身体——整个人的身体'), W('safe', '安全的', '🦺', 'safe 和 save 同源（拉丁 salvus）：safe 安全、save 救','adj') ]},
   { id: 'city2', name: '城市乡村', emoji: '🏙️', color: '#4EC5F1', pos: 'n', words: [
     W('building', '大楼', '🏢', 'build 建 + -ing'), W('tower', '塔', '🗼', 'tower 来自法语 turris（塔）'), W('corner', '角落', '📐', 'corner 来自拉丁 cornu（角）——拐角就是一个「角」'), W('block', '街区', '', 'block 来自古法语 bloc（大木头）——block 原是「一大块木头」'),
-    W('map', '地图', '🗺️', 'map 是 mappa（布）的缩写——古人把世界画在布上'), W('east', '东方', '', 'east 的 e- 表「出」——太阳「出来」的方向'), W('west', '西方', '', 'west 就是太阳「落」的方向'), W('north', '北方', '⬆️', 'north 的 n- 表「左」——面向太阳升起时，左边是北'),
+    W('map', '地图', '🗺️', 'map 是 mappa（布）的缩写——古人把世界画在布上'), W('east', '东方', '', 'east 的 e- 表「出」——太阳「出来」的方向'), W('west', '西方', '', 'west 就是太阳「落」的方向'), W('north', '北方', '⬆️', 'north 出自古日耳曼语「日出方向的左手侧」——面向初升的太阳，左边就是北'),
     W('south', '南方', '⬇️', 'south 和 sun 同源——南边是太阳多、暖和的方向'), W('direction', '方向', '🧭', 'direction = di-（分开）+ reg（直）+ -ion：「指引着直走」。reg- = 直/王：correct 正确、regal 帝王的'), W('capital', '首都', '', 'cap- = 头：capital 首都（首要之城）、captain 队长'), W('fountain', '广场喷泉', '⛲', 'fountain 来自拉丁 fons（泉）——font（字体/泉）同源'),
     W('hill', '小山', '', 'hill 小山——「h-ill」像矮矮的山包'), W('lake', '湖', '', 'lake 来自拉丁 lacus（湖/盆）'), W('field', '田野', '🌾', 'field 来自古英语 feld（开阔地）'), W('forest', '森林', '🌲', 'forest 来自拉丁 foris（外面的）——forest 原是「外面的野地」') ]},
   { id: 'travel', name: '旅行', emoji: '🧳', color: '#FF9F45', pos: 'n', words: [
     W('travel', '旅行', '', 'travel 来自法语 travail（辛苦的工作）——travel 原意是「辛苦的旅程」！'), W('trip', '旅程', '', 'trip 来自法语 tripper（绊倒/快走）——trip 原是「快步走」'), W('tour', '观光', '', 'tour 来自拉丁 tornare（转一圈）——tour 就是「转一圈」。tournament 锦标赛同根'), W('visit', '参观', '', 'vis- = 看：visit 参观、vision 视觉、television 电视'),
     W('ticket', '票', '🎫', 'ticket 来自法语 estiquet（贴上的纸条）'), W('suitcase', '行李箱', '🧳', 'suit 一套 + case 箱：装一套衣服的箱'), W('passport', '护照', '🛂', 'pass 通过 + port 港口'), W('luggage', '行李', '', 'lug（拉）+ -age：拉的东西'),
-    W('beach', '海滩', '🏖️', 'beach 来自古英语 bǣce（溪流的岸）'), W('island', '岛', '🏝️', 'island 的 s 不发音；island 来自古英语「水 + 地」，和 isle（小岛）同源'), W('camp', '露营', '⛺', 'camp 来自拉丁 campus（平原）——campus（校园）同根！camp 原是「平原上的营地」'), W('photo', '照片', '📷', 'photo 是 photograph 的缩写：photo-（光）+ graph（写）：「用光写字」的照片'),
+    W('beach', '海滩', '🏖️', 'beach 来自古英语 bǣce（溪流的岸）'), W('island', '岛', '🏝️', 'island 的 s 不发音；island 来自古英语 īegland（岛 + 地），isle 来自拉丁语 insula——两者不同源，那个 s 是后人误以为它和 isle 同源才加进去的'), W('camp', '露营', '⛺', 'camp 来自拉丁 campus（平原）——campus（校园）同根！camp 原是「平原上的营地」'), W('photo', '照片', '📷', 'photo 是 photograph 的缩写：photo-（光）+ graph（写）：「用光写字」的照片'),
     W('vacation', '度假', '🌴', 'vacation 来自拉丁 vacare（空出来）——vacation 就是「空出来的日子」'), W('journey', '旅途', '', 'journey 来自法语 journée（一天的行程）——journey 原是「一天的路」'), W('pack', '打包', '', 'pack 来自低地德语 pak（包裹）','v'), W('passport photo', '证件照', '🪪', 'passport 护照 + photo 照：证件照') ]},
   { id: 'nature2', name: '自然探索', emoji: '🌏', color: '#6BCB77', pos: 'n', words: [
     W('earth', '地球', '🌍', 'earth 地球——泥土/大地'), W('planet', '行星', '🪐', 'planet 来自希腊语「游荡的」——行星是「游荡的星」'), W('space', '太空', '🌌', 'space 来自拉丁 spatium（空间）'), W('rock', '岩石', '🪨', 'rock 岩石——大块岩石，硬邦邦'),
     W('sand', '沙子', '', 'sand 沙——「s-and」像细细的沙粒'), W('plant', '植物', '🪴', 'plant 来自拉丁 planta（脚掌/插枝）——plant 原是「插进土里的枝」'), W('wood', '木头', '🪵', 'wood 原是「树林」（古英语 wudu），后来才指木头'), W('air', '空气', '', 'air 来自希腊语 aer（空气）'),
-    W('smoke', '烟', '', 'smoke 和 smog（烟雾）同源'), W('rose', '玫瑰', '🌹', 'rose 玫瑰——红红的玫瑰'), W('bamboo', '竹子', '🎍', 'bamboo 竹子——一节节的竹子'), W('cave', '山洞', '🕳️', 'cave 来自拉丁 cavus（空的）——cave 就是「空的」洞'),
+    W('smoke', '烟', '', 'smog 是 smoke + fog 拼出来的新词（1905 年造出来形容烟霾）；smoke 才是老词'), W('rose', '玫瑰', '🌹', 'rose 玫瑰——红红的玫瑰'), W('bamboo', '竹子', '🎍', 'bamboo 竹子——一节节的竹子'), W('cave', '山洞', '🕳️', 'cave 来自拉丁 cavus（空的）——cave 就是「空的」洞'),
     W('volcano', '火山', '🌋', 'volcano 来自罗马火神 Vulcan（伏尔甘）——火山是「火神的山」！'), W('desert', '沙漠', '', 'desert = de-（离开）+ sert（连接）：「离开连接」= 荒芜之地'), W('jungle', '丛林', '', 'jungle 来自梵语 jangala（荒地/丛林）'), W('nature', '大自然', '🌿', 'nature 来自拉丁 nasci（出生）——nature 就是「生出来的一切」') ]},
   { id: 'ocean', name: '海洋世界', emoji: '🐬', color: '#4EC5F1', pos: 'n', words: [
-    W('whale', '鲸鱼', '🐳', 'whale 鲸鱼——海里最大的鲸'), W('dolphin', '海豚', '🐬', 'dolphin 来自希腊语 delphis（海豚）'), W('shark', '鲨鱼', '🦈', 'shark 来自古英语 scieran（切）——鲨鱼是「切开水面的」'),
+    W('whale', '鲸鱼', '🐳', 'whale 鲸鱼——海里最大的鲸'), W('dolphin', '海豚', '🐬', 'dolphin 来自希腊语 delphis（海豚）'), W('shark', '鲨鱼', '🦈', 'shark 的词源没有定论（一说与「切」的词根有关）——记住这个词就行，别当规律用'),
     W('octopus', '章鱼', '🐙', 'octo- = 八（拉丁 octo）：octopus 八爪鱼、October 十月（古第八月）、octave 八度'), W('crab', '螃蟹', '🦀', 'crab 是拟声词——横着爬的声音'), W('shrimp', '虾', '🦐', 'shrimp 来自古英语 scrimman（收缩）——虾是「弯弯缩缩」的'), W('seal', '海豹', '🦭', 'seal 海豹——海边的海豹'),
     W('shell', '贝壳', '🐚', 'shell 和 scale（鳞）同源：都是「外面的壳」'), W('seaweed', '海草', '', 'sea 海 + weed 草'), W('wave', '波浪', '', 'wave 来自古英语 wafian（摇摆）——wave 就是「一起一伏」'),
     W('sail', '航行', '', 'sail 航行——扬帆起航'), W('sailor', '水手', '⚓', 'sail 航行 + -or 表「人」'), W('lighthouse', '灯塔', '', 'light 灯 + house 房'), W('seaside', '海边', '', 'sea 海 + side 边'),

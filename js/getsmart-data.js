@@ -1449,7 +1449,7 @@ const GS_LEVELS = [
         ] },
       { id: 'gs5-m03r', mod: 3, kind: 'review', title: 'Module 3 复习闯关', zh: '极限运动 · 奥运 · 测量',
         from: ['gs5-m03l1', 'gs5-m03l2', 'gs5-m03l3'], count: 10 },
-      { id: 'gs5-m04l1', mod: 4, modName: 'Module 4 · Up high 高高的', modEmoji: '🪽', modTip: 'Phonics: /eər/ /oʊ/ · 品德: 听从长辈', kind: 'unit',
+      { id: 'gs5-m04l1', mod: 4, modName: 'Module 4 · Up high 高高的', modEmoji: '🪽', modTip: 'Phonics: /er/ /oʊ/ · 品德: 听从长辈', kind: 'unit',
         title: 'M4-L1 · Tiny Creatures', zh: '小生灵',
         words: [
           { w: 'hole', zh: '洞', e: '🕳️' }, { w: 'tiny', zh: '极小的', e: '🐜' },

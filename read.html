@@ -40,6 +40,11 @@
   box-shadow:0 4px 0 rgba(45,49,66,.08)}
 .bk-page .bk-art{min-height:0;line-height:0;margin:0 0 6px}
 .bk-art svg{width:100%;height:auto;max-width:660px;display:block;margin:0 auto;border-radius:16px}
+.bk-art img{width:100%;height:auto;max-width:660px;aspect-ratio:3/2;object-fit:cover;display:block;
+  margin:0 auto;border-radius:16px;background:#FBF6EC;box-shadow:0 8px 20px rgba(120,96,60,.10);
+  animation:artIn .4s ease both}
+@keyframes artIn{from{opacity:0;transform:translateY(8px) scale(.995)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.bk-art img{animation:none}}
 .bk-zh.hidden-zh{display:none}
 .bk-zhhint{margin:2px 4px 8px;font-size:.8rem;color:var(--ink2);line-height:1.6}
 .bk-kind{display:inline-block;font-size:.72rem;font-weight:800;border-radius:999px;
@@ -189,10 +194,10 @@
 <div id="toast"></div>
 <div id="confetti"></div>
 
-<script src="js/words-data.js?v=47"></script>
-<script src="js/data.js?v=47"></script>
-<script src="js/app.js?v=190"></script>
-<script src="js/books-data.js?v=27"></script>
+<script src="js/words-data.js?v=48"></script>
+<script src="js/data.js?v=48"></script>
+<script src="js/app.js?v=191"></script>
+<script src="js/books-data.js?v=28"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>
@@ -369,6 +374,21 @@ function drawScene(art) {
     '</svg>';
 }
 
+/* ============ 绘本原图 ============
+   1260 页逐页手绘场景由本地开源模型绘制，按 art/books/<书号>/pNN.webp 存放。
+   缺图、断网、首次离线时自动回落到上面的内联 SVG 分镜，阅读不中断。 */
+function pageArtSrc(p) {
+  const i = (CUR.pages || []).indexOf(p);
+  if (i < 0) return '';
+  return 'art/books/' + CUR.id + '/p' + String(i + 1).padStart(2, '0') + '.webp';
+}
+function pageArt(p) {
+  const src = pageArtSrc(p);
+  if (!src) return drawScene(p.art);
+  return '<img src="' + src + '" alt="本页插画" width="1200" height="800" ' +
+         'loading="lazy" decoding="async">';
+}
+
 /* ============ 阅读器 ============ */
 function openBook(id) {
   CUR = BOOKS.find(b => b.id === id);
@@ -421,7 +441,7 @@ function paintPage() {
   const long = !para && String(p.en).length > 58;
   stage.innerHTML = `
     <div class="bk-page ${para ? 'para' : ''}">
-      <div class="bk-art">${drawScene(p.art)}</div>
+      <div class="bk-art">${pageArt(p)}</div>
       <div class="bk-sent ${para ? 'para' : (long ? 'long' : '')}" id="bkSent"></div>
       <div class="bk-zh">${esc(p.zh)}</div>
       <div class="bk-zhhint" id="bkZhHint"></div>
@@ -430,6 +450,17 @@ function paintPage() {
         <button class="btn ghost" id="bkZh">👀 看中文</button>
       </div>
     </div>`;
+  /* 插画加载：失败（缺图/断网/未下载）就回落到 SVG 分镜，绝不空着；
+     同时把下一页的图悄悄预取，翻页时几乎瞬开。 */
+  const artImg = stage.querySelector('.bk-art img');
+  if (artImg) {
+    artImg.onerror = () => { artImg.parentNode.innerHTML = drawScene(p.art); };
+    const nx = SEQ[PAGE + 1];
+    if (nx && !nx.__pre) {
+      const s = pageArtSrc(nx);
+      if (s) { const pre = new Image(); pre.decoding = 'async'; pre.src = s; }
+    }
+  }
   /* 逐词 span：点词发音 + 整句高亮容器 */
   const sentEl = document.getElementById('bkSent');
   sentEl.innerHTML = p.en.split(/\s+/).map(t => {

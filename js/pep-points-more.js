@@ -409,7 +409,7 @@ const PEP_POINTS_MORE = {
       { t: 'become 是「变成」', kid: 'become 后面接形容词或名词，说「变成了什么」：He became a teacher.（他成了老师）It is becoming cold.（天变冷了）中文「变成」也是这个结构。', tip: 'become 后面接结果', en: 'He wants to become a doctor.', zh: '他想成为一名医生。' },
       { t: '影子会跟着太阳变长变短', kid: 'shadow 是「影子」——太阳低的时候影子长，太阳高的时候影子短。课文用它讲比较级（My shadow is longer）。英语爱用具体的东西讲抽象的比较，画面一想就懂。', tip: '影子会变长变短', en: 'My shadow is longer in the evening.', zh: '傍晚我的影子更长。' },
       { t: '两个 both，三个 all', kid: 'both of them（他们两个都）——both 说的是「两个都」，三个以上要用 all。中文「都」不分几个，英语分得清：两个用 both，三个以上用 all。', tip: '两个 both，三个 all', en: 'Both of them are tall.', zh: '他们两个都很高。' },
-      { t: '数字后面单位不加 s', kid: 'metre（米）、kilogram（千克）——英语的度量单位写在数字后面时常不加复数 s：two metre tall、three kilogram。中文「两米」「三公斤」也是这个写法。', tip: '数字后单位不加 s', en: 'He is one metre tall.', zh: '他一米高。' },
+      { t: '数字超过 1，单位要加 s', kid: 'metre（米）、kilogram（千克）——英语的度量单位跟着数字变：one metre（一米）、two metres（两米）、three kilograms（三公斤）。超过 1 就要加 s，正好等于 1 才用单数。', tip: '超过 1 就加 s', en: 'He is one metre tall.', zh: '他一米高。' },
     ],
     u2: [
       { t: 'ed 有两种读法', kid: 'washed 读「哇什特」、watched 读「哇奇特」——ed 在清辅音后面读 /t/；在浊辅音和元音后面读 /d/：cleaned、stayed。拼写一样，读音有两种，这是最容易被忽略的一处。', tip: 'ed 有两种读法', en: 'I cleaned my room.', zh: '我打扫了房间。' },
@@ -429,7 +429,7 @@ const PEP_POINTS_MORE = {
     ],
     u4: [
       { t: 'grass 不加 s', kid: 'grass（草）数不清，不加 s，也不加 a。要说「一片草地」用 the grass 或 a piece of grass。中文「草」也不数根，这一点中英一样。', tip: 'grass 不加 s', en: 'The children play on the grass.', zh: '孩子们在草地上玩。' },
-      { t: 'look up 抬头也查', kid: 'look up（抬头看）look it up（查一下）——查字典为什么叫 look up？因为以前字在书页上方，查的时候要往上看。一个动作，两个意思，中间连着同一个画面。', tip: 'look up 抬头也查', en: 'You can look it up on the Internet.', zh: '你可以在网上查一下。' },
+      { t: 'look up 抬头也查', kid: 'look up（抬头看）look it up（查一下）——查字典为什么叫 look up？有一种说法是以前字在书页上方，查的时候要往上看（词源没有定论，但画面好记）。一个动作，两个意思，中间连着同一个画面。', tip: 'look up 抬头也查', en: 'You can look it up on the Internet.', zh: '你可以在网上查一下。' },
       { t: 'active 是爱动的', kid: 'act（行动）+ ive（有…性质的）= active（爱动的、活跃的）。中文「活跃」正好对上。反义词是 quiet 或 lazy。它说的是「愿意动」，不是「动得快」。', tip: 'active 爱动的', en: 'I am active in class.', zh: '我在课堂上很活跃。' },
       { t: 'the Internet', kid: 'the Internet（互联网）——世上只有一个网，所以配 the，而且大写 I，因为它本来是专有名词。中文「上网」不带冠词，英语 on the Internet 的 the 少不了。', tip: 'the Internet', en: 'I look up words on the Internet.', zh: '我在网上查单词。' },
       { t: 'dream 梦也梦想', kid: 'I had a dream.（我做了一个梦）My dream is to fly.（我的梦想是飞）——同一个词，睡着时是梦，醒着时是梦想。中文也这么用，英语一样不分。', tip: 'dream 梦也梦想', en: 'I had a dream last night.', zh: '我昨晚做了一个梦。' },

@@ -19,7 +19,9 @@
 
    v4.3 的四条铁律（由 _v4_build.py + _v4_check.py 强制）：
    ① 词汇受控：正文每个词要么此前任何一本出现过，要么本本读前页
-      预教，要么整体认读骨架词。零例外、零「拼得出但没教过」。
+      预教，要么是整体认读的骨架词（the / has 这类功能词与本书人名）。
+      校验脚本 _v4_check.py 只存在于工作区、不随站发布，所以这条
+      在运行时数据上无法复算 —— 改正文后必须回工作区重跑校验。
    ② 逐本手写独立故事：120 本各有开头、细节、情绪、结尾；
       L5-L10 共 72 本逐页深化，抽象主题由具体事件承载。
    ③ 篇幅梯度靠每页句数递增（1 → 2 → 2-3），不靠中性补充句灌水；
@@ -2169,7 +2171,7 @@ const BOOKS = [
       { art: 'farm|mom,ming|farm|♪', en: 'One day I feed the pig. It is hungry, so it eats and eats.', zh: '有一天我喂猪。它饿了，吃啊吃。' },
       { art: 'farm|mom,ming|farm|👀', en: 'One day I wash the goat. It is clean now.', zh: '有一天我给山羊洗澡。它现在干净了。' },
       { art: 'farm|mom,ming|farm|?', en: 'One day I pick the corn. The corn is tall.', zh: '有一天我摘玉米。玉米很高。' },
-      { art: 'farm|mom,ming|farm|·', en: 'One day I find an egg. It is small and warm.', zh: '它又小又暖。' },
+      { art: 'farm|mom,ming|farm|·', en: 'One day I find an egg. It is small and warm.', zh: '有一天我找到一个蛋。它又小又暖。' },
       { art: 'farm|mom,ming|farm|!', en: 'One day I watch the rain. I stay at home.', zh: '有一天我看雨。我待在家里。' },
       { art: 'farm|mom,ming|farm|♥', en: 'One day I sit on the hill. I look at the farm.', zh: '有一天我坐在小山上。我看着农场。' },
       { art: 'farm|mom,ming|farm|★', en: 'A week on the farm. Every day is different.', zh: '农场的一周。每天都不同。' },
@@ -2280,7 +2282,7 @@ const BOOKS = [
       { art: 'street|lili,grandpa|bike|👀', en: 'Ming wants to ride it. He puts on his cap and goes out.', zh: '明明想骑。他戴上帽子出了门。' },
       { art: 'street|lili,grandpa|bike|?', en: 'Ming gets on the bike. Dad holds the back.', zh: '明明上了车。爸爸扶着后座。' },
       { art: 'street|lili,grandpa|bike|·', en: 'The bike goes. It goes slowly at first, and Ming holds on.', zh: '车走了。一开始很慢，明明紧紧抓着。' },
-      { art: 'street|lili,grandpa|bike|!', en: 'Ming rides and rides. He looks at the road, and he does not look down.', zh: '他看着前面的路，不往下看。' },
+      { art: 'street|lili,grandpa|bike|!', en: 'Ming rides and rides. He looks at the road, and he does not look down.', zh: '明明骑啊骑。他看着前面的路，不往下看。' },
       { art: 'street|lili,grandpa|bike|♥', en: 'Ming does not fall. He is careful, so the bike stays up.', zh: '明明没摔倒。他很小心，所以车稳稳的。' },
       { art: 'street|lili,grandpa|bike|★', en: 'Dad runs with the bike. He does not let go.', zh: '爸爸跟着车跑。他没有松手。' },
       { art: 'street|lili,grandpa|bike|…', en: 'Ming can ride the bike! "You can do it," Dad says, and he lets go.', zh: '明明会骑车了！「你能行。」爸爸说着，松开了手。' },
@@ -2320,7 +2322,7 @@ const BOOKS = [
       { art: 'home|grandma,mom|note|!', en: 'The note says "Hello". There is a name too.', zh: '纸条上写着「你好」。还有一个名字。' },
       { art: 'home|grandma,mom|note|♥', en: 'Who wrote the note? Ming reads the name.', zh: '这纸条是谁写的？明明读那个名字。' },
       { art: 'home|grandma,mom|note|★', en: 'It was Grandma. Ming sees her name and knows.', zh: '是奶奶写的。明明看见她的名字就明白了。' },
-      { art: 'home|grandma,mom|note|…', en: 'A note in a book. It has been there a long time.', zh: '它在那儿放了很久了。' },
+      { art: 'home|grandma,mom|note|…', en: 'A note in a book. It has been there a long time.', zh: '书里的一张纸条。它在那儿放了很久了。' },
       { art: 'home|grandma,mom|note|·', en: 'Ming writes a note too. He puts it in the same book.', zh: '明明也写了一张纸条。他放进同一本书里。' },
       { art: 'home|grandma,mom|note|♥', en: 'Notes are fun. Grandma will find it and write back.', zh: '纸条很好玩。奶奶会发现它，然后回一张。' }
     ],
@@ -2710,7 +2712,7 @@ const BOOKS = [
       { art: 'home|ming,grandma|letter|·', en: 'Ming wants to go to the farm. He will go in summer when school is out.', zh: '明明想去农场。放暑假的时候他要去。' }
     ],
     quiz: [
-      { q: '信上说农场的什么长大了？', opts: ['玉米', '房子', '山羊'], a: 2, kind: 'recall' },
+      { q: '信上说农场的什么「现在很大了」？', opts: ['玉米', '房子', '山羊'], a: 2, kind: 'recall' },
       { q: '明明读完信就笑了，说明什么？', opts: ['信上写错了字', '他喜欢奶奶的信，心里高兴', '他不认识奶奶'], a: 1, kind: 'infer' },
       { q: '想给远方的人说句话，你会怎么做？', opts: ['写一封信或一句话给他', '什么也不说', '只在心里想'], a: 0, kind: 'transfer' }
     ]

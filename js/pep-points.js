@@ -283,8 +283,8 @@ const PEP_COMPOUNDS = {
   'police officer': ['police 警方', 'officer 官员'], firefighter: ['fire 火', 'fighter 战士'], snowman: ['snow 雪', 'man 人'],
   raincoat: ['rain 雨', 'coat 外衣'], sunglasses: ['sun 太阳', 'glasses 眼镜'], 'T-shirt': ['T 字形', 'shirt 衬衫'],
   'living room': ['living 起居', 'room 房间'], bedroom: ['bed 床', 'room 房间'], bathroom: ['bath 洗澡', 'room 房间'],
-  supermarket: ['super 超级', 'market 市场'], 'green bean': ['green 绿色', 'bean 豆'], chopstick: ['chop 戳', 'stick 棍'],
-  hamburger: ['ham 火腿', 'burger 包'], 'ice cream': ['ice 冰', 'cream 奶油'], 'pocket money': ['pocket 口袋', 'money 钱'],
+  supermarket: ['super 超级', 'market 市场'], 'green bean': ['green 绿色', 'bean 豆'], chopstick: ['chop 快（洋泾浜「快子」）', 'stick 棍'],
+  hamburger: ['Hamburg 汉堡城', 'er 从那儿来的'], 'ice cream': ['ice 冰', 'cream 奶油'], 'pocket money': ['pocket 口袋', 'money 钱'],
   schoolbag: ['school 学校', 'bag 包'], 'space station': ['space 太空', 'station 站'], 'outer space': ['outer 外面', 'space 太空'],
   'air conditioner': ['air 空气', 'conditioner 调节器'], 'runny nose': ['runny 流水的', 'nose 鼻子'],
   'dining hall': ['dining 用餐', 'hall 大厅'], 'gingerbread house': ['ginger 姜', 'bread 面包', 'house 房子'],
@@ -293,7 +293,7 @@ const PEP_COMPOUNDS = {
   'look after': ['look 看', 'after 后面'], 'look up': ['look 查', 'up 向上'], 'turn off': ['turn 拧', 'off 关掉'],
   'hand out': ['hand 递', 'out 出去'], 'get together': ['get 聚', 'together 在一起'],
   'hard-working': ['hard 努力', 'working 工作'], hometown: ['home 家', 'town 镇'], sunshine: ['sun 太阳', 'shine 照耀'],
-  waterfall: ['water 水', 'fall 落下'], 'piggy bank': ['piggy 小猪', 'bank 罐'], 'go hiking': ['go 去', 'hiking 徒步'],
+  waterfall: ['water 水', 'fall 落下'], 'piggy bank': ['piggy 小猪', 'bank 存钱的地方'], 'go hiking': ['go 去', 'hiking 徒步'],
   'go cycling': ['go 去', 'cycling 骑行'], 'went camping': ['went 去（过去式）', 'camping 露营'], 'went fishing': ['went 去（过去式）', 'fishing 钓鱼'],
   'took pictures': ['took 拍（过去式）', 'pictures 照片'], 'had a cold': ['had 得了（过去式）', 'a cold 感冒'],
   month: ['moon 月亮', 'th 名词后缀'], astronaut: ['astro 星星', 'naut 航行者'], taikonaut: ['taikong 太空', 'naut 航行者'],
@@ -301,7 +301,7 @@ const PEP_COMPOUNDS = {
   'Eiffel Tower': ['Eiffel 埃菲尔（人名）', 'Tower 塔'], 'Beijing opera': ['Beijing 北京', 'opera 戏剧'],
   'Mount Taishan': ['Mount 山峰', 'Taishan 泰山'], 'Dragon Boat Festival': ['Dragon 龙', 'Boat 船', 'Festival 节'],
   'Labour Day': ['Labour 劳动', 'Day 节日'], 'National Day': ['National 国家', 'Day 节日'], maybe: ['may 可能', 'be 是'],
-  everyday: ['every 每个', 'day 天'], today: ['to = 今（古义）', 'day 天'], weekend: ['week 周', 'end 末尾'],
+  everyday: ['every 每个', 'day 天'], today: ['to 在（古义：on this day）', 'day 天'], weekend: ['week 周', 'end 末尾'],
   birthday: ['birth 诞生', 'day 日子'], sometimes: ['some 有些', 'times 次'], seafood: ['sea 海', 'food 食物'],
   hotpot: ['hot 热的', 'pot 锅'], toothpaste: ['tooth 牙齿', 'paste 膏'], toothbrush: ['tooth 牙齿', 'brush 刷子'],
   someone: ['some 某个', 'one 人'], anything: ['any 任何', 'thing 东西'], everything: ['every 每个', 'thing 东西'],
@@ -310,8 +310,13 @@ const PEP_COMPOUNDS = {
 
 /* ---- 词性查询：显式表(pep-mem.js) → 词库借用 → 词形规则 ---- */
 function pepPosKey(w) {
-  /* 词性查询：显式表 → 词库借用 → 词形规则 → 名词兜底 */
+  /* 词性查询：条目自带 pos（按单元语境）→ 显式表 → 词库借用 → 词形规则 → 名词兜底 */
   const s = String(w.w || w).toLowerCase();
+  /* ★ 2026-11-21.1（第十轮复检 B1）：同一个词在不同单元词性不同——
+     dress 四下「连衣裙」是名词、六上「穿衣服」是动词；light 四下「灯」、六上「照亮」；
+     milk 三下「奶」、四下「挤奶」。全局一张表按 for...in 键序取首个命中，
+     必然把其中一边标错。改为**词条级 pos 优先**，只有没标时才走全局表。 */
+  if (w && typeof w === 'object' && w.pos) return w.pos;
   for (const k in PEP_POS) { if (PEP_POS[k].indexOf(s) >= 0) return k; }
   if (typeof GRADES !== 'undefined') {
     for (const g of GRADES) for (const t of g.themes) for (const x of t.words) {

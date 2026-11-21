@@ -463,7 +463,8 @@ const SPELL_WORDS = ['cat','hat','man','pen','hen','ten','pig','big','six','dog'
    还能写成 ay、a_e；只教「一个音一种写法」，遇到真实单词就卡住（rain 会读，
    play 就懵）。这一关把「同一个音的不同写法」摆在一起对比，
    再用「听一个词、选它用的是哪种写法」来检验。
-   ★ 每组只放**已经学过**的写法；词全部来自 999 词库（有图有声）。 */
+   ★ 每组只放**已经学过**的写法；词全部来自 999 词库（有图有声），
+     只有 night 来自 PH_EXTRA 补充表（PEP 课本音频）。 */
 const SAME_SOUNDS = [
   { sound: '/eɪ/', zh: '「诶」', groups: [
     { sp: 'ai', words: ['rain', 'train', 'paint'] },
@@ -485,8 +486,13 @@ const SAME_SOUNDS = [
   { sound: '/u/', zh: '「乌」', groups: [
     { sp: 'oo', words: ['moon', 'food', 'zoo'] },
     { sp: 'ue', words: ['blue', 'true'] },
+    { sp: 'u_e', words: ['rule'] } ] },
+  /* ★ 2026-11-21.1（第十轮复检 E12）：ew / u_e 多数读 /ju/（new、few、cute），
+     原来并进 /u/ 组，和 L9「ew 在 n/f 后面读 /ju/」「u_e 多数读 /ju/」自相矛盾。
+     这里拆成独立的 /ju/ 组，与 L9 教的口径对齐。 */
+  { sound: '/ju/', zh: '「优」', groups: [
     { sp: 'ew', words: ['new', 'few'] },
-    { sp: 'u_e', words: ['rule', 'cute'] } ] },
+    { sp: 'u_e', words: ['cute', 'use'] } ] },
   { sound: '/ɜr/', zh: '卷舌「厄」', groups: [
     { sp: 'ir', words: ['bird', 'girl', 'shirt'] },
     { sp: 'er', words: ['her', 'person'] },
