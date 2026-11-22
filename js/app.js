@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-21.5';
+const BUILD = '2026-11-22.1';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -50,6 +50,10 @@ function __reloadAfterRefresh() {
   setTimeout(go, 120);
 }
 function __showUpdateBar(v) {
+  /* 壳内不提示更新：APK 里的站点是随包分发的静态资产，没有 SW 热更新，
+     这条浮条在壳里点了也刷不出新版本（只会把用户困在「刷新→还是旧版」）。
+     换版本靠安装新 APK，见家长中心的版本卡。 */
+  if (window.__isNativeShell) return;
   if (__updShown) return;
   /* ★ 2026-11-13：点过「刷新」后，即使 reload 回来仍因发版漏升 ?v=／网络失败
      而拿到旧 BUILD，也绝不再反复弹 —— 之前是「点一次 → 4 秒后又弹 → 无限循环」。
@@ -97,7 +101,7 @@ function __checkUpdate(force) {
       .catch(() => {});
   } catch (e) {}
 }
-if (typeof document !== 'undefined') {
+if (typeof document !== 'undefined' && !window.__isNativeShell) {
   setTimeout(() => __checkUpdate(true), 4000);
   setInterval(() => __checkUpdate(false), UPDATE_CHECK_MS);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) __checkUpdate(false); });
@@ -2958,7 +2962,7 @@ function speechEnv() {
      本站导航是网络优先、静态资源带不可变版本号：新版 SW 接管后，当前页面
      继续用已经加载完整的代码是安全的，下一次自然导航就吃到新版本，
      完全没必要打断用户。要立刻更新由用户自己点右下角「有新版本」提示。 */
-if ('serviceWorker' in navigator && location.protocol === 'https:') {
+if (!window.__isNativeShell && 'serviceWorker' in navigator && location.protocol === 'https:') {
   navigator.serviceWorker.register('sw.js').then(reg => {
     // 发现新版本时立即激活，让**新打开的页面**拿到最新代码（当前页面不刷新）
     if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
@@ -3059,6 +3063,8 @@ const sfx = {
    只在手机浏览器里出现；第 2 次访问起展示；关掉后不再打扰。 */
 function maybeShowInstallHint() {
   try {
+    /* 壳内本身就是桌面图标，再教人「添加到主屏幕」是荒谬的 */
+    if (window.__isNativeShell) return;
     const ua = navigator.userAgent;
     const isMobile = /Android|iPhone|iPad|iPod/i.test(ua) || (/Mobile/i.test(ua) && window.innerWidth < 820);
     const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -3091,12 +3097,14 @@ function dismissInstallHint() {
 /* ---------------- 界面组件 ---------------- */
 const NAV_ITEMS = [
   { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
+  { id: 'learn',   href: 'learn.html',   emoji: '🎯', label: '学习' },
   { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词镇' },
   { id: 'pep',     href: 'pep.html',     emoji: '🏫', label: '人教课本' },
   { id: 'getsmart', href: 'getsmart.html', emoji: '🎓', label: 'Get Smart' },
   { id: 'grammar', href: 'grammar.html', emoji: '🏭', label: '句子工厂' },
+  { id: 'read',    href: 'read.html',    emoji: '📚', label: '读书馆' },
   { id: 'games',   href: 'games.html',   emoji: '🎡', label: '游戏乐园' },
-  { id: 'parents', href: 'parents.html', emoji: '👨‍👩‍👧', label: '家长中心' },
+  { id: 'parents', href: 'parents.html', emoji: '👤', label: '我的' },
 ];
 
 function renderNav(activeId) {
@@ -3126,19 +3134,18 @@ function renderNav(activeId) {
 
   /* 底部栏（手机端 App 风格，桌面端由 CSS 隐藏）：5 个常用页面 + 「我的」，
      档案/星星/声音都收在底部，顶部完全让给内容 */
-/* 手机底栏只放 6 格（再多就挤成一排小图标了）。
-     2026-11-08 调整：把「字母」换成「语法（句子工厂）」——
-     字母岛是起步期的短周期内容，学完就过去了；语法要反复练，必须随手可进。
-     字母岛没有消失，首页的岛屿卡片里一直有它的入口。 */
+/* 手机底栏只放 4 格 + 档案（2026-11-22 从 8 格收回来）。
+   ★ 为什么必须收：8 格在 320px 上每格只有 40px，字被压成一条缝；
+     更要紧的是「单词 / 课本 / 学堂 / 语法 / 游戏」全是并列入口，
+     等于让 6 岁的孩子每开一次 App 先做一次分类决策。
+     现在只留「首页 / 学习 / 读书馆 / 家长」，其余收进 learn.html 总入口。
+     ⚠️ 这是全站唯一一处信息架构改动：加回任何一格之前先想清楚它是不是
+        「每天都要点」的，否则一律进「学习」。 */
 const TABS = [
     { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
-    { id: 'grammar', href: 'grammar.html', emoji: '🚂', label: '语法' },
-    { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词' },
-    { id: 'pep',     href: 'pep.html',     emoji: '🏫', label: '课本' },
-    { id: 'getsmart', href: 'getsmart.html', emoji: '🎓', label: '学堂' },
-    { id: 'games',   href: 'games.html',   emoji: '🎡', label: '游戏' },
-    /* A4：手机是家长看进度的主场景，入口原来只藏在 12px 页脚文本链里。 */
-    { id: 'parents', href: 'parents.html', emoji: '👨‍👩‍👧', label: '家长' },
+    { id: 'learn',   href: 'learn.html',   emoji: '🎯', label: '学习' },
+    { id: 'games',   href: 'games.html',   emoji: '🎮', label: '游戏' },
+    { id: 'parents', href: 'parents.html', emoji: '👤', label: '我的' },
   ];
   document.body.insertAdjacentHTML('beforeend', `
     <nav class="bottom-nav" aria-label="底部导航">
@@ -3417,13 +3424,24 @@ function createProfile() {
 }
 function exportProfile() {
   const text = Profiles.exportActive();
-  /* 一步两样：短码（发微信）+ 文件（下载存档）。2026-11-08 合并原两套入口。 */
+  /* 一步两样：短码（发微信）+ 文件（下载存档）。2026-11-08 合并原两套入口。
+     ★ 2026-11-22：文件那一半改走 Shell.saveFile。
+       原因：Android WebView 不处理 blob + a[download]，点「导出」会提示
+       已下载、实际什么都没有（网页版一切正常，所以这个 bug 只在 App 里出现）。
+       壳内改由 Capacitor Filesystem 真写进「文档」；网页仍是原来的下载。 */
   showSyncCode();                                    // 短码写进 syncCodeBox
+  const name = '小鸟英语乐园-' + Profiles.active().name;
+  if (window.Shell && Shell.saveFile) {
+    Shell.saveFile(name, text, 'application/json').then(r => {
+      if (r && r.ok && r.where === 'download') toast('📤 短码已生成 + 备份文件已下载');
+    });
+    return;
+  }
   try {
     const blob = new Blob([text], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = '小鸟英语乐园-' + Profiles.active().name + '.json';
+    a.download = name + '.json';
     a.click();
   } catch (e) {}
   toast('📤 短码已生成 + 备份文件已下载');

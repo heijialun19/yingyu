@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#4EC5F1">
+<meta name="description" content="小鸟英语乐园学习中心：单词镇、自然拼读、人教课本、Get Smart、句子工厂、字母岛与游戏乐园，一个入口进入全部课程。">
+<link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
+<meta property="og:title" content="学习 · 小鸟英语乐园">
+<meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
+<meta property="og:url" content="https://heijialun19.github.io/yingyu/learn.html">
+<meta name="twitter:card" content="summary_large_image">
+<title>学习 · 小鸟英语乐园</title>
+<link rel="canonical" href="https://heijialun19.github.io/yingyu/learn.html">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/style.css?v=56" onerror="this.onerror=null;this.href='css/style.css?v=56&amp;retry=1'">
+<style>
+/* 学习中心：一个入口，两栏卡片，卡上只留「名字 + 进度 + 一句话」。
+   以前这些分散在首页的 9 个岛上，和拼读 18 个音素挤在一起，视觉上没有主次。 */
+.hub-hero{padding:18px 18px 16px;border-radius:22px;background:linear-gradient(135deg,#FFFFFF,#F3F9FF);border:1px solid #E8EEF7;box-shadow:0 2px 10px rgba(24,39,75,.05);margin-bottom:16px}
+.hub-hero > b{display:block;font-size:1.18rem;letter-spacing:.2px}
+.hub-hero p{margin:6px 0 0;color:#5A6274;font-size:.84rem;line-height:1.65}
+.hub-hero p b{color:var(--ink)}
+.hub-group{margin:20px 0 10px;font-size:.74rem;font-weight:800;color:#6B7385;letter-spacing:2px}
+.hub-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.hub-card{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:18px 16px 16px;background:#fff;border:1px solid #E9EEF6;border-radius:20px;box-shadow:0 2px 8px rgba(24,39,75,.05);cursor:pointer;font:inherit;color:inherit;text-align:left;transition:transform .15s,box-shadow .15s;min-height:132px;position:relative}
+.hub-card:active{transform:scale(.985)}
+.hub-card .hc-e{font-size:34px;line-height:1.1;margin-bottom:6px}
+.hub-card .hc-n{font-size:1.02rem;font-weight:800;letter-spacing:.2px}
+.hub-card .hc-d{font-size:.75rem;color:#6B7385;line-height:1.5;margin-top:2px}
+.hub-card .hc-p{margin-top:auto;padding-top:10px;font-size:.72rem;font-weight:700;color:#4B5468;display:flex;align-items:center;gap:6px;width:100%}
+.hub-card .hc-bar{flex:1;height:6px;border-radius:999px;background:#EEF2F8;overflow:hidden}
+.hub-card .hc-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#4EC5F1,#6BCB77)}
+.hub-card .hc-go{color:#A9B2C3;font-size:1rem}
+.hub-card.primary{background:linear-gradient(150deg,#5B3FD6,#7C5CFF);border:none;color:#fff;box-shadow:0 8px 22px rgba(91,63,214,.22)}
+.hub-card.primary .hc-d,.hub-card.primary .hc-p{color:rgba(255,255,255,.86)}
+.hub-card.primary .hc-bar{background:rgba(255,255,255,.26)}
+.hub-card.primary .hc-bar i{background:#FFD93D}
+.hub-card.primary .hc-go{color:rgba(255,255,255,.7)}
+@media (max-width:720px){
+  .hub-hero{padding:16px;border-radius:20px}
+  .hub-grid{gap:10px}
+  .hub-card{padding:15px 13px 13px;border-radius:18px;min-height:124px}
+  .hub-card .hc-e{font-size:30px;margin-bottom:4px}
+  .hub-card .hc-n{font-size:.96rem}
+  .hub-card .hc-d{font-size:.71rem}
+}
+@media (max-width:340px){
+  .hub-grid{grid-template-columns:1fr}
+  .hub-card{min-height:0;flex-direction:row;align-items:center;gap:12px;flex-wrap:wrap}
+  .hub-card .hc-e{margin:0}
+  .hub-card .hc-p{width:auto;flex:1 1 100%;padding-top:6px}
+}
+</style>
+</head>
+<body>
+  <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
+    <div style="font-size:52px">🐤</div>
+    <div style="font-size:.9rem;color:#3F4658;font-weight:700">加载中，请稍等…</div>
+  </div>
+<main>
+  <div class="page-title">
+    <h1>🎯 学习</h1>
+    <p>所有课程都在这里，选一个开始</p>
+  </div>
+
+  <div id="app">
+    <div class="hub-hero">
+      <b>今天从哪儿开始？</b>
+      <p id="hubHint">正在读取你的进度…</p>
+    </div>
+    <div class="hub-group">主课</div>
+    <div class="hub-grid" id="hubMain"></div>
+    <div class="hub-group">课本同步</div>
+    <div class="hub-grid" id="hubText"></div>
+    <div class="hub-group">表达与游戏</div>
+    <div class="hub-grid" id="hubMore"></div>
+    <div style="text-align:center;margin-top:22px;font-size:.75rem"><a href="disclaimer.html" style="color:#4A5162">📋 免责声明 · 隐私政策 · 使用条款</a></div>
+  </div>
+</main>
+
+<script src="js/words-data.js?v=48"></script>
+<script src="js/data.js?v=48"></script>
+<script src="js/shell.js?v=1"></script>
+<script src="js/app.js?v=196"></script>
+<script src="js/getsmart-data.js?v=19"></script>
+<script>
+renderNav('learn'); renderDecor();
+
+(function () {
+  const p = Profiles.active();
+  const g = myGrade();
+  const wDone = cumMasteredCount(), wAll = cumWordCount();
+  const grDone = grammarDoneCount(), grAll = GRAMMAR_LEVELS.length;
+  const lN = letterCount();
+  const gs = gsLevelProgress();
+
+  /* 主推哪一个：完全按「下一步该做什么」决定，不铺满所有入口。
+     单词是绝对主线（新课标必背），单词掌握完才推荐语法/字母/游戏。 */
+  let lead = null;
+  if (wDone < wAll) lead = { id: 'words', href: 'words.html?mode=plan' };
+  else if (grDone < grAll) lead = { id: 'grammar', href: 'grammar.html' };
+  else if (lN < 26) lead = { id: 'letters', href: 'letters.html' };
+  else lead = { id: 'games', href: 'games.html' };
+
+  const C = {
+    words:   { e: '🏘️', n: '单词镇', d: `${g.name} ${wDone}/${wAll} 个词`, href: 'words.html',
+               now: wDone, all: wAll, hint: '每天 10 张卡片，学完就忘不了' },
+    phonics: { e: '🔤', n: '自然拼读', d: '见词能读 · 听音能写', href: 'phonics.html',
+               now: 0, all: 0, hint: '13 关，从字母音到同音异拼' },
+    letters: { e: '🏝️', n: '字母岛', d: `${lN}/26 个字母`, href: 'letters.html',
+               now: lN, all: 26, hint: '26 个字母的象形故事' },
+    read:    { e: '📚', n: '读书馆', d: '120 本分级读物', href: 'read.html',
+               now: 0, all: 0, hint: '从 28 词到 212 词，一级一级读上去' },
+    pep:     { e: '🏫', n: '人教课本', d: '3-6 年级逐单元同步', href: 'pep.html',
+               now: 0, all: 0, hint: '跟着课本一课一课过' },
+    getsmart:{ e: '🎓', n: 'Get Smart', d: gs, href: 'getsmart.html',
+               now: 0, all: 0, hint: '外教课本同步' },
+    grammar: { e: '🚂', n: '句子工厂', d: `已通过 ${grDone}/${grAll} 关`, href: 'grammar.html',
+               now: grDone, all: grAll, hint: '23 个句式，套进去就能说' },
+    games:   { e: '🎮', n: '游戏乐园', d: `${GAME_COUNT} 个复习游戏`, href: 'games.html',
+               now: 0, all: 0, hint: '边玩边把词记住' },
+  };
+
+  const card = (k, extra) => {
+    const c = C[k];
+    const pct = c.all ? Math.min(100, Math.round(c.now / c.all * 100)) : 0;
+    return `<button type="button" class="hub-card ${extra || ''}" onclick="location.href='${c.href}'">
+      <span class="hc-e" aria-hidden="true">${c.e}</span>
+      <span class="hc-n">${c.n}</span>
+      <span class="hc-d">${esc(c.d)}</span>
+      ${c.all ? `<span class="hc-p"><span class="hc-bar"><i style="width:${pct}%"></i></span><span>${pct}%</span><span class="hc-go">›</span></span>`
+              : `<span class="hc-p"><span style="flex:1;font-weight:600;color:#8A93A6">${esc(c.hint)}</span><span class="hc-go">›</span></span>`}
+    </button>`;
+  };
+
+  const main = ['words', 'phonics', 'letters', 'read'].map(k => card(k, k === lead.id ? 'primary' : ''));
+  const text = ['pep', 'getsmart'].map(k => card(k, k === lead.id ? 'primary' : ''));
+  const more = ['grammar', 'games'].map(k => card(k, k === lead.id ? 'primary' : ''));
+  document.getElementById('hubMain').innerHTML = main.join('');
+  document.getElementById('hubText').innerHTML = text.join('');
+  document.getElementById('hubMore').innerHTML = more.join('');
+  document.getElementById('hubHint').innerHTML =
+    `👋 <b>${esc(p.name)}</b> · ${g.name} · 已掌握 <b>${wDone}</b> 个词<br>
+     <a href="words.html?mode=plan" style="color:#5B3FD6;font-weight:700">继续上次 →</a>`;
+})();
+</script>
+</body>
+</html>

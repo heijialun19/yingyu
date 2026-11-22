@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#4EC5F1">
 <!-- ⚠ 下面几个 meta 里的数字（999 词 / 23 关 / 7 游戏）必须与
      words-data.js 的 TOTAL_WORDS、data.js 的 GRAMMAR_LEVELS.length、
@@ -27,7 +27,7 @@
 </script>
 <title>小鸟英语乐园 · 一年级英语启蒙</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=55" onerror="this.onerror=null;this.href='css/style.css?v=55&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=56" onerror="this.onerror=null;this.href='css/style.css?v=56&amp;retry=1'">
 <style>
 .hello-line{text-align:center;color:#3F4658;font-size:.9rem;margin:4px 0 14px}
 .hello-line b{color:var(--ink)}
@@ -58,6 +58,13 @@
 .mini-grade button{padding:7px 13px;border-radius:999px;border:3px solid #E8EAF0;background:#fff;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer}
 .mini-grade button.on{border-color:var(--lemon);background:#FFF7DA}
 .review-banner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(135deg,#FFE9F3,#FFF0D6);border:3px solid var(--pink);border-radius:22px;padding:14px 18px;margin:14px auto 0;max-width:680px;box-shadow:var(--shadow)}
+/* 阅读 / 游戏：两张轻卡，不再用首页 9 个岛抢「继续学习」的注意力 */
+.home-quick{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:760px;margin:0 auto}
+.hq-card{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:16px 16px 14px;background:#fff;border:1px solid #E9EEF6;border-radius:20px;box-shadow:0 2px 8px rgba(24,39,75,.05);cursor:pointer;font:inherit;color:inherit;text-align:left;transition:transform .15s,box-shadow .15s}
+.hq-card:active{transform:scale(.985)}
+.hq-e{font-size:30px;line-height:1.1}
+.hq-t{font-size:.98rem;font-weight:800;margin-top:4px}
+.hq-s{font-size:.74rem;color:#6B7385}
 
 .phc-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 6px}
 .phc-head b{font-size:1.12rem}
@@ -72,6 +79,20 @@
 .phc-chip small{display:block;font-size:.72rem;color:#636A76;font-weight:700}
 .phc-chip.blk{border-color:var(--grape);background:#F8F5FF}
 .phc-cta{display:flex;justify-content:center}
+
+/* Get Smart 三步：首页原来直接用了 getsmart.html 里的 .gs-catch，
+   但那份样式只定义在那一页 —— 首页上就是一个没边框的裸块 + 怪按钮。
+   这里给首页自己的一份，压成一行，不和上面的「继续学习」抢主次。 */
+#gsFlowCard .gs-catch{
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+  padding:12px 14px;margin:12px 0;background:#fff;
+  border:1px solid #E9EEF6;border-radius:18px;
+  box-shadow:0 2px 8px rgba(24,39,75,.05);
+}
+#gsFlowCard .gs-catch>span{font-size:24px}
+#gsFlowCard .gs-catch b{font-size:.9rem;display:block}
+#gsFlowCard .gs-catch>div>div{font-size:.76rem;color:#6B7385;margin-top:2px;line-height:1.5}
+#gsFlowCard .gs-catch .btn{padding:8px 14px;font-size:.8rem;min-height:40px;flex:none}
 </style>
 </head>
 <body>
@@ -113,7 +134,7 @@
       <div class="avatar-grid" id="introAvatars"></div>
       <div class="mini-grade" id="introGrade"></div>
       <button class="btn grape big" style="width:100%" onclick="saveIntro()">🚀 开始学习！</button>
-      <small style="display:block;color:#4A5162;margin-top:10px">进度保存在这台电脑上，随时可备份</small>
+      <small style="display:block;color:#4A5162;margin-top:10px">进度保存在这台设备上，随时可备份</small>
     </div>
   </section>
 
@@ -133,10 +154,19 @@
       <div style="flex:1;min-width:180px"><b>有单词到复习时间啦</b><div style="font-size:.8rem;color:#3F4658" id="revText"></div></div>
       <button class="btn coral" onclick="location.href='words.html?mode=review'">去复习</button>
     </div>
-    <div class="section-label">—— 🔤 自然拼读 · 见词能读 ——</div>
-    <div class="card" id="phCol" style="text-align:center"></div>
-    <div class="section-label">—— 或者去逛逛 ——</div>
-    <div class="big-islands" id="bigIslands"></div>
+    <div class="section-label">—— 阅读与游戏 ——</div>
+    <div class="home-quick">
+      <button type="button" class="hq-card" onclick="location.href='read.html'">
+        <span class="hq-e" aria-hidden="true">📚</span>
+        <span class="hq-t">读一本</span>
+        <span class="hq-s">120 本分级读物</span>
+      </button>
+      <button type="button" class="hq-card" onclick="location.href='games.html'">
+        <span class="hq-e" aria-hidden="true">🎮</span>
+        <span class="hq-t">玩一局</span>
+        <span class="hq-s">7 个复习游戏</span>
+      </button>
+    </div>
     <div class="foot-links">
       <a href="parents.html">👨‍👩‍👧 家长中心</a>·<a href="disclaimer.html">📋 声明</a>
     </div>
@@ -148,7 +178,8 @@
      所以不引 246KB 的 svg/word-svg.js。没图时会自动回退到表情 SVG，
      真要画词卡的页面（单词镇/课本/学堂/游戏/字母岛/语法）都还在引。 -->
 <script src="js/data.js?v=48"></script>
-<script src="js/app.js?v=195"></script>
+<script src="js/shell.js?v=1"></script>
+<script src="js/app.js?v=196"></script>
 <script src="js/phonics.js?v=14"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
@@ -239,11 +270,11 @@ function showHome() {
          ★（E2）同一屏下方还有一套「今日任务（字母 / 单词 / 游戏）」，两个
          「x/3」含义不同会让人以为矛盾 —— 标题里写明这是 Get Smart 的三步。 */
       const doneN = st.started ? [!st.gap, st.due === 0, st.games > 0].filter(Boolean).length : 0;
-      const head = st.started ? `Get Smart 三步 ${doneN}/3` : 'Get Smart 三步还没开始';
+      const head = st.started ? `Get Smart ${doneN}/3` : 'Get Smart 三步';
       fc.style.display = '';
       fc.innerHTML = `<div class="gs-catch" style="cursor:pointer" onclick="location.href='getsmart.html?flow=1'">
         <span style="font-size:30px">🚀</span>
-        <div style="flex:1"><b>今天学什么？${head}</b>
+        <div style="flex:1"><b>🎓 ${head}</b>
         <div style="font-size:.8rem;color:#3F4658">${parts.join(' · ')}</div></div>
         <button class="btn grape">开始 ▶</button></div>`;
     } catch (e) {}
@@ -265,58 +296,14 @@ function showHome() {
     `<span class="${tk.words ? 'tdone' : ''}">${tk.words ? '✅' : '⬜'} 🏘️ 练单词</span>` +
     `<span class="${tk.game ? 'tdone' : ''}">${tk.game ? '✅' : '⬜'} 🎮 玩游戏</span>`;
 
-  const islands = lettersFinished ? [
-    { e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html' },
-    { e:'🏫', n:'人教课本', d:'3-6 年级同步', href:'pep.html' },
-    { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
-    { e:'🔤', n:'自然拼读', d:'见词能读·听音能写', href:'phonics.html' },
-    { e:'📚', n:'读书馆', d:'120 本分级读物', href:'read.html' },
-    { e:'🚂', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
-    { e:'🎡', n:'游戏乐园', d:GAME_COUNT+'个游戏', href:'games.html' },
-    { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
-    { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },
-  ] : [
-    /* 还没学完字母时，字母岛提到第 2 位：这是起步期每天都要进的地方。
-       学完（lettersFinished）后它自动退到最后一位，让位给课本与语法。 */
-    { e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html' },
-    { e:'🏝️', n:'字母岛', d:letterN+'/26', href:'letters.html' },
-    { e:'🔤', n:'自然拼读', d:'见词能读·听音能写', href:'phonics.html' },
-    { e:'📚', n:'读书馆', d:'120 本分级读物', href:'read.html' },
-    { e:'🏫', n:'人教课本', d:'3-6 年级同步', href:'pep.html' },
-    { e:'🏘️', n:'单词镇', d:cumMasteredCount()+'/'+cumWordCount(), href:'words.html' },
-    { e:'🚂', n:'句子工厂', d:grammarDoneCount()+'/'+GRAMMAR_LEVELS.length, href:'grammar.html' },
-    { e:'🎡', n:'游戏乐园', d:GAME_COUNT+'个游戏', href:'games.html' },
-    { e:'👨‍👩‍👧', n:'家长中心', d:'进度报告', href:'parents.html' },
-  ];
-  document.getElementById('bigIslands').innerHTML = islands.map(i =>
-    `<button type="button" class="big-island" onclick="location.href='${i.href}'"><span class="bi-emoji" aria-hidden="true">${i.e}</span><b>${i.n}</b><small>${i.d}</small></button>`).join('');
-  renderPhonicsColumn();
+  /* 2026-11-22：首页原来在「继续学习」下面铺 9 个岛 + 18 个音素胶囊。
+     岛和底部导航、学习中心三处重复，音素胶囊又属于拼读课的速查工具，
+     全部挤在首页的结果是「主卡不再是主卡」。现在首页只留：
+     继续学习（唯一主操作）→ 今日任务 → 阅读/游戏两个换脑子的入口。
+     9 个模块入口统一在 learn.html，音素速查回到 phonics.html 顶部。 */
   maybeShowInstallHint(); // 手机浏览器：引导「添加到主屏幕」（可永久关闭）
 }
 
-/* ---------------- 自然拼读专栏（首页） ----------------
-   18 个音素 chip：5 个短元音 + 13 个拼读块，点按走 audio/phonics/ 母语者录音
-   （和拼读闯关同一套文件、同一个 phonicsURL()）。数字 26 / 13 / 24 分别等于
-   LETTERS.length / PH_BLOCKS.length / PHONICS.length，改数据要一起改文案。
-   2026-11-20.2：拼读课扩到 13 关（PH_LEVELS），本专栏仍是速查入口。 */
-function renderPhonicsColumn() {
-  const el = document.getElementById('phCol');
-  if (!el || typeof PH_BLOCKS === 'undefined') return;
-  const vowels = ['a', 'e', 'i', 'o', 'u'].map(v => {
-    const l = (typeof LETTERS !== 'undefined') ? LETTERS.find(x => x.L.toLowerCase() === v) : null;
-    const ipa = l ? l.szh.split(' ')[0] : '';
-    return `<button class="phc-chip" onclick="phPlayBlock('${v}')" title="点我听 ${v} 的音"><b>${v}</b><small>${esc(ipa)}</small></button>`;
-  }).join('');
-  const blocks = PH_BLOCKS.map(b =>
-    `<button class="phc-chip blk" onclick="phPlayBlock('${b.b}')" title="点我听 ${b.b} 的音"><b>${esc(b.b)}</b><small>${esc(b.ipa)}</small></button>`).join('');
-  el.innerHTML =
-    `<div class="phc-head"><b>🔤 自然拼读专栏</b><small>点一点就发音 · 和「拼读闯关」同一套母语者录音</small></div>
-     <div class="phc-steps"><span>① 字母音</span><span>→</span><span>② 短元音</span><span>→</span><span>③ 双辅音/连缀</span><span>→</span><span>④ 元音组合/魔法 e</span><span>→</span><span>⑤ 更多组合/同音异拼</span></div>
-     <div class="phc-chips">${vowels}${blocks}</div>
-     <div class="phc-cta" style="gap:10px;flex-wrap:wrap">
-       <button class="btn coral big" onclick="location.href='phonics.html'">进入拼读课 →</button>
-       <button class="btn mint big" onclick="location.href='read.html'">📚 去读书馆 →</button></div>`;
-}
 </script>
 </body>
 </html>

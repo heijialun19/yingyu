@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#4EC5F1">
 <meta name="description" content="孩子的学习进度报告、各年级词汇掌握情况、学习方法说明与家长使用建议。">
 <link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
@@ -17,7 +17,37 @@
 <title>家长中心 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/parents.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=55" onerror="this.onerror=null;this.href='css/style.css?v=55&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=56" onerror="this.onerror=null;this.href='css/style.css?v=56&amp;retry=1'">
+<style>
+/* 「我的」：孩子档案在最上 → 学习报告 → 家长工具（收起） → 说明（收起）
+   合并依据：Khan Kids / Lingokids / ABCmouse / Duolingo 都不把「家长中心」
+   做成一级 tab，而是放进「我的」并在前面放孩子档案。家长要的报告不是不存在，
+   而是不该和孩子的四个主入口平级。 */
+.mine-hero{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.mine-avatar{width:66px;height:66px;flex:none;border-radius:20px;background:linear-gradient(160deg,#EFF7FF,#F7F4FF);
+  border:1px solid #E4EBF5;display:flex;align-items:center;justify-content:center;font-size:36px}
+.mine-id{flex:1;min-width:150px}
+.mine-id b{display:block;font-size:1.22rem;letter-spacing:.2px}
+.mine-id span{display:block;font-size:.8rem;color:#6B7385;margin-top:3px}
+.mine-actions{display:flex;gap:8px;flex-wrap:wrap}
+.mine-actions .btn{padding:10px 16px;font-size:.84rem;min-height:44px}
+.mine-fold{margin:16px 0;border:1px solid #E9EEF6;border-radius:20px;background:#fff;overflow:hidden;box-shadow:0 2px 8px rgba(24,39,75,.04)}
+.mine-fold>summary{list-style:none;cursor:pointer;padding:16px 18px;font-weight:800;font-size:.95rem;
+  display:flex;align-items:center;gap:8px;min-height:54px}
+.mine-fold>summary::-webkit-details-marker{display:none}
+.mine-fold>summary span{font-weight:600;font-size:.72rem;color:#8A93A6;margin-left:auto}
+.mine-fold>summary::after{content:'▾';color:#8A93A6;margin-left:10px;transition:.15s;font-weight:700}
+.mine-fold[open]>summary::after{transform:rotate(180deg)}
+.mine-fold .section{margin:0;padding:0 10px 10px}
+.mine-fold .section .card{border:none;box-shadow:none;padding:10px 6px;border-radius:0}
+.mine-fold .section + .section{border-top:1px solid #F0F3F8}
+@media (max-width:720px){
+  .mine-hero{gap:12px}
+  .mine-avatar{width:58px;height:58px;font-size:31px;border-radius:18px}
+  .mine-actions{width:100%}
+  .mine-actions .btn{flex:1 1 auto}
+}
+</style>
 </head>
 <!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
 <body data-emoji="full">
@@ -42,22 +72,24 @@
   </div>
 <main>
   <div class="page-title">
-    <h1>👨‍👩‍👧 家长中心</h1>
-    <p>孩子的学习报告、本站的学习方法、使用建议，都在这里</p>
+    <h1>👤 我的</h1>
+    <p>孩子的档案与学习报告 · 家长工具都在这里</p>
   </div>
 
-  <!-- 年级设置 -->
   <section class="section">
-    <div class="card" style="border-color:var(--lemon)">
-      <h2>🎓 孩子的年级设置</h2>
-      <div class="grade-grid" id="gradeGrid"></div>
-      <p style="margin:12px 0 0;color:#3F4658;font-size:.82rem">
-        选好年级后：单词镇自动打开对应年级、游戏乐园优先抽该年级的词、句子工厂按年级分阶段。切换年级不会丢失学习进度。
-      </p>
+    <div class="card mine-hero">
+      <div class="mine-avatar" id="mineAvatar" aria-hidden="true">🐤</div>
+      <div class="mine-id">
+        <b id="mineName">小朋友</b>
+        <span id="mineMeta">正在读取…</span>
+      </div>
+      <div class="mine-actions">
+        <button class="btn grape" onclick="openProfileModal()">👤 切换 / 管理档案</button>
+        <button class="btn ghost" onclick="var d=document.getElementById('mineTools');d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'})">🧰 家长工具</button>
+      </div>
     </div>
   </section>
 
-  <!-- 学习总览 -->
   <section class="section">
     <div class="card">
       <h2>📊 学习总览 <small style="font-weight:400;color:#3F4658">当前档案：<b id="curProfileName"></b> · 词库共 <b id="totalWords"></b> 词（1-6 年级新课标范围）</small></h2>
@@ -90,6 +122,19 @@
   </section>
 
   <!-- 语音诊断 -->
+  <details class="mine-fold" id="mineTools">
+    <summary>🧰 家长工具<span>年级 · 备份 · 语音诊断</span></summary>
+  <section class="section">
+    <div class="card" style="border-color:var(--lemon)">
+      <h2>🎓 孩子的年级设置</h2>
+      <div class="grade-grid" id="gradeGrid"></div>
+      <p style="margin:12px 0 0;color:#3F4658;font-size:.82rem">
+        选好年级后：单词镇自动打开对应年级、游戏乐园优先抽该年级的词、句子工厂按年级分阶段。切换年级不会丢失学习进度。
+      </p>
+    </div>
+  </section>
+
+  <!-- 学习总览 -->
   <section class="section">
     <div class="card" style="border-color:var(--lake)">
       <h2>🔊 语音诊断与手机无声排查</h2>
@@ -112,6 +157,41 @@
   </section>
 
   <!-- 2026-11-12.2 · B4：音标口径说明（对应词卡音标旁的 ? 入口） -->
+  <section class="section">
+    <div class="card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="font-size:40px">🧰</div>
+      <div style="flex:1;min-width:220px">
+        <b>档案与数据管理</b>
+        <p style="margin:4px 0 0;color:#3F4658;font-size:.82rem">
+          每个小伙伴一份独立进度，保存在<b>这台设备</b>里，不上传、不收集任何信息。
+          换设备或防止丢失：点「档案管理」里的 <b>💾 备份与同步</b>，一步生成短码（发微信）和备份文件（下载存档），到新设备粘贴短码或选文件即可恢复。
+        </p>
+      </div>
+      <button class="btn grape" onclick="openProfileModal()">👤 档案管理（切换/新建/备份）</button>
+      <button class="btn coral" id="resetBtn">🗑️ 重置当前档案</button>
+    </div>
+  </section>
+
+  <!-- 版本 + 朗读诊断：排障用，孩子不会点进来 -->
+  <section class="card" id="diagBox" style="margin-top:18px;padding:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+      <b style="font-size:.95rem">🔧 版本与朗读诊断</b>
+      <span id="verLine" style="font-size:.78rem;color:#3F4658">…</span>
+    </div>
+    <p style="font-size:.76rem;color:#3F4658;margin:8px 0">
+      课本与课程的固定句子已配好整句音频，一次播完；只有没有预置音频的临时句子才会分段连读。
+      如果出现「念到一半停了」，把下面这段发给开发者，里面记着每一段是播完、失败还是没出声。
+    </p>
+    <pre id="audLog" style="max-height:220px;overflow:auto;background:#F7F9FC;border:1px solid #E3E8F0;border-radius:10px;padding:10px;font-size:.72rem;line-height:1.6;white-space:pre-wrap"></pre>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn ghost" type="button" id="audCopy">📋 复制诊断</button>
+      <button class="btn ghost" type="button" id="audClear">🧽 清空</button>
+    </div>
+  </section>
+  </details>
+
+  <details class="mine-fold">
+    <summary>📖 说明与依据<span>音标 · 学习方法 · 使用建议</span></summary>
   <section class="section">
     <div class="card" style="border-color:var(--lake)">
       <h2>🔤 音标为什么和课本长得不一样？</h2>
@@ -254,51 +334,33 @@
   </section>
 
   <!-- 数据管理 -->
-  <section class="section">
-    <div class="card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <div style="font-size:40px">🧰</div>
-      <div style="flex:1;min-width:220px">
-        <b>档案与数据管理</b>
-        <p style="margin:4px 0 0;color:#3F4658;font-size:.82rem">
-          每个小伙伴一份独立进度，保存在<b>这台电脑的浏览器</b>里，不上传、不收集任何信息。
-          换电脑或防止丢失：点「档案管理」里的 <b>💾 备份与同步</b>，一步生成短码（发微信）和备份文件（下载存档），到新设备粘贴短码或选文件即可恢复。
-        </p>
-      </div>
-      <button class="btn grape" onclick="openProfileModal()">👤 档案管理（切换/新建/备份）</button>
-      <button class="btn coral" id="resetBtn">🗑️ 重置当前档案</button>
-    </div>
-  </section>
+  </details>
 
   <footer style="text-align:center;color:#3F4658;font-size:.72rem;line-height:1.9;margin-top:30px">
     小鸟英语乐园 Birdie ABC · 本站为学习方法演示原型，内容供家庭学习参考
   </footer>
 
-  <!-- 版本 + 朗读诊断：排障用，孩子不会点进来 -->
-  <section class="card" id="diagBox" style="margin-top:18px;padding:16px">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
-      <b style="font-size:.95rem">🔧 版本与朗读诊断</b>
-      <span id="verLine" style="font-size:.78rem;color:#3F4658">…</span>
-    </div>
-    <p style="font-size:.76rem;color:#3F4658;margin:8px 0">
-      课本与课程的固定句子已配好整句音频，一次播完；只有没有预置音频的临时句子才会分段连读。
-      如果出现「念到一半停了」，把下面这段发给开发者，里面记着每一段是播完、失败还是没出声。
-    </p>
-    <pre id="audLog" style="max-height:220px;overflow:auto;background:#F7F9FC;border:1px solid #E3E8F0;border-radius:10px;padding:10px;font-size:.72rem;line-height:1.6;white-space:pre-wrap"></pre>
-    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn ghost" type="button" id="audCopy">📋 复制诊断</button>
-      <button class="btn ghost" type="button" id="audClear">🧽 清空</button>
-    </div>
-  </section>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#4A5162">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
 
 <script src="js/words-data.js?v=48"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
-<script src="js/app.js?v=195"></script>
+<script src="js/shell.js?v=1"></script>
+<script src="js/app.js?v=196"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>
 renderNav('parents'); renderDecor();
+/* 「我的」顶部档案卡：名字/头像/年级/连续天数/星星，一眼看到「我是谁」 */
+(function () {
+  const p = Profiles.active();
+  const av = document.getElementById('mineAvatar');
+  const nm = document.getElementById('mineName');
+  const mt = document.getElementById('mineMeta');
+  if (av) av.textContent = p.avatar || '🐤';
+  if (nm) nm.textContent = p.name || '小朋友';
+  if (mt) mt.textContent = myGrade().name + ' · 🔥 连续 ' + Store.d.streak.count + ' 天 · ⭐ ' + Store.d.stars + ' 颗星';
+})();
 document.getElementById('totalWords').textContent = TOTAL_WORDS;
 document.getElementById('curProfileName').textContent = Profiles.active().avatar + ' ' + Profiles.active().name;
 renderGradePicker('#gradeGrid');

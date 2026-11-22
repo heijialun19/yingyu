@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#4EC5F1">
 <meta name="keywords" content="小学英语,英语启蒙,自然拼读,拼读规则,字母音,自然拼读分级,免费" />
 <meta name="description" content="自然拼读分级闯关课：13 关从字母音到同音异拼，学→拼→读句→听音挑战一关一屏；定级测找起点，答满能量条才亮星（蒙不过去），过关收集彩蛋，家长学习报告。点按听母语者录音，断网也能学。">
@@ -18,7 +18,7 @@
 <title>自然拼读课 · 分级闯关 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/phonics.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=55" onerror="this.onerror=null;this.href='css/style.css?v=55&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=56" onerror="this.onerror=null;this.href='css/style.css?v=56&amp;retry=1'">
 <style>
 /* 拼读课页内样式（不进 style.css：只有这一页用） */
 /* ---- 关卡地图 ---- */
@@ -170,6 +170,56 @@
 .ph-tips{margin:12px 2px;font-size:.84rem;color:var(--ink2);line-height:1.85}
 .ph-tips ul{margin:6px 0 12px 18px}
 .ph-place-note{margin:8px 4px 2px;font-size:.78rem;color:var(--ink2);line-height:1.7}
+
+/* ---------- 课程屏（2026-11-22 两屏化） ----------
+   原来地图与课程同在一页，点一关就 smooth scroll 到页面底部：
+   390px 下这一页 4991px、320px 下 6592px，进去之后既不知道自己到了哪，
+   也不好回到地图。现在点关卡 → 收起地图，只留吸顶返回条 + 课程内容。 */
+.ph-lessonbar{display:none}
+body.ph-lesson .ph-lessonbar{
+  display:flex; align-items:center; gap:10px;
+  position:sticky; top:0; z-index:60;
+  margin:0 0 14px; padding:10px 12px;
+  background:rgba(255,255,255,.98);
+  border:1px solid #E9EEF6; border-radius:16px;
+  box-shadow:0 2px 10px rgba(24,39,75,.07);
+}
+@media (min-width:721px){ body.ph-lesson .ph-lessonbar{ top:84px; } }
+body.ph-lesson .page-title,
+body.ph-lesson #phGamesBanner,
+body.ph-lesson #phMapSection,
+body.ph-lesson #phReport,
+body.ph-lesson .ph-foot{ display:none !important; }
+body.ph-lesson #phStage{ margin-top:0; }
+.ph-lessonbar .ph-back{
+  flex:none; min-height:42px; padding:8px 14px;
+  border:1px solid #DCE4F0; background:#F4F8FE; color:var(--ink);
+  border-radius:999px; font:800 .86rem/1 inherit; cursor:pointer;
+  display:inline-flex; align-items:center; gap:4px;
+}
+.ph-lessonbar .ph-back:active{ transform:scale(.97); }
+.ph-lessonbar b{ font-size:.98rem; letter-spacing:.2px; }
+.ph-lessonbar .ph-lessonstep{ margin-left:auto; font-size:.74rem; color:#6B7385; font-weight:700; }
+
+/* 音素速查（折叠在地图卡里，键盘/屏幕阅读器都可达） */
+.ph-audio{margin:12px 0 4px;border:1px solid #E9EEF6;border-radius:16px;background:#FBFDFF;overflow:hidden}
+.ph-audio>summary{cursor:pointer;list-style:none;padding:12px 14px;font-weight:800;font-size:.88rem;min-height:46px;display:flex;align-items:center}
+.ph-audio>summary::-webkit-details-marker{display:none}
+.ph-audio>summary::after{content:'▾';margin-left:auto;color:#8A93A6;transition:.15s}
+.ph-audio[open]>summary::after{transform:rotate(180deg)}
+.ph-audio-note{margin:0 14px 8px;font-size:.76rem;color:#6B7385;line-height:1.65}
+.ph-audio-chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 14px 14px}
+.ph-audio-chips button{
+  min-width:54px; min-height:52px; padding:6px 10px; border-radius:14px;
+  border:1px solid #E1E8F3; background:#fff; font-family:inherit; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+}
+.ph-audio-chips button b{font-size:1.05rem;color:var(--ink)}
+.ph-audio-chips button small{font-size:.68rem;color:#6B7385;font-weight:700}
+.ph-audio-chips button.blk{background:#F7F4FF;border-color:#DED4FA}
+@media (max-width:720px){
+  body.ph-lesson .ph-lessonbar{ margin:-12px -12px 14px; border-radius:0; border-left:none; border-right:none; padding:10px 12px calc(10px + env(safe-area-inset-top) * 0); }
+}
 </style>
 </head>
 <!-- data-emoji="full"：词卡要画全量表情库的图（和游戏乐园同规格） -->
@@ -195,19 +245,24 @@
   </div>
 
   <!-- 交叉入口 -->
-  <div style="max-width:680px;margin:12px auto 4px;display:flex;align-items:center;gap:12px;background:#EDFAF0;border:3px solid var(--mint);border-radius:18px;padding:10px 16px;flex-wrap:wrap">
+  <div id="phGamesBanner" style="max-width:680px;margin:12px auto 4px;display:flex;align-items:center;gap:12px;background:#EDFAF0;border:3px solid var(--mint);border-radius:18px;padding:10px 16px;flex-wrap:wrap">
     <span style="font-size:22px">🎮</span>
     <b style="flex:1;min-width:160px;font-size:.9rem">学完来这里玩，越玩越熟</b>
     <button class="btn mint" onclick="location.href='games.html'" style="padding:8px 16px;font-size:.85rem">去「拼读闯关」→</button>
   </div>
 
   <!-- 关卡地图 -->
-  <section class="section">
+  <section class="section" id="phMapSection">
     <div class="card">
       <h2>🗺️ 拼读闯关地图 <small>点关卡进入，一次只学一关</small></h2>
       <div class="ph-map" id="phMap"></div>
       <div class="ph-eggs" id="phEggs"></div>
       <div class="ph-streak" id="phStreak"></div>
+      <details class="ph-audio">
+        <summary>🔈 音素速查 · 点一点就发音</summary>
+        <p class="ph-audio-note">5 个短元音 + 13 个常见拼读块，和闯关里是同一套母语者录音。拼读卡壳时来这里单听一个音。</p>
+        <div class="ph-audio-chips" id="phAudioChips"></div>
+      </details>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 4px 4px">
         <button class="btn orange" onclick="plStart()">🎯 先测一测，定个起点</button>
         <button class="btn ghost" onclick="phGo('report')">👨‍👩‍👧 家长学习报告</button>
@@ -218,6 +273,13 @@
       顺序按国际主流分级体系编排（先学最能拼出词的音），也支持自由跳关。定级测 8 题只找起点，答错没关系。</p>
     </div>
   </section>
+
+  <!-- 课程屏吸顶条：点关卡后地图收起，只留这一条 + 课程内容 -->
+  <div class="ph-lessonbar" id="phLessonBar" hidden>
+    <button type="button" class="ph-back" onclick="phBack()">← 地图</button>
+    <b id="phLessonTitle">拼读课</b>
+    <span class="ph-lessonstep" id="phLessonStep"></span>
+  </div>
 
   <!-- 关卡舞台：一次只显示一关 -->
   <section class="section" id="phStage"></section>
@@ -237,7 +299,8 @@
 <script src="js/words-data.js?v=48"></script>
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
-<script src="js/app.js?v=195"></script>
+<script src="js/shell.js?v=1"></script>
+<script src="js/app.js?v=196"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/phonics.js?v=14"></script>
@@ -1021,18 +1084,77 @@ function render() {
   else { mgReset(lv); mgPaint(); }
 }
 
+/* ---------------- 地图屏 ↔ 课程屏（2026-11-22 两屏化） ----------------
+   原来只有一屏：地图在上、当前关的课程在下，点关卡用 smooth scroll 跳到底部。
+   结果是 390px 下 4991px、320px 下 6592px 的长页 —— 孩子点进去之后不知道
+   自己在哪，也不好回地图。现在拆成两屏：
+     · 地图屏：选关（默认）
+     · 课程屏：只显示吸顶返回条 + 这一关的内容
+   返回走 history.back()，所以安卓返回键 / 浏览器后退键是「课程 → 地图」，
+   而不是直接离开页面。 */
+let PH_LESSON = false;
+function phEnterLesson(lv) {
+  PH_LESSON = true;
+  document.body.classList.add('ph-lesson');
+  const bar = document.getElementById('phLessonBar');
+  if (bar) bar.hidden = false;
+  const t = document.getElementById('phLessonTitle');
+  if (t) t.textContent = lv ? lv.name : '拼读课';
+  const step = document.getElementById('phLessonStep');
+  if (step && lv) {
+    const i = PH_LEVELS.findIndex(x => x.id === lv.id);
+    step.textContent = i >= 0 ? ('第 ' + (i + 1) + ' / ' + PH_LEVELS.length + ' 关') : '';
+  }
+}
+function phExitLesson(keepHistory) {
+  if (!PH_LESSON) return;
+  PH_LESSON = false;
+  document.body.classList.remove('ph-lesson');
+  const bar = document.getElementById('phLessonBar');
+  if (bar) bar.hidden = true;
+  if (!keepHistory) {
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  }
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+function phBack() {
+  if (history.state && history.state.ph) {
+    try { history.back(); return; } catch (e) {}
+  }
+  phExitLesson();
+}
+window.phBack = phBack;
+
+/* 壳内返回键：课程屏里先回地图，不要让 App 直接退出或回上一页 */
+if (window.Shell && Shell.onBack) {
+  Shell.onBack(function () {
+    if (!PH_LESSON) return false;
+    phExitLesson();
+    return true;
+  });
+}
+
 function phGo(id) {
   if (id === 'report') {
-    const el = document.getElementById('phReport');
-    if (el) window.scrollTo({ top: Math.max(0, el.offsetTop - 12), behavior: 'smooth' });
+    phExitLesson();
+    /* 退出课程屏会把地图显示回来，等一帧再算 offsetTop */
+    requestAnimationFrame(() => {
+      const el = document.getElementById('phReport');
+      if (el) window.scrollTo({ top: Math.max(0, el.offsetTop - 12), behavior: 'smooth' });
+    });
     return;
   }
   if (!PH_LEVELS.some(l => l.id === id)) id = 'L1';
+  const lv = PH_LEVELS.find(l => l.id === id);
+  const first = !PH_LESSON;
   CUR = id;
-  try { history.replaceState(null, '', '#' + id); } catch (e) { location.hash = id; }
   render();
-  const stage = document.getElementById('phStage');
-  if (stage) window.scrollTo({ top: Math.max(0, stage.offsetTop - 12), behavior: 'smooth' });
+  phEnterLesson(lv);
+  try {
+    if (first) history.pushState({ ph: id }, '', '#' + id);
+    else history.replaceState({ ph: id }, '', '#' + id);
+  } catch (e) { location.hash = id; }
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 window.phGo = phGo; window.mgPlaySound = mgPlaySound;
 
@@ -1156,6 +1278,13 @@ window.addEventListener('hashchange', () => {
   if (LEGACY[h]) h = LEGACY[h];
   if (h && h !== CUR && PH_LEVELS.some(l => l.id === h)) { CUR = h; render(); }
 });
+/* 安卓返回键 / 浏览器后退：课程屏 → 地图屏，不离开页面 */
+window.addEventListener('popstate', () => { phExitLesson(true); });
+/* 深链 #L3 直接进课程屏（和「点了这一关」表现一致） */
+(function initLessonDeepLink() {
+  const h = (location.hash || '').replace(/^#/, '');
+  if (PH_LEVELS.some(l => l.id === h)) phEnterLesson(PH_LEVELS.find(l => l.id === h));
+})();
 
 /* 预热 39 个音素（每个 3-5KB）：首屏画完再拉，点按零延迟 */
 window.addEventListener('load', () => {
@@ -1164,6 +1293,23 @@ window.addEventListener('load', () => {
     ks.forEach(k => { const a = new Audio(phonicsURL(k)); a.preload = 'auto'; });
   } catch (e) {}
 });
+
+/* ---------------- 音素速查（2026-11-22 从首页搬回） ----------------
+   首页原来铺 18 个音素胶囊，和「继续学习」抢注意力；但这是拼读卡壳时
+   最实用的工具，不能删。现在收进地图卡的折叠区：默认不占首屏，点开即用。
+   数字口径：5 个短元音 + PH_BLOCKS.length 个拼读块。 */
+(function () {
+  const el = document.getElementById('phAudioChips');
+  if (!el || typeof PH_BLOCKS === 'undefined') return;
+  const vowels = ['a', 'e', 'i', 'o', 'u'].map(v => {
+    const l = (typeof LETTERS !== 'undefined') ? LETTERS.find(x => x.L.toLowerCase() === v) : null;
+    const ipa = l ? l.szh.split(' ')[0] : '';
+    return `<button type="button" onclick="phPlayBlock('${v}')" title="点我听 ${v} 的音"><b>${v}</b><small>${esc(ipa)}</small></button>`;
+  }).join('');
+  const blocks = PH_BLOCKS.map(b =>
+    `<button type="button" class="blk" onclick="phPlayBlock('${b.b}')" title="点我听 ${b.b} 的音"><b>${esc(b.b)}</b><small>${esc(b.ipa)}</small></button>`).join('');
+  el.innerHTML = vowels + blocks;
+})();
 </script>
 </body>
 </html>
