@@ -19,6 +19,26 @@
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/games.html">
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="css/style.css?v=57" onerror="this.onerror=null;this.href='css/style.css?v=57&amp;retry=1'">
+<style>
+/* 听音选字母：进门先选「字母名 / 字母音」（2026-11-22.5） */
+.listen-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 4px}
+.lm-wrap{display:flex;flex-direction:column;gap:6px}
+.listen-mode{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:18px 16px;
+  border:2px solid #E4EBF5;border-radius:20px;background:#fff;cursor:pointer;font:inherit;
+  text-align:left;transition:.15s;min-height:136px;width:100%}
+.listen-mode:hover{border-color:var(--lake);transform:translateY(-2px)}
+.listen-mode:active{transform:scale(.985)}
+.listen-mode .lm-e{font-size:34px;line-height:1.1}
+.listen-mode .lm-t{font-size:1.08rem;font-weight:800}
+.listen-mode .lm-d{font-size:.78rem;color:#6B7385;line-height:1.7}
+.listen-mode .lm-d b{color:var(--ink)}
+.lm-try{align-self:center;border:none;background:none;color:#2F6EA8;font:700 .78rem/1 inherit;
+  cursor:pointer;padding:8px 10px;min-height:38px}
+@media (max-width:520px){
+  .listen-modes{grid-template-columns:1fr;gap:10px}
+  .listen-mode{min-height:0;padding:15px 14px}
+}
+</style>
 </head>
 <!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
 <body data-emoji="full">
@@ -27,7 +47,7 @@
     <h2>🎡 游戏乐园 · 7 个游戏（不依赖脚本）</h2>
     <p>所有游戏都用单词镇学过的词与拼读课学过的规则出题，题目和发音全部在站内，断网也能玩：</p>
     <ul style="line-height:1.9">
-      <li><b>👂 听音选字母</b>：听字母名或字母音，选出它。</li>
+      <li><b>👂 听音选字母</b>：先选「字母名」或「字母音」，再听音选出字母。</li>
       <li><b>🃏 图词翻翻乐</b>：翻开卡片，把图片和单词配对。</li>
       <li><b>🚂 拼词小火车</b>：把打乱的字母装回正确顺序。</li>
       <li><b>🧑‍🔧 句子火车员</b>：句子缺了一个词，你来补上。</li>
@@ -54,7 +74,7 @@
 <script src="js/data.js?v=48"></script>
 <script src="js/build-data.js?v=3"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=199"></script>
+<script src="js/app.js?v=200"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/grammar-engine.js?v=10"></script>
@@ -78,7 +98,7 @@ const learnedPool = () => Object.keys(Store.d.words).map(k => ALLW[k]).filter(Bo
    游戏清单提到模块级：页头文案、首页岛屿的数量都对得上，
    免得"写了 4 个却放着 5 个"这种错（真的发生过）。 */
 const GAMES = [
-    { id: 'listen',   emoji: '👂', name: '听音选字母', desc: '听字母名或字母音，选出它！', color: 'var(--lake)' },
+    { id: 'listen',   emoji: '👂', name: '听音选字母', desc: '先选字母名或字母音，再开始', color: 'var(--lake)' },
     { id: 'memory',   emoji: '🃏', name: '图词翻翻乐', desc: '翻开卡片，图片和单词配对', color: 'var(--grape)' },
     { id: 'scramble', emoji: '🚂', name: '拼词小火车', desc: '把打乱的字母装回正确的顺序', color: 'var(--orange)' },
     { id: 'sentence', emoji: '🧑‍🔧', name: '句子火车员', desc: '句子缺了个词，你来补上！', color: 'var(--mint)' },
@@ -156,15 +176,48 @@ function getPlayPool(mode, filter) {
   return pick(ok).words.filter(filter);
 }
 
-/* ---------------- 听音选字母（名字/读音双模式） ---------------- */
+/* ---------------- 听音选字母（先选模式，不再随机） ----------------
+   ★ 2026-11-22.5：用户反馈「一会出现字母音，一会出现自然拼读音」。
+     根因是旧版每局用 Math.random() 在「字母名 / 字母音」里随机挑一种，
+     孩子进去只能被动接受。现在进门先选，选完这一轮只考这一种。
+   ★ 两个概念必须分清：
+     字母名 = A 叫 /eɪ/，唱字母歌用的；字母音 = A 在 apple 里发 /æ/。
+     混着练会把两个系统搅在一起，所以选择页把例子直接写出来。 */
 function gListen() {
+  Flow.reset();
+  $('#app').innerHTML = `
+    <div class="card" style="max-width:680px;margin:0 auto;text-align:center">
+      <div class="score-bar"><b>👂 听音选字母</b><span>先选练哪一种</span></div>
+      <p style="font-size:.9rem;color:#3F4658;line-height:1.7;margin:10px 4px 2px">
+        字母有两个「身份」，练之前先选清楚今天的题目考哪一个：
+      </p>
+      <div class="listen-modes">
+        <div class="lm-wrap">
+          <button type="button" class="listen-mode" onclick="gListenStart('name')">
+            <span class="lm-e" aria-hidden="true">🔤</span>
+            <span class="lm-t">听字母名</span>
+            <span class="lm-d">像人的名字：<b>A 叫 /eɪ/</b><br>唱字母歌时用的就是它</span>
+          </button>
+          <button type="button" class="lm-try" onclick="speak('A')">🔊 试听 A 的名字</button>
+        </div>
+        <div class="lm-wrap">
+          <button type="button" class="listen-mode" onclick="gListenStart('sound')">
+            <span class="lm-e" aria-hidden="true">📢</span>
+            <span class="lm-t">听字母音</span>
+            <span class="lm-d">它在单词里的发音：<b>A 在 apple 里发 /æ/</b></span>
+          </button>
+          <button type="button" class="lm-try" onclick="playPhonics('A')">🔊 试听 A 的字母音</button>
+        </div>
+      </div>
+      <p style="font-size:.76rem;color:#8A93A6;margin:12px 4px 0">一轮 10 题，只考选中的那一种</p>
+      <div style="margin-top:12px">${gameHomeBtn()}</div>
+    </div>`;
+}
+
+function gListenStart(mode) {
   const total = 10;
   const S = { idx: 0, score: 0, first: true, qs: [] };
-  /* ★ 一轮只考一种（2026-11-08 用户反馈：两张截图一题「听字母名」一题「听字母音」，
-     而且旧版两题开头播的都是字母名 —— 孩子根本分不清这题在考什么。
-     现在一轮固定一种，题头大字写明；考完想换就再开一局。 */
-  const mode = Math.random() < 0.5 ? 'name' : 'sound';
-  const modeLabel = mode === 'name' ? '🔤 听字母名（例如 A 读 /eɪ/）' : '📢 听字母音（例如 A 读 /æ/）';
+  const modeLabel = mode === 'name' ? '🔤 这一轮考字母名（A 读 /eɪ/）' : '📢 这一轮考字母音（A 读 /æ/）';
   /* 字母音里 C 和 K 都是 /k/：sound 模式下同题出现 = 两个正确答案，孩子怎么选都"错"。
      出题时把同音的另一个字母排除掉。其余 24 个音各不相同。 */
   const SOUND_TWIN = { C: 'K', K: 'C' };
@@ -199,7 +252,10 @@ function gListen() {
           ${q.opts.map(o => `<button class="opt" onclick="listenAns(this,'${o.L}')" style="font-size:1.9rem">${o.L}${o.L.toLowerCase()}</button>`).join('')}
         </div>
         <div class="explain" id="lexp"></div>
-        <div style="margin-top:12px">${gameHomeBtn()}</div>
+        <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn ghost" onclick="gListen()">↔ 换一种</button>
+          ${gameHomeBtn()}
+        </div>
       </div>`;
     window._curQ = q;
     Flow.after(350, () => window._listenSay());
@@ -1275,7 +1331,7 @@ function endCard(emoji, line, stars) {
       <p style="font-size:1.05rem">获得 ${'⭐'.repeat(Math.min(stars, 10))}（${stars} 颗星星）</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:14px">
         <button class="btn mint big" onclick="renderHome()">再玩一个</button>
-        <button class="btn ghost big" onclick="location.href='index.html'">回首页</button>
+        <button class="btn ghost big" onclick="location.href='learn.html'">回学习页</button>
       </div>
     </div>`;
 }
