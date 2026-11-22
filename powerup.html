@@ -36,13 +36,26 @@
 .pep-book small{color:#4A5162;font-size:.72rem}
 .pep-tag{position:absolute;top:-8px;right:8px;background:var(--grape);color:#fff;font-size:.62rem;font-weight:800;border-radius:999px;padding:2px 8px}
 .pep-tag.old{background:#9CA3AF}
-.pep-unit{background:#fff;border:3px solid #E8EAF0;border-radius:22px;padding:14px 16px;margin-top:10px;box-shadow:0 4px 0 rgba(45,49,66,.06)}
+.pep-unit{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid #E8EAF0;
+  border-radius:16px;padding:10px 12px;margin-top:7px;box-shadow:0 2px 0 rgba(45,49,66,.05)}
 .pep-unit.done{border-color:var(--mint);background:#F2FBF5}
-.pep-unit .pu-main{width:100%}
-.pep-unit .pu-main b{display:block;font-size:1rem;line-height:1.4}
-.pep-unit .pu-main small{color:#4A5162;font-size:.78rem;display:block;margin-top:3px;line-height:1.5}
-.pep-btnrow{display:flex;gap:8px;margin-top:10px}
-.pep-btnrow .btn{flex:1;padding:10px 6px;font-size:.88rem;white-space:nowrap;min-width:0}
+/* 整块标题区就是「学习」按钮：原来三个按钮占一行，12 个单元要多滑一屏半 */
+.pep-unit .pu-main{flex:1;min-width:0;text-align:left;background:none;border:none;font:inherit;
+  cursor:pointer;padding:2px 0;display:block}
+.pep-unit .pu-main b{display:block;font-size:.95rem;line-height:1.4;color:var(--ink)}
+.pep-unit .pu-main small{color:#4A5162;font-size:.74rem;display:block;margin-top:2px;line-height:1.45;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pu-acts{display:flex;gap:6px;flex:none}
+.pu-act{width:44px;height:44px;border-radius:12px;border:1px solid #E4EBF5;background:#fff;
+  font-size:19px;line-height:1;cursor:pointer;transition:.12s;padding:0}
+.pu-act:active{transform:scale(.94)}
+.pep-note{margin-top:6px;border:1px solid #E9EEF6;border-radius:12px;background:#FBFDFF;overflow:hidden}
+.pep-note>summary{cursor:pointer;list-style:none;padding:9px 12px;font-size:.76rem;font-weight:700;color:#5A6274}
+.pep-note>summary::-webkit-details-marker{display:none}
+.pep-note>summary::after{content:'▾';float:right;color:#8A93A6}
+.pep-note[open]>summary::after{transform:rotate(180deg)}
+.pep-note p{margin:0;padding:0 12px 11px;font-size:.74rem;color:#4A5162;line-height:1.75}
+
 /* F1：白字压珊瑚只有 2.32–2.78，是全站点击率最高的控件之一。
    跟 .btn 一样换深墨蓝字，并把渐变提亮到能压住对比度（≈4.9）。 */
 .btn.spell{background:linear-gradient(135deg,#FFB08A,#FF8585);color:var(--ink);border:none;box-shadow:0 4px 0 #D96969;font-weight:800}
@@ -114,6 +127,7 @@
 .res-row b{flex:1;font-size:1rem}
 .res-row .rw{color:#4A5162;font-size:.8rem;flex:1;text-align:right}
 .res-row .rk{width:26px;text-align:center}
+.btn-sm{padding:7px 12px;font-size:.8rem;min-height:38px}
 </style>
 </head>
 <!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
@@ -125,7 +139,7 @@
 <main>
   <div class="page-title">
     <h1>🚀 Power Up 主题课程</h1>
-    <p>剑桥体系 · <b>6 级 72 单元 967 词</b> · 按 Power Up 1-6 的级别与主题编排 · 词表取自本站 999 词库</p>
+    <p><b>6 级 72 单元 967 词</b> · Pre A1 → B1 · 词表取自本站 999 词库</p>
   </div>
   <div id="app"><div id="bootPlaceholder" class="card" style="max-width:560px;margin:22px auto;text-align:center;padding:26px 18px"><div style="font-size:34px">🐤</div><p style="color:#4A5162;font-size:.9rem;margin:8px 0 0">正在打开，请稍等…</p></div></div>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#4A5162">📋 免责声明 · 隐私政策 · 使用条款</a></div>
@@ -155,7 +169,7 @@
 <script src="js/ipa.js?v=9"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=202"></script>
+<script src="js/app.js?v=203"></script>
 <script defer src="js/sentence.js?v=52"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <!-- 2026-11-12.3：课本页是唯一用到全部三块的页面；数据先载、工具后载。 -->
@@ -275,13 +289,14 @@ function renderLevels() {
   $('#app').innerHTML = `
     <button class="btn ghost" style="margin-bottom:12px" onclick="location.href='learn.html'">← 回学习</button>
     <div class="card" style="padding:16px 18px">
-      <b>选一册教材</b>
-      <div style="color:#4A5162;font-size:.82rem;margin-top:4px;line-height:1.8">
-        按剑桥 <b>Power Up 1-6</b> 的级别与主题体系编排的配套课程：每级 9 个正课 + 3 个复习，共 <b>72 单元 967 词</b>。
-        语法与话题按 <b>Pre A1 Starters → A1 Movers → A2 Flyers → A2 Key → B1 Preliminary</b> 的难度递进；
-        词表全部取自本站 999 词库，点开就能听发音、看音标、拆拼读、看记忆法。
-        <b style="color:#8A5A00">单元名与词表是本站在该体系上自编的配套内容，不是出版社教材的目录原文或逐词表。</b>
-      </div>
+      <b>选一册教材</b><span style="color:#8A93A6;font-size:.76rem;font-weight:600;margin-left:6px">6 级 · 72 单元 · 967 词</span>
+      <details class="pep-note">
+        <summary>这套课是什么 · 与出版社教材的关系</summary>
+        <p>按剑桥 Power Up 1-6 的级别与主题体系编排的配套课程：每级 9 个正课 + 3 个复习。
+        语法与话题按 Pre A1 Starters → B1 Preliminary 的难度递进；词表全部取自本站 999 词库。
+        <b style="color:#8A5A00">单元名与词表是本站在该体系上自编的配套内容，
+        不是出版社教材的目录原文或逐词表。</b></p>
+      </details>
       <div class="pep-grid" style="margin-top:12px">${cards}</div>
       <div style="text-align:center;margin-top:14px;font-size:.8rem">
         <a href="pep.html" style="color:#4A5162">🇨🇳 人教版课本 →</a>
@@ -304,14 +319,13 @@ function renderLevelHome() {
     const rec = Store.d.pu.done[u.id];
     const nPts = puPointsOf(u.id).length;
     return `<div class="pep-unit ${done ? 'done' : ''}">
-      <div class="pu-main">
+      <button class="pu-main" onclick="startLearn('${u.id}')">
         <b>${done ? '✅ ' : ''}${esc(u.title)}</b>
-        <small>${esc(u.zh)} · ${u.words.length} 词${nPts ? ' · ' + nPts + ' 个知识点' : ''}${rec && rec.pct ? ' · 拼词最好 ' + rec.pct + '%' : ''}</small>
-      </div>
-      <div class="pep-btnrow">
-        ${nPts ? `<button class="btn ghost" onclick="renderPoints('${u.id}')">💡 知识点</button>` : ''}
-        <button class="btn ghost" onclick="startLearn('${u.id}')">📖 学习</button>
-        <button class="btn spell" onclick="startSpell('${u.id}')">🚂 拼词</button>
+        <small>${esc(u.zh)} · ${u.words.length} 词${nPts ? ' · ' + nPts + ' 知识点' : ''}${rec && rec.pct ? ' · 拼词 ' + rec.pct + '%' : ''}</small>
+      </button>
+      <div class="pu-acts">
+        ${nPts ? `<button class="pu-act" title="知识点" aria-label="知识点" onclick="renderPoints('${u.id}')">💡</button>` : ''}
+        <button class="pu-act" title="拼词" aria-label="拼词" onclick="startSpell('${u.id}')">🚂</button>
       </div>
     </div>`;
   }).join('');
@@ -324,9 +338,11 @@ function renderLevelHome() {
           <div style="color:#4A5162;font-size:.8rem">${lv.units.length} 个单元 · ${totalWords} 词 · 已完成 ${puLevelProgress(lv)}</div>
           <div style="color:#2F6EA8;font-size:.76rem;margin-top:2px">🎯 参考水平：${esc(lv.exam)}</div></div>
       </div>
-      <button class="btn coral big" style="width:100%;margin-top:12px" onclick="startSpell('${lv.id}-all')">🚂 整册拼词大闯关（${totalWords} 词池${totalWords > 20 ? ' · 每轮 20 词' : ''}）</button>
     </div>
     ${units}
+    <div style="text-align:center;margin-top:14px">
+      <button class="btn ghost" onclick="startSpell('${lv.id}-all')">🚂 整册拼词（${totalWords} 词池${totalWords > 20 ? ' · 每轮 20 词' : ''}）</button>
+    </div>
     <div style="text-align:center;margin-top:14px"><a href="pep.html" style="color:#4A5162;font-size:.8rem">去 人教课本 →</a> · <a href="getsmart.html" style="color:#4A5162;font-size:.8rem">去 Get Smart →</a></div>`;
   /* 只预载「下一课」前 10 个词，等页面空闲再开始（跟 GS 学堂同一策略）——
      全册 107 词 × 150ms 的预热队列会占满手机带宽 16 秒，点什么都慢。
