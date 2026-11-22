@@ -35,16 +35,8 @@
 .ln-who > span{display:block;font-size:.76rem;color:#6B7385;margin-top:2px}
 .ln-who a{color:#5B3FD6;font-weight:700}
 
-/* 今日统计：一条真实数据带，不是任务清单 */
-.ln-today{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 2px 12px;
-  padding:11px 14px;border:1px solid #E9EEF6;border-radius:16px;background:rgba(255,255,255,.9);
-  font-size:.78rem;color:#5A6274}
-.ln-today b{color:var(--ink)}
-.ln-today .lt-dot{width:7px;height:7px;border-radius:999px;background:#6BCB77;flex:none}
-.ln-today .lt-item{background:#F4F8FD;border-radius:999px;padding:4px 9px;min-height:28px;
-  display:inline-flex;align-items:center}
-
-.ln-review{margin-top:14px;padding:12px 14px;gap:10px}
+.ln-card .cd-due{display:inline-flex;align-items:center;margin-top:5px;padding:3px 8px;
+  border-radius:999px;background:#FFF4E5;color:#A65A00;font-size:.68rem;font-weight:800}
 
 .ln-group{margin:24px 0 10px;font-size:.74rem;font-weight:800;color:#6B7385;letter-spacing:2px}
 .ln-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
@@ -92,18 +84,6 @@
       </div>
     </div>
 
-    <!-- 今日统计：读的是 Store.d.activity 的真实计数。
-         不写「继续学习」大卡：它算出来永远是单词镇，和下面卡片重复；
-         也不写三个空勾选框：那是装饰性的打卡感，不对应任何真实动作。 -->
-    <div class="ln-today" id="lnToday"></div>
-
-    <div class="card review-banner ln-review" id="lnReview" style="display:none">
-      <div style="font-size:30px">🔔</div>
-      <div style="flex:1;min-width:150px"><b>有单词到复习时间啦</b>
-        <div style="font-size:.8rem;color:#3F4658" id="lnReviewText"></div></div>
-      <button class="btn coral" onclick="location.href='words.html?mode=review'">去复习</button>
-    </div>
-
     <div class="ln-group">主课</div>
     <div class="ln-grid" id="lnMain"></div>
     <div class="ln-group">课本与表达</div>
@@ -115,7 +95,7 @@
 <script src="js/words-data.js?v=48"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=198"></script>
+<script src="js/app.js?v=199"></script>
 <script src="js/getsmart-data.js?v=19"></script>
 <script>
 renderNav('learn'); renderDecor();
@@ -130,39 +110,31 @@ renderNav('learn'); renderDecor();
   document.getElementById('lnAvatar').textContent = p.avatar || '🐤';
   document.getElementById('lnHello').textContent = '👋 ' + (p.name || '小朋友');
   const fresh = (!p.name || p.name === '小朋友') && !p.grade;
+
+  /* 今天做了什么：只用真实 activity 计数，并进 meta 一行，不单独占一块。
+     ★ 原来这里是「继续学习大卡 + 三个空勾选任务 + 今日统计条 + 复习提醒条」四块：
+       大卡永远指向单词镇、和课程卡重复；勾选框不对应任何动作；
+       统计条和 meta 重复；复习提醒在单词镇里本来就有一条。全部收掉。 */
+  const todayKey = (typeof todayStr === 'function') ? todayStr(0) : '';
+  const act = (Store.d.activity && Store.d.activity[todayKey]) || {};
+  const todayBits = [];
+  if (act.words) todayBits.push(`今天练了 ${act.words} 个词`);
+  if (act.books) todayBits.push(`读了 ${act.books} 页`);
+  if (act.letters) todayBits.push(`学了 ${act.letters} 个字母`);
+  if (act.games) todayBits.push(`玩了 ${act.games} 局`);
+
   document.getElementById('lnMeta').innerHTML = fresh
     ? `还没建档 · <a href="parents.html">去「我的」起个名字 →</a>`
-    : `${g.name} · 🔥 ${Store.d.streak.count} 天 · ⭐ ${Store.d.stars} · ` +
-      `<a href="parents.html">我的报告 →</a>`;
+    : `${g.name} · 🔥 ${Store.d.streak.count} 天 · ⭐ ${Store.d.stars}` +
+      (todayBits.length ? ` · ${todayBits[0]}` : '');
 
-  /* 今日统计：只用真实 activity 计数，没有就直说「还没开始」。
-     ★ 这里曾经是「继续学习大卡 + 三个空勾选任务」：前者永远指向单词镇，
-       和后课程卡重复；后者不绑定任何真实动作，是假打卡。删掉，不找补。 */
-  const today = (typeof todayStr === 'function') ? todayStr(0) : '';
-  const act = (Store.d.activity && Store.d.activity[today]) || {};
-  const items = [
-    act.words ? `练了 <b>${act.words}</b> 个词` : '',
-    act.books ? `读了 <b>${act.books}</b> 页` : '',
-    act.games ? `玩了 <b>${act.games}</b> 局` : '',
-    act.letters ? `学了 <b>${act.letters}</b> 个字母` : '',
-    act.grammar ? `过了 <b>${act.grammar}</b> 关` : '',
-  ].filter(Boolean);
-  document.getElementById('lnToday').innerHTML = items.length
-    ? `<span class="lt-dot"></span><b>今天</b>` + items.map(x => `<span class="lt-item">${x}</span>`).join('')
-    : `<span class="lt-dot" style="background:#C9D2DE"></span>今天还没开始 · 从下面选一门课`;
-
-  /* 复习提醒 */
-  const due = dueWords();
-  if (due.length) {
-    document.getElementById('lnReview').style.display = '';
-    document.getElementById('lnReviewText').textContent =
-      due.slice(0, 4).join('、') + (due.length > 4 ? ' 等 ' + due.length + ' 个' : '');
-  }
+  /* 待复习：显示在「单词镇」卡片上，不在学习页单独占一条横幅 */
+  const due = (typeof dueWords === 'function') ? dueWords() : [];
 
   /* 课程地图：读书馆是主课（用户明确要求），游戏不在这里——它是一级导航 */
   const C = {
     words:   { e:'🏘️', n:'单词镇', d:`${g.name} ${wDone}/${wAll} 个词`, href:'words.html',
-               now:wDone, all:wAll },
+               now:wDone, all:wAll, due: due.length },
     phonics: { e:'🔤', n:'自然拼读', d:'见词能读 · 听音能写', href:'phonics.html',
                now:0, all:0, tip:'13 关，从字母音到同音异拼' },
     letters: { e:'🏝️', n:'字母岛', d:`${lN}/26 个字母`, href:'letters.html', now:lN, all:26 },
@@ -179,6 +151,7 @@ renderNav('learn'); renderDecor();
       <span class="ce" aria-hidden="true">${c.e}</span>
       <span class="cn">${c.n}</span>
       <span class="cd">${esc(c.d)}</span>
+      ${c.due ? `<span class="cd-due">🔔 ${c.due} 个词待复习</span>` : ''}
       ${c.all
         ? `<span class="cp"><span class="cb"><i style="width:${pct}%"></i></span><span>${pct}%</span><span class="cgo">›</span></span>`
         : `<span class="cp"><span style="flex:1;font-weight:600;color:#8A93A6">${esc(c.tip || '')}</span><span class="cgo">›</span></span>`}
