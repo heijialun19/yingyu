@@ -35,27 +35,14 @@
 .ln-who > span{display:block;font-size:.76rem;color:#6B7385;margin-top:2px}
 .ln-who a{color:#5B3FD6;font-weight:700}
 
-/* 继续学习：整页唯一的主按钮 */
-.ln-next{display:flex;align-items:center;gap:14px;padding:20px 18px;border-radius:22px;
-  background:linear-gradient(135deg,#5B3FD6,#7C5CFF);color:#fff;border:none;
-  box-shadow:0 8px 22px rgba(91,63,214,.20);cursor:pointer;font:inherit;
-  text-align:left;width:100%;transition:transform .15s}
-.ln-next:active{transform:scale(.99)}
-.ln-next .ne{flex:none;font-size:44px;line-height:1}
-.ln-next .nb{flex:1;min-width:0}
-.ln-next .nb b{display:block;font-size:1.12rem;letter-spacing:.2px}
-.ln-next .nb span{display:block;font-size:.76rem;color:rgba(255,255,255,.86);margin-top:4px}
-.ln-next .nbar{height:7px;border-radius:999px;background:rgba(255,255,255,.26);margin-top:10px;overflow:hidden}
-.ln-next .nbar i{display:block;height:100%;border-radius:999px;background:#FFD93D}
-.ln-next .ngo{flex:none;width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,.18);
-  display:flex;align-items:center;justify-content:center;font-size:1.2rem}
-
-/* 今日三任务：一条细带，不是一张卡 */
-.ln-tasks{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 2px 0;
-  font-size:.76rem;color:#5A6274}
-.ln-tasks .tt{background:rgba(255,255,255,.85);border:1px solid #E9EEF6;
-  border-radius:999px;padding:7px 11px;min-height:34px;display:inline-flex;align-items:center}
-.ln-tasks .done{color:#3D7A4B;background:#F0FAF2;border-color:#CFE9D6;font-weight:700}
+/* 今日统计：一条真实数据带，不是任务清单 */
+.ln-today{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 2px 12px;
+  padding:11px 14px;border:1px solid #E9EEF6;border-radius:16px;background:rgba(255,255,255,.9);
+  font-size:.78rem;color:#5A6274}
+.ln-today b{color:var(--ink)}
+.ln-today .lt-dot{width:7px;height:7px;border-radius:999px;background:#6BCB77;flex:none}
+.ln-today .lt-item{background:#F4F8FD;border-radius:999px;padding:4px 9px;min-height:28px;
+  display:inline-flex;align-items:center}
 
 .ln-review{margin-top:14px;padding:12px 14px;gap:10px}
 
@@ -76,9 +63,6 @@
 @media (max-width:720px){
   .ln-hero{margin-top:0}
   .ln-avatar{width:48px;height:48px;font-size:27px;border-radius:16px}
-  .ln-next{padding:17px 15px;border-radius:20px;gap:11px}
-  .ln-next .ne{font-size:38px}
-  .ln-next .nb b{font-size:1.04rem}
   .ln-grid{gap:10px}
   .ln-card{padding:15px 13px 13px;border-radius:18px;min-height:124px}
   .ln-card .ce{font-size:30px;margin-bottom:4px}
@@ -108,17 +92,11 @@
       </div>
     </div>
 
-    <button type="button" class="ln-next" id="lnNext">
-      <span class="ne" id="lnNextE" aria-hidden="true">🏘️</span>
-      <span class="nb">
-        <b id="lnNextT">继续学习</b>
-        <span id="lnNextS"></span>
-        <span class="nbar"><i id="lnNextBar" style="width:0%"></i></span>
-      </span>
-      <span class="ngo" aria-hidden="true">▶</span>
-    </button>
+    <!-- 今日统计：读的是 Store.d.activity 的真实计数。
+         不写「继续学习」大卡：它算出来永远是单词镇，和下面卡片重复；
+         也不写三个空勾选框：那是装饰性的打卡感，不对应任何真实动作。 -->
+    <div class="ln-today" id="lnToday"></div>
 
-    <div class="ln-tasks" id="lnTasks"></div>
     <div class="card review-banner ln-review" id="lnReview" style="display:none">
       <div style="font-size:30px">🔔</div>
       <div style="flex:1;min-width:150px"><b>有单词到复习时间啦</b>
@@ -137,7 +115,7 @@
 <script src="js/words-data.js?v=48"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=197"></script>
+<script src="js/app.js?v=198"></script>
 <script src="js/getsmart-data.js?v=19"></script>
 <script>
 renderNav('learn'); renderDecor();
@@ -157,29 +135,21 @@ renderNav('learn'); renderDecor();
     : `${g.name} · 🔥 ${Store.d.streak.count} 天 · ⭐ ${Store.d.stars} · ` +
       `<a href="parents.html">我的报告 →</a>`;
 
-  /* 唯一主操作：按「下一步该做什么」决定，不铺满入口 */
-  const lettersFinished = Store.d.lettersSkip || lN >= 26;
-  const nextLetter = (!lettersFinished && lN > 0) ? LETTERS.find(l => !Store.d.letters[l.L]) : null;
-  let step;
-  if (wDone < wAll) step = { e:'🏘️', t:'单词闯关', s:`${g.name}词库 · 已掌握 ${wDone}/${wAll}`,
-                             href:'words.html?mode=plan', now:wDone, all:wAll };
-  else if (grDone < grAll) step = { e:'🚂', t:'句子工厂', s:`已通过 ${grDone}/${grAll} 关`,
-                             href:'grammar.html', now:grDone, all:grAll };
-  else if (nextLetter) step = { e:'🏝️', t:`学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}`,
-                             s:'故事 + 拼读', href:'letters.html', now:lN, all:26 };
-  else step = { e:'🎮', t:'去游戏乐园复习', s:'边玩边巩固', href:'games.html', now:0, all:0 };
-  document.getElementById('lnNextE').textContent = step.e;
-  document.getElementById('lnNextT').textContent = step.t;
-  document.getElementById('lnNextS').textContent = step.s;
-  document.getElementById('lnNextBar').style.width = (step.all ? Math.round(step.now/step.all*100) : 100) + '%';
-  document.getElementById('lnNext').onclick = () => { location.href = step.href; };
-
-  /* 今日三任务（不是导航，是打卡） */
-  const tk = Store.d.daily.tasks;
-  const letterOn = (typeof dailyLetterApplicable === 'function') ? dailyLetterApplicable() : (lN > 0 && lN < 26);
-  const t = (on, done, label) => `<span class="tt ${on && done ? 'done' : ''}">${on ? (done ? '✅ ' : '⬜ ') : '➖ '}${label}</span>`;
-  document.getElementById('lnTasks').innerHTML =
-    t(letterOn, tk.letter, '学字母') + t(true, tk.words, '练单词') + t(true, tk.game, '玩游戏');
+  /* 今日统计：只用真实 activity 计数，没有就直说「还没开始」。
+     ★ 这里曾经是「继续学习大卡 + 三个空勾选任务」：前者永远指向单词镇，
+       和后课程卡重复；后者不绑定任何真实动作，是假打卡。删掉，不找补。 */
+  const today = (typeof todayStr === 'function') ? todayStr(0) : '';
+  const act = (Store.d.activity && Store.d.activity[today]) || {};
+  const items = [
+    act.words ? `练了 <b>${act.words}</b> 个词` : '',
+    act.books ? `读了 <b>${act.books}</b> 页` : '',
+    act.games ? `玩了 <b>${act.games}</b> 局` : '',
+    act.letters ? `学了 <b>${act.letters}</b> 个字母` : '',
+    act.grammar ? `过了 <b>${act.grammar}</b> 关` : '',
+  ].filter(Boolean);
+  document.getElementById('lnToday').innerHTML = items.length
+    ? `<span class="lt-dot"></span><b>今天</b>` + items.map(x => `<span class="lt-item">${x}</span>`).join('')
+    : `<span class="lt-dot" style="background:#C9D2DE"></span>今天还没开始 · 从下面选一门课`;
 
   /* 复习提醒 */
   const due = dueWords();
