@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-22.8';
+const BUILD = '2026-11-22.9';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -556,7 +556,12 @@ function renderGradePicker(sel) {
 const AUDIO_VER = 6;
 /* 2026-11-15.5：个别词的发音单独重修过（pe 原来只读 "P"；with 孤立发音只有 0.174s）。
    用 &f=1 只让这几个文件失效——不动 AUDIO_VER，否则 2912 个词全部重下。 */
-const AUDIO_FIX = new Set(['pe', 'with']);
+/* 重做过、需要让老缓存失效的单词音频。加进来只会让这几个文件的 URL 变形，
+   其余 3000 多个词一个字节都不重下。
+   pe / with：早期版本尾音含混，重录过。
+   hi：裸词被 G2P 读成字母 I（ASR 实测 "I."），改用 "Hi!" 合成后才读 /haɪ/。
+   yes：结尾 /s/ 齿音过锐（6–8kHz 占 37%），做过 -3.5dB 柔化 + 10kHz 低通。 */
+const AUDIO_FIX = new Set(['pe', 'with', 'hi', 'yes']);
 const __audioFixQS = k => (AUDIO_FIX.has(k) ? '&f=1' : '');
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
@@ -1826,7 +1831,37 @@ const SENTENCE_AUDIO = new Set([
   "you_can_say_both_say_them_one_after_the_other", "you_can_say_both_say_them_together", "you_can_say_both_say_them_together_and_keep_the_ow_the_same", "you_can_say_it_well", "you_can_say_it_well_try_this_long_one", "you_can_say_it_well_try_this_long_one_and_read_it_to_the_end",
   "you_can_say_tree", "you_can_see_ants_on_the_grass_they_are_small_but_they_are_always_at_work", "you_can_see_it_in_one_tree_watch_it_all_year", "you_can_see_it_in_one_tree_watch_it_all_year_and_you_will_see_the_change", "you_have_courage_grandma_says_one_word_is_easy_ming_says", "you_have_to_wear_a_space_suit",
   "you_must_be_quiet_in_class", "you_must_not_smoke_here", "you_must_return_the_book_on_time", "you_mustn_t_shout_in_the_library", "you_need_a_way_to_measure_this_way_is_simple_and_you_can_do_it_too", "you_should_exercise_every_day",
-  "you_should_not_eat_too_much_junk_food", "you_should_shake_hands_when_you_meet", "you_should_take_some_medicine", "you_shouldn_t_stay_up_late", "you_will_get_better_soon", "your_wish_will_come_true"
+  "you_should_not_eat_too_much_junk_food", "you_should_shake_hands_when_you_meet", "you_should_take_some_medicine", "you_shouldn_t_stay_up_late", "you_will_get_better_soon", "your_wish_will_come_true",
+
+  /* Power Up 主题课程 156 条整句（2026-11-22.9 补齐）：
+     原来只有 6 条命中，其余 150 条走「逐词接龙」= 一个词一个词蹦。
+     现在全部有整句 mp3，规格与站内 7140 条逐字节同源（probe 校验过）。 */
+  "i_m_lucy", "what_s_your_name", "nice_to_meet_you", "this_is_my_pen", "what_s_this_it_s_a_ruler", "put_it_in_your_bag_please",
+  "this_is_my_mum", "these_are_my_brothers", "i_love_my_family", "i_have_three_red_pens", "how_many_books_five", "two_blue_birds_are_in_the_tree",
+  "the_cow_says_moo", "it_has_four_legs", "i_like_the_little_pig", "i_don_t_like_candy", "milk_is_good_for_you", "this_is_my_teddy_bear",
+  "i_have_a_big_ball", "let_s_play_together", "i_can_jump", "let_s_go_to_the_park", "i_can_see_the_sun", "it_s_fun",
+  "we_are_reading", "where_is_the_glue", "it_s_on_the_desk", "he_is_my_uncle", "she_is_wearing_a_hat", "they_are_my_cousins",
+  "how_many_books_fifteen", "there_are_twenty_chairs", "count_from_one_to_twenty", "the_fox_has_a_long_tail", "owls_sleep_in_the_day", "frogs_can_swim_too",
+  "i_am_wearing_a_red_hat", "put_on_your_coat", "these_are_my_socks", "i_d_like_some_soup", "would_you_like_some_candy", "noodles_are_yummy",
+  "there_are_two_windows", "my_lamp_is_on_the_table", "it_s_sunny_let_s_play_outside", "put_on_your_coat_it_s_cold", "i_can_see_a_cloud_like_a_sheep", "i_can_swim_fast",
+  "let_s_play_football", "i_like_riding_my_bike", "on_monday_i_have_english", "what_do_you_do_on_saturday", "i_get_up_at_seven_o_clock", "what_s_for_breakfast",
+  "i_eat_noodles_every_morning", "pass_me_the_spoon_please", "you_should_rest_and_drink_water", "take_this_medicine_twice_a_day", "yesterday_we_saw_a_hippo_in_the_jungle", "the_monkey_was_very_funny",
+  "was_it_dangerous", "why_are_you_sad", "because_my_team_lost_the_game", "don_t_worry_we_can_try_again", "turn_left_at_the_bank", "the_museum_is_next_to_the_park",
+  "how_do_i_get_to_the_library", "my_aunt_is_a_pilot", "she_works_at_a_big_company", "what_does_your_father_do", "there_was_a_river_near_my_school", "the_stars_are_bright_tonight",
+  "look_at_that_tall_mountain", "i_go_to_school_by_bus", "the_train_is_faster_than_the_bus", "how_long_does_it_take", "i_like_art_best_of_all", "we_have_pe_on_monday_and_friday",
+  "science_is_interesting_but_hard", "my_birthday_is_in_april", "it_s_half_past_three", "what_s_the_date_today", "the_whale_is_the_largest_animal_in_the_sea", "dolphins_are_very_smart",
+  "whales_breathe_air_not_water", "it_will_be_stormy_tomorrow", "take_an_umbrella_with_you", "the_temperature_is_15_degrees", "i_have_to_wash_the_dishes", "she_makes_the_bed_every_morning",
+  "i_always_clean_my_room_on_sunday", "she_is_kind_to_everyone", "he_never_gives_up", "a_friend_who_is_honest_is_a_real_friend", "this_t_shirt_is_too_expensive", "how_much_is_this_hat",
+  "we_are_going_to_the_beach_by_car", "don_t_forget_your_suitcase", "i_can_t_wait_to_see_the_sea", "there_is_a_concert_on_tv_tonight", "i_painted_a_picture_of_my_family", "music_makes_me_happy",
+  "we_must_protect_the_earth", "don_t_throw_rubbish_in_the_sea", "recycling_saves_energy", "this_box_is_heavy_but_small", "it_s_made_of_wood", "the_bag_is_light_and_cheap",
+  "how_often_do_you_exercise", "stay_healthy_and_strong", "exercise_makes_your_body_strong", "go_along_this_street_then_turn_right", "it_s_far_from_my_home", "is_it_near_the_park",
+  "she_plays_the_violin_in_the_school_band", "our_band_plays_every_friday", "practice_makes_the_music_beautiful", "i_sent_you_an_email", "don_t_forget_the_subject_line", "write_back_soon",
+  "i_want_to_be_a_scientist", "study_hard_for_your_dream", "every_job_is_important", "both_festivals_are_about_family", "we_celebrate_with_a_big_party", "christmas_is_a_festival_in_the_west",
+  "people_in_france_speak_french", "i_d_love_to_travel_abroad", "every_country_has_its_own_flag", "learning_english_takes_practice", "i_will_review_my_notes_tonight", "never_forget_to_ask_why",
+  "everyone_must_follow_the_rules", "volunteers_clean_the_park_together", "rules_protect_everyone", "it_was_brave_of_him_to_speak_first", "patient_people_make_good_teachers", "helpful_students_are_always_welcome",
+  "phones_are_cheaper_than_before", "screens_are_bigger_this_year", "don_t_spend_too_much_time_on_screens", "we_recycle_so_that_we_protect_the_earth", "fresh_air_matters_to_everyone", "small_actions_make_a_big_change",
+  "i_used_to_lose_my_keys", "the_city_has_changed_a_lot", "change_starts_with_a_small_step", "if_it_costs_too_much_i_won_t_buy_it", "make_a_list_before_you_shop", "needs_come_before_wants",
+  "have_you_ever_been_abroad", "every_culture_has_its_own_festivals", "be_curious_not_judgemental", "my_goal_is_to_pass_the_b1_exam", "practice_makes_perfect", "plan_your_work_then_work_your_plan",
 ]);
 const sentenceAudioURL = t => {
   const k = audioSlug(t);

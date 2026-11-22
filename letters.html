@@ -34,7 +34,6 @@
     <b>P</b> paper 纸 · <b>Q</b> queen 女王 · <b>R</b> run 跑 · <b>S</b> sun 太阳 ·
     <b>T</b> talk 说话 · <b>U</b> up 向上 · <b>V</b> van 面包车 · <b>W</b> water 水 ·
     <b>X</b> X-ray X 光 · <b>Y</b> yes 是的 · <b>Z</b> zoo 动物园。</p>
-    <p>学完字母音，去「自然拼读课」从 L1 开始练见词能读。</p>
   </section>
 </noscript>
   <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
@@ -47,18 +46,10 @@
     <p>26 个字母的象形故事 · <b style="color:#96281B">红</b>=元音 · <b style="color:#124E66">蓝</b>=辅音</p>
   </div>
 
-  <div style="max-width:680px;margin:0 auto 6px;display:flex;align-items:center;gap:12px;background:#EDFAF0;border:3px solid var(--mint);border-radius:18px;padding:10px 16px;flex-wrap:wrap">
-    <span style="font-size:22px">🎓</span>
-    <b style="flex:1;min-width:160px;font-size:.9rem">已经会 26 个字母了？</b>
-    <button class="btn mint" onclick="skipLetters()" style="padding:8px 16px;font-size:.85rem">我会字母了，直接学单词 →</button>
-  </div>
-
-  <!-- 2026-11-14.7：学完字母音的自然下一步是拼单词（拼读课），不是背单词 -->
-  <div style="max-width:680px;margin:6px auto 6px;display:flex;align-items:center;gap:12px;background:#F4EFFF;border:3px solid var(--grape);border-radius:18px;padding:10px 16px;flex-wrap:wrap">
-    <span style="font-size:22px">🔤</span>
-    <b style="flex:1;min-width:160px;font-size:.9rem">字母音都会了？去拼读课，把它们拼成单词</b>
-    <button class="btn grape" onclick="location.href='phonics.html'" style="padding:8px 16px;font-size:.85rem">去拼读课 →</button>
-  </div>
+  <!-- 2026-11-22.9：删掉顶部两个「去单词镇 / 去拼读课」banner。
+       字母岛本身就是一门课，一进来先看两个「去别处」的按钮，等于告诉孩子
+       「这里不重要」。需要跳级的人，第 26 个字母学完会看到「去单词镇 →」；
+       要换课的人从「学习」页选，不需要在每页顶部重复导航。 -->
 
   <!-- 字母选格 -->
   <section class="section">
@@ -78,7 +69,7 @@
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=203"></script>
+<script src="js/app.js?v=204"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>

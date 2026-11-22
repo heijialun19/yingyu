@@ -167,7 +167,7 @@
 <script src="js/ipa.js?v=9"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=203"></script>
+<script src="js/app.js?v=204"></script>
 <script defer src="js/sentence.js?v=52"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/pep-data.js?v=3"></script>
@@ -407,7 +407,7 @@ function renderPoints(uid) {
       <button class="btn grape big" onclick="startLearn('${u.id}')">📖 学会了，去学单词</button>
       <button class="btn spell big" onclick="startSpell('${u.id}')">🚂 直接去拼词</button>
     </div>
-    <div style="margin-top:12px;text-align:center"><button class="btn ghost" onclick="location.href='games.html'">🎮 玩个游戏换换脑子</button></div>`;
+    `;
   /* 知识点卡一屏好几张，等于「下几页」：本单元例句先备好，再带上下一单元头两句。 */
   const ahead = pts.map(p => p.en).filter(Boolean).slice(0, 6);
   const units = (u.lv && u.lv.units) || [];
@@ -697,7 +697,7 @@ function spellFinish() {
         <button class="btn grape big" onclick="startSpell('${u.id}')">🔄 再拼一遍</button>
         <button class="btn ghost big" onclick="renderLevelHome()">🏠 回单元列表</button>
       </div>
-      <div style="margin-top:12px"><button class="btn" style="width:100%;background:#6366F1;color:#fff" onclick="location.href='games.html'">🎮 去游戏乐园再巩固一轮</button></div>
+      
     </div>`;
 }
 function startSpellWrong() {
