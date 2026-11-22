@@ -72,7 +72,10 @@
   background:#FBF8FF;border:2px solid #E8E3F5;border-radius:16px;cursor:pointer;transition:.12s}
 .bk-prew:hover{border-color:var(--grape);background:#F5F0FF}
 .bk-prew.said{border-color:var(--leaf);background:#EFF9F1}
-.bk-preart{font-size:38px;line-height:1.15}
+.bk-preart{font-size:22px;line-height:1.15;display:flex;align-items:center;justify-content:center;min-height:54px}
+.bk-preart .wsvg{width:52px;height:52px}
+.bk-preart .emj{font-size:38px;line-height:1}
+.bk-preart .wtile{font-size:30px}
 .bk-prew b{font-size:1.15rem;color:var(--ink)}
 .bk-prew small{font-size:.8rem;color:var(--ink2)}
 .bk-prehint{margin:14px 4px 2px;font-size:.86rem;color:var(--ink2)}
@@ -128,7 +131,8 @@
 .hero.compact .sub{display:none}
 </style>
 </head>
-<body>
+<!-- data-emoji="full"：读前词卡要和单词镇画同一套图，必须取全量表情库 -->
+<body data-emoji="full">
 <noscript>
   <section class="card" style="margin-top:18px">
     <h2>📚 读书馆 · 120 本分级读物（不依赖脚本）</h2>
@@ -196,8 +200,9 @@
 
 <script src="js/words-data.js?v=48"></script>
 <script src="js/data.js?v=48"></script>
+<script src="svg/word-svg.js?v=7"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=200"></script>
+<script src="js/app.js?v=201"></script>
 <script src="js/books-data.js?v=29"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
@@ -518,6 +523,44 @@ function paintPage() {
 }
 
 /* ============ 读前看图说词 ============ */
+/* ★ 2026-11-22.6：读前词卡的图案原来直接用 books-data 里的 `w.art`（手填 emoji）。
+   两个问题：① 和单词镇不是一套图 —— 单词镇走 wordIcon()，优先内置 SVG；
+   ② 424 个词只用了 113 个图案，68 个图案被多个词共用（b32 的 stone/sand/rock/wind
+   全是 🌿，b13 的 fat/afraid 都是 ✨）。
+   现在：词库里有的词，一律用单词镇同一个 wordIcon()（连 emoji 为空也照旧走自绘 SVG）；
+   词库里没有的 66 个词，用下面这张 PRE_ART 表给它们各自不重复的图案。 */
+const PRE_ART = {
+  clap:'👏', hold:'🤲', animal:'🐾', ground:'🧱', box:'📦', fat:'🍔', mud:'🍫',
+  pot:'🍲', lid:'🥣', bun:'🍞', jam:'🍯', pin:'📌', nut:'🌰', turn:'🔄',
+  cheese:'🧀', king:'👑', thin:'📏', path:'🛤️', snail:'🐚', bug:'🦋', soft:'🧸',
+  piece:'🧩', break:'🔨', chip:'🍟', fun:'🎉', dish:'🍽', shed:'🏠', pond:'💧',
+  basket:'🧺', empty:'⬜', gate:'🚪', stem:'🌿', spin:'🔄', seed:'🌱', tail:'🐕',
+  chain:'🔗', nice:'😊', room:'🪑', smell:'👃', feed:'🥣', note:'📝', hole:'⭕',
+  wheat:'🌾', oven:'🍳', bake:'🍪', board:'📋', cape:'🦸', rise:'🌅', heat:'🔥',
+  search:'🔍', winter:'🧊', touch:'🫳', mid:'⏳', night:'🌃', shout:'📢', wheel:'🎡',
+  shadow:'👤', mark:'🪶', ago:'⏰', tool:'🔧', toward:'👉', knock:'🚪', problem:'❓',
+  reason:'💭', pace:'🎵', brain:'🧠',
+};
+const PRE_BANK = (() => {
+  const m = {};
+  try {
+    GRADES.forEach(g => g.themes.forEach(t => t.words.forEach(w => {
+      const k = String(w.w || '').toLowerCase();
+      if (k && !m[k]) m[k] = w;
+    })));
+  } catch (e) {}
+  return m;
+})();
+function preArt(p) {
+  const k = String(p.en || '').toLowerCase();
+  const rec = PRE_BANK[k];
+  /* 词库里的词严格跟随单词镇：e 为空也传空，让它走 WORD_SVG，不要退回手填 emoji */
+  const emo = rec ? (rec.e || '') : (PRE_ART[k] || p.art || '📘');
+  const word = { w: p.en, e: emo, zh: p.zh || (rec && rec.zh) || '' };
+  try { if (typeof wordIcon === 'function') return wordIcon(word); } catch (e) {}
+  return `<span class="emj" aria-hidden="true">${esc(emo || '📘')}</span>`;
+}
+
 function paintPre() {
   const stage = document.getElementById('bkStage');
   stage.innerHTML = `
@@ -525,7 +568,7 @@ function paintPre() {
       <div class="bk-pretitle">👀 先看词卡，听一遍</div>
       <div class="bk-pregrid">
         ${CUR.pre.map(w => `<button class="bk-prew" data-w="${esc(w.en)}">
-            <span class="bk-preart">${w.art || '📘'}</span>
+            <span class="bk-preart">${preArt(w)}</span>
             <b>${esc(w.en)}</b><small>${esc(w.zh)}</small></button>`).join('')}
       </div>
       ${CUR.trap ? `<div class="bk-trap">🔈 <b>发音提示</b> ${esc(CUR.trap)}</div>` : ''}
