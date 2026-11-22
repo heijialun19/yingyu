@@ -691,7 +691,8 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
   .bottom-nav {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
-    display: grid; grid-template-columns: repeat(4, 1fr) 1.15fr; gap: 4px;
+    /* 四格刚好等于四个一级栏目，没有第 5 格「头像+星星」 */
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
     /* ★ 2026-11-11.11（A4）原 .97 半透明，滚动时下层卡片文字会隐约透出来。
        底栏不需要透出任何东西，直接给不透明白。 */
     background: #fff;
@@ -708,7 +709,14 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
     border: 2px solid transparent; transition: .15s;
     background: none; font-family: inherit; cursor: pointer;
   }
-  .bnav .nav-emoji { font-size: 24px; }
+  .bnav .nav-emoji { font-size: 24px; position: relative; display: inline-block; }
+  /* 星星并入「我的」角标，不再是第五格 */
+  .bnav-star{
+    position:absolute; top:-7px; right:-15px; min-width:18px; padding:1px 4px;
+    border-radius:999px; background:#FF9F45; color:#fff; text-align:center;
+    font:800 .56rem/1.3 system-ui,-apple-system,"Microsoft YaHei",sans-serif;
+    font-style:normal; box-shadow:0 1px 4px rgba(180,90,20,.32);
+  }
   .bnav:active { transform: scale(.94); }
   /* F2：原 #E85D5D 压 #FFF1F1 只有 3.10，低于 AA 4.5。 */
   .bnav.on { color: #B3261E; background: #FFF1F1; border-color: #FFD9D9; }

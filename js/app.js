@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-22.1';
+const BUILD = '2026-11-22.2';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -3134,27 +3134,26 @@ function renderNav(activeId) {
 
   /* 底部栏（手机端 App 风格，桌面端由 CSS 隐藏）：5 个常用页面 + 「我的」，
      档案/星星/声音都收在底部，顶部完全让给内容 */
-/* 手机底栏只放 4 格 + 档案（2026-11-22 从 8 格收回来）。
-   ★ 为什么必须收：8 格在 320px 上每格只有 40px，字被压成一条缝；
-     更要紧的是「单词 / 课本 / 学堂 / 语法 / 游戏」全是并列入口，
-     等于让 6 岁的孩子每开一次 App 先做一次分类决策。
-     现在只留「首页 / 学习 / 读书馆 / 家长」，其余收进 learn.html 总入口。
-     ⚠️ 这是全站唯一一处信息架构改动：加回任何一格之前先想清楚它是不是
-        「每天都要点」的，否则一律进「学习」。 */
+/* 底部栏最终定为 4 格：学习 / 读书馆 / 游戏 / 我的（2026-11-22.2）。
+   ★ 为什么去掉「首页」：首页的「继续学习 / 今日任务 / 阅读游戏入口」
+     和这四格几乎一一重复，孩子进来先看见一遍入口、再点一遍导航。
+     现在「学习」页就是首页：顶部是继续学习 + 今日任务，下面是课程地图。
+   ★ 为什么没有第 5 格头像+星星：那实际上是把「我的」拆成两格。
+     星星改成「我的」图标右上角的小角标，档案入口在「我的」页顶部。
+   ★ 加回任何一格之前先问：它是不是「每天都要点」且无法被这四格覆盖？ */
 const TABS = [
-    { id: 'index',   href: 'index.html',   emoji: '🏠', label: '首页' },
     { id: 'learn',   href: 'learn.html',   emoji: '🎯', label: '学习' },
+    { id: 'read',    href: 'read.html',    emoji: '📚', label: '读书馆' },
     { id: 'games',   href: 'games.html',   emoji: '🎮', label: '游戏' },
-    { id: 'parents', href: 'parents.html', emoji: '👤', label: '我的' },
+    { id: 'parents', href: 'parents.html', emoji: '👤', label: '我的', stars: true },
   ];
   document.body.insertAdjacentHTML('beforeend', `
     <nav class="bottom-nav" aria-label="底部导航">
-      ${TABS.map(n => `<a class="bnav ${n.id === activeId ? 'on' : ''}" href="${n.href}"><span class="nav-emoji">${n.emoji}</span>${n.label}</a>`).join('')}
-      <button class="bnav bnav-me" id="bnavProfile" title="小伙伴档案（切换/新建/备份/声音/改年级）">
-        <span class="nav-emoji">${Profiles.active().avatar}</span><span class="bnav-stars">⭐<b id="navStarsBtm">${Store.d.stars}</b></span>
-      </button>
+      ${TABS.map(n => `<a class="bnav ${n.id === activeId ? 'on' : ''}" href="${n.href}">
+        <span class="nav-emoji">${n.emoji}${n.stars ? `<i class="bnav-star" id="navStarsBtm">${Store.d.stars}</i>` : ''}</span>
+        <span class="bnav-label">${n.label}</span>
+      </a>`).join('')}
     </nav>`);
-  $('#bnavProfile').addEventListener('click', openProfileModal);
 }
 
 /* 手机端底栏的声音开关（桌面仍用顶栏 🔊 按钮） */
@@ -3172,8 +3171,7 @@ function updateNavStats() {
   if (sb) sb.textContent = Store.d.stars;
   if (pr) pr.textContent = Profiles.active().name;
   if (pb) pb.innerHTML = Profiles.active().avatar + ' <b id="navProfile">' + esc(Profiles.active().name) + '</b>';
-  const me = $('#bnavProfile');
-  if (me) me.querySelector('.nav-emoji').textContent = Profiles.active().avatar;
+
 }
 
 function renderDecor() {

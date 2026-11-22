@@ -27,7 +27,7 @@
 </script>
 <title>小鸟英语乐园 · 一年级英语启蒙</title>
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=56" onerror="this.onerror=null;this.href='css/style.css?v=56&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=57" onerror="this.onerror=null;this.href='css/style.css?v=57&amp;retry=1'">
 <style>
 .hello-line{text-align:center;color:#3F4658;font-size:.9rem;margin:4px 0 14px}
 .hello-line b{color:var(--ink)}
@@ -114,7 +114,7 @@
       <p>全部发音是站内音频，不依赖外网；学习进度只保存在本机浏览器，不上传、不注册。
       本站与人教社、MM Publications 无隶属或授权关系。</p>
       <p><b>站点地图：</b>
-        <a href="letters.html">字母岛</a> · <a href="phonics.html">自然拼读</a> · <a href="words.html">单词镇</a> ·
+        <a href="learn.html">学习主页</a> · <a href="parents.html">建档 / 我的</a> · <a href="letters.html">字母岛</a> · <a href="phonics.html">自然拼读</a> · <a href="words.html">单词镇</a> ·
         <a href="grammar.html">句子工厂</a> · <a href="games.html">游戏乐园</a> ·
         <a href="pep.html">人教课本</a> · <a href="getsmart.html">Get Smart</a> ·
         <a href="parents.html">家长中心</a> · <a href="disclaimer.html">声明</a></p>
@@ -126,51 +126,7 @@
   <div id="bootPlaceholder" class="card" style="max-width:560px;margin:22px auto;text-align:center;padding:26px 18px"><div style="font-size:34px">🐤</div><p style="color:#4A5162;font-size:.9rem;margin:8px 0 0">正在打开，请稍等…</p></div>
   <!-- 语义标题：视觉上不需要（孩子看的是图），但读屏器和搜索引擎需要一个 h1 -->
   <h1 class="sr-only">小鸟英语乐园 —— 小学英语单词、句子与发音练习</h1>
-  <section id="welcome" style="display:none">
-    <div class="card welcome-only">
-      <div style="font-size:64px">🐤</div>
-      <h2 style="justify-content:center;margin:4px 0 12px">你好呀！我是啾啾</h2>
-      <input id="myName" class="mini-input" type="text" placeholder="写上你的名字" maxlength="10">
-      <div class="avatar-grid" id="introAvatars"></div>
-      <div class="mini-grade" id="introGrade"></div>
-      <button class="btn grape big" style="width:100%" onclick="saveIntro()">🚀 开始学习！</button>
-      <small style="display:block;color:#4A5162;margin-top:10px">进度保存在这台设备上，随时可备份</small>
-    </div>
-  </section>
 
-  <div id="home" style="display:none">
-    <div class="hello-line" id="helloLine"></div>
-    <div class="card main-card" id="mainCard">
-      <div class="main-emoji" id="mcEmoji">🏝️</div>
-      <div class="main-title" id="mcTitle">继续学习</div>
-      <div class="main-sub" id="mcSub"></div>
-      <div class="main-progress"><i id="mcBar" style="width:0%"></i></div>
-      <button class="btn coral big" id="mcBtn">▶ 点这里开始</button>
-    </div>
-    <div class="task-strip" id="taskStrip"></div>
-    <div id="gsFlowCard" style="display:none;margin-top:14px"></div>
-    <div class="review-banner" id="reviewBanner" style="display:none">
-      <div style="font-size:34px">🔔</div>
-      <div style="flex:1;min-width:180px"><b>有单词到复习时间啦</b><div style="font-size:.8rem;color:#3F4658" id="revText"></div></div>
-      <button class="btn coral" onclick="location.href='words.html?mode=review'">去复习</button>
-    </div>
-    <div class="section-label">—— 阅读与游戏 ——</div>
-    <div class="home-quick">
-      <button type="button" class="hq-card" onclick="location.href='read.html'">
-        <span class="hq-e" aria-hidden="true">📚</span>
-        <span class="hq-t">读一本</span>
-        <span class="hq-s">120 本分级读物</span>
-      </button>
-      <button type="button" class="hq-card" onclick="location.href='games.html'">
-        <span class="hq-e" aria-hidden="true">🎮</span>
-        <span class="hq-t">玩一局</span>
-        <span class="hq-s">7 个复习游戏</span>
-      </button>
-    </div>
-    <div class="foot-links">
-      <a href="parents.html">👨‍👩‍👧 家长中心</a>·<a href="disclaimer.html">📋 声明</a>
-    </div>
-  </div>
 </main>
 
 <script src="js/words-data.js?v=48"></script>
@@ -179,131 +135,20 @@
      真要画词卡的页面（单词镇/课本/学堂/游戏/字母岛/语法）都还在引。 -->
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=196"></script>
+<script src="js/app.js?v=197"></script>
 <script src="js/phonics.js?v=14"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/getsmart-data.js?v=19"></script>
 <script>
-renderNav('index'); renderDecor();
-
+/* 2026-11-22.2：index.html 只做分流，不再有自己的界面。
+   学习页就是主页；首次建档归位到「我的」页 —— 新用户先去那里起名字。
+   noscript 静态摘要保留给搜索引擎与关 JS 的家长。 */
 (function () {
   const p = Profiles.active();
-  const ready = p.name !== '小朋友' || p.grade;
-  if (ready) { showHome(); return; }
-  document.getElementById('welcome').style.display = '';
-  document.getElementById('home').style.display = 'none';
-  let pick = '🐤', grade = 'g1';
-  const selectAvatar = b => {
-    document.querySelectorAll('#introAvatars .avatar-chip').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on'); pick = b.dataset.a; sfx.pop();
-  };
-  document.getElementById('introAvatars').innerHTML = AVATARS.map(a => avatarChipHtml(a, a === pick)).join('');
-  document.querySelectorAll('#introAvatars .avatar-chip').forEach(b =>
-    b.onclick = () => {
-      const wasLocked = !!b.dataset.price;
-      avatarTap(b); // 带星星的头像会先走解锁流程
-      if (wasLocked && b.dataset.price) return; // 星不够或取消了，不选中
-      selectAvatar(b);
-    });
-  document.getElementById('introGrade').innerHTML = GRADES.map(g =>
-    `<button data-g="${g.id}" class="${g.id===grade?'on':''}">${g.emoji}${g.name}</button>`).join('');
-  document.querySelectorAll('#introGrade button').forEach(b =>
-    b.onclick = () => { document.querySelectorAll('#introGrade button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); grade=b.dataset.g; sfx.pop(); });
-  window.saveIntro = function () {
-    const name = (document.getElementById('myName').value || '').trim() || '小朋友';
-    Profiles.updateActive({ name, avatar: pick });
-    setGrade(grade, true);
-    sfx.win(); confetti();
-    setTimeout(() => location.reload(), 700);
-  };
+  const fresh = (!p.name || p.name === '小朋友') && !p.grade;
+  location.replace(fresh ? 'parents.html' : 'learn.html');
 })();
-
-function showHome() {
-  document.getElementById('welcome').style.display = 'none';
-  document.getElementById('home').style.display = '';
-  const p = Profiles.active();
-  document.getElementById('helloLine').innerHTML =
-    `👋 <b>${esc(p.name)}</b> · <a id="gradeLink" title="点击切换年级">🎓${myGrade().name}</a> · 🔥${Store.d.streak.count}天 · ⭐${Store.d.stars}`;
-  document.getElementById('gradeLink').onclick = openProfileModal;
-
-  /* 推荐逻辑：单词闯关是绝对主线——字母小朋友基本都会，不再主动推。
-     主卡顺序：单词 → 句子工厂 → 学字母（仅「自己已经开始学」的孩子）→ 游戏。
-     「正在学字母」= 自己在字母岛学过 1-25 个，且没点过「我会字母了」。 */
-  const letterN = letterCount();
-  const lettersFinished = Store.d.lettersSkip || letterN >= 26;
-  const inLettersPhase = !lettersFinished && letterN > 0;
-  const nextLetter = inLettersPhase ? LETTERS.find(l => !Store.d.letters[l.L]) : null;
-  const gradeDone = cumMasteredCount(), gradeAll = cumWordCount();
-  let step;
-  if (gradeDone < gradeAll) step = { e:'🏘️', t:'单词闯关', s:`${myGrade().name}词库：已掌握 ${gradeDone}/${gradeAll}`, href:'words.html?mode=plan', now:gradeDone, all:gradeAll };
-  else if (grammarDoneCount() < GRAMMAR_LEVELS.length) step = { e:'🏭', t:'句子工厂闯关', s:`已通过 ${grammarDoneCount()}/${GRAMMAR_LEVELS.length} 关`, href:'grammar.html', now:grammarDoneCount(), all:GRAMMAR_LEVELS.length };
-  else if (nextLetter) step = { e:'🏝️', t:`学字母 ${nextLetter.L}${nextLetter.L.toLowerCase()}`, s:`${nextLetter.shape} · 故事+拼读`, href:'letters.html', now:letterN, all:26 };
-  else step = { e:'🎡', t:'去游戏乐园复习', s:'边玩边巩固', href:'games.html', now:0, all:0 };
-  document.getElementById('mcEmoji').textContent = step.e;
-  document.getElementById('mcTitle').textContent = step.t;
-  document.getElementById('mcSub').textContent = step.s;
-  document.getElementById('mcBar').style.width = (step.all ? Math.round(step.now/step.all*100) : 100) + '%';
-  /* 主卡：既是按钮就得让键盘也能按（原来只有 onclick，Tab 走不到） */
-  const mcEl = document.getElementById('mainCard');
-  mcEl.onclick = () => location.href = step.href;
-  mcEl.setAttribute('role', 'button');
-  mcEl.setAttribute('tabindex', '0');
-  mcEl.setAttribute('aria-label', step.t + '——' + step.s);
-  mcEl.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); location.href = step.href; } };
-
-  /* 今日任务流卡片：补课 / 复习 / 游戏三步，跟着档案走 */
-  const fc = document.getElementById('gsFlowCard');
-  if (fc && typeof gsFlowState === 'function') {
-    try {
-      const st = gsFlowState();
-      /* E2：没开始时 gap/due 是「空」，原来被无条件写成 ✅，
-         和标题「还没开始」同屏打架。未开始一律空框，不冒充已完成。 */
-      const parts = st.started
-        ? [st.gap ? '📖 补课：' + st.gap.title : '📖 补课 ✅',
-           st.due > 0 ? '🔔 复习 ' + st.due + ' 词' : '🔔 复习 ✅',
-           st.games > 0 ? '🎮 游戏 ✅' : '🎮 玩一局']
-        : ['点下面的「开始」，先补第一课'];
-      /* ★ 2026-11-11.11（E1）新档案不该被告知「已完成」：没数据时 gap 和 due
-         都是「空」，原来把两个空都算成做完，于是填完名字就显示 2/3。
-         现在只有 started 才计数，否则写「还没开始」。
-         ★（E2）同一屏下方还有一套「今日任务（字母 / 单词 / 游戏）」，两个
-         「x/3」含义不同会让人以为矛盾 —— 标题里写明这是 Get Smart 的三步。 */
-      const doneN = st.started ? [!st.gap, st.due === 0, st.games > 0].filter(Boolean).length : 0;
-      const head = st.started ? `Get Smart ${doneN}/3` : 'Get Smart 三步';
-      fc.style.display = '';
-      fc.innerHTML = `<div class="gs-catch" style="cursor:pointer" onclick="location.href='getsmart.html?flow=1'">
-        <span style="font-size:30px">🚀</span>
-        <div style="flex:1"><b>🎓 ${head}</b>
-        <div style="font-size:.8rem;color:#3F4658">${parts.join(' · ')}</div></div>
-        <button class="btn grape">开始 ▶</button></div>`;
-    } catch (e) {}
-  }
-
-  const due = dueWords();
-  if (due.length) {
-    document.getElementById('reviewBanner').style.display = '';
-    document.getElementById('revText').textContent = due.slice(0,4).join('、') + (due.length>4?' 等 '+due.length+' 个':'');
-  }
-
-  /* 今日三任务：完成打勾，三个全完成奖励 5 颗星星 */
-  const tk = Store.d.daily.tasks;
-  /* ★（E1）字母这一项只在孩子真的在学字母时才算数，否则显示「选学」而不是勾选 */
-  const letterOn = (typeof dailyLetterApplicable === 'function') ? dailyLetterApplicable() : (letterN > 0 && letterN < 26);
-  document.getElementById('taskStrip').innerHTML =
-    `<span>📋 今日任务</span>` +
-    `<span class="${letterOn && tk.letter ? 'tdone' : ''}">${letterOn ? (tk.letter ? '✅ 学字母' : '⬜ 学字母') : '➖ 字母·选学'}</span>` +
-    `<span class="${tk.words ? 'tdone' : ''}">${tk.words ? '✅' : '⬜'} 🏘️ 练单词</span>` +
-    `<span class="${tk.game ? 'tdone' : ''}">${tk.game ? '✅' : '⬜'} 🎮 玩游戏</span>`;
-
-  /* 2026-11-22：首页原来在「继续学习」下面铺 9 个岛 + 18 个音素胶囊。
-     岛和底部导航、学习中心三处重复，音素胶囊又属于拼读课的速查工具，
-     全部挤在首页的结果是「主卡不再是主卡」。现在首页只留：
-     继续学习（唯一主操作）→ 今日任务 → 阅读/游戏两个换脑子的入口。
-     9 个模块入口统一在 learn.html，音素速查回到 phonics.html 顶部。 */
-  maybeShowInstallHint(); // 手机浏览器：引导「添加到主屏幕」（可永久关闭）
-}
-
 </script>
 </body>
 </html>
