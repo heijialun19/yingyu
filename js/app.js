@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-22.6';
+const BUILD = '2026-11-22.7';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -3100,6 +3100,7 @@ const NAV_ITEMS = [
   { id: 'learn',   href: 'learn.html',   emoji: '🎯', label: '学习' },
   { id: 'words',   href: 'words.html',   emoji: '🏘️', label: '单词镇' },
   { id: 'pep',     href: 'pep.html',     emoji: '🏫', label: '人教课本' },
+  { id: 'powerup', href: 'powerup.html', emoji: '🚀', label: 'Power Up' },
   { id: 'getsmart', href: 'getsmart.html', emoji: '🎓', label: 'Get Smart' },
   { id: 'grammar', href: 'grammar.html', emoji: '🏭', label: '句子工厂' },
   { id: 'read',    href: 'read.html',    emoji: '📚', label: '读书馆' },

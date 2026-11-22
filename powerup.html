@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#4EC5F1">
+<meta name="description" content="Power Up 体系主题课程：6 级 72 单元 967 词，按剑桥 Power Up 1-6 的级别与主题编排，语法话题对标 Pre A1 Starters 到 B1 Preliminary；看图听音、知识点讲解、拼词闯关，词表复用站内 999 词库的音频、音标与记忆法。">
+<meta name="keywords" content="剑桥英语,Power Up,剑桥少儿英语,Starters,Movers,Flyers,A2 Key,B1 Preliminary,小学英语单词,英语拼词,剑桥英语体系">
+<link rel="canonical" href="https://heijialun19.github.io/yingyu/powerup.html">
+<link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<title>Power Up 主题课程 · 拼词复习 · 小鸟英语乐园</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Power Up 主题课程 · 拼词复习 · 小鸟英语乐园">
+<meta property="og:description" content="按剑桥 Power Up 1-6 编排的 6 级 72 单元 967 词主题课程，语法话题对标 Pre A1 Starters 到 B1 Preliminary。">
+<meta property="og:image" content="https://heijialun19.github.io/yingyu/og-cover.png">
+<meta property="og:url" content="https://heijialun19.github.io/yingyu/powerup.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="css/style.css?v=57" onerror="this.onerror=null;this.href='css/style.css?v=57&amp;retry=1'">
+<style>
+/* ---- Power Up 专栏样式（与人教页同一套视觉组件） ---- */
+.pep-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+/* 自绘课本封面卡：书脊 + 教材标识 + 大字册名（原创设计，不复制教材封面图） */
+.pb-cover{position:relative;width:96px;height:128px;margin:0 auto 8px;border-radius:5px 12px 12px 5px;box-shadow:2px 5px 10px rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;padding:8px 6px 8px 16px;transition:.15s}
+.pb-cover::before{content:'';position:absolute;left:5px;top:0;bottom:0;width:5px;background:rgba(0,0,0,.24);border-radius:2px}
+.pb-cover .pb-pub{font-size:.58rem;font-weight:800;letter-spacing:2px;opacity:.95;margin-bottom:4px}
+.pb-cover .pb-g{font-size:1rem;font-weight:800;line-height:1.3;text-align:center}
+.pb-cover .pb-e{font-size:24px;margin-top:5px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
+.pep-book{background:#fff;border:3px solid var(--sky2);border-radius:20px;padding:14px 10px;text-align:center;cursor:pointer;transition:.15s;position:relative}
+.pep-book:hover{transform:translateY(-3px);border-color:var(--lemon)}
+.pep-book.on{border-color:var(--grape);background:#F6F1FF}
+.pep-book:hover .pb-cover{transform:translateY(-3px) rotate(-1deg)}
+.pep-book b{display:block;font-size:.95rem;margin-top:2px}
+.pep-book b{display:block;font-size:.95rem;margin-top:2px}
+.pep-book small{color:#4A5162;font-size:.72rem}
+.pep-tag{position:absolute;top:-8px;right:8px;background:var(--grape);color:#fff;font-size:.62rem;font-weight:800;border-radius:999px;padding:2px 8px}
+.pep-tag.old{background:#9CA3AF}
+.pep-unit{background:#fff;border:3px solid #E8EAF0;border-radius:22px;padding:14px 16px;margin-top:10px;box-shadow:0 4px 0 rgba(45,49,66,.06)}
+.pep-unit.done{border-color:var(--mint);background:#F2FBF5}
+.pep-unit .pu-main{width:100%}
+.pep-unit .pu-main b{display:block;font-size:1rem;line-height:1.4}
+.pep-unit .pu-main small{color:#4A5162;font-size:.78rem;display:block;margin-top:3px;line-height:1.5}
+.pep-btnrow{display:flex;gap:8px;margin-top:10px}
+.pep-btnrow .btn{flex:1;padding:10px 6px;font-size:.88rem;white-space:nowrap;min-width:0}
+/* F1：白字压珊瑚只有 2.32–2.78，是全站点击率最高的控件之一。
+   跟 .btn 一样换深墨蓝字，并把渐变提亮到能压住对比度（≈4.9）。 */
+.btn.spell{background:linear-gradient(135deg,#FFB08A,#FF8585);color:var(--ink);border:none;box-shadow:0 4px 0 #D96969;font-weight:800}
+.btn.spell:hover{filter:brightness(1.05)}
+/* 学习卡 */
+.pep-bigword{text-align:center;padding:8px 0 2px}
+/* 词图统一走 wordIcon：.wsvg=2.2em 容器、.emj=字体 emoji、.wtile=字母徽章。
+   这里把基准字号给够（44px），三类图标都会等比放大且互不重叠；
+   固定最小高度，避免不同类型图标切换时布局跳动。 */
+.pep-bigword .pw-ic{font-size:44px;line-height:1.15;min-height:112px;display:flex;align-items:center;justify-content:center}
+.pep-bigword .pw-word{font-size:2rem;font-weight:800;letter-spacing:.5px;margin:4px 0 0;background:none;border:none;cursor:pointer;font-family:inherit;color:var(--ink)}
+.pep-bigword .pw-ipa{color:#4A5162;font-size:1rem;min-height:1.3em}
+.pep-bigword .pw-zh{font-size:1.05rem;color:#374151;margin-top:2px}
+/* 拼词 */
+.spell-progress{height:12px;background:#EEF3F8;border-radius:999px;overflow:hidden;margin:8px 0 4px}
+.spell-progress i{display:block;height:100%;background:linear-gradient(90deg,#FF8A5C,#FF6B6B);border-radius:999px;transition:.3s}
+.spell-stage{text-align:center;padding:4px 0}
+.spell-stage .sp-ic{font-size:38px;line-height:1.15;min-height:96px;display:flex;align-items:center;justify-content:center}
+.spell-stage .sp-zh{font-size:1.15rem;font-weight:700;margin-top:2px}
+.spell-stage .sp-speaker{margin-top:6px}
+.spell-slots{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:14px 0 6px;min-height:64px}
+.slot{min-width:46px;height:56px;padding:0 10px;border:3px solid #E3E7F0;border-radius:12px;background:#FAFBFE;display:flex;align-items:center;justify-content:center;font-size:1.35rem;font-weight:800;cursor:pointer;position:relative;white-space:nowrap}
+.slot .hint{position:absolute;bottom:4px;width:18px;height:3px;border-radius:2px;background:#D5DAE6}
+.slot.filled{background:#FFF7DA;border-color:var(--lemon)}
+.slot.ok{background:#F2FBF5;border-color:var(--mint)}
+.slot.bad{background:#FFEDEF;border-color:var(--pink);animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.spell-tiles{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tile{min-width:52px;height:54px;padding:0 12px;border:3px solid #E3E7F0;border-radius:14px;background:#fff;font-family:inherit;font-size:1.3rem;font-weight:800;color:var(--ink);cursor:pointer;transition:.12s;box-shadow:0 3px 0 rgba(45,49,66,.08)}
+.tile:hover{border-color:var(--lemon);transform:translateY(-2px)}
+.tile.used{opacity:.25;pointer-events:none}
+.tile.glint{animation:glint 0.9s infinite}
+@keyframes glint{0%,100%{border-color:#E3E7F0}50%{border-color:var(--grape);background:#F6F1FF}}
+.spell-tip{text-align:center;color:#4A5162;font-size:.8rem;margin-top:8px;min-height:1.2em}
+/* 知识点卡片 */
+.point-card{background:#fff;border:3px solid #E8EAF0;border-radius:20px;padding:16px 18px;margin-top:12px;box-shadow:0 4px 0 rgba(45,49,66,.06)}
+.point-card .pc-num{display:inline-block;background:#F6F1FF;color:#7C5CFF;font-size:.72rem;font-weight:800;border-radius:999px;padding:2px 10px}
+.point-card h3{font-size:1.05rem;margin:8px 0 6px}
+.point-card .pc-kid{color:#374151;font-size:.92rem;line-height:1.9;margin:0 0 10px}
+.point-card .pc-tip{background:#FFF7DA;border:2px dashed var(--lemon);border-radius:12px;padding:8px 12px;color:#92600A;font-size:.86rem;font-weight:700;margin-bottom:10px}
+.point-card .pc-en{background:#F2F8FF;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer;transition:.15s}
+.point-card .pc-en:active{transform:scale(.98)}
+.point-card .pc-zh{color:#4A5162;font-size:.85rem;margin-top:6px}
+/* 词卡记忆法 */
+.mem-box{background:#F2FBF5;border:2px solid var(--mint);border-radius:12px;padding:8px 12px;margin-top:10px;font-size:.84rem;color:#2C6E49;text-align:left;line-height:1.8}
+.mem-box b{color:#1B5E3A}
+.fam{margin-top:6px;font-size:.76rem;color:#3B5BDB;background:#EEF3FF;border-radius:8px;padding:3px 8px;text-align:left;display:inline-block}
+.fam .op{color:#8FA3C8;margin:0 2px}
+/* 词性徽章 */
+.pos-badge{display:inline-block;background:#F4F9FF;border:2px solid #D5E5F5;color:#2C6FBB;border-radius:999px;padding:1px 10px;font-size:.78rem;font-weight:800;vertical-align:middle}
+/* 拼词防泄底：图里印着单词（名牌 NAME）或数字词时，改用神秘问号，纯靠听力 */
+.sp-mystery{display:inline-flex;align-items:center;justify-content:center;width:2.2em;height:2.2em;background:#F6F1FF;border-radius:26%;font-size:1em}
+/* 拼读拆分行：与拼词小火车同一套拆块，全链路一致 */
+.spell-line{background:#F6F1FF;border:2px solid #E4DAFB;border-radius:12px;padding:8px 12px;margin-top:10px;font-size:.95rem;font-weight:800;color:#5B3FBF;text-align:left;letter-spacing:.5px}
+.spell-line small{font-weight:700;color:#9B8FD0;font-size:.72rem;margin-right:6px}
+/* 拼读地图 */
+.phon-map{background:#fff;border:3px solid #E4DAFB;border-radius:20px;padding:14px 16px;margin-top:12px}
+.phon-map .ph-chip{display:inline-flex;align-items:center;gap:6px;background:#F6F1FF;border:2px solid #E4DAFB;border-radius:999px;padding:5px 12px;margin:4px 4px 0 0;font-weight:800;color:#5B3FBF}
+.phon-map .ph-chip small{color:#9B8FD0;font-weight:700}
+/* 成绩单 */
+.res-nums{display:flex;justify-content:center;gap:26px;text-align:center;margin:10px 0 4px}
+.res-nums b{display:block;font-size:2.1rem;line-height:1.1}
+.res-nums b.g{color:#4E9E59}.res-nums b.o{color:#F59E0B}.res-nums b.p{color:#7C5CFF}
+.res-nums small{color:#4A5162;font-size:.78rem}
+.res-list{margin-top:10px}
+.res-row{display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px dashed #E8EAF0}
+.res-row .ri{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.res-row .ri svg{width:34px;height:34px}
+.res-row b{flex:1;font-size:1rem}
+.res-row .rw{color:#4A5162;font-size:.8rem;flex:1;text-align:right}
+.res-row .rk{width:26px;text-align:center}
+</style>
+</head>
+<!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
+<body data-emoji="full">
+  <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px">
+    <div style="font-size:52px">🐤</div>
+    <div style="font-size:.9rem;color:#3F4658;font-weight:700">加载中，请稍等…</div>
+  </div>
+<main>
+  <div class="page-title">
+    <h1>🚀 Power Up 主题课程</h1>
+    <p>剑桥体系 · <b>6 级 72 单元 967 词</b> · 按 Power Up 1-6 的级别与主题编排 · 词表取自本站 999 词库</p>
+  </div>
+  <div id="app"><div id="bootPlaceholder" class="card" style="max-width:560px;margin:22px auto;text-align:center;padding:26px 18px"><div style="font-size:34px">🐤</div><p style="color:#4A5162;font-size:.9rem;margin:8px 0 0">正在打开，请稍等…</p></div></div>
+<div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#4A5162">📋 免责声明 · 隐私政策 · 使用条款</a></div>
+  <!-- 静态摘要：6 册单元与词量，爬虫与无脚本环境可读。 -->
+  <noscript>
+    <section class="card" style="margin-top:18px">
+      <h2>🚀 Power Up 主题课程速览（不依赖脚本）</h2>
+      <p>6 级 / 72 个单元 / 967 词，每级 9 个正课 + 3 个复习。按剑桥 Power Up 1-6 的
+      级别与主题体系编排，语法与话题按 Pre A1 Starters → B1 Preliminary 递进；
+      词表全部来自本站 999 词库，配套发音、音标、拼读与记忆法。
+      单元名与词表为本站自编，不是出版社教材目录原文。</p>
+      <ul style="line-height:1.9">
+      <li><b>Power Up 1</b>：12 单元 · 170 词 · Pre A1 Starters</li>
+      <li><b>Power Up 2</b>：12 单元 · 162 词 · A1 Movers</li>
+      <li><b>Power Up 3</b>：12 单元 · 163 词 · A2 Flyers</li>
+      <li><b>Power Up 4</b>：12 单元 · 161 词 · A2 Flyers → A2 Key</li>
+      <li><b>Power Up 5</b>：12 单元 · 159 词 · A2 Key for Schools</li>
+      <li><b>Power Up 6</b>：12 单元 · 152 词 · B1 Preliminary for Schools</li>
+      </ul>
+    </section>
+  </noscript>
+</main>
+
+<script src="js/words-data.js?v=48"></script>
+<script src="svg/word-svg.js?v=7"></script>
+<script async src="svg/emoji-svg2.js?v=3"></script>
+<script src="js/ipa.js?v=9"></script>
+<script src="js/data.js?v=48"></script>
+<script src="js/shell.js?v=1"></script>
+<script src="js/app.js?v=202"></script>
+<script defer src="js/sentence.js?v=52"></script>
+<script defer src="js/audio-list.js?v=19"></script>
+<!-- 2026-11-12.3：课本页是唯一用到全部三块的页面；数据先载、工具后载。 -->
+<script src="js/pep-points.js?v=28"></script>
+<script src="js/powerup-data.js?v=1"></script>
+<script src="js/powerup-points.js?v=1"></script>
+<script>
+/* ============================================================
+   Power Up 适配层（2026-11-22）
+   ------------------------------------------------------------
+   页面交互沿用「人教课本」那一套（换册 → 单元 → 知识点 → 学习 → 拼词），
+   但数据、进度、发音口径全部换成 Power Up：
+     · 进度单独存 Store.d.pu，不和人教混；
+     · 词图一律回词库取（原包的 emoji 有 327 个占位 🐦）；
+     · 音标用站内美式（与单词镇、Get Smart 一致，和站内音频对应）。
+   ============================================================ */
+const PU_LEVEL_EMOJI = ['🐣','🐥','🦉','🦊','🐬','🦅'];
+POWERUP_LEVELS.forEach((lv, i) => { lv.emoji = PU_LEVEL_EMOJI[i] || '📘'; lv.tag = '剑桥'; });
+let __puBank = null;
+function puBank(w) {
+  if (!__puBank) {
+    __puBank = {};
+    try {
+      GRADES.forEach(g => g.themes.forEach(t => t.words.forEach(x => {
+        const k = String(x.w || '').toLowerCase();
+        if (k && !__puBank[k]) __puBank[k] = x;
+      })));
+    } catch (e) {}
+  }
+  return __puBank[String(w == null ? '' : w).toLowerCase()] || null;
+}
+function puPointsOf(uid) {
+  for (const lv of POWERUP_LEVELS) {
+    if (lv.units.some(u => u.id === uid)) return ((POWERUP_POINTS[lv.id] || {})[uid]) || [];
+  }
+  return [];
+}
+function puUnitDone(uid) { puEnsurePage(); return !!Store.d.pu.done[uid]; }
+function puLevelProgress(lv) {
+  puEnsurePage();
+  return lv.units.filter(u => Store.d.pu.done[u.id]).length + ' / ' + lv.units.length;
+}
+function puActiveLevelId() {
+  puEnsurePage();
+  return POWERUP_LEVELS.some(l => l.id === Store.d.pu.lv) ? Store.d.pu.lv : 'pu1';
+}
+function puSetActiveLevel(id) { puEnsurePage(); Store.d.pu.lv = id; Store.save(); }
+function puIconOf(w) {
+  const b = puBank(w && w.w);
+  if (b) return wordIcon({ w: w.w, zh: w.zh, e: b.e || '' });
+  return wordIcon(w);
+}
+function puIpaOf(w) { return (typeof ipaOf === 'function') ? ipaOf(w && w.w) : ''; }
+function puPosKey(w) { const b = puBank(w && w.w); return (b && b.pos) || ''; }
+function puMemOf(w) { const b = puBank(w && w.w); return (b && b.dec) || ''; }
+function puMarkDone(uid, pct, stars) {
+  puEnsurePage();
+  const old = Store.d.pu.done[uid] || {};
+  Store.d.pu.done[uid] = {
+    t: Date.now(),
+    stars: Math.max(stars || 0, old.stars || 0),
+    pct: Math.max(pct || 0, old.pct || 0)
+  };
+  Store.save();
+}
+
+renderNav('powerup'); renderDecor();
+
+/* 页面级工具（与 getsmart.html 同款） */
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const jsq = s => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+function puEnsurePage() { if (!Store.d.pu) Store.d.pu = { lv: 'pu1', done: {} }; if (!Store.d.pu.done) Store.d.pu.done = {}; }
+puEnsurePage();
+
+/* 词族行（与单词镇词卡一致，data.js 的 familyOf 是全站公共） */
+function famLine(word) {
+  if (typeof familyOf !== 'function') return '';
+  const f = familyOf(word);
+  if (!f) return '';
+  return `<div class="fam" title="${f.zh}">👪 ${f.base} <span class="op">+</span> ${f.suf} <span class="op">=</span> ${f.d}</div>`;
+}
+
+let view = 'level', curLevel = null, curUnit = null;
+let S = null;            // 拼词状态
+let __token = 0;         // 异步作废令牌：切视图后旧定时器不再生效
+
+/* 位置快照（2026-11-08）：只记「哪一册 / 哪个单元」，不记题目和答案。
+   刷新后 init 按它回到原处，不再弹回换册页 / 单元列表。 */
+function __puSnap(extra) {
+  try {
+    window.__navSave('pu', Object.assign({
+      view: view, lv: curLevel && curLevel.id, u: curUnit && curUnit.id
+    }, extra || {}));
+  } catch (e) {}
+}
+
+/* ---------- 换册 ---------- */
+function renderLevels() {
+  view = 'levels'; stopAllSpeech(); __token++; __puSnap({ lv: null, u: null });
+  /* 6 册统一用原创配色，不复制教材封面 */
+  const COVER = [
+    ['#FFB703', '#E07A00'], ['#4CC9F0', '#0077B6'], ['#90BE6D', '#2D6A4F'],
+    ['#B5179E', '#7209B7'], ['#F72585', '#9D174D'], ['#457B9D', '#1D3557'],
+  ];
+  const cards = POWERUP_LEVELS.map((lv, i) => {
+    const on = lv.id === puActiveLevelId();
+    const [c1, c2] = COVER[i % COVER.length];
+    return `<div class="pep-book ${on ? 'on' : ''}" onclick="puPickLevel('${lv.id}')">
+      <div class="pb-cover" style="background:linear-gradient(160deg,${c1},${c2})">
+        <span class="pb-pub">CAMBRIDGE</span>
+        <span class="pb-g">Power Up<br>${i + 1}</span>
+        <span class="pb-e">${lv.emoji}</span>
+      </div>
+      <b>${esc(lv.name)}</b><small>${puLevelProgress(lv)} 单元 · ${esc(lv.exam)}</small>
+    </div>`;
+  }).join('');
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="location.href='learn.html'">← 回学习</button>
+    <div class="card" style="padding:16px 18px">
+      <b>选一册教材</b>
+      <div style="color:#4A5162;font-size:.82rem;margin-top:4px;line-height:1.8">
+        按剑桥 <b>Power Up 1-6</b> 的级别与主题体系编排的配套课程：每级 9 个正课 + 3 个复习，共 <b>72 单元 967 词</b>。
+        语法与话题按 <b>Pre A1 Starters → A1 Movers → A2 Flyers → A2 Key → B1 Preliminary</b> 的难度递进；
+        词表全部取自本站 999 词库，点开就能听发音、看音标、拆拼读、看记忆法。
+        <b style="color:#8A5A00">单元名与词表是本站在该体系上自编的配套内容，不是出版社教材的目录原文或逐词表。</b>
+      </div>
+      <div class="pep-grid" style="margin-top:12px">${cards}</div>
+      <div style="text-align:center;margin-top:14px;font-size:.8rem">
+        <a href="pep.html" style="color:#4A5162">🇨🇳 人教版课本 →</a>
+        <span style="color:#C9D2DE;margin:0 8px">|</span>
+        <a href="getsmart.html" style="color:#4A5162">🌍 Get Smart 学堂 →</a>
+      </div>
+    </div>`;
+}
+function puPickLevel(id) { puSetActiveLevel(id); sfx.pop(); renderLevelHome(); }
+
+/* ---------- 册首页：单元列表（拼词入口最显眼） ---------- */
+function renderLevelHome() {
+  view = 'level'; stopAllSpeech(); __token++;
+  const lv = POWERUP_LEVELS.find(l => l.id === puActiveLevelId());
+  curLevel = lv;
+  __puSnap({ u: null });
+  const totalWords = lv.units.reduce((s, u) => s + (u.words || []).length, 0);
+  const units = lv.units.map(u => {
+    const done = puUnitDone(u.id);
+    const rec = Store.d.pu.done[u.id];
+    const nPts = puPointsOf(u.id).length;
+    return `<div class="pep-unit ${done ? 'done' : ''}">
+      <div class="pu-main">
+        <b>${done ? '✅ ' : ''}${esc(u.title)}</b>
+        <small>${esc(u.zh)} · ${u.words.length} 词${nPts ? ' · ' + nPts + ' 个知识点' : ''}${rec && rec.pct ? ' · 拼词最好 ' + rec.pct + '%' : ''}</small>
+      </div>
+      <div class="pep-btnrow">
+        ${nPts ? `<button class="btn ghost" onclick="renderPoints('${u.id}')">💡 知识点</button>` : ''}
+        <button class="btn ghost" onclick="startLearn('${u.id}')">📖 学习</button>
+        <button class="btn spell" onclick="startSpell('${u.id}')">🚂 拼词</button>
+      </div>
+    </div>`;
+  }).join('');
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevels()">← 换一册</button>
+    <div class="card" style="padding:16px 18px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div style="font-size:38px">${lv.emoji}</div>
+        <div style="flex:1;min-width:160px"><b style="font-size:1.1rem">${esc(lv.name)} · 主题课程</b>
+          <div style="color:#4A5162;font-size:.8rem">${lv.units.length} 个单元 · ${totalWords} 词 · 已完成 ${puLevelProgress(lv)}</div>
+          <div style="color:#2F6EA8;font-size:.76rem;margin-top:2px">🎯 参考水平：${esc(lv.exam)}</div></div>
+      </div>
+      <button class="btn coral big" style="width:100%;margin-top:12px" onclick="startSpell('${lv.id}-all')">🚂 整册拼词大闯关（${totalWords} 词池${totalWords > 20 ? ' · 每轮 20 词' : ''}）</button>
+    </div>
+    ${units}
+    <div style="text-align:center;margin-top:14px"><a href="pep.html" style="color:#4A5162;font-size:.8rem">去 人教课本 →</a> · <a href="getsmart.html" style="color:#4A5162;font-size:.8rem">去 Get Smart →</a></div>`;
+  /* 只预载「下一课」前 10 个词，等页面空闲再开始（跟 GS 学堂同一策略）——
+     全册 107 词 × 150ms 的预热队列会占满手机带宽 16 秒，点什么都慢。
+     其余的词点到时再取：都是本地文件，SW 缓存过就永久离线。 */
+  const nextUnit = lv.units.find(u => u.kind !== 'appendix' && !puUnitDone(u.id))
+    || lv.units.find(u => u.kind !== 'appendix');
+  const ws = ((nextUnit && nextUnit.words) || []).map(w => w.w).filter(Boolean).slice(0, 8);
+  /* 「下几页」：下一课的单词 + 该课知识点里前 2 句例句 + 再下一课前 3 个词。
+     点进知识点页时第一句已经在缓存里，不用现等。 */
+  if (nextUnit) (puPointsOf(nextUnit.id) || []).slice(0, 2).forEach(p => { if (p.en) ws.push(p.en); });
+  const ni = lv.units.findIndex(x => x.id === (nextUnit && nextUnit.id));
+  const after = ni >= 0 ? lv.units[ni + 1] : null;
+  if (after && after.words) ws.push(...after.words.map(w => w.w).filter(Boolean).slice(0, 3));
+  if (!ws.length) return;
+  try { window.__audioPrefetch.queue(ws, 'pu:home'); } catch (e) {}
+}
+
+/* ---------- 知识点讲解 ---------- */
+function renderPoints(uid) {
+  const u = findUnit(uid); if (!u) return;
+  curUnit = u; view = 'points'; stopAllSpeech(); __token++; __puSnap();
+  const pts = puPointsOf(uid);
+  if (!pts.length) { startLearn(uid); return; }
+  /* 本单元拼读地图：统计单元词表里的高频字母组合（数据驱动，与拼词拆块同一套） */
+  const freq = {};
+  u.words.forEach(w => splitPhrase(w.w).forEach(part => splitBlocks(part).forEach(b => {
+    if (b.length >= 2) freq[b] = (freq[b] || 0) + 1;
+  })));
+  const phon = Object.entries(freq).filter(e => e[1] >= 2).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const phonCard = phon.length ? `
+    <div class="phon-map">
+      <b>🔤 本单元拼读地图</b>
+      <div style="color:#4A5162;font-size:.78rem;margin-top:2px">出现 2 次以上的字母组合（拼词时就会按这样拆）</div>
+      <div style="margin-top:6px">${phon.map(e => `<span class="ph-chip">${esc(e[0])}<small>×${e[1]}</small></span>`).join('')}</div>
+    </div>` : '';
+  /* 口诀去重：口诀条只在它比标题多出信息时显示（纯复读标题的不重复渲染） */
+  const stripCn = s => String(s).replace(/[^a-z\u4e00-\u9fa5]/gi, '').toLowerCase();
+  const similar = (a, b) => { const x = stripCn(a), y = stripCn(b); return !y || !x || x.includes(y) || y.includes(x); };
+  const cards = pts.map((p, i) => `
+    <div class="point-card">
+      <span class="pc-num">知识点 ${i + 1}/${pts.length}</span>
+      <h3>${esc(p.t)}</h3>
+      <p class="pc-kid">${esc(p.kid)}</p>
+      ${p.tip && !similar(p.t, p.tip) ? `<div class="pc-tip">💡 想通这一句：${esc(p.tip)}</div>` : ''}
+      <div class="pc-en" lang="en" onclick="speakSentence('${jsq(p.en)}')" title="点一下，读例句">🔊 ${esc(p.en)}</div>
+      <div class="pc-zh">${esc(p.zh)}</div>
+    </div>`).join('');
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevelHome()">← 回单元列表</button>
+    <div class="card" style="padding:16px 18px;border-color:#B9A5F5">
+      <b style="font-size:1.05rem">💡 ${esc(u.title)} · 单元知识点</b>
+      <div style="color:#4A5162;font-size:.82rem;margin-top:2px">${esc(u.zh)} · ${pts.length} 个知识点 · 用最简单的话讲透这一单元</div>
+    </div>
+    ${phonCard}
+    ${cards}
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">
+      <button class="btn grape big" onclick="startLearn('${u.id}')">📖 学会了，去学单词</button>
+      <button class="btn spell big" onclick="startSpell('${u.id}')">🚂 直接去拼词</button>
+    </div>
+    <div style="margin-top:12px;text-align:center"><button class="btn ghost" onclick="location.href='games.html'">🎮 玩个游戏换换脑子</button></div>`;
+  /* 知识点卡一屏好几张，等于「下几页」：本单元例句先备好，再带上下一单元头两句。 */
+  const ahead = pts.map(p => p.en).filter(Boolean).slice(0, 6);
+  const units = (u.lv && u.lv.units) || [];
+  const ui = units.findIndex(x => x.id === u.id);
+  const nx = ui >= 0 ? units[ui + 1] : null;
+  if (nx) (puPointsOf(nx.id) || []).slice(0, 2).forEach(p => { if (p.en) ahead.push(p.en); });
+  try { window.__audioPrefetch.queue(ahead, 'pu:points'); } catch (e) {}
+}
+
+/* ---------- 逐词学习 ---------- */
+function startLearn(uid) {
+  const u = findUnit(uid); if (!u) return;
+  curUnit = u; view = 'learn'; __puSnap();
+  L2 = { i: 0 };
+  renderLearnCard();
+}
+let L2 = { i: 0 };
+function renderLearnCard() {
+  const u = curUnit, w = u.words[L2.i];
+  stopAllSpeech();
+  const ipa = puIpaOf(w);
+  const posK = puPosKey(w);
+  let pos = null;
+  try { if (typeof posInfo === 'function') pos = posInfo(posK); } catch (e) {}
+  const dec = puMemOf(w);
+  const pts = puPointsOf(u.id);
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevelHome()">← 回单元列表</button>
+    <div class="card" style="max-width:560px;margin:0 auto;text-align:center;padding:22px 18px">
+      <div class="score-bar"><b>📖 ${esc(u.title)}</b><span>第 ${L2.i + 1} / ${u.words.length} 词</span></div>
+      ${L2.i === 0 && pts.length ? `<div class="point-card" style="text-align:left;margin:0 0 12px;padding:12px 14px">
+        <span class="pc-num">💡 本单元有 ${pts.length} 个知识点</span>
+        <div style="margin-top:6px"><button class="btn grape" onclick="renderPoints('${u.id}')">先看知识点讲解 →</button></div>
+      </div>` : ''}
+      <div class="pep-bigword">
+        <div class="pw-ic">${puIconOf(w)}</div>
+        <button class="pw-word" onclick="speakWord('${jsq(w.w)}')" title="点我发音">${esc(w.w)}</button>
+        <div class="pw-ipa">${pos ? `<span class="pos-badge">${pos.emoji} ${pos.zh}</span>` : ''} ${ipa ? esc(ipa) : ''}</div>
+        <div class="pw-zh">${esc(w.zh)}</div>
+        <div class="spell-line"><small>🔤 拼读</small>${phonicsLine(w.w)}</div>
+        ${dec ? `<div class="mem-box"><b>🧠 趣味记：</b>${esc(dec)}</div>` : ''}
+        ${famLine(w.w)}
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap">
+        ${L2.i > 0 ? '<button class="btn ghost big" onclick="L2.i--;renderLearnCard()">← 上一个</button>' : ''}
+        <button class="btn coral big" onclick="speakWord('${jsq(w.w)}')">🔊 再听一遍</button>
+        ${L2.i < u.words.length - 1
+          ? '<button class="btn grape big" onclick="L2.i++;renderLearnCard()">下一个 →</button>'
+          : `<button class="btn spell big" onclick="startSpell('${u.id}')">🚂 会了，去拼词！</button>`}
+      </div>
+      ${L2.i === u.words.length - 1 ? '<p style="color:#4A5162;font-size:.82rem;margin-top:10px">每个词都会拼了？点红色按钮开始拼词挑战！</p>' : ''}
+    </div>`;
+  const tk = __token;
+  setTimeout(() => { if (tk === __token) speakWord(w.w); }, 350);
+  /* 逐词卡：当前 + 后 3 个词，翻页滑窗替换。 */
+  try {
+    window.__audioPrefetch.queue(
+      u.words.slice(L2.i, L2.i + 4).map(x => x.w), 'pu:learn');
+  } catch (e) {}
+}
+
+/* ---------- 拼词（拼词小火车式） ---------- */
+/* 拆块函数 splitBlocks/splitPhrase 与词卡「拼读」行、拼读地图共用
+   js/pep-points.js 里的同一套实现，保证学习-拼写全链路一致 */
+function findUnit(uid) {
+  if (uid.endsWith('-all')) {
+    const lv = POWERUP_LEVELS.find(l => l.id === uid.slice(0, -4));
+    if (!lv) return null;
+    const seen = {}; const words = [];
+    lv.units.forEach(u => (u.words || []).forEach(w => { if (!seen[w.w]) { seen[w.w] = 1; words.push(w); } }));
+    return { id: uid, kind: 'all', title: lv.name + ' · 整册拼词', zh: '全册单词混合', words: shuffle(words), lv };
+  }
+  for (const lv of POWERUP_LEVELS) { const u = lv.units.find(x => x.id === uid); if (u) return Object.assign({ kind: 'unit', lv }, u); }
+  return null;
+}
+function startSpell(uid) {
+  const u = findUnit(uid); if (!u) return;
+  curUnit = u; view = 'spell'; __puSnap();
+  /* 词数多的整册闯关一次拼不完，取 20 词一组 */
+  let list = u.words;
+  if (list.length > 20) list = shuffle(list).slice(0, 20);
+  S = { qIdx: 0, list: list.map(w => ({ w: w.w, zh: w.zh, e: w.e })), ok: [], bad: [], tries: {}, hinted: {} };
+  SP = { parts: splitPhrase(S.list[0].w), partIdx: 0, filled: [], tiles: [], used: [], blocks: [] };
+  renderSpell();
+}
+let SP = { filled: [], tiles: [], used: [], blocks: [], parts: [], partIdx: 0, curWord: '' };
+/* 拼词防泄底：有些内置图把单词印在图上（如名牌上写着 NAME），
+   数字词的图也直接是数字 —— 这些都不能当拼词提示，改用神秘问号纯靠听力 */
+function spellSafeIcon(w) {
+  const icon = puIconOf(w);
+  const word = String(w.w || '').toLowerCase().replace(/[^a-z]/g, '');
+  if (puPosKey(w) === 'num' || (word.length >= 3 && icon.toLowerCase().includes(word))) {
+    return '<span class="wsvg sp-mystery" role="img" aria-label="听一听，拼出来">❓</span>';
+  }
+  return icon;
+}
+function renderSpell() {
+  stopAllSpeech(); __token++;
+  const cur = S.list[S.qIdx];
+  /* ★ 词切换哨兵：只要当前词变了（下一词/跳过/重拼/深链），
+     段与字母块必须全部重置——否则会渲染上一个词的块（严重错位） */
+  if (SP.curWord !== cur.w) {
+    SP.curWord = cur.w;
+    SP.parts = splitPhrase(cur.w);
+    SP.partIdx = 0;
+    SP.filled = []; SP.used = []; SP.blocks = [];
+  }
+  const part = SP.parts[SP.partIdx] || cur.w;
+  const blocks = splitBlocks(part);
+  const safeIc = spellSafeIcon(cur);
+  const isMystery = safeIc.includes('sp-mystery');
+  /* 干扰块：从本组其他词 + 本词其他段借，不与当前块重复 */
+  const pool = new Set();
+  S.list.forEach(x => { if (x.w !== cur.w) splitPhrase(x.w).forEach(p => splitBlocks(p).forEach(b => pool.add(b))); });
+  SP.parts.forEach(p => { if (p !== part) splitBlocks(p).forEach(b => pool.add(b)); });
+  /* 块现在保留大小写（China → Ch / i / n / a），本组其它词的干扰块仍是
+     小写；统一按小写比对去重，避免干扰块和目标块长得一模一样。 */
+  const targetLower = new Set(blocks.map(b => b.toLowerCase()));
+  Array.from(pool).forEach(b => { if (targetLower.has(b.toLowerCase())) pool.delete(b); });
+  const distract = shuffle(Array.from(pool)).slice(0, Math.min(3, Math.max(1, 5 - Math.min(4, blocks.length))));
+  SP.tiles = shuffle(blocks.concat(distract));
+  SP.filled = [];
+  SP.used = new Array(SP.tiles.length).fill(false);
+  SP.blocks = blocks; // 目标切分：格数 = 块数（不是字母数！）
+  /* ★ 2026-11-09.10：课本词表里有大量单词镇没收录的词（hard-working、police officer…），
+     音标只在 PEP_IPA 里。原来这里只调 ipaOf，这些词的音标位一直是空的。
+     优先用 puIpaOf（它会先查 PEP_IPA 再回退 ipaOf），两套表都不命中才留空。 */
+  const ipa = (typeof puIpaOf === 'function') ? puIpaOf(cur.w) : ipaOf(cur.w);
+  /* 短语词的分段指示：已拼段划掉、当前段高亮 */
+  /* ⛔ 当前段与未到的段绝不能印出字母：以前这里把正在拼的那一段用红色粗体
+     原样显示（hard · **working**），孩子照着上面抄就能拼对，等于白送答案。
+     现在只把「已经拼出来的段」显示出来（那是孩子自己拼对的），
+     当前段用固定 4 个下划线占位（不按字母数，避免泄露长度），未到段用省略号。 */
+  const partTip = SP.parts.length > 1
+    ? `<div style="text-align:center;margin:2px 0 0;font-size:.92rem">${SP.parts.map((p, i) =>
+        i < SP.partIdx ? `<s style="color:#4E9E59">${esc(p)}</s>` :
+        i === SP.partIdx ? `<b style="color:#FF6B6B;letter-spacing:1px" aria-label="正在拼这一段">▁▁▁▁</b>` :
+        `<span style="color:#9CA3AF">……</span>`).join('<span style="color:#D5DAE6;margin:0 6px">·</span>')}</div>`
+    : '';
+  $('#app').innerHTML = `
+    <button class="btn ghost" style="margin-bottom:12px" onclick="spellQuit()">← 退出拼词</button>
+    <div class="card" style="max-width:560px;margin:0 auto">
+      <div class="score-bar"><b>🚂 拼词小火车 · ${esc(curUnit.title)}</b><span>第 ${S.qIdx + 1} / ${S.list.length} 词</span></div>
+      <div class="spell-progress"><i style="width:${Math.round(S.qIdx / S.list.length * 100)}%"></i></div>
+      <div class="spell-stage">
+        <div class="sp-ic">${safeIc}</div>
+        <div class="sp-zh">${esc(cur.zh)}</div>
+        <div style="color:#4A5162;font-size:.95rem;min-height:1.3em">${ipa ? esc(ipa) : ''}</div>
+        <button class="btn ghost sp-speaker" onclick="speakWord('${jsq(cur.w)}')">🔊 再听一遍</button>
+      </div>
+      <p style="text-align:center;color:#4A5162;font-size:.82rem;margin:2px 0 0">${isMystery ? '听发音' : '看图听音'}，点字母块拼出${SP.parts.length > 1 ? '每个词' : '单词'}</p>
+      ${partTip}
+      <div class="spell-slots" id="slots">${blocks.map(() => '<div class="slot"><span class="hint"></span></div>').join('')}</div>
+      <div class="spell-tiles" id="tiles">${SP.tiles.map((b, i) => `<button class="tile" id="tile${i}" onclick="pickTile(${i})">${esc(b)}</button>`).join('')}</div>
+      <div class="spell-tip" id="spellTip"></div>
+      <div style="text-align:center;margin-top:10px">
+        <button class="btn ghost" onclick="spellSkip()">跳过这个词</button>
+      </div>
+    </div>`;
+  const tk = __token;
+  /* 第一段读整词，后续段只读当前段（孩子知道在拼哪个词） */
+  setTimeout(() => { if (tk === __token) (SP.partIdx === 0 ? speakWord(cur.w) : speakBlock(part)); }, 350);
+}
+function pickTile(i) {
+  if (SP.used[i]) return;
+  const cur = S.list[S.qIdx];
+  const n = SP.blocks.length; // 目标是块序列，不是字母序列
+  if (SP.filled.length >= n) return;
+  SP.filled.push(i); SP.used[i] = true;
+  document.getElementById('tile' + i).classList.add('used');
+  drawSlots();
+  if (SP.filled.length === n) setTimeout(checkSpell, 250);
+}
+function undoSlot() {
+  const i = SP.filled.pop();
+  if (i === undefined) return;
+  SP.used[i] = false;
+  const t = document.getElementById('tile' + i); if (t) t.classList.remove('used');
+  drawSlots();
+}
+function drawSlots() {
+  const cur = S.list[S.qIdx];
+  const target = cur.w.toLowerCase().replace(/[^a-z]/g, '');
+  const slots = document.querySelectorAll('#slots .slot');
+  slots.forEach((el, k) => {
+    if (k < SP.filled.length) { el.className = 'slot filled'; el.innerHTML = esc(SP.tiles[SP.filled[k]]); el.onclick = undoSlot; }
+    else { el.className = 'slot'; el.innerHTML = '<span class="hint"></span>'; el.onclick = null; }
+  });
+}
+function checkSpell() {
+  const cur = S.list[S.qIdx];
+  const target = SP.blocks.join('');
+  const got = SP.filled.map(i => SP.tiles[i]).join('');
+  if (got === target) {
+    sfx.correct(); flyStar(document.querySelector('.spell-stage'));
+    document.querySelectorAll('#slots .slot').forEach(el => el.className = 'slot ok');
+    /* 短语词还有下一段：先拼下一段，整词全部拼完才算完成 */
+    if (SP.partIdx < SP.parts.length - 1) {
+      document.getElementById('spellTip').innerHTML = '✅ <b>' + esc(SP.parts[SP.partIdx]) + '</b> 拼对啦！继续～';
+      SP.partIdx++;
+      const tk = __token;
+      setTimeout(() => { if (tk === __token) renderSpell(); }, 1100);
+      return;
+    }
+    const firstTry = !S.tries[cur.w];
+    if (firstTry) {
+      S.ok.push(cur); addStars(1);
+      /* ★ 与 Get Smart 一致：拼对首答写回 Store.d.words，
+         这样 Power Up 学的词会进入单词镇的艾宾浩斯复习与我的词单。
+         拼错不扣盒子（拼写比认词难，双重惩罚会让复习计划失真）。 */
+      try { if (typeof touchWord === 'function') touchWord(cur.w, true); } catch (e) {}
+    }
+    /* ★ 2026-11-21.1（复检 L2）：错了几次才拼对的词，原来既算「正确」又进不了
+       「重拼错词」——两边都占，自相矛盾。现在只进 bad，正确率按「一次拼对」算。 */
+    else if (!S.bad.includes(cur) && !S.ok.includes(cur)) S.bad.push(cur);
+    document.getElementById('spellTip').innerHTML = '✅ <b>' + esc(cur.w) + '</b> 拼对啦！';
+    const tk = __token;
+    setTimeout(() => { if (tk === __token) spellNext(); }, 1200);
+  } else {
+    S.tries[cur.w] = (S.tries[cur.w] || 0) + 1;
+    sfx.wrong();
+    document.querySelectorAll('#slots .slot').forEach(el => { if (el.className.includes('filled')) { el.className = 'slot bad'; } });
+    const tip = document.getElementById('spellTip');
+    tip.innerHTML = S.tries[cur.w] >= 2 ? '💡 提示：下一个该选的块在闪哦' : '再试一次，慢慢想～';
+    const tk = __token;
+    setTimeout(() => {
+      if (tk !== __token) return;
+      /* 清空重来 */
+      SP.used = SP.used.map(() => false);
+      SP.filled = [];
+      renderTilesReset();
+      drawSlots();
+      if (S.tries[cur.w] >= 2) glintHint(target);
+    }, 600);
+  }
+}
+function renderTilesReset() {
+  SP.tiles.forEach((b, i) => { const t = document.getElementById('tile' + i); if (t) { t.classList.remove('used'); } });
+}
+function glintHint(target) {
+  /* 高亮：下一个该填的块（当前段的块序列） */
+  const need = SP.blocks[SP.filled.length];
+  if (!need) return;
+  const tiles = document.querySelectorAll('.tile');
+  tiles.forEach(t => { if (!t.classList.contains('used') && t.textContent === need) t.classList.add('glint'); });
+}
+function spellNext() {
+  S.qIdx++;
+  if (S.qIdx >= S.list.length) return spellFinish();
+  renderSpell();
+}
+function spellSkip() {
+  const cur = S.list[S.qIdx];
+  if (!S.bad.includes(cur) && !S.ok.includes(cur)) S.bad.push(cur);
+  toast('没关系，这个词待会儿再练！');
+  spellNext();
+}
+function spellQuit() { stopAllSpeech(); renderLevelHome(); }
+function spellFinish() {
+  const u = curUnit;
+  const total = S.list.length;
+  const okN = S.ok.length, badN = S.bad.length;
+  const pct = Math.round(okN / total * 100);
+  const stars = pct === 100 ? 5 : pct >= 80 ? 3 : pct >= 60 ? 2 : 1;
+  addStars(stars);
+  puMarkDone(u.id, pct, stars);
+  confetti(); sfx.win();
+  try { if (typeof completeDailyTask === 'function') completeDailyTask('words'); } catch (e) {}
+  const rows = S.list.map(w => {
+    const good = S.ok.includes(w);
+    return `<div class="res-row">
+      <div class="ri">${puIconOf(w)}</div><b lang="en">${esc(w.w)}</b>
+      <span class="rw">${esc(w.zh)}</span>
+      <span class="rk">${good ? '✅' : '❌'}</span>
+    </div>`;
+  }).join('');
+  $('#app').innerHTML = `
+    <div class="card" style="max-width:560px;margin:0 auto;text-align:center;padding:24px 18px">
+      <div style="font-size:56px">${pct === 100 ? '🏆' : pct >= 60 ? '🎉' : '💪'}</div>
+      <h2 style="justify-content:center">${pct === 100 ? '全部拼对，太棒了！' : '拼词完成！'}</h2>
+      <div class="res-nums">
+        <div><b class="g">${okN}</b><small>一次拼对</small></div>
+        <div><b class="o">${badN}</b><small>还需练习</small></div>
+        <div><b class="p">${pct}%</b><small>正确率</small></div>
+      </div>
+      <p style="color:#4A5162;font-size:.85rem">奖励 +${stars} ⭐ · 每一次练习，都让单词更熟悉</p>
+    </div>
+    <div class="card res-list" style="max-width:560px;margin:10px auto">
+      <b>这次的单词</b>
+      ${rows}
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+        ${badN ? `<button class="btn coral big" onclick="startSpellWrong()">🔁 重拼错词（${badN} 个）</button>` : ''}
+        <button class="btn grape big" onclick="startSpell('${u.id}')">🔄 再拼一遍</button>
+        <button class="btn ghost big" onclick="renderLevelHome()">🏠 回单元列表</button>
+      </div>
+      <div style="margin-top:12px"><button class="btn" style="width:100%;background:#6366F1;color:#fff" onclick="location.href='games.html'">🎮 去游戏乐园再巩固一轮</button></div>
+    </div>`;
+}
+function startSpellWrong() {
+  const wrong = S.bad.slice();
+  if (!wrong.length) return;
+  S = { qIdx: 0, list: shuffle(wrong), ok: [], bad: [], tries: {}, hinted: {} };
+  renderSpell();
+}
+
+/* ---------- 启动 ---------- */
+(function init() {
+  const params = new URLSearchParams(location.search);
+  /* 深链：?points=pu1-u1 直达某单元知识点（单词镇课本区块跳过来用） */
+  const pid = params.get('points');
+  if (pid && findUnit(pid)) {
+    const un = findUnit(pid);
+    puSetActiveLevel(un.lv.id);
+    renderPoints(pid);
+    return;
+  }
+  /* ★ 2026-11-08：刷新后回到原来的册 / 单元，不再弹回换册页。
+     知识点页能原样恢复；逐词学习、拼词不恢复答题进度（题目和答案绝不落盘），
+     只回到同一册的单元列表。只认 reload，从首页正常点进来不受影响。 */
+  try {
+    if (window.__isReload && window.__isReload()) {
+      const snap = window.__navLoad && window.__navLoad('pu', 30 * 60 * 1000);
+      if (snap) {
+        const un = snap.u ? findUnit(snap.u) : null;
+        if (un) {
+          puSetActiveLevel(un.lv.id);
+          if (snap.view === 'points') { renderPoints(snap.u); toast('↩️ 已回到刚才的知识点'); return; }
+          renderLevelHome(); toast('↩️ 已回到刚才那一册'); return;
+        }
+        if (snap.lv && POWERUP_LEVELS.some(l => l.id === snap.lv)) {
+          puSetActiveLevel(snap.lv); renderLevelHome(); return;
+        }
+      }
+    }
+  } catch (e) {}
+  /* 首次进入先看到 6 册书架（要选教材）；已经有单元进度时才直接回到上次那一册 */
+  const hasProgress = Store.d.pu && Store.d.pu.done && Object.keys(Store.d.pu.done).length > 0;
+  const lv = hasProgress ? POWERUP_LEVELS.find(l => l.id === puActiveLevelId()) : null;
+  if (lv) { curLevel = lv; renderLevelHome(); } else renderLevels();
+})();
+</script>
+</body>
+</html>

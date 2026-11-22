@@ -95,7 +95,7 @@
 <script src="js/words-data.js?v=48"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=201"></script>
+<script src="js/app.js?v=202"></script>
 <script src="js/getsmart-data.js?v=19"></script>
 <script>
 renderNav('learn'); renderDecor();
@@ -142,6 +142,8 @@ renderNav('learn'); renderDecor();
                now:0, all:0, tip:'从 28 词读到 212 词' },
     pep:     { e:'🏫', n:'人教课本', d:'3-6 年级逐单元同步', href:'pep.html', now:0, all:0, tip:'跟着课本一课一课过' },
     getsmart:{ e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html', now:0, all:0, tip:'外教课本同步' },
+    powerup: { e:'🚀', n:'Power Up', d:'剑桥体系 · 6 级 72 单元', href:'powerup.html',
+               now:0, all:0, tip:'Pre A1 Starters → B1 Preliminary' },
     grammar: { e:'🚂', n:'句子工厂', d:`已通过 ${grDone}/${grAll} 关`, href:'grammar.html', now:grDone, all:grAll },
   };
   const card = k => {
@@ -158,7 +160,7 @@ renderNav('learn'); renderDecor();
     </button>`;
   };
   document.getElementById('lnMain').innerHTML = ['words','phonics','letters','read'].map(card).join('');
-  document.getElementById('lnMore').innerHTML = ['pep','getsmart','grammar'].map(card).join('');
+  document.getElementById('lnMore').innerHTML = ['pep','getsmart','powerup','grammar'].map(card).join('');
 
   maybeShowInstallHint();
 })();
