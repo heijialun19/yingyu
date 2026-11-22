@@ -1,566 +1,1536 @@
 /* ============================================================
-   Power Up 知识点卡 v2.0（2026-11-22 按官方目录重建）
-   由 _pu/build_v2_points.py 生成，勿手改。
-   · L1-L3：每单元 3 张 —— 语法（讲解逐单元手写）/ 拼读（官方 Sounds and spelling）/ 拓展（官方 Cross-curricular 与 Literature）
-   · L4-L6：旧版卡片，原样保留（那三册尚未按官方目录对齐）
+   Power Up 知识点卡 v3.0（2026-11-22 按人教版密度扩容）
+   由 _pu/build_v3_points.py 生成，勿手改。
+   · L1-L3：每单元 5-6 张（对齐 pep-lessons.js 密度），讲解大量复用人教版手写卡；
+     例句用本单元词汇，五字段 t/kid/tip/en/zh 齐全，多词例句配整句音频。
+   · L4-L6：旧卡原样保留（结构未重建，密度已达 5.5 张/单元）。
+   · Review 单元各 3 张复习卡（修 0 词 0 卡点进去崩的问题）。
    ============================================================ */
 'use strict';
 const POWERUP_POINTS = {
  "pu1": {
   "pu1-u0": [
    {
-    "t": "📐 语法：自我介绍：What's your name? I",
-    "kid": "打招呼三件套：Hello! / I'm … / How old are you? 见到人先说 Hello，再说自己的名字，问年龄用 How old。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "英语的\"我是\"不能拆",
+    "kid": "中文说\"我叫小明\"，英语要先说\"我\"，再说\"是\"：I am Lily。I 就是你自己——英语的句子几乎都要先有 I / you / he / she 这样的小主人，说完主人再说什么事。",
+    "tip": "英语先报主人，再说话",
+    "en": "Hello! I am Lily.",
+    "zh": "你好！我是莉莉。"
+   },
+   {
+    "t": "打招呼三件套",
+    "kid": "早上说 Good morning，下午说 Good afternoon，晚上说 Good night——good 是\"好的\"，配上时间就是一句完整问候。见面 Hello，告别 Goodbye，两句走天下。",
+    "tip": "早中晚各有问候",
+    "en": "Good morning, Mum!",
+    "zh": "妈妈，早上好！"
+   },
+   {
+    "t": "Thank you 和 Please 是礼貌钥匙",
+    "kid": "别人帮你，说 Thank you 或 Thanks；想要东西，前面加 Please：Please sit down。礼貌的话一说出口，大家都开心。",
+    "tip": "谢人用 thank，要东西加 please",
+    "en": "Thank you! Here you are.",
+    "zh": "谢谢！给你。"
+   },
+   {
+    "t": "How old 问年龄",
+    "kid": "问\"你多大\"用 How old are you?——old 是\"老\"，问的就是\"你几岁了\"。回答 I'm six.（我六岁）。注意是 I'm，不是 I is。",
+    "tip": "年龄用 How old 问",
+    "en": "How old are you? I am six.",
+    "zh": "你几岁了？我六岁。"
+   },
+   {
+    "t": "Sorry、Yes 和 No 三个小开关",
+    "kid": "做错事说 Sorry（对不起）；同意说 Yes，不同意说 No——这三个词是英语里最常用的\"开关\"，一天要说几十遍。",
+    "tip": "认错 sorry，同意 yes",
+    "en": "Sorry! That is OK.",
+    "zh": "对不起！没关系。"
    }
   ],
   "pu1-u1": [
    {
-    "t": "📐 语法：Where …? 方位介词 in/on/unde",
-    "kid": "问东西在哪：Where's the crayon? 答 It's on the desk. 四个介词记牢——in 里面、on 上面、under 下面、next to 旁边。单数用 this，复数用 these。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "Where is...? 问东西在哪",
+    "kid": "Where is the crayon?（蜡笔在哪？）答 It's on the desk.——Where 问位置，回答必须有介词。找不到东西，先说这一句。",
+    "tip": "Where 问，介词答",
+    "en": "Where is the crayon? It is on the desk.",
+    "zh": "蜡笔在哪？在书桌上。"
    },
    {
-    "t": "🔤 拼读：p, b",
-    "kid": "本单元的拼读点是 p, b。先在词卡里找含这个音的词：book、pen、pencil。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "book"
+    "t": "介词是位置照片",
+    "kid": "in 在里面（in the bag）、on 在上面（on the desk）、under 在下面（under the chair）、next to 在旁边（next to the window）——介词给东西\"拍了张位置照片\"，四个词记住四个位置。",
+    "tip": "in/on/under/next to 四个位置",
+    "en": "The book is in the bag.",
+    "zh": "书在书包里。"
+   },
+   {
+    "t": "一个用 this，一群用 these",
+    "kid": "this 指\"这一个\"（this pen），these 指\"这一群\"（these pens）。一个的时候名词不加 s，一群要加 s：this book / these books。",
+    "tip": "一个 this，一群 these",
+    "en": "This is a ruler. These are pens.",
+    "zh": "这是一把尺子。这些是钢笔。"
+   },
+   {
+    "t": "一般疑问句：把 is 提到句首",
+    "kid": "This is a book. 变问句就把 is 挪到最前面：Is this a book?（这是一本书吗？）回答 Yes, it is. 或 No, it isn't。把 is 提前，句子就\"会提问\"了。",
+    "tip": "is 提前就成问句",
+    "en": "Is this your bag? Yes, it is.",
+    "zh": "这是你的书包吗？是的。"
+   },
+   {
+    "t": "拼读 p 和 b",
+    "kid": "p 轻轻喷气（pen、pencil），b 嘴唇嗡一声（book、bag）。两个音都靠嘴唇：对着纸条试一试，p 能把纸吹动，b 不动。",
+    "tip": "p 喷气，b 嗡鸣",
+    "en": "pencil",
+    "zh": "拼读示范词：铅笔"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Be kind at school 对同学友善；本单元阅读：The first day（剧本）；社会情感：帮助他人。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Be kind at school 对同学友善；本单元阅读：The first day（剧本）；社会情感：帮助他人。新学校里，一句 Can I help? 就能交到朋友。",
+    "tip": "友善是最好的自我介绍",
+    "en": "Can I help you?",
+    "zh": "我能帮你吗？"
    }
   ],
   "pu1-u2": [
    {
-    "t": "📐 语法：is/are",
-    "kid": "说「我有」用 have got，第三人称用 has got，否定是 haven't got。问「她是谁」用 Who is she? 答 She's Jenny.",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "This is... 万能介绍法",
+    "kid": "介绍身边的人就用 This is...：This is my mum.（这是我妈妈。）介绍一个说 This is，介绍两个用 These are。不用绕弯子，一句到位。",
+    "tip": "介绍人就用 This is",
+    "en": "This is my mum.",
+    "zh": "这是我妈妈。"
    },
    {
-    "t": "🔤 拼读：th, t",
-    "kid": "本单元的拼读点是 th, t。先在词卡里找含这个音的词：father、mother、brother。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "father"
+    "t": "一个用 is，一群用 are",
+    "kid": "一个东西/人用 is（He is my dad.），两个以上用 are（They are cute.）——is 是\"一个\"，are 是\"一群\"，跟着主人的数量走。",
+    "tip": "一个 is，一群 are",
+    "en": "They are my family.",
+    "zh": "他们是我的家人。"
+   },
+   {
+    "t": "Who's this? 问人",
+    "kid": "Who is = Who's（谁）——Who's this?（这是谁？）答 This is my grandma.。who's 是\"谁是\"，whose 是\"谁的\"，读音一样，意思不同。",
+    "tip": "Who's 问人，whose 问主人",
+    "en": "Who's this? This is my grandma.",
+    "zh": "这是谁？这是我奶奶。"
+   },
+   {
+    "t": "他她它，用 has",
+    "kid": "I have a brother. 但 He has a brother.——第三人称单数（他/她/它）用 has，其他用 have。就像 he/she 要配 is 一样，has 是它们的专属搭档。",
+    "tip": "他她它，用 has",
+    "en": "He has a big family.",
+    "zh": "他有一个大家庭。"
+   },
+   {
+    "t": "grand = 跳一代",
+    "kid": "grandpa、grandma 里的 grand 是\"跳一辈\"的意思——爸爸的爸爸叫 grandpa，妈妈的妈妈叫 grandma。grand 后面接谁，就跳到谁的上一辈。",
+    "tip": "grand 就是跳一辈",
+    "en": "This is my grandpa.",
+    "zh": "这是我爷爷。"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Using our senses 五官与感官；本单元阅读：Mo's friends（真实故事）；社会情感：同理心。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Using our senses 五官与感官；本单元阅读：Mo's friends（真实故事）；社会情感：同理心。认识新朋友时，认真看、认真听，就是最大的友善。",
+    "tip": "用心认识每一个人",
+    "en": "I like my family.",
+    "zh": "我爱我的家人。"
    }
   ],
   "pu1-u3": [
    {
-    "t": "📐 语法：is/are + 形容词",
-    "kid": "形容动物：It's a nice cat.（形容词放名词前）；说它有什么：It's got long ears. 否定 It hasn't got small feet.",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "形容词是名词的标签",
+    "kid": "形容词就是给名词贴标签：a big cow、a small chick——标签要贴在名词前面（或 be 的后面）。形容词不变形，复数也不加 s。",
+    "tip": "标签贴在名词前",
+    "en": "The duck is small.",
+    "zh": "这只鸭子很小。"
    },
    {
-    "t": "🔤 拼读：c, k, ck",
-    "kid": "本单元的拼读点是 c, k, ck。先在词卡里找含这个音的词：duck、chick、cow。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "duck"
+    "t": "has got 说\"它有\"",
+    "kid": "It has got long ears.（它有长耳朵。）——has got 就是\"有\"，第三人称用 has got，否定是 hasn't got。描述动物长相时最常用。",
+    "tip": "它有 = It has got",
+    "en": "The rabbit has got long ears.",
+    "zh": "兔子有长耳朵。"
+   },
+   {
+    "t": "What is it? 问\"它是什么\"",
+    "kid": "What is it?（它是什么？）答 It is a panda.——What 问\"东西\"，回答用 It is...。注意别答成 This is。",
+    "tip": "What 问物，It is 答",
+    "en": "What is it? It is a cow.",
+    "zh": "它是什么？它是一头牛。"
+   },
+   {
+    "t": "复数加 s 的三个小规矩",
+    "kid": "一般加 s（ducks、pigs）；s/x/ch/sh 结尾加 es（box→boxes）；辅音+y 变 i 加 es（baby→babies）。笔试就考这三条！",
+    "tip": "复数三条规矩",
+    "en": "I see three chicks.",
+    "zh": "我看见三只小鸡。"
+   },
+   {
+    "t": "拼读 c, k 和 ck",
+    "kid": "c 和 k 都读 /k/（cow、kid），两个字母凑一起的 ck 也读一个 /k/（duck、chick）。k 在词首，ck 在词尾，别放错位置。",
+    "tip": "c/k/ck 都读 /k/",
+    "en": "duck",
+    "zh": "拼读示范词：鸭子"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：What do animals give us? 动物给我们什么；本单元阅读：Animal babies（网页）；社会情感：批判性思维。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：What do animals give us? 动物给我们什么；本单元阅读：Animal babies（网页）；社会情感：批判性思维。农场的动物各有用处——牛奶、鸡蛋、羊毛，都来自它们。",
+    "tip": "动物是人类的好朋友",
+    "en": "I like the little pig.",
+    "zh": "我喜欢这只小猪。"
    }
   ],
   "pu1-u4": [
    {
-    "t": "📐 语法：like / don't like",
-    "kid": "喜欢说 I like chocolate.，不喜欢说 I don't like …。要东西说 Can I have some …?，给别人东西说 Would you like …?",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "like 是个小钩子",
+    "kid": "I like cake.（我喜欢蛋糕。）不喜欢就说 I don't like...——like 是个\"小钩子\"，钩住你喜欢的东西。钩子后面直接挂名词就行。",
+    "tip": "喜欢 like，不喜欢 don't like",
+    "en": "I like milk and bread.",
+    "zh": "我喜欢牛奶和面包。"
    },
    {
-    "t": "🔤 拼读：a",
-    "kid": "本单元的拼读点是 a。先在词卡里找含这个音的词：bread、cake、water。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "bread"
+    "t": "Can I have...? 要东西的礼貌问法",
+    "kid": "想要什么就说 Can I have some rice, please?（请给我些米饭好吗？）——Can I have 是\"我能得到吗\"，加上 please 更礼貌。别人给你，说 Thank you! 就行。",
+    "tip": "要东西用 Can I have",
+    "en": "Can I have some water, please?",
+    "zh": "请给我些水好吗？"
+   },
+   {
+    "t": "Would you like...? 请别人吃",
+    "kid": "你想请别人吃东西：Would you like an apple?（你想要个苹果吗？）对方想要就说 Yes, please.，不想要说 No, thank you.。请人吃东西，英语都用这个句型。",
+    "tip": "请人吃用 Would you like",
+    "en": "Would you like an apple?",
+    "zh": "你想要个苹果吗？"
+   },
+   {
+    "t": "三餐交给 have",
+    "kid": "have breakfast（吃早餐）——英语吃三餐固定用 have，不用 eat。have 是英语里最忙的词：\"有、吃、喝\"都归它管。",
+    "tip": "吃三餐用 have",
+    "en": "I have bread for breakfast.",
+    "zh": "我早餐吃面包。"
+   },
+   {
+    "t": "拼读 a",
+    "kid": "a 在闭音节里读 /æ/，嘴巴张大（apple、banana 的开头、cat）。拼读时先发 a 的音，再把后面的辅音接上。",
+    "tip": "a 张大嘴 /æ/",
+    "en": "apple",
+    "zh": "拼读示范词：苹果"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Making a recipe 食材与做法；本单元阅读：A picnic with friends（真实故事）；社会情感：协作。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Making a recipe 食材与做法；本单元阅读：A picnic with friends（真实故事）；社会情感：协作。和朋友分享食物，是最快乐的时刻。",
+    "tip": "分享让食物更美味",
+    "en": "We share the cake.",
+    "zh": "我们一起分享蛋糕。"
    }
   ],
   "pu1-u5": [
    {
-    "t": "📐 语法：Whose …? 所有格 's",
-    "kid": "问「这是谁的」用 Whose bike is this? 答 It's Jim's bike.（名词后加 's）；his / her / our / their 放名词前。想要说 want，第三人称 wants。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "Whose 问\"谁的\"",
+    "kid": "Whose bike is this?（这是谁的自行车？）——Whose 问的是\"主人\"，不是\"人\"。回答 It's Jim's bike. 或 It's mine.。whose 和 who's（是谁）读音一样，写法差一个撇号。",
+    "tip": "Whose 问主人，who's 问人",
+    "en": "Whose ball is it? It is mine.",
+    "zh": "这是谁的球？是我的。"
    },
    {
-    "t": "🔤 拼读：h",
-    "kid": "本单元的拼读点是 h。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "名词加 's 表示\"谁的\"",
+    "kid": "Jim's bike = Jim 的自行车——名词后面加个 's，就变成\"某某的\"。这跟中文加\"的\"一样简单。注意是加在人名后面：Mum's car、Dad's hat。",
+    "tip": "人名后加 's 表所有",
+    "en": "It is my dad's car.",
+    "zh": "这是我爸爸的车。"
+   },
+   {
+    "t": "my / your / his / her 管东西",
+    "kid": "my 是\"我的\"，your 是\"你的\"，his 是\"他的\"，her 是\"她的\"——后面必须跟东西：my ball、your kite、his doll。它们是\"谁 + 的\"的合并写法，不能再跟名词重复。",
+    "tip": "物主代词后面跟东西",
+    "en": "This is her doll.",
+    "zh": "这是她的娃娃。"
+   },
+   {
+    "t": "want 说\"想要\"",
+    "kid": "I want a kite.（我想要风筝。）——want 就是\"想要\"，后面直接挂想要的东西。他/她想要用 wants：She wants a teddy bear。",
+    "tip": "想要用 want，他她用 wants",
+    "en": "I want a new bike.",
+    "zh": "我想要一辆新自行车。"
+   },
+   {
+    "t": "拼读 h",
+    "kid": "h 是轻轻呵一口气（hat、house），像哈气一样。注意 h 在词首才发音，hour 这种词里的 h 是哑巴。",
+    "tip": "h 呵气 /h/",
+    "en": "hat",
+    "zh": "拼读示范词：帽子"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Shapes around us 身边的形状；本单元阅读：Nora and Flora can share（真实故事）；社会情感：情绪发展。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Shapes around us 身边的形状；本单元阅读：Nora and Flora can share（真实故事）；社会情感：情绪发展。生日最棒的不是礼物，是和朋友一起许愿。",
+    "tip": "分享让快乐加倍",
+    "en": "This present is for you.",
+    "zh": "这个礼物是给你的。"
    }
   ],
   "pu1-u6": [
    {
-    "t": "📐 语法：there is/are",
-    "kid": "说「有」用 There's a car.，否定 There aren't any shops.；提议一起做用 Let's play a game.",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "there is / there are 说\"有\"",
+    "kid": "There is a bus.（有一辆公交车。）There are two pandas.（有两只熊猫。）——\"存在什么\"用 there is/are：一个 is，一群 are。别说 It has a bus。",
+    "tip": "存在用 there is/are",
+    "en": "There is a lion in the zoo.",
+    "zh": "动物园里有一头狮子。"
    },
    {
-    "t": "🔤 拼读：ai, a-e",
-    "kid": "本单元的拼读点是 ai, a-e。先在词卡里找含这个音的词：train。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "train"
+    "t": "Let's... 邀请一起做",
+    "kid": "Let's go to the park!（我们去公园吧！）——Let's 就是\"让我们\"，后面直接跟动词原形。想邀请别人做什么，都用 Let's 开头。",
+    "tip": "邀请就用 Let's",
+    "en": "Let's go to the zoo.",
+    "zh": "我们去动物园吧。"
+   },
+   {
+    "t": "Is there...? 问\"有没有\"",
+    "kid": "问\"有没有\"用 Is there...?（一个）/ Are there...?（一群）：Is there a shop near here? 答 Yes, there is. / No, there isn't。",
+    "tip": "问存在用 Is/Are there",
+    "en": "Is there a park? Yes, there is.",
+    "zh": "有公园吗？有的。"
+   },
+   {
+    "t": "方位介词大集合",
+    "kid": "in the street（在街上）、at the zoo（在动物园）、next to the shop（在商店旁边）——记住：小地方用 at，长条的用 in，紧挨着用 next to。",
+    "tip": "at 小地方，in 长条",
+    "en": "The bus is on the street.",
+    "zh": "公交车在街上。"
+   },
+   {
+    "t": "拼读 ai 和 a-e",
+    "kid": "ai 在词中间读 /eɪ/（train），a-e 是\"a + 辅音 + e\"，e 不发音、a 读字母音 /eɪ/（plane）。两种拼法，一个音。",
+    "tip": "ai 和 a-e 都读 /eɪ/",
+    "en": "train",
+    "zh": "拼读示范词：火车"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Animals in the wild 野生动物的家；本单元阅读：When we go to the wildlife park（诗）；社会情感：换位思考。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Animals in the wild 野生动物的家；本单元阅读：When we go to the wildlife park（诗）；社会情感：换位思考。看野生动物时安静观察，不打扰它们的家。",
+    "tip": "爱护动物的家",
+    "en": "The pandas are in the zoo.",
+    "zh": "熊猫在动物园里。"
    }
   ],
   "pu1-u7": [
    {
-    "t": "📐 语法：现在进行时 What are you doing",
-    "kid": "正在做用 be + 动词-ing：What are you doing? I'm riding a horse. 请求许可用 Can we play tennis?",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "正在做：be + 动词-ing",
+    "kid": "What are you doing? I'm riding a bike.（你正在做什么？我正在骑车。）——说\"此刻正在\"，动词要加 -ing，前面还要有 am/is/are。两个缺一不可。",
+    "tip": "此刻正在 = be + ing",
+    "en": "I am riding a bike.",
+    "zh": "我正在骑自行车。"
    },
    {
-    "t": "🔤 拼读：s",
-    "kid": "本单元的拼读点是 s。先在词卡里找含这个音的词：basketball、swim、skate。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "basketball"
+    "t": "can 表示\"会、能\"",
+    "kid": "I can swim.（我会游泳。）He can't skate.（他不会滑冰。）——can 后面动词永远用原形，不加 s、不加 ing。问句把 can 提前：Can you jump?",
+    "tip": "can 后面动词用原形",
+    "en": "I can play football.",
+    "zh": "我会踢足球。"
+   },
+   {
+    "t": "Can we...? 请求许可",
+    "kid": "想做一件事先问一问：Can we play football?（我们可以踢足球吗？）——表示\"允许\"用 can，回答 Yes, you can. / No, you can't。",
+    "tip": "请求许可用 Can we",
+    "en": "Can we play ping-pong?",
+    "zh": "我们可以打乒乓球吗？"
+   },
+   {
+    "t": "play + 球类不加 the",
+    "kid": "play football、play ping-pong——play 后面接球类运动时，中间不加 the。但 play the piano（弹钢琴）要加 the。球类\"裸奔\"，乐器\"戴帽\"。",
+    "tip": "球类不加 the，乐器加",
+    "en": "I play football after school.",
+    "zh": "我放学后踢足球。"
+   },
+   {
+    "t": "拼读 s",
+    "kid": "s 轻轻嘶一声（sun、skate、swim）。s 在词首发 /s/，在两个元音中间有时读 /z/（如 music）。先练词首的清音。",
+    "tip": "s 嘶嘶 /s/",
+    "en": "skate",
+    "zh": "拼读示范词：滑冰"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Look after your body! 让身体更强壮；本单元阅读：A good friend（真实故事）；社会情感：社会责任。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Look after your body! 让身体更强壮；本单元阅读：A good friend（真实故事）；社会情感：社会责任。多运动、多跑跳，身体才会棒。",
+    "tip": "运动让身体更强壮",
+    "en": "We run and jump together.",
+    "zh": "我们一起跑跑跳跳。"
    }
   ],
   "pu1-u8": [
    {
-    "t": "📐 语法：can 表示能力",
-    "kid": "会做用 can：I can swim. / He can't sing. 方位三个：in front of 前面、between 中间、behind 后面。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "can 说\"会做什么\"",
+    "kid": "I can swim.（我会游泳。）I can't cook.（我不会做饭。）——\"有能力做\"就用 can，否定是 can't。注意 can 后面的动词不变形。",
+    "tip": "会做用 can，不会用 can't",
+    "en": "I can cook in the kitchen.",
+    "zh": "我会在厨房做饭。"
    },
    {
-    "t": "🔤 拼读：i",
-    "kid": "本单元的拼读点是 i。先在词卡里找含这个音的词：mirror、kitchen、living room。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "mirror"
+    "t": "in front of / between / behind",
+    "kid": "in front of 在前面、between 在中间、behind 在后面——三个新方位词，把东西的位置说得更准。The lamp is behind the sofa.（灯在沙发后面。）",
+    "tip": "前、中、后三个新位置",
+    "en": "The lamp is behind the sofa.",
+    "zh": "灯在沙发后面。"
+   },
+   {
+    "t": "There is / There are 房间里的东西",
+    "kid": "介绍房间：There is a bed in the bedroom. There are two chairs in the kitchen.——一个 is，一群 are。介绍\"有什么\"就用这个句型。",
+    "tip": "介绍房间用 there be",
+    "en": "There is a bed in my bedroom.",
+    "zh": "我的卧室里有一张床。"
+   },
+   {
+    "t": "一般疑问句：can 提前",
+    "kid": "I can swim. 变问句：Can you swim?（你会游泳吗？）——把 can 挪到主语前面就行，回答 Yes, I can. / No, I can't。",
+    "tip": "can 提前就成问句",
+    "en": "Can you make your bed?",
+    "zh": "你会整理床铺吗？"
+   },
+   {
+    "t": "拼读 i",
+    "kid": "i 在闭音节里读 /ɪ/，短促有力（window、living 的开头、sit）。先读 i 再接后面的音，像拼积木。",
+    "tip": "i 短促 /ɪ/",
+    "en": "window",
+    "zh": "拼读示范词：窗户"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Houses around the world 世界各地的房子；本单元阅读：The clock on the wall（诗）；社会情感：自主性。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Houses around the world 世界各地的房子；本单元阅读：The clock on the wall（诗）；社会情感：自主性。自己的房间自己收拾，是最棒的本领。",
+    "tip": "自己的事情自己做",
+    "en": "I clean my room.",
+    "zh": "我打扫我的房间。"
    }
   ],
   "pu1-u9": [
    {
-    "t": "📐 语法：祈使句",
-    "kid": "命令句直接用动词开头：Look at this T-shirt. / Clean those shoes. 喜欢做某事用 like / enjoy + 动词-ing。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "小命令不用主语",
+    "kid": "Share!（分享）Listen!（听）Help!（帮帮忙）——让别人做事时，英语把主语\"你\"藏起来，直接说动词，像喊口号一样干脆有力。",
+    "tip": "命令句直接说动词",
+    "en": "Look at this T-shirt.",
+    "zh": "看这件 T 恤。"
    },
    {
-    "t": "🔤 拼读：j, h",
-    "kid": "本单元的拼读点是 j, h。先在词卡里找含这个音的词：shirt、T-shirt、shorts。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "shirt"
+    "t": "Don't 开头，别再做这件事",
+    "kid": "Don't run on the beach!（别在沙滩上跑！）——想让人\"别做\"，就在动词前加 Don't。Don't 后面的动词也用原形。",
+    "tip": "否定命令用 Don't",
+    "en": "Don't play on the sand!",
+    "zh": "别在沙滩上玩！"
+   },
+   {
+    "t": "like / enjoy + 动词-ing",
+    "kid": "like reading（喜欢阅读）、enjoy swimming（享受游泳）——like 和 enjoy 后面跟动词时，动词要加 -ing。跟在 like 后面的动词都爱\"穿 ing 外套\"。",
+    "tip": "like/enjoy 后面动词加 ing",
+    "en": "I like riding my bike.",
+    "zh": "我喜欢骑自行车。"
+   },
+   {
+    "t": "please 站哪儿都不影响句子",
+    "kid": "Please open the door. / Open the door, please.——please 放句首句尾都行，意思是\"请\"。加上 please，命令就变成了礼貌的请求。",
+    "tip": "please 随处可放",
+    "en": "Please clean your shoes.",
+    "zh": "请擦干净你的鞋。"
+   },
+   {
+    "t": "拼读 j, h 和 sh",
+    "kid": "j 读 /dʒ/（jacket、jeans），sh 读 /ʃ/（shirt、shoe、shorts）——sh 是两个字母读一个音，\"嘘——\"就是它。",
+    "tip": "sh 读\"嘘\" /ʃ/",
+    "en": "shirt",
+    "zh": "拼读示范词：衬衫"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：What can we see on holiday? 自然景观；本单元阅读：The monkey and the shark（传统故事）；社会情感：批判性思维。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：What can we see on holiday? 自然景观；本单元阅读：The monkey and the shark（传统故事）；社会情感：批判性思维。海边度假，防晒和安全一样重要。",
+    "tip": "海边玩要注意安全",
+    "en": "We go to the beach.",
+    "zh": "我们去海边。"
+   }
+  ],
+  "pu1-r1": [
+   {
+    "t": "复习卡：本阶段句型回顾",
+    "kid": "前三个单元的四个句型：This is...（介绍人）、Where is...?（问位置）、is/are（一个一群）、has got（它有）。把它们排排队，说出来。",
+    "tip": "把句型串起来",
+    "en": "This is my friend. He has got a big family.",
+    "zh": "这是我的朋友。他有一个大家庭。"
+   },
+   {
+    "t": "复习卡：易错点提醒",
+    "kid": "常见错误：① this/these 混用（一个 this 一群 these）；② is/are 跟错数量；③ Where 的回答漏介词。",
+    "tip": "错过的不再错",
+    "en": "Where is the book? It is in the bag.",
+    "zh": "书在哪？在书包里。"
+   },
+   {
+    "t": "复习卡：开口练一练",
+    "kid": "用五个词造句：family、desk、big、Where、is。每个词说一句完整的话。",
+    "tip": "说出来才是会了",
+    "en": "Where is my family photo?",
+    "zh": "我的全家福在哪里？"
+   }
+  ],
+  "pu1-r2": [
+   {
+    "t": "复习卡：本阶段句型回顾",
+    "kid": "第四到六单元：like/don't like（喜欢）、Can I have...?（要东西）、Whose（谁的）、there is/are（有）、Let's（一起做）。",
+    "tip": "把句型串起来",
+    "en": "I like milk. Can I have some water, please?",
+    "zh": "我喜欢牛奶。请给我些水好吗？"
+   },
+   {
+    "t": "复习卡：易错点提醒",
+    "kid": "常见错误：① Whose 和 who's 混用；② there is 后面接复数；③ Let's 后面的动词忘了用原形。",
+    "tip": "错过的不再错",
+    "en": "There are two pandas in the zoo.",
+    "zh": "动物园里有两只熊猫。"
+   },
+   {
+    "t": "复习卡：开口练一练",
+    "kid": "用五个词造句：Whose、there、Let's、like、Can。每个词说一句完整的话。",
+    "tip": "说出来才是会了",
+    "en": "Whose ball is it? Let's play!",
+    "zh": "这是谁的球？我们一起玩！"
+   }
+  ],
+  "pu1-r3": [
+   {
+    "t": "复习卡：本阶段句型回顾",
+    "kid": "第七到九单元：be + ing（正在做）、can（会做）、in front of/between/behind（方位）、祈使句（命令）、like/enjoy + ing。",
+    "tip": "把句型串起来",
+    "en": "I am riding a bike. I can ride fast.",
+    "zh": "我正在骑车。我能骑得快。"
+   },
+   {
+    "t": "复习卡：易错点提醒",
+    "kid": "常见错误：① be + ing 只写了一半（漏 am/is/are 或漏 ing）；② can 后面的动词加了 s；③ like 后面的动词忘了 ing。",
+    "tip": "错过的不再错",
+    "en": "I like swimming. Do not run here!",
+    "zh": "我喜欢游泳。别在这里跑！"
+   },
+   {
+    "t": "复习卡：开口练一练",
+    "kid": "用五个词造句：swim、can、behind、like、Don't。每个词说一句完整的话。",
+    "tip": "说出来才是会了",
+    "en": "I can swim in the sea.",
+    "zh": "我能在海里游泳。"
    }
   ]
  },
  "pu2": {
   "pu2-u0": [
    {
-    "t": "📐 语法：How old is she? She's fi",
-    "kid": "介绍人：How old is she? She's five. / He's got long hair.（年龄用 be，长相用 have got）",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "How old is she? 问别人年龄",
+    "kid": "问第三人称年龄：How old is she? She's five.——问\"你\"用 are，问\"他/她\"用 is。回答把 is 换成具体年龄就行。",
+    "tip": "问她多大用 is",
+    "en": "How old is she? She is five.",
+    "zh": "她几岁？她五岁。"
+   },
+   {
+    "t": "He's got long hair. 描述长相",
+    "kid": "说长相用 have got / has got：He's got long hair.（他有长头发。）She's got big eyes.——\"有\"什么特征就 got 什么。",
+    "tip": "描述长相用 have got",
+    "en": "He's got long hair.",
+    "zh": "他有长头发。"
+   },
+   {
+    "t": "男 he 女 she",
+    "kid": "男的用 he（他），女的用 she（她）——he 后面配 is/has，she 后面也是。介绍家人时先把 he/she 分清楚，句子就不会乱。",
+    "tip": "男 he 女 she",
+    "en": "She is my friend.",
+    "zh": "她是我的朋友。"
+   },
+   {
+    "t": "This is... 介绍人",
+    "kid": "This is my mum.（这是我妈妈。）——介绍别人认识时，用 This is + 人。比说 \"She is my mum\" 更自然，像把人\"递\"到对方面前。",
+    "tip": "介绍人用 This is",
+    "en": "This is my sister.",
+    "zh": "这是我姐姐。"
+   },
+   {
+    "t": "人称代词小表格",
+    "kid": "I（我）you（你）he（他）she（她）——英语每个\"人称\"都有专属词，动词跟着变：I am / You are / He is。记住四个主语，句子就有主人了。",
+    "tip": "先找主人再说话",
+    "en": "We are friends.",
+    "zh": "我们是朋友。"
+   },
+   {
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：介绍家庭树 family tree；本单元阅读：Meet the Diversicus family（人物介绍）；社会情感：尊重与关爱。每个人的家庭都不一样，都值得被尊重。",
+    "tip": "每个家都值得尊重",
+    "en": "I love my family.",
+    "zh": "我爱我的家人。"
    }
   ],
   "pu2-u1": [
    {
-    "t": "📐 语法：现在进行时复习",
-    "kid": "正在做（be + doing）和每天做（一般现在时）要分清；问几点用 What time do you get up? 答 I get up at seven o'clock.",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "正在做 vs 每天做",
+    "kid": "She is reading now.（她正在读。）She reads every day.（她每天读。）——\"此刻\"用 be + ing，\"每天/习惯\"用动词原形或加 s。两个时间，两种长相。",
+    "tip": "此刻 be+ing，习惯用原形",
+    "en": "I get up at seven.",
+    "zh": "我七点起床。"
    },
    {
-    "t": "🔤 拼读：r",
-    "kid": "本单元的拼读点是 r。先在词卡里找含这个音的词：star、rain、tree。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "star"
+    "t": "o'clock 只管整点",
+    "kid": "It's seven o'clock.（七点整。）——o'clock 只用在整点，7:30 就不能说 o'clock。问时间：What time is it?",
+    "tip": "整点才用 o'clock",
+    "en": "It is six o'clock.",
+    "zh": "六点了。"
+   },
+   {
+    "t": "一般现在时第三人称加 s",
+    "kid": "He gets up at six.（他六点起床。）——每天做的事，他/她/它做的，动词后面要加 s。这是最容易忘的小尾巴。",
+    "tip": "他她它做的，动词加 s",
+    "en": "She goes to school.",
+    "zh": "她去上学。"
+   },
+   {
+    "t": "in the morning / at night",
+    "kid": "早上用 in the morning，中午 at noon，晚上 at night——时间前面的小词要记牢：大时间用 in，小时间点用 at。",
+    "tip": "大时间 in，小时间 at",
+    "en": "I read in the morning.",
+    "zh": "我早上读书。"
+   },
+   {
+    "t": "拼读 r",
+    "kid": "r 卷舌 /r/（rain、river、tree 里的 r）。发音时舌头卷起来，别读成\"阿\"。",
+    "tip": "r 卷舌 /r/",
+    "en": "rain",
+    "zh": "拼读示范词：雨"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Look after our planet 照顾我们的星球；本单元阅读：The race（诗 / 第二版漫画）；社会情感：社会责任。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Look after our planet 照顾我们的星球；本单元阅读：The race（诗）；本单元社会情感：社会责任。日出而作，大自然有自己的作息。",
+    "tip": "跟着太阳过一天",
+    "en": "The sun is in the sky.",
+    "zh": "太阳在天上。"
    }
   ],
   "pu2-u2": [
    {
-    "t": "📐 语法：How often …? 频率副词 always",
-    "kid": "问频率 How often …? 答 always / often / sometimes / never。必须做用 must，不许做用 mustn't。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "How often 问\"多久一次\"",
+    "kid": "How often do you read?（你多久读一次书？）——often 问的是频率。回答用 always（总是）、often（经常）、sometimes（有时）、never（从不）。",
+    "tip": "频率四兄弟：always/often/sometimes/never",
+    "en": "I often draw on weekends.",
+    "zh": "我经常在周末画画。"
    },
    {
-    "t": "🔤 拼读：ay",
-    "kid": "本单元的拼读点是 ay。先在词卡里找含这个音的词：monday、tuesday、wednesday。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "monday"
+    "t": "must 和 mustn't",
+    "kid": "must 是\"必须\"，mustn't 是\"绝不可以\"：You must do your homework.（你必须做作业。）You mustn't run here.（这里绝不能跑。）——都是\"规定\"，一正一反。",
+    "tip": "must 必须，mustn't 禁止",
+    "en": "You must do your homework.",
+    "zh": "你必须做作业。"
+   },
+   {
+    "t": "星期一到星期天",
+    "kid": "Monday / Tuesday / Wednesday / Thursday / Friday / Saturday / Sunday——一周七天都要大写首字母！问：What day is it today?",
+    "tip": "星期几都要大写",
+    "en": "Today is Monday.",
+    "zh": "今天是星期一。"
+   },
+   {
+    "t": "on + 星期几",
+    "kid": "on Monday（在周一）、on weekends（在周末）——星期几前面用 on，不用 in。on 是\"踩在那一天上\"。",
+    "tip": "星期几前用 on",
+    "en": "We dance on Friday.",
+    "zh": "我们周五跳舞。"
+   },
+   {
+    "t": "拼读 ay",
+    "kid": "ay 在词尾读 /eɪ/（day、Monday、play、Sunday 的 day）——ay 几乎都在词尾，见到它就想到\"诶\"。",
+    "tip": "ay 词尾 /eɪ/",
+    "en": "day",
+    "zh": "拼读示范词：天"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Let's be healthy! 运动安全；本单元阅读：Bad, bad Monday（叙事）；社会情感：考虑行为的后果。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Let's be healthy! 运动安全；本单元阅读：Bad, bad Monday（叙事）；社会情感：考虑行为的后果。合理安排一周，每天都有期待。",
+    "tip": "把一周安排好",
+    "en": "I sing on Sunday.",
+    "zh": "我周日唱歌。"
    }
   ],
   "pu2-u3": [
    {
-    "t": "📐 语法：一般现在时 vs 现在进行时",
-    "kid": "一般现在时说习惯，现在进行时说此刻正在做。问原因用 Why …? 答 Because …",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "一般现在时 vs 现在进行时",
+    "kid": "He is a doctor.（他是医生。）He is helping a sick man.（他正在帮助病人。）——\"是什么/每天做\"用一般时，\"此刻正在\"用 be + ing。",
+    "tip": "身份用一般时，正在用进行时",
+    "en": "The doctor is helping now.",
+    "zh": "医生正在帮忙。"
    },
    {
-    "t": "🔤 拼读：/ɑː/",
-    "kid": "本单元的拼读点是 /ɑː/。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "Why 问，because 答",
+    "kid": "Why do they help us? Because they are doctors.——英语要求把原因明明白白说出来，不能只回半句。问句用 why，答句开头常接 because。",
+    "tip": "问原因，答原因",
+    "en": "Why? Because they help us.",
+    "zh": "为什么？因为他们帮助我们。"
+   },
+   {
+    "t": "a / an 的分工",
+    "kid": "a doctor、a nurse，但 an artist、an engineer——元音（a/e/i/o/u）开头的词前面用 an，其他用 a。这是笔试必考的小细节。",
+    "tip": "元音前用 an",
+    "en": "She is an artist.",
+    "zh": "她是一位艺术家。"
+   },
+   {
+    "t": "look + 形容词表\"看起来\"",
+    "kid": "The party is fun.（派对很有趣。）——is 后面接形容词是\"是什么样\"。要说\"看起来\"用 look：You look happy!（你看起来很开心！）",
+    "tip": "状态用 be，看起来用 look",
+    "en": "The party is fun.",
+    "zh": "派对很有趣。"
+   },
+   {
+    "t": "拼读 /ɑː/（ar 音）",
+    "kid": "arm、party、candle 里的 a 读\"啊\" /ɑː/。嘴巴张大，声音拉长——就像去看医生说\"啊——\"。",
+    "tip": "a 张大嘴\"啊\"",
+    "en": "party",
+    "zh": "拼读示范词：派对"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：People who help us 帮助我们的人；本单元阅读：The costume party（故事）；社会情感：求助与提供帮助。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：People who help us 帮助我们的人；本单元阅读：The costume party（故事）；社会情感：求助与提供帮助。需要帮助就大胆开口，帮助别人也一样。",
+    "tip": "互助让社区更温暖",
+    "en": "The nurse is kind.",
+    "zh": "护士很友善。"
    }
   ],
   "pu2-u4": [
    {
-    "t": "📐 语法：比较级 -er/-ier/better/wors",
-    "kid": "比较用 -er：longer / curlier；不规则 better / worse。说「我们的车比他们的小」用 ours is smaller than theirs.",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "比较级 -er：更……",
+    "kid": "longer（更长）、bigger（更大）——比较两样东西，形容词加 -er。辅音+y 变 i：happy→happier。双写末尾辅音：big→bigger。",
+    "tip": "比一比加 -er",
+    "en": "My room is bigger than yours.",
+    "zh": "我的房间比你的大。"
    },
    {
-    "t": "🔤 拼读：/ʌ/",
-    "kid": "本单元的拼读点是 /ʌ/。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "better / worse 不规则比较级",
+    "kid": "good 的比较级是 better（更好），bad 是 worse（更差）——这两个不加 -er，直接换词，要背下来。",
+    "tip": "better/worse 要背",
+    "en": "This bed is better.",
+    "zh": "这张床更好。"
+   },
+   {
+    "t": "than 引出\"比谁\"",
+    "kid": "A is bigger than B.——than 就是\"比\"，前面是比较级，后面是被比的对象。My house is taller than his.（我的房子比他的高。）",
+    "tip": "比较级 + than + 对象",
+    "en": "My house is bigger than his.",
+    "zh": "我的房子比他的大。"
+   },
+   {
+    "t": "ours / theirs 名词性物主代词",
+    "kid": "This house is ours.（这房子是我们的。）——ours = our house，\"我们的东西\"。yours、hers、theirs 一样，后面不再跟名词。",
+    "tip": "ours 后面不跟名词",
+    "en": "The garden is theirs.",
+    "zh": "花园是他们的。"
+   },
+   {
+    "t": "拼读 /ʌ/（u 短音）",
+    "kid": "uncle、summer、duck 里的 u 读短促的\"阿\" /ʌ/。嘴巴放松，声音短——别读成\"乌\"。",
+    "tip": "u 短促 /ʌ/",
+    "en": "uncle",
+    "zh": "拼读示范词：叔叔"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Machines in our homes 家里的机器；本单元阅读：Surprise!（故事）；社会情感：主动性与情绪管理。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Machines in our homes 家里的机器；本单元阅读：Surprise!（故事）；社会情感：主动性与情绪管理。家的大小不重要，住得开心才重要。",
+    "tip": "家是温暖的地方",
+    "en": "Our home is warm.",
+    "zh": "我们的家很温暖。"
    }
   ],
   "pu2-u5": [
    {
-    "t": "📐 语法：最高级 the prettiest/the be",
-    "kid": "三个以上比最：the prettiest / the fattest / the best。方位 above 上方、below 下方、near 附近、opposite 对面。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "最高级 the + -est",
+    "kid": "the tallest（最高）、the fattest（最胖）——三个以上比\"最\"，形容词加 -est，前面别忘了 the。不规则：the best、the worst。",
+    "tip": "最……用 the -est",
+    "en": "The giraffe is the tallest.",
+    "zh": "长颈鹿是最高的。"
    },
    {
-    "t": "🔤 拼读：g",
-    "kid": "本单元的拼读点是 g。先在词卡里找含这个音的词：goat、frog。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "goat"
+    "t": "above / below / near / opposite",
+    "kid": "above 在上方、below 在下方、near 在附近、opposite 在对面——四个方位词把位置说得清清楚楚。",
+    "tip": "上下、附近、对面",
+    "en": "The bird is above the tree.",
+    "zh": "鸟在树的上方。"
+   },
+   {
+    "t": "has got + 形容词 + 名词",
+    "kid": "It has got a big body.（它有一个大身体。）——has got 后面可以接\"形容词 + 名词\"，描述动物外形最常用。",
+    "tip": "has got + 形容词 + 名词",
+    "en": "The horse has got long legs.",
+    "zh": "马有长腿。"
+   },
+   {
+    "t": "动物名称一串记",
+    "kid": "horse、goat、fox、wolf、deer、snake、frog、turtle——农场和野外的动物各有特点，配上外形形容词就是一句好话：The fox is smart.（狐狸很聪明。）",
+    "tip": "动物 + 形容词",
+    "en": "The fox is smart.",
+    "zh": "狐狸很聪明。"
+   },
+   {
+    "t": "拼读 g",
+    "kid": "g 读 /g/（goat、tiger、frog），在 e/i/y 前有时读 /dʒ/（如 giraffe 的 g）。先记硬 g：go、get、goat。",
+    "tip": "g 硬音 /g/",
+    "en": "goat",
+    "zh": "拼读示范词：山羊"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：The animal kingdom 动物与食物；本单元阅读：Why the kangaroo has a pouch（澳洲梦幻故事）；社会情感：帮助他人。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：The animal kingdom 动物与食物；本单元阅读：Why the kangaroo has a pouch（澳洲梦幻故事）；社会情感：帮助他人。动物之间也互相帮忙。",
+    "tip": "动物世界也有温情",
+    "en": "The panda is cute.",
+    "zh": "熊猫很可爱。"
    }
   ],
   "pu2-u6": [
    {
-    "t": "📐 语法：was/were",
-    "kid": "过去的「是」用 was / were；过去的「有」用 There was / There were，问句 Was there …? Were there any …?",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "was / were：过去的\"是\"",
+    "kid": "It was hot yesterday.（昨天很热。）They were happy.（他们很开心。）——am/is 的过去是 was，are 的过去是 were。",
+    "tip": "is→was，are→were",
+    "en": "It was sunny yesterday.",
+    "zh": "昨天是晴天。"
    },
    {
-    "t": "🔤 拼读：ee and y",
-    "kid": "本单元的拼读点是 ee and y。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "there was / there were",
+    "kid": "There was a rainbow.（有一道彩虹。）There were many clouds.（有很多云。）——过去的\"有\"用 there was/were，一个 was，一群 were。",
+    "tip": "过去的\"有\"用 was/were",
+    "en": "There were many clouds.",
+    "zh": "有很多云。"
+   },
+   {
+    "t": "天气句型 It is + 天气词",
+    "kid": "It is rainy.（下雨。）It is windy.（刮风。）——英语说天气必须有个\"它\"It 当主语，不能说 Rainy today.。",
+    "tip": "天气句必须有 It",
+    "en": "It is windy today.",
+    "zh": "今天刮风。"
+   },
+   {
+    "t": "sun + y = 晴朗的",
+    "kid": "rain→rainy（下雨的）、snow→snowy（下雪的）、wind→windy（有风的）——名词加 y 变形容词，天气词最爱这么变。",
+    "tip": "名词加 y 变天气形容词",
+    "en": "It is cloudy today.",
+    "zh": "今天多云。"
+   },
+   {
+    "t": "拼读 ee 和 y",
+    "kid": "ee 在词中间读 /iː/（tree、green、see），y 在词尾常读 /i/（rainy、cloudy、sunny）。两种拼法都是\"衣\"的音。",
+    "tip": "ee /iː/，词尾 y /i/",
+    "en": "tree",
+    "zh": "拼读示范词：树"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：What's the weather like today? 测量天气的工具；本单元阅读：Fun in all types of weather!（诗）；社会情感：积极心态。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：What's the weather like today? 测量天气的工具；本单元阅读：Fun in all types of weather!（诗）；社会情感：积极心态。每种天气都有自己的玩法。",
+    "tip": "坏天气也有好心情",
+    "en": "I like sunny days.",
+    "zh": "我喜欢晴天。"
    }
   ],
   "pu2-u7": [
    {
-    "t": "📐 语法：一般过去时：不规则动词",
-    "kid": "过去时不规则动词要背：go→went、buy→bought、find→found；规则动词加 -ed（cooked、stopped 双写）。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "一般过去时：规则动词加 -ed",
+    "kid": "cooked（煮了）、washed（洗了）、mixed（混合了）——过去做的事，动词加 -ed。这是过去时最常见的样子。",
+    "tip": "过去做的事加 -ed",
+    "en": "I washed the potatoes.",
+    "zh": "我洗了土豆。"
    },
    {
-    "t": "🔤 拼读：ch",
-    "kid": "本单元的拼读点是 ch。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "不规则过去式要背",
+    "kid": "go→went、eat→ate、buy→bought、find→found——有些动词的过去式不加 -ed，要单独背。先背最常见的 10 个。",
+    "tip": "不规则过去式要背",
+    "en": "She went to the shop.",
+    "zh": "她去了商店。"
+   },
+   {
+    "t": "cook 是\"做饭\"也是\"厨师\"",
+    "kid": "I cook dinner.（我做晚饭。）My dad is a cook.（我爸爸是厨师。）——同一个词，做动词是\"做饭\"，做名词是\"厨师\"。",
+    "tip": "cook 一词两用",
+    "en": "I cook dinner at home.",
+    "zh": "我在家做晚饭。"
+   },
+   {
+    "t": "祈使句：直接说动作",
+    "kid": "Wash the vegetables!（洗菜！）Mix it well!（拌匀！）——做饭时的口令都是祈使句：动词开头，主语\"你\"藏起来。",
+    "tip": "做饭口令都是祈使句",
+    "en": "Wash the carrots, please.",
+    "zh": "请洗一下胡萝卜。"
+   },
+   {
+    "t": "拼读 ch",
+    "kid": "ch 读 /tʃ/（chicken、carrot、peach），像\"吃\"的开头。sh 是\"嘘\"，ch 是\"吃\"，别弄混。",
+    "tip": "ch 读\"吃\" /tʃ/",
+    "en": "chicken",
+    "zh": "拼读示范词：鸡肉"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Plants are delicious! 植物与食物；本单元阅读：Sonny's dream（奇幻故事）；社会情感：坚持。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Plants are delicious! 植物与食物；本单元阅读：Sonny's dream（奇幻故事）；社会情感：坚持。自己做的饭，再简单也香。",
+    "tip": "自己动手做饭香",
+    "en": "We eat together.",
+    "zh": "我们一起吃饭。"
    }
   ],
   "pu2-u8": [
    {
-    "t": "📐 语法：更多不规则过去式",
-    "kid": "更多不规则过去式：find→found、buy→bought。必须做用 have to，不必做用 don't have to。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "更多不规则过去式",
+    "kid": "find→found、buy→bought、see→saw、have→had——去城里玩一圈，过去式就攒了一堆：We found the park.（我们找到了公园。）",
+    "tip": "过去式继续攒",
+    "en": "We found the park.",
+    "zh": "我们找到了公园。"
    },
    {
-    "t": "🔤 拼读：ow and oa",
-    "kid": "本单元的拼读点是 ow and oa。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "have to / don't have to",
+    "kid": "have to 是\"必须\"（规定），don't have to 是\"不必\"：I have to wear a seat belt.（我必须系安全带。）注意：don't have to ≠ mustn't（禁止）。",
+    "tip": "have to 必须，不必用 don't have to",
+    "en": "We have to wait here.",
+    "zh": "我们必须在这里等。"
+   },
+   {
+    "t": "go + 地点 + by + 交通工具",
+    "kid": "We go to the zoo by bus.（我们坐公交车去动物园。）——by bus、by train、by taxi，by 后面交通工具前不加 the。",
+    "tip": "by + 交通工具不加 the",
+    "en": "We go to the park by bus.",
+    "zh": "我们坐公交去公园。"
+   },
+   {
+    "t": "城镇地点大集合",
+    "kid": "shop、store、supermarket、hospital、library、cinema、museum、hotel——城里每个地方都有名字，问路先说地点：Where is the library?",
+    "tip": "问路先说地点",
+    "en": "Where is the library?",
+    "zh": "图书馆在哪里？"
+   },
+   {
+    "t": "拼读 ow 和 oa",
+    "kid": "ow 在词尾读 /aʊ/（cow、down），oa 在词中读 /əʊ/（road、boat）。两个组合长得像，读音不同。",
+    "tip": "ow /aʊ/，oa /əʊ/",
+    "en": "road",
+    "zh": "拼读示范词：路"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Road safety 交通安全；本单元阅读：Tom's first day at the new school（幽默故事）；社会情感：乐观。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Road safety 交通安全；本单元阅读：Tom's first day at the new school（幽默故事）；社会情感：乐观。去新地方，迷路也是冒险。",
+    "tip": "遵守交规安全行",
+    "en": "We walk on the road.",
+    "zh": "我们在路上走。"
    }
   ],
   "pu2-u9": [
    {
-    "t": "📐 语法：more 比较级",
-    "kid": "多音节词比较用 more：more beautiful than …；最高级用 the most：the most beautiful city.",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "more + 形容词：更多/更……",
+    "kid": "more beautiful（更漂亮）、more interesting（更有趣）——长的形容词不加 -er，前面加 more。旅行见闻就靠它比较。",
+    "tip": "长形容词用 more",
+    "en": "This trip is more fun.",
+    "zh": "这趟旅行更有趣。"
    },
    {
-    "t": "🔤 拼读：ing / in",
-    "kid": "本单元的拼读点是 ing / in。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "the most + 形容词：最……",
+    "kid": "the most beautiful（最漂亮）——三个以上比\"最\"，长形容词用 the most。My trip is the most exciting.（我的旅行是最激动人心的。）",
+    "tip": "最……用 the most",
+    "en": "This is the most beautiful place.",
+    "zh": "这是最美的地方。"
+   },
+   {
+    "t": "情感形容词大集合",
+    "kid": "tired（累）、thirsty（渴）、hungry（饿）、afraid（怕）、worried（担心）、excited（兴奋）——感受用 be + 形容词说出来：I am excited!（我很兴奋！）",
+    "tip": "感受用 be + 形容词",
+    "en": "I am excited about the trip.",
+    "zh": "我对旅行很兴奋。"
+   },
+   {
+    "t": "want to + 动词：想做",
+    "kid": "I want to visit China.（我想去中国旅行。）——want 后面加 to 再接动词，表示\"想做某事\"。注意是 want to do，不是 want do。",
+    "tip": "want 后面接 to do",
+    "en": "I want to visit China.",
+    "zh": "我想去中国旅行。"
+   },
+   {
+    "t": "拼读 ing / in",
+    "kid": "ing 在词尾读 /ɪŋ/（singing、morning），in 在词中读 /ɪn/（visit、big）。ing 是\"后鼻音\"，in 是\"前鼻音\"。",
+    "tip": "ing 后鼻音 /ɪŋ/",
+    "en": "visiting",
+    "zh": "拼读示范词：参观"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：The wonders of the world 世界奇观；本单元阅读：（本单元以任务与复习为主）；社会情感：自豪。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：The wonders of the world 世界奇观；本单元阅读：旅行与成长主题故事；社会情感：自豪。每一次旅行，都让你的世界更大一点。",
+    "tip": "世界很大，去看看",
+    "en": "I want to travel the world.",
+    "zh": "我想环游世界。"
+   }
+  ],
+  "pu2-r1": [
+   {
+    "t": "复习卡：本阶段句型回顾",
+    "kid": "前三单元：How old is she?（问年龄）、have got（有）、一般现在时第三人称加 s、How often（频率）、must/mustn't。",
+    "tip": "把句型串起来",
+    "en": "She is five. She has got long hair. She must sleep early.",
+    "zh": "她五岁。她有长头发。她必须早睡。"
+   },
+   {
+    "t": "复习卡：易错点提醒",
+    "kid": "常见错误：① 第三人称动词忘加 s；② must 后面的动词加了 ing；③ 星期几忘了大写。",
+    "tip": "错过的不再错",
+    "en": "I often draw on Monday. She always sings.",
+    "zh": "我经常周一画画。她总是唱歌。"
+   },
+   {
+    "t": "复习卡：开口练一练",
+    "kid": "用五个词造句：must、often、Monday、has、How。每个词说一句完整的话。",
+    "tip": "说出来才是会了",
+    "en": "How often do you read? I read every day.",
+    "zh": "你多久读一次书？我每天都读。"
+   }
+  ],
+  "pu2-r2": [
+   {
+    "t": "复习卡：本阶段句型回顾",
+    "kid": "第四到六单元：比较级 -er、最高级 the -est、was/were（过去是）、there was/were（过去有）、天气句型。",
+    "tip": "把句型串起来",
+    "en": "My room is bigger than yours. It was sunny yesterday.",
+    "zh": "我的房间比你的大。昨天是晴天。"
+   },
+   {
+    "t": "复习卡：易错点提醒",
+    "kid": "常见错误：① 比较级前面漏 than；② 最高级前面漏 the；③ 天气句漏 It。",
+    "tip": "错过的不再错",
+    "en": "The giraffe is the tallest. There were many clouds.",
+    "zh": "长颈鹿是最高的。曾经有很多云。"
+   },
+   {
+    "t": "复习卡：开口练一练",
+    "kid": "用五个词造句：bigger、was、tallest、cloudy、than。每个词说一句完整的话。",
+    "tip": "说出来才是会了",
+    "en": "It was cloudy, but now it is sunny.",
+    "zh": "之前多云，现在晴了。"
+   }
+  ],
+  "pu2-r3": [
+   {
+    "t": "复习卡：本阶段句型回顾",
+    "kid": "第七到九单元：过去时（规则 -ed / 不规则）、have to（必须）、more/most（长形容词比较）、情感形容词。",
+    "tip": "把句型串起来",
+    "en": "We cooked dinner. It was better than yesterday.",
+    "zh": "我们做了晚饭。比昨天的好。"
+   },
+   {
+    "t": "复习卡：易错点提醒",
+    "kid": "常见错误：① 不规则过去式按 -ed 变（goed 错了，是 went）；② more 后面又加了 -er；③ want to 后面漏了 to。",
+    "tip": "错过的不再错",
+    "en": "I want to travel more. The trip was exciting.",
+    "zh": "我想多旅行。这趟旅行很激动人心。"
+   },
+   {
+    "t": "复习卡：开口练一练",
+    "kid": "用五个词造句：went、better、want、most、excited。每个词说一句完整的话。",
+    "tip": "说出来才是会了",
+    "en": "I went to the park. I was excited!",
+    "zh": "我去了公园。我很兴奋！"
    }
   ]
  },
  "pu3": {
   "pu3-u0": [
    {
-    "t": "📐 语法：疑问词复习 how/what/when/wher",
-    "kid": "复习疑问词 how/what/when/where/which/who/why，以及 was/were + could（I could dance when I was four.）",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "疑问词全家福",
+    "kid": "how（怎样）、what（什么）、when（何时）、where（哪里）、which（哪个）、who（谁）、why（为什么）——七个疑问词是提问的\"钥匙\"，先选钥匙再开门。",
+    "tip": "七个疑问词七把钥匙",
+    "en": "Where do you live?",
+    "zh": "你住在哪里？"
    },
    {
-    "t": "🔤 拼读：numbers",
-    "kid": "本单元的拼读点是 numbers。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "was / were + could 说过去",
+    "kid": "I could swim when I was four.（我四岁就会游泳。）——could 是\"过去会\"，was/were 是\"过去是\"。回忆过去，这两个最常用。",
+    "tip": "过去会用 could",
+    "en": "I could dance when I was four.",
+    "zh": "我四岁就会跳舞。"
+   },
+   {
+    "t": "introduce 和 greet",
+    "kid": "introduce 是\"介绍\"（Let me introduce my friend.），greet 是\"问候\"（She greets her teacher.）——认识新朋友，先问候再介绍。",
+    "tip": "先问候 greet，再介绍 introduce",
+    "en": "Let me introduce my friend.",
+    "zh": "我来介绍一下我的朋友。"
+   },
+   {
+    "t": "Nice to meet you! 见面礼",
+    "kid": "初次见面说 Nice to meet you!（很高兴认识你！）对方回答 Nice to meet you, too!（我也很高兴！）——固定对话，背下来就成。",
+    "tip": "见面固定对话",
+    "en": "Nice to meet you!",
+    "zh": "很高兴认识你！"
+   },
+   {
+    "t": "拼读数字 one-ten",
+    "kid": "one /wʌn/、two /tuː/、three /θriː/、four、five、six、seven、eight、nine、ten——数字是拼读课的老朋友，先读顺 1-10。",
+    "tip": "数字 1-10 读顺",
+    "en": "three",
+    "zh": "拼读示范词：三"
+   },
+   {
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：本单元是全册的欢迎课，复习语言与问候；社会情感：包容与友善。第一次见面，一个微笑就是最好的开场白。",
+    "tip": "微笑是通用语言",
+    "en": "Hello! What is your name?",
+    "zh": "你好！你叫什么名字？"
    }
   ],
   "pu3-u1": [
    {
-    "t": "📐 语法：was/were + could",
-    "kid": "could 说过去会做：I could hop when I was four. / I couldn't skip.",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "could 说\"过去会做\"",
+    "kid": "I could hop when I was four.（我四岁就会单脚跳。）I couldn't skip.（我不会跳绳。）——could 是 can 的过去式，表示\"那时会/不会\"。",
+    "tip": "过去会/不会用 could",
+    "en": "I could dance when I was four.",
+    "zh": "我四岁就会跳舞。"
    },
    {
-    "t": "🔤 拼读：numbers",
-    "kid": "本单元的拼读点是 numbers。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "What time...? 问时间点",
+    "kid": "What time is it?（几点了？）What time do you start?（你几点开始？）——问具体时间点用 what time，比 when 更精确。",
+    "tip": "问几点用 what time",
+    "en": "What time do you start?",
+    "zh": "你几点开始？"
+   },
+   {
+    "t": "early 和 late",
+    "kid": "early（早）、late（晚）——I am early.（我来早了。）Don't be late!（别迟到！）这两个词描述时间的\"前后\"。",
+    "tip": "early 早，late 晚",
+    "en": "Do not be late for class.",
+    "zh": "上课别迟到。"
+   },
+   {
+    "t": "minute / hour / day 时间家族",
+    "kid": "60 seconds = 1 minute，60 minutes = 1 hour，24 hours = 1 day——时间从小到大排排队，量词不能混用。",
+    "tip": "秒分时天排排队",
+    "en": "It takes five minutes.",
+    "zh": "要花五分钟。"
+   },
+   {
+    "t": "拼读 o'clock 的读法",
+    "kid": "o'clock = of the clock，读 /əˈklɒk/（英）/əˈklɑːk/（美）——撇号 ' 代表省略的 f。整点才用它。",
+    "tip": "o'clock 表整点",
+    "en": "o'clock",
+    "zh": "拼读示范词：整点"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Balancing act 平衡与协调；本单元阅读：The circus child（真实故事）；社会情感：坚持。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Balancing act 平衡与协调；本单元阅读：The circus child（真实故事）；社会情感：坚持。马戏团的每一个动作，都是千百次练习换来的。",
+    "tip": "练习成就一切",
+    "en": "I practise every day.",
+    "zh": "我每天练习。"
    }
   ],
   "pu3-u2": [
    {
-    "t": "📐 语法：定语从句 where/who/which",
-    "kid": "定语从句三件套：the place where I studied / the woman who is cooking / the mountains which I climbed.",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "定语从句 where / who / which",
+    "kid": "the place where I studied（我学习过的地方）、the woman who is cooking（正在做饭的女士）、the fruit which is sweet（甜的水果）——从句像\"标签\"，跟在名词后面补充说明。",
+    "tip": "从句是名词的标签",
+    "en": "This is the fruit which is sweet.",
+    "zh": "这就是那个甜的水果。"
    },
    {
-    "t": "🔤 拼读：c 发 /s/ 与 /k/",
-    "kid": "本单元的拼读点是 c 发 /s/ 与 /k/。先在词卡里找含这个音的词：breakfast、milk、soup。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "breakfast"
+    "t": "过去时 + when/with",
+    "kid": "I ate eggs when I was young.（我小时候吃鸡蛋。）——when 引出\"什么时候\"，with 引出\"和谁/用什么\"。回忆过去，加个 when 故事更完整。",
+    "tip": "when 补时间，with 补同伴",
+    "en": "I had milk when I was young.",
+    "zh": "我小时候喝牛奶。"
+   },
+   {
+    "t": "三餐怎么说",
+    "kid": "breakfast（早餐）、lunch（午餐）、dinner（晚餐）——三餐用 have/eat：I have eggs for breakfast.（我早餐吃鸡蛋。）",
+    "tip": "三餐词汇要记牢",
+    "en": "I have eggs for breakfast.",
+    "zh": "我早餐吃鸡蛋。"
+   },
+   {
+    "t": "want / need + to do",
+    "kid": "I want to eat lunch.（我想吃午饭。）I need to drink water.（我需要喝水。）——want/need 后面加 to 再接动词。",
+    "tip": "want/need 后面加 to",
+    "en": "I want to eat an apple.",
+    "zh": "我想吃个苹果。"
+   },
+   {
+    "t": "拼读 c 发 /s/ 和 /k/",
+    "kid": "c 在 e/i/y 前读 /s/（city、rice），其他读 /k/（cat、cook）。一个字母两种读音，看它后面跟谁。",
+    "tip": "c 跟 e/i/y 读 /s/",
+    "en": "rice",
+    "zh": "拼读示范词：米饭"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Food, glorious food 食物与营养；本单元阅读：The old man and the small fish（真实故事）；社会情感：尊重他人的选择。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Food, glorious food 食物与营养；本单元阅读：The old man and the small fish（真实故事）；社会情感：尊重他人的选择。健康饮食，从早餐开始。",
+    "tip": "早餐要吃好",
+    "en": "Breakfast is important.",
+    "zh": "早餐很重要。"
    }
   ],
   "pu3-u3": [
    {
-    "t": "📐 语法：比较级最高级复习 as … as",
-    "kid": "同级比较用 as … as：I'm not as fast as her.；想做某事用 want to do，需要做用 need to do。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "as...as 一样……",
+    "kid": "I am as tall as you.（我和你一样高。）——as 中间放形容词原形，表示\"和……一样\"。否定：I am not as fast as her.（我没她快。）",
+    "tip": "as 中间用原形",
+    "en": "I am as tall as my brother.",
+    "zh": "我和哥哥一样高。"
    },
    {
-    "t": "🔤 拼读：kn 与 n",
-    "kid": "本单元的拼读点是 kn 与 n。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "want / need + to 不定式",
+    "kid": "I want to be healthy.（我想变健康。）I need to rest.（我需要休息。）——to 后面接动词原形，这就是\"不定式\"。",
+    "tip": "want/need + to + 动词",
+    "en": "I need to rest.",
+    "zh": "我需要休息。"
+   },
+   {
+    "t": "身体部位大集合",
+    "kid": "head、hand、arm、leg、foot、eye、ear、nose、mouth、tooth——身体部位配动词：see with eyes（用眼看）、hear with ears（用耳听）。",
+    "tip": "部位配动词记",
+    "en": "My head hurts.",
+    "zh": "我头疼。"
+   },
+   {
+    "t": "healthy 和 sick",
+    "kid": "healthy 是\"健康的\"，sick 是\"生病的\"——多吃水果才能 healthy，不吃早饭容易 sick。两个词是反义词。",
+    "tip": "healthy vs sick",
+    "en": "I am healthy and strong.",
+    "zh": "我健康又强壮。"
+   },
+   {
+    "t": "拼读 kn 和 n",
+    "kid": "kn 开头的词 k 不发音，只读 n（knee、knife）——k 是\"哑巴\"，n 出声。词中的 n 就读 /n/（nose、hand）。",
+    "tip": "kn 里 k 不发音",
+    "en": "knee",
+    "zh": "拼读示范词：膝盖"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Work your body 骨骼与关节；本单元阅读：Too-too-moo and the Komodo dragon（奇幻剧本）；社会情感：同理心。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Work your body 骨骼与关节；本单元阅读：Too-too-moo and the Komodo dragon（奇幻剧本）；社会情感：同理心。身体不舒服要说出来。",
+    "tip": "关心自己也关心别人",
+    "en": "I feel sick today.",
+    "zh": "我今天不舒服。"
    }
   ],
   "pu3-u4": [
    {
-    "t": "📐 语法：副词 well/badly/loudly…",
-    "kid": "副词说做得怎么样：well / badly / loudly / quickly；比较用 faster / better / more quickly。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "副词说\"做得怎么样\"",
+    "kid": "well（好）、badly（差）、loudly（大声）、quickly（快）——动词说\"做什么\"，副词说\"怎么做\"：He runs quickly.（他跑得快。）",
+    "tip": "副词修饰动词",
+    "en": "He runs quickly.",
+    "zh": "他跑得快。"
    },
    {
-    "t": "🔤 拼读：l, ll, le",
-    "kid": "本单元的拼读点是 l, ll, le。先在词卡里找含这个音的词：planet、plant、volcano。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": "planet"
+    "t": "比较副词 faster / better",
+    "kid": "run faster（跑得更快）、sing better（唱得更好）——副词也能比，规则同形容词：加 -er 或用 more。",
+    "tip": "副词比较加 -er",
+    "en": "She runs faster than me.",
+    "zh": "她比我跑得快。"
+   },
+   {
+    "t": "自然地貌词汇",
+    "kid": "earth（地球）、planet（行星）、rock（岩石）、cave（洞穴）、volcano（火山）、desert（沙漠）、jungle（丛林）、forest（森林）——大自然的地貌各有名字。",
+    "tip": "地貌词汇大集合",
+    "en": "The volcano is big.",
+    "zh": "火山很大。"
+   },
+   {
+    "t": "There is / There are + 自然景物",
+    "kid": "There is a lake in the jungle.（丛林里有一个湖。）There are many trees.（有很多树。）——描述自然风光就用 there be。",
+    "tip": "描述风光用 there be",
+    "en": "There is a cave in the mountain.",
+    "zh": "山里有一个洞穴。"
+   },
+   {
+    "t": "拼读 l, ll 和 le",
+    "kid": "l 读 /l/（lake、plant），ll 双写读一个 /l/（hill、bell），词尾 le 读 /əl/（cave 的 ve 不算，apple、table）。",
+    "tip": "ll 双写读一个音",
+    "en": "hill",
+    "zh": "拼读示范词：小山"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：From the roots to the flower 植物怎么长；本单元阅读：The story of Rama and Sita（印度神话）；社会情感：帮助他人。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：From the roots to the flower 植物怎么长；本单元阅读：The story of Rama and Sita（印度神话）；社会情感：帮助他人。大自然的每个生命都值得尊重。",
+    "tip": "大自然是共同的家",
+    "en": "The jungle is green.",
+    "zh": "丛林是绿色的。"
    }
   ],
   "pu3-u5": [
    {
-    "t": "📐 语法：be made of",
-    "kid": "问材料用 What's it made of? 答 It's made of gold.；提建议用 Shall we …? / We could … / Let's …",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "be made of 用什么做的",
+    "kid": "What is it made of? It is made of gold.（它是什么做的？金子做的。）——问材料用 be made of，材料跟在后面。",
+    "tip": "问材料用 be made of",
+    "en": "The ring is made of gold.",
+    "zh": "戒指是金子做的。"
    },
    {
-    "t": "🔤 拼读：igh, i-e",
-    "kid": "本单元的拼读点是 igh, i-e。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "Shall we...? 提建议",
+    "kid": "Shall we sing a song?（我们唱首歌好吗？）——提建议用 Shall we + 动词原形，比 Let's 更客气一点。",
+    "tip": "提建议用 Shall we",
+    "en": "Shall we sing a song?",
+    "zh": "我们唱首歌好吗？"
+   },
+   {
+    "t": "服装词汇大集合",
+    "kid": "shirt（衬衫）、dress（连衣裙）、coat（外套）、hat（帽子）、scarf（围巾）、glove（手套）、belt（腰带）——上台演出，服装要配齐。",
+    "tip": "服装词汇要记牢",
+    "en": "I wear a red dress.",
+    "zh": "我穿一条红裙子。"
+   },
+   {
+    "t": "could / let's 表建议",
+    "kid": "We could paint the stage.（我们可以粉刷舞台。）Let's practise together!（我们一起练习吧！）——could 表示\"可以试试\"，let's 表示\"一起做\"。",
+    "tip": "could 试试，let's 一起",
+    "en": "Let's practise together.",
+    "zh": "我们一起练习吧。"
+   },
+   {
+    "t": "拼读 igh 和 i-e",
+    "kid": "igh 在词中读 /aɪ/（light、night、right），i-e 的 e 不发音 i 读字母音 /aɪ/（like、nine）。两种拼法同一个音。",
+    "tip": "igh 和 i-e 都读 /aɪ/",
+    "en": "light",
+    "zh": "拼读示范词：灯"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Materials and properties 材料的性质；本单元阅读：The myth of Icarus（希腊神话）；社会情感：批判性思维。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Materials and properties 材料的性质；本单元阅读：The myth of Icarus（希腊神话）；社会情感：批判性思维。演出的服装，也是戏的一部分。",
+    "tip": "服装也是表演",
+    "en": "The band is on the stage.",
+    "zh": "乐队在舞台上。"
    }
   ],
   "pu3-u6": [
    {
-    "t": "📐 语法：should / shouldn't 给建议",
-    "kid": "给建议用 should：You should listen to your teacher. / You shouldn't eat in class.",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "should / shouldn't 给建议",
+    "kid": "You should listen carefully.（你应该认真听。）You shouldn't talk in class.（你不该在课堂上说话。）——should 是\"应该\"，给建议最常用。",
+    "tip": "建议用 should",
+    "en": "You should do your homework.",
+    "zh": "你应该做作业。"
+   },
+   {
+    "t": "学科名称大集合",
+    "kid": "Chinese（语文）、English（英语）、math（数学）、music（音乐）、art（美术）、science（科学）——问：What subject do you like?（你喜欢什么课？）",
+    "tip": "学科词汇要记牢",
+    "en": "I like English best.",
+    "zh": "我最喜欢英语。"
+   },
+   {
+    "t": "like + 学科 vs like + 动词",
+    "kid": "I like math.（我喜欢数学。）I like reading.（我喜欢阅读。）——学科直接跟，动词要加 ing。两个 like，两种接法。",
+    "tip": "学科直接跟，动词加 ing",
+    "en": "I like reading stories.",
+    "zh": "我喜欢读故事。"
+   },
+   {
+    "t": "good at 擅长",
+    "kid": "I am good at math.（我擅长数学。）——good at 表示\"擅长某事\"，at 后面接名词或动词-ing。",
+    "tip": "擅长用 good at",
+    "en": "She is good at music.",
+    "zh": "她擅长音乐。"
+   },
+   {
+    "t": "拼读 -er 和 -ar",
+    "kid": "-er 在词尾读 /ə(r)/（teacher、computer），-ar 读 /ɑː(r)/（star、garden）。er 像\"儿\"，ar 像\"啊儿\"。",
+    "tip": "er 轻 /ə/，ar /ɑː/",
+    "en": "teacher",
+    "zh": "拼读示范词：老师"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Where are we? 地图与符号；本单元阅读：The project（故事带歌）；社会情感：协作。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Where are we? 地图与符号；本单元阅读：The project（故事带歌）；社会情感：协作。小组作业，分工合作最重要。",
+    "tip": "合作让学习更有趣",
+    "en": "We work together.",
+    "zh": "我们一起合作。"
    }
   ],
   "pu3-u7": [
    {
-    "t": "📐 语法：have to / must",
-    "kid": "必须做用 have to / must；说原因用 because 连接两个句子。",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "have to / must 必须做",
+    "kid": "I have to study.（我必须学习。）You must be kind.（你必须友善。）——两个都表示\"必须\"，must 语气更强，像\"硬规定\"。",
+    "tip": "have to 必须，must 更强硬",
+    "en": "I have to study hard.",
+    "zh": "我必须努力学习。"
    },
    {
-    "t": "🔤 拼读：-er, -ar",
-    "kid": "本单元的拼读点是 -er, -ar。点开词卡的拼读行，一个音一个音拼出来。拼对再连读整词，见词就能读。",
-    "tip": "见词能读",
-    "en": ""
+    "t": "because 说原因",
+    "kid": "I want to be a doctor because I like helping people.（我想当医生，因为我喜欢帮助人。）——because 后面就是原因，一问一答最清楚。",
+    "tip": "because 后面是原因",
+    "en": "I like science because it is fun.",
+    "zh": "我喜欢科学，因为它有趣。"
+   },
+   {
+    "t": "职业词汇大集合",
+    "kid": "doctor（医生）、nurse（护士）、teacher（老师）、driver（司机）、cook（厨师）、farmer（农民）、writer（作家）、pilot（飞行员）、scientist（科学家）——长大想做什么？",
+    "tip": "职业词汇要记牢",
+    "en": "I want to be a teacher.",
+    "zh": "我想当老师。"
+   },
+   {
+    "t": "want to be 长大后想当",
+    "kid": "I want to be a scientist.（我想当科学家。）——want to be 后面接职业，说梦想最常用。也可以用 I want to be a/an...，注意 an artist。",
+    "tip": "梦想用 want to be",
+    "en": "I want to be a pilot.",
+    "zh": "我想当飞行员。"
+   },
+   {
+    "t": "拼读 -er, -ar 结尾",
+    "kid": "worker、farmer 的 -er 是\"做这事的人\"，artist、dancer 也是。职业词很多都以 -er / -or / -ist 结尾。",
+    "tip": "职业词尾 -er/-or/-ist",
+    "en": "writer",
+    "zh": "拼读示范词：作家"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Time detectives 考古；本单元阅读：Don Quixote（冒险剧本）；社会情感：数字素养。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Time detectives 考古；本单元阅读：Don Quixote（冒险剧本）；社会情感：数字素养。每个职业都需要知识，学习就是给未来投资。",
+    "tip": "学习给未来投资",
+    "en": "Every job is important.",
+    "zh": "每个职业都重要。"
    }
   ],
   "pu3-u8": [
    {
-    "t": "📐 语法：be going to 表计划",
-    "kid": "计划做某事用 be going to：Are we going to visit a museum? We're going to see a show.",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "be going to 表计划",
+    "kid": "We are going to visit a museum.（我们打算参观博物馆。）——\"打算做\"用 be going to，后面接动词原形。比 will 更强调\"已计划好\"。",
+    "tip": "计划用 be going to",
+    "en": "We are going to visit a museum.",
+    "zh": "我们打算参观博物馆。"
+   },
+   {
+    "t": "问路和指路",
+    "kid": "Go straight.（直走。）Turn left.（左转。）Turn right.（右转。）It is on your left.（在你左边。）——指路就这几个词，够用了。",
+    "tip": "指路三件套",
+    "en": "Turn left at the corner.",
+    "zh": "在拐角处左转。"
+   },
+   {
+    "t": "方位大集合",
+    "kid": "east（东）、west（西）、north（北）、south（南）——地图上\"上北下南左西右东\"，英语也一样用这四个词。",
+    "tip": "东南西北四个方向",
+    "en": "The park is to the north.",
+    "zh": "公园在北边。"
+   },
+   {
+    "t": "building / tower / corner",
+    "kid": "building（大楼）、tower（塔）、corner（拐角）、block（街区）——城市建筑各有名字，看图说话就用它们。",
+    "tip": "城市建筑词汇",
+    "en": "The tower is very tall.",
+    "zh": "塔很高。"
+   },
+   {
+    "t": "拼读 ow / ou",
+    "kid": "ow 和 ou 都可以读 /aʊ/（town、house、south）——\"奥\"的音两种拼法。先读 ow 再记 ou。",
+    "tip": "ow/ou 读 /aʊ/",
+    "en": "town",
+    "zh": "拼读示范词：城镇"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：Home, sweet home 城市与乡村；本单元阅读：The road to Hope（诗）；社会情感：社会责任。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：Home, sweet home 城市与乡村；本单元阅读：The road to Hope（诗）；社会情感：社会责任。城市让生活更方便，也更需要人人爱护。",
+    "tip": "爱护我们的城市",
+    "en": "The city is beautiful.",
+    "zh": "这座城市很美。"
    }
   ],
   "pu3-u9": [
    {
-    "t": "📐 语法：before / after / when 从句",
-    "kid": "时间从句：Before we came to Mexico, I didn't know … / When we visited …, we climbed … / After our tour, we're going to …",
-    "tip": "本单元语法",
-    "en": ""
+    "t": "before / after / when 从句",
+    "kid": "Before we travel, we pack a suitcase.（旅行前，我们收拾行李。）When we arrive, we visit the beach.（到达后，我们去海边。）——三个小词把事情的先后说清楚。",
+    "tip": "before 先，after 后，when 当时",
+    "en": "Before we travel, we pack a bag.",
+    "zh": "旅行前我们收拾包。"
+   },
+   {
+    "t": "travel / trip / journey 的区别",
+    "kid": "travel 是\"旅行\"这个活动，trip 是\"一次出行\"，journey 是\"一段旅程\"。I love travel.（我爱旅行。）We had a long trip.（我们有一次长途旅行。）",
+    "tip": "travel 活动，trip 一次",
+    "en": "We are on a trip.",
+    "zh": "我们在旅行中。"
+   },
+   {
+    "t": "It takes + 时间 + to do",
+    "kid": "It takes two hours to get there.（到那里要花两小时。）——take 在这里是\"花费时间\"，句型是 It takes...to do。",
+    "tip": "花时间用 It takes",
+    "en": "It takes two hours to get there.",
+    "zh": "到那里要两小时。"
+   },
+   {
+    "t": "旅行准备词汇",
+    "kid": "ticket（票）、suitcase（行李箱）、passport（护照）、photo（照片）——出国旅行四件套。没有 passport 可出不了国！",
+    "tip": "旅行四件套",
+    "en": "I pack my suitcase.",
+    "zh": "我收拾行李箱。"
+   },
+   {
+    "t": "拼读 a-e 和 -ay 复习",
+    "kid": "plane、game 的 a-e 和 day、play 的 -ay 都读 /eɪ/。旅行词汇里这两种拼法最常见。",
+    "tip": "a-e / -ay 都读 /eɪ/",
+    "en": "plane",
+    "zh": "拼读示范词：飞机"
    },
    {
     "t": "🌍 这一单元还学什么",
-    "kid": "跨学科：North, south, east and west 徒步带什么；本单元阅读：The story of Popocatepetl and Iztaccihuatl（传说）；社会情感：情绪发展。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
-    "tip": "跨学科与阅读",
-    "en": ""
+    "kid": "跨学科：North, south, east and west 徒步带什么；本单元阅读：The story of Popocatepetl and Iztaccihuatl（传说）；社会情感：情绪发展。旅行会累，但看到新世界的那一刻都值了。",
+    "tip": "旅行开阔眼界",
+    "en": "I want to travel the world.",
+    "zh": "我想环游世界。"
+   }
+  ],
+  "pu3-r1": [
+   {
+    "t": "复习卡：本阶段句型回顾",
+    "kid": "前三单元：疑问词（how/what/when/where/which/who/why）、could（过去会）、定语从句（where/who/which）、as...as（一样）。",
+    "tip": "把句型串起来",
+    "en": "Where do you live? I could swim when I was four.",
+    "zh": "你住在哪里？我四岁就会游泳。"
+   },
+   {
+    "t": "复习卡：易错点提醒",
+    "kid": "常见错误：① 疑问词选错（人用 who、物用 what）；② could 后面的动词加了 s；③ as...as 中间用了比较级。",
+    "tip": "错过的不再错",
+    "en": "This is the fruit which is sweet. I am as tall as you.",
+    "zh": "这就是那个甜的水果。我和你一样高。"
+   },
+   {
+    "t": "复习卡：开口练一练",
+    "kid": "用五个词造句：Where、could、which、as、when。每个词说一句完整的话。",
+    "tip": "说出来才是会了",
+    "en": "When I was young, I could sing.",
+    "zh": "我小时候会唱歌。"
+   }
+  ],
+  "pu3-r2": [
+   {
+    "t": "复习卡：本阶段句型回顾",
+    "kid": "第四到六单元：副词（well/badly/quickly）、be made of（材料）、should（建议）、Shall we...?（提议）。",
+    "tip": "把句型串起来",
+    "en": "He runs quickly. The ring is made of gold.",
+    "zh": "他跑得快。戒指是金子做的。"
+   },
+   {
+    "t": "复习卡：易错点提醒",
+    "kid": "常见错误：① 形容词和副词混用（quick 是形容词，quickly 是副词）；② be made of 漏了 be；③ should 后面的动词加了 ing。",
+    "tip": "错过的不再错",
+    "en": "You should listen well. Shall we sing a song?",
+    "zh": "你应该好好听。我们唱首歌好吗？"
+   },
+   {
+    "t": "复习卡：开口练一练",
+    "kid": "用五个词造句：quickly、should、made、Shall、well。每个词说一句完整的话。",
+    "tip": "说出来才是会了",
+    "en": "You should sing well on the stage.",
+    "zh": "你应该在台上唱得好。"
+   }
+  ],
+  "pu3-r3": [
+   {
+    "t": "复习卡：本阶段句型回顾",
+    "kid": "第七到九单元：have to/must（必须）、because（原因）、be going to（计划）、before/after/when（时间顺序）。",
+    "tip": "把句型串起来",
+    "en": "I have to study because the test is coming.",
+    "zh": "我必须学习，因为考试要来了。"
+   },
+   {
+    "t": "复习卡：易错点提醒",
+    "kid": "常见错误：① be going to 后面漏了动词原形；② because 前后时态不一致；③ before/after 位置放反。",
+    "tip": "错过的不再错",
+    "en": "Before we travel, we are going to pack.",
+    "zh": "旅行前我们打算收拾行李。"
+   },
+   {
+    "t": "复习卡：开口练一练",
+    "kid": "用五个词造句：going、because、before、must、after。每个词说一句完整的话。",
+    "tip": "说出来才是会了",
+    "en": "After the test, I am going to travel.",
+    "zh": "考试后我打算去旅行。"
    }
   ]
  },

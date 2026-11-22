@@ -183,7 +183,7 @@
 <script src="js/ipa.js?v=9"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=205"></script>
+<script src="js/app.js?v=206"></script>
 <script defer src="js/sentence.js?v=52"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <!-- 2026-11-12.3：课本页是唯一用到全部三块的页面；数据先载、工具后载。 -->
@@ -364,14 +364,14 @@ function renderLevelHome() {
     const nPts = puPointsOf(u.id).length;
     const mis = puMissionOf(u);
     return `<div class="pep-unit ${done ? 'done' : ''}">
-      <button class="pu-main" onclick="startLearn('${u.id}')">
+      <button class="pu-main" onclick="${(u.words || []).length ? `startLearn('${u.id}')` : `renderPoints('${u.id}')`}">
         <b>${done ? '✅ ' : ''}${esc(u.title)}</b>
-        <small>${esc(u.zh)} · ${u.words.length} 词${nPts ? ' · ' + nPts + ' 知识点' : ''}${rec && rec.pct ? ' · 拼词 ' + rec.pct + '%' : ''}</small>
+        <small>${esc(u.zh)} · ${(u.words || []).length ? u.words.length + ' 词' : '复习卡'}${nPts ? ' · ' + nPts + ' 知识点' : ''}${rec && rec.pct ? ' · 拼词 ' + rec.pct + '%' : ''}</small>
         ${mis ? `<small class="pu-mis">🎯 ${esc(mis)}</small>` : ''}
       </button>
       <div class="pu-acts">
         ${nPts ? `<button class="pu-act" title="知识点" aria-label="知识点" onclick="renderPoints('${u.id}')">💡</button>` : ''}
-        <button class="pu-act" title="拼词" aria-label="拼词" onclick="startSpell('${u.id}')">🚂</button>
+        ${(u.words || []).length ? `<button class="pu-act" title="拼词" aria-label="拼词" onclick="startSpell('${u.id}')">🚂</button>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -417,7 +417,17 @@ function renderPoints(uid) {
   const u = findUnit(uid); if (!u) return;
   curUnit = u; view = 'points'; stopAllSpeech(); __token++; __puSnap();
   const pts = puPointsOf(uid);
-  if (!pts.length) { startLearn(uid); return; }
+  if (!pts.length) {
+    /* 无卡也无词：互递归守卫（startLearn 对 0 词单元会回这里） */
+    if (!(u.words || []).length) {
+      $('#app').innerHTML = `
+        <button class="btn ghost" style="margin-bottom:12px" onclick="renderLevelHome()">← 回单元列表</button>
+        <div class="card" style="padding:16px 18px"><b>${esc(u.title)}</b>
+        <div style="color:#4A5162;font-size:.82rem;margin-top:6px">这个单元还在准备中。</div></div>`;
+      return;
+    }
+    startLearn(uid); return;
+  }
   /* 本单元拼读地图：统计单元词表里的高频字母组合（数据驱动，与拼词拆块同一套） */
   const freq = {};
   u.words.forEach(w => splitPhrase(w.w).forEach(part => splitBlocks(part).forEach(b => {
@@ -439,8 +449,8 @@ function renderPoints(uid) {
       <h3>${esc(p.t)}</h3>
       <p class="pc-kid">${esc(p.kid)}</p>
       ${p.tip && !similar(p.t, p.tip) ? `<div class="pc-tip">💡 想通这一句：${esc(p.tip)}</div>` : ''}
-      <div class="pc-en" lang="en" onclick="speakSentence('${jsq(p.en)}')" title="点一下，读例句">🔊 ${esc(p.en)}</div>
-      <div class="pc-zh">${esc(p.zh)}</div>
+      ${p.en ? `<div class="pc-en" lang="en" onclick="speakSentence('${jsq(p.en)}')" title="点一下，读例句">🔊 ${esc(p.en)}</div>` : ''}
+      ${p.zh ? `<div class="pc-zh">${esc(p.zh)}</div>` : ''}
     </div>`).join('');
   /* 单元信息卡：Mission 与阅读篇目按所选版本渲染（数据里 m1/lit1/sel1=第一版，m2/lit/sel=第二版） */
   const mis = puMissionOf(u), lit = puLitOf(u), sel = puSelOf(u);
@@ -480,6 +490,8 @@ function renderPoints(uid) {
 /* ---------- 逐词学习 ---------- */
 function startLearn(uid) {
   const u = findUnit(uid); if (!u) return;
+  /* Review 单元 0 词：不能进逐词学习（会取 undefined 崩），改走知识点页 */
+  if (!(u.words || []).length) { renderPoints(uid); return; }
   curUnit = u; view = 'learn'; __puSnap();
   L2 = { i: 0 };
   renderLearnCard();
