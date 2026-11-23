@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-22.14';
+const BUILD = '2026-11-22.15';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -2803,9 +2803,10 @@ function stopAllSpeech() {
    ★ 单独版本号：重做字母音只升 PHONICS_VER，不动 AUDIO_VER
      （后者一动，用户已缓存的十几 MB 词音频全部作废重下）。
    ★ 文件在 audio/phonics/，SW 的 /audio/ 分支会自动缓存，发版不清理。 */
-const PHONICS_VER = 5;   /* 2026-11-22.12：h.mp3 从「huh」（带声度 0.61、含元音）重做为
-   纯气声（白噪声塑形 highpass 350 / lowpass 2600，带声度 0.31）——页面口径是
-   「张嘴轻轻哈气，声带不振动」，旧文件违反自己的教学口径。 */
+const PHONICS_VER = 6;   /* 2026-11-22.15：39 个音素全部恢复为 s5s5/phonics 母语者录音
+     （MIT）。a/e/b/d/g/j/h 七个曾被合成音覆盖（误判为「耳语 / 带元音尾 / 不够气声」），
+     导致拼读页 32 个真人 + 7 个机器、音色不搭，用户直接听出「h 太差劲」。
+     真人录音是权威素材，不再用任何声学判据去改写它。 */
 const phonicsURL = L => `audio/phonics/${String(L).toLowerCase()}.mp3?v=${PHONICS_VER}`;
 
 /* 顺序播放一串音频（字母岛「完整口诀」= 字母名 → 字母音 → 例词）。
