@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-22.11';
+const BUILD = '2026-11-22.12';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -562,7 +562,16 @@ const AUDIO_VER = 6;
    hi：裸词被 G2P 读成字母 I（ASR 实测 "I."），改用 "Hi!" 合成后才读 /haɪ/。
    yes：结尾 /s/ 齿音过锐（6–8kHz 占 37%），做过 -3.5dB 柔化 + 10kHz 低通。 */
 const AUDIO_FIX = new Set(['pe', 'with', 'hi', 'yes']);
-const __audioFixQS = k => (AUDIO_FIX.has(k) ? '&f=1' : '');
+/* 2026-11-22.12 /h/ 修复（&f=2）：136 个 h 词全部重切。
+   病灶：词首 /h/ 在 piper 孤立词合成中被吞（hen→"And"、hat→"At"、hot→"I"），
+   但句中 /h/ 完好——是 utterance-initial /h/ 弱化，不是整个发音系统坏。
+   修法：载体句 "Oh, W." / "Look at the W." 合成（/h/ 在语流中段保留）→
+   按能量剖面把切点定在 /h/ 气声前 20ms 切出词段，逐词句框 ASR 验收 137/137。
+   哑 h 词（hour/hours/honest）与字母 h 未动；hi 上一轮已用 "Hi!" 重做（保持 &f=1）。
+   用 &f=2 只让这批文件失效，AUDIO_VER 不动、其余 2912 词零重下。 */
+const __H_FIX_SKIP = new Set(['h', 'hour', 'hours', 'honest', 'hi']);
+const __audioFixQS = k => ((typeof k === 'string' && k.length > 1 && k[0] === 'h' && !__H_FIX_SKIP.has(k))
+  ? '&f=2' : (AUDIO_FIX.has(k) ? '&f=1' : ''));
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
    有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
@@ -2791,7 +2800,9 @@ function stopAllSpeech() {
    ★ 单独版本号：重做字母音只升 PHONICS_VER，不动 AUDIO_VER
      （后者一动，用户已缓存的十几 MB 词音频全部作废重下）。
    ★ 文件在 audio/phonics/，SW 的 /audio/ 分支会自动缓存，发版不清理。 */
-const PHONICS_VER = 2;
+const PHONICS_VER = 3;   /* 2026-11-22.12：h.mp3 从「huh」（带声度 0.61、含元音）重做为
+   纯气声（白噪声塑形 highpass 350 / lowpass 2600，带声度 0.31）——页面口径是
+   「张嘴轻轻哈气，声带不振动」，旧文件违反自己的教学口径。 */
 const phonicsURL = L => `audio/phonics/${String(L).toLowerCase()}.mp3?v=${PHONICS_VER}`;
 
 /* 顺序播放一串音频（字母岛「完整口诀」= 字母名 → 字母音 → 例词）。
