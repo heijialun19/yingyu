@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-22.16';
+const BUILD = '2026-11-22.17';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -571,10 +571,11 @@ const AUDIO_FIX = new Set(['pe', 'with', 'hi', 'yes']);
    用 &f=2 只让这批文件失效，AUDIO_VER 不动、其余 2912 词零重下。 */
 const __H_FIX_SKIP = new Set(['h', 'hour', 'hours', 'honest', 'hi']);
 /* .13 二次重做：气声统一到 45-65ms（母语 /h/ 区间）、加 25ms 渐入（气声起音太陡会被
-   听成 /p//t/ 的爆破）。.14：/h/ 段电平压到天然比例（0.16→0.07，此前偏响 6dB，
-   听感像在词前「吹气」）。查询串 f=3→f=4。 */
+   听成 /p//t/ 的爆破）。.14：/h/ 段电平压到天然比例（0.16→0.07）。.16：字母 U 换派生音。
+   .17：修切尾丢弱辅音（hospital 0.58→0.25s 丢 /pɪtəl/）+ 响度归一到有声段 RMS 4792
+   （原来中位 2926，比非 h 词低 4.3dB）。查询串 f=4→f=5。 */
 const __audioFixQS = k => ((typeof k === 'string' && k.length > 1 && k[0] === 'h' && !__H_FIX_SKIP.has(k))
-  ? '&f=4' : (AUDIO_FIX.has(k) ? '&f=1' : ''));
+  ? '&f=5' : (AUDIO_FIX.has(k) ? '&f=1' : ''));
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
    有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
