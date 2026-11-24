@@ -131,6 +131,13 @@
   background:#EAF6FD;font-family:inherit;font-weight:800;font-size:.84rem;cursor:pointer;color:var(--ink)}
 .pw-blocks .pb:hover{background:var(--lake);color:var(--ink)}
 .pw-tag{font-size:.68rem;color:#7A5B00;background:#FFF3C4;border-radius:999px;padding:3px 9px}
+/* 音节切分：rab·bit —— 词里的分隔点用低对比灰，别抢字母 */
+.pw-word-syl i{font-style:normal;color:#C2CCDA;margin:0 1px;font-weight:700}
+.pw-syls{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.pw-syl{border:2px dashed #CFE0F0;background:#F6FAFF;border-radius:9px;padding:2px 8px;
+  font:800 .8rem/1.5 inherit;color:#2A5578;cursor:pointer;font-family:inherit}
+.pw-syl:active{background:#E6F3FF}
+.pw-tag.syl{background:#EAF3FF;color:#2A5578}
 .pw-go{padding:3px 8px;font-size:.72rem;min-height:0;min-width:0;border-radius:9px;flex:none}
 .pw-full{padding:4px 10px;font-size:.74rem;min-height:0}
 /* 视觉词 / 可解码句 */
@@ -325,10 +332,10 @@ body:not(.ph-report) #phReport{ display:none; }
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=217"></script>
+<script src="js/app.js?v=218"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
-<script src="js/phonics.js?v=14"></script>
+<script src="js/phonics.js?v=15"></script>
 <script>
 renderNav('phonics'); renderDecor();
 
@@ -460,19 +467,36 @@ function famInnerHTML(f, lvId) {
   /* ★ 规则族没有单块录音：用「关键词」当这个音的样板（真词录音，不是机器音） */
   const keyBtn = (!f.sounds || !f.sounds.length) && f.key
     ? `<button class="ph-snd" onclick="phRowWord(${reg(f.key, null)})" title="听关键词 ${esc(f.key)}">🔑 ${esc(wEmoji(f.key))} ${esc(f.key)}</button>` : '';
+  /* ★ 2026-11-24.6 长词切分：
+     原来只有 119 个词写了 segs，其余（含 rabbit / doctor / afternoon / Australia…）一律「整体认读」。
+     现在三个来源合并：本族 segs → PH_EXTRA_SEGS（补的单音节词）→ PH_SYL（多音节切分）。
+       · 能按块拼的：照旧逐块点读 + 拼一拼
+       · 多音节词：词上打出音节分隔（rab·bit），下面给音节卡（点一下听整词），标「N 个音节」
+       · 剩下的单音节整词才叫「整体认读」 */
+  const segOf = w => (f.segs || {})[w] || (typeof PH_EXTRA_SEGS !== 'undefined' ? PH_EXTRA_SEGS[w] : null) || null;
+  const sylOf = w => (typeof PH_SYL !== 'undefined' ? PH_SYL[w] : null) || null;
   const rowHTML = (w, withBlocks) => {
-    const seg = (f.segs || {})[w];
+    const seg = segOf(w);
+    const syl = sylOf(w);
     const blendable = withBlocks && !!(seg && seg.length) && seg.every(b => !!phBlockURL(b));
     const i = reg(w, blendable ? seg : null);
+    const multiSyl = !!(syl && syl.length > 1);
+    const wordHTML = multiSyl
+      ? `<b class="pw-word pw-word-syl" lang="en">${syl.map(x => esc(x)).join('<i>·</i>')}</b>`
+      : `<b class="pw-word" lang="en">${esc(w)}</b>`;
     const blocks = blendable
       ? `<span class="pw-blocks">${seg.map((b, j) =>
-          `<button class="pb" onclick="phRowBlock(${i},${j})" title="点我听 ${esc(b)} 的音">${esc(b)}</button>`).join('')}</span>
-         <button class="btn mint pw-go" onclick="phRowBlend(${i})">🔊 拼一拼</button>`
-      : `<span class="pw-tag">整体认读</span>`;
+          `<button class="pb" onclick="phRowBlock(${i},${j})" title="点我听 ${esc(b)} 的音">${esc(b)}</button>`).join('')}
+         <button class="btn mint pw-go" onclick="phRowBlend(${i})">🔊 拼一拼</button></span>`
+      : (multiSyl
+          ? `<span class="pw-blocks"><span class="pw-syls">${syl.map((x, j) =>
+              `<button class="pw-syl" onclick="phRowWord(${i})" title="点一下听整词 ${esc(w)}（第 ${j + 1} 段：${esc(x)}）">${esc(x)}</button>`
+            ).join('')}</span><span class="pw-tag syl">${syl.length} 个音节</span></span>`
+          : `<span class="pw-blocks"><span class="pw-tag">整体认读</span></span>`);
     return `<div class="pw-row">
       <button class="pw-icon" onclick="phRowWord(${i})" title="听整词 ${esc(w)}" aria-label="听 ${esc(w)} 的读音">${wIcon(w)}</button>
       <button class="pw-main" onclick="phRowWord(${i})" title="听整词 ${esc(w)}">
-        <b class="pw-word" lang="en">${esc(w)}</b><span class="pw-zh">${esc(wZh(w))}</span><span class="pw-spk">🔊</span>
+        ${wordHTML}<span class="pw-zh">${esc(wZh(w))}</span><span class="pw-spk">🔊</span>
       </button>
       ${blocks}
     </div>`;
@@ -481,7 +505,7 @@ function famInnerHTML(f, lvId) {
      不给孩子在 L2 就拼 sh、在 L3 就拼 ir —— 练习材料只用已教过的 GPC。 */
   const nowRows = [], laterRows = [];
   (f.words || []).forEach(w => {
-    const seg = (f.segs || {})[w];
+    const seg = segOf(w);
     const later = (seg && lvId && typeof wordInStage === 'function' && !wordInStage(w, seg, lvId))
       ? firstLaterBlock(seg, lvId) : null;
     if (later) laterRows.push({ w: w, later: later });

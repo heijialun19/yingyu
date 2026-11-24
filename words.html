@@ -103,6 +103,13 @@
 .cf-zh{font-size:1.08rem;color:#374151;margin-top:6px;font-weight:700}
 .mem-box{background:#F2FBF5;border:2px solid var(--mint);border-radius:12px;padding:8px 12px;margin-top:10px;font-size:.84rem;color:#2C6E49;text-align:left;line-height:1.8}
 .mem-box b{color:#1B5E3A}
+/* 拆一拆：部件用英文 + 中文的小片，孩子能看出「这个词是两个词拼的」 */
+.mem-split{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-bottom:2px}
+.mem-part{background:#fff;border:1.5px solid #B9E4CB;border-radius:8px;padding:1px 7px;
+  font-size:.8rem;color:#1B5E3A;font-weight:800}
+.mem-part small{font-weight:600;color:#4E7A63;font-size:.72rem;margin-left:3px}
+.mem-plus{color:#8FBFA6;font-weight:800;font-size:.8rem}
+.mem-note{color:#2C6E49;font-weight:600}
 /* 年级 tab 3+3 两行（每格 110px，文字横排舒展） */
 #gradeTabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 #gradeTabs .theme-tab{padding:10px 2px;font-size:.9rem;text-align:center;white-space:nowrap}
@@ -195,7 +202,7 @@
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=217"></script>
+<script src="js/app.js?v=218"></script>
 <script src="js/grammar-engine.js?v=10"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
@@ -477,6 +484,75 @@ function switchTheme(id) { if (!themeById(id)) return; curTheme = id; searchQ = 
    单词镇的灵魂是兴趣驱动：像抽卡片一样乱序学当前主题的词，
    一屏一卡（图 + 发音 + 音标 + 拼读拆分 + 词性 + 中文 + 记忆法），
    学完一组顺势进入练一练巩固。 */
+/* ================= 拆一拆（2026-11-24.6） =================
+   用户：「好多单词的记忆法就是纯复述，刘一男那套拆词的方法忘了？」
+   小学生记长词，最有效的是「拆成熟部件 + 一句钩子」，而不是词源典故：
+     watermelon = water 水 + melon 瓜  → 水做的瓜
+     breakfast  = break 打破 + fast 禁食 → 打破一夜的禁食，就是早饭
+   这里只收「真能拆」的（错拆会教错，比如 island ≠ is + land、forget ≠ for + get，一律不收）。
+   顺序：[部件1, 中文, 部件2, 中文, 一句钩子] */
+const WORD_SPLIT = {
+  watermelon: ['water','水','melon','瓜','水做的瓜，就是西瓜'],
+  mooncake:   ['moon','月亮','cake','饼','月亮形状的饼，中秋吃的月饼'],
+  pancake:    ['pan','平底锅','cake','饼','锅里摊出来的饼'],
+  raincoat:   ['rain','雨','coat','外套','下雨穿的外套'],
+  schoolbag:  ['school','学校','bag','包','上学背的包'],
+  eggplant:   ['egg','蛋','plant','植物','长得像蛋的植物'],
+  football:   ['foot','脚','ball','球','用脚踢的球'],
+  basketball: ['basket','篮子','ball','球','投进篮子的球'],
+  classroom:  ['class','课','room','房间','上课的房间'],
+  bedroom:    ['bed','床','room','房间','放床的房间'],
+  bathroom:   ['bath','洗澡','room','房间','洗澡的房间'],
+  playground: ['play','玩','ground','场地','玩的场地'],
+  homework:   ['home','家','work','活儿','带回家做的活儿'],
+  housework:  ['house','家','work','活儿','家里的活儿'],
+  bookshop:   ['book','书','shop','店','卖书的店'],
+  bookstore:  ['book','书','store','商店','卖书的商店'],
+  birthday:   ['birth','出生','day','日子','出生的那一天'],
+  holiday:    ['holy','神圣的','day','日子','不干活的日子'],
+  weekend:    ['week','星期','end','末尾','一周的末尾'],
+  weekday:    ['week','星期','day','日子','星期里的上班日'],
+  afternoon:  ['after','之后','noon','中午','中午之后'],
+  breakfast:  ['break','打破','fast','禁食','打破一夜没吃，就是早饭'],
+  notebook:   ['note','笔记','book','本子','记笔记的本子'],
+  postcard:   ['post','邮寄','card','卡片','寄出去的卡片'],
+  toothbrush: ['tooth','牙齿','brush','刷子','刷牙的刷子'],
+  toothache:  ['tooth','牙齿','ache','疼','牙疼'],
+  headache:   ['head','头','ache','疼','头疼'],
+  stomachache:['stomach','胃','ache','疼','胃疼'],
+  sunglasses: ['sun','太阳','glasses','眼镜','挡太阳的眼镜'],
+  supermarket:['super','超级','market','市场','超级大的市场'],
+  grandmother:['grand','上一辈','mother','妈妈','妈妈的妈妈'],
+  grandfather:['grand','上一辈','father','爸爸','爸爸的爸爸'],
+  sunflower:  ['sun','太阳','flower','花','跟着太阳转的花'],
+  strawberry: ['straw','草','berry','浆果','长在草上的浆果'],
+  policeman:  ['police','警察','man','人','警察叔叔'],
+  postman:    ['post','邮件','man','人','送邮件的人'],
+  fireman:    ['fire','火','man','人','救火的人'],
+  gentleman:  ['gentle','温和的','man','人','温和有礼的人'],
+  lighthouse: ['light','灯','house','房子','点着灯的房子'],
+  starfish:   ['star','星星','fish','鱼','像星星的鱼'],
+  firework:   ['fire','火','work','作品','天上炸开的火花'],
+  friendship: ['friend','朋友','ship','关系','朋友的关系'],
+  everything: ['every','每个','thing','东西','每个东西'],
+  everybody:  ['every','每个','body','人','每个人'],
+  something:  ['some','一些','thing','东西','某个东西'],
+  nothing:    ['no','没有','thing','东西','什么都没有'],
+  anybody:    ['any','任何','body','人','任何人'],
+  without:    ['with','带着','out','外面','不带在身上＝没有'],
+};
+function splitOf(w) {
+  const k = String(w || '').toLowerCase();
+  return WORD_SPLIT[k] || null;
+}
+/* 卡片里的「拆一拆」HTML（没有拆法就返回空串） */
+function splitHTML(w) {
+  const d = splitOf(w);
+  if (!d) return '';
+  const part = (en, zh) => `<span class="mem-part">${esc(en)}<small>${esc(zh)}</small></span>`;
+  return `<div class="mem-split">${part(d[0], d[1])}<span class="mem-plus">+</span>${part(d[2], d[3])}</div>`
+    + `<div class="mem-note">＝ ${esc(d[4])}</div>`;
+}
 let cardFlow = null;
 let __cardToken = 0;
 function startCardFlow() {
@@ -505,7 +581,7 @@ function renderCardFlow() {
         </div>
         <div class="spl" lang="en">🔤 ${phonicsLine(w.w)}</div>
         <div class="cf-zh">${w.zh}</div>
-        ${w.dec ? `<div class="mem-box"><b>🧠 记一记：</b>${esc(w.dec)}</div>` : ''}
+        ${(splitOf(w.w) || w.dec) ? `<div class="mem-box"><b>${splitOf(w.w) ? '🧩 拆一拆：' : '🧠 记一记：'}</b>${splitHTML(w.w)}${w.dec && !splitOf(w.w) ? esc(w.dec) : ''}</div>` : ''}
         ${famLine(w.w)}
       </div>
       <div style="display:flex;gap:10px;justify-content:center;margin-top:14px">

@@ -28,6 +28,70 @@
    ⚠️ 绝不要给不在 audio/phonics/ 里的字符串走 localAudioURL()：
       TTS 会把 "sh" 念成字母名 "S H"（2026-11-08 踩过）。 */
 const PH_BLEND_OK = new Set(['sh', 'ch', 'th', 'ai', 'ay', 'oa', 'ck', 'ee', 'oo', 'ar', 'or', 'ir', 'ng']);
+
+/* ================= 2026-11-24.6 长词切分（用户：「单词很长的你都弄整体认读，不能切分么？」）=================
+   一、同一发音的另一种写法（同音异拼）
+      bb/dd/ff… 双写只发一个音；wh 读 /w/；ea/ie 读 /iː/；ue 读 /uː/；ge/dge 读 /dʒ/；词尾 le 读 /l/。
+      拼读课 L10「同音异拼」教的就是这件事，所以这里用同一套录音，不算「放错音」。
+   二、PH_EXTRA_SEGS：原先没写切分的单音节词，按块补上（plate = p-l-a-t-e 这种魔法 e 词）。
+   三、PH_SYL：多音节词按音节切开（rab·bit）。音节本身不做独立录音——孤立音节合成容易读成
+      「重读版」（sister 的 -ter 会被读成 /tɜːr/），所以音节只做**视觉切分 + 点一下听整词**，
+      教学上先记 rab、再记 bit，最后合起来，不额外发明读音。
+*/
+const PH_ALIAS = {
+  bb: 'b', cc: 'c', dd: 'd', ff: 'f', gg: 'g', ll: 'l', mm: 'm', nn: 'n',
+  pp: 'p', rr: 'r', ss: 's', tt: 't', zz: 'z',
+  ea: 'ee', ie: 'ee', ue: 'oo',
+  wh: 'w', le: 'l', ge: 'j', dge: 'j',
+};
+
+/* 单音节词的补切分。⚠️ 词尾不发音的 e（Magic E）一律不进这里：
+   cake 按 c-a-k-e 拼会被读成 /kæ-ke/，这正是「魔法 e 不逐字母拼」的那条铁律。
+   所以 plate / grape / whale / white / stone / horse / nurse 这些保持整体认读 + 规则说明。 */
+const PH_EXTRA_SEGS = {
+  peach: ['p','ea','ch'],      /* ea 读 /iː/，与 ee 同音 */
+  chess: ['ch','e','ss'],      /* 双写 ss 只发一个 /s/ */
+  dress: ['d','r','e','ss'],
+  grass: ['g','r','a','ss'],
+  clean: ['c','l','ea','n'],
+  short: ['sh','or','t'],
+};
+/* 说明：happy/candy/sunny/funny/story 的词尾 y 读 /i/，而 audio/phonics/y.mp3 是字母音 /waɪ/，
+   直接切进去会读成「haep-wai」——这类词一律走音节切分（hap·py / can·dy / sto·ry），不按块拼。
+   nurse / sister 的 ur、er 是 r 音节，块里没有对应录音，也走音节切分。 */
+
+/* 多音节词的音节切分（教学用：先记第一段，再记第二段） */
+const PH_SYL = {
+  August: ['Au','gust'], Australia: ['Aus','tra','lia'],
+  Thursday: ['Thurs','day'], Tuesday: ['Tues','day'],
+  afternoon: ['af','ter','noon'], autumn: ['au','tumn'],
+  because: ['be','cause'], birthday: ['birth','day'],
+  brother: ['broth','er'], chicken: ['chick','en'],
+  doctor: ['doc','tor'], family: ['fam','i','ly'],
+  father: ['fa','ther'], flower: ['flow','er'],
+  garden: ['gar','den'], gentle: ['gen','tle'],
+  giraffe: ['gi','raffe'], market: ['mar','ket'],
+  morning: ['morn','ing'], mother: ['moth','er'],
+  orange: ['or','ange'], pencil: ['pen','cil'],
+  purple: ['pur','ple'], rabbit: ['rab','bit'],
+  review: ['re','view'], sister: ['sis','ter'],
+  statue: ['stat','ue'], strawberry: ['straw','ber','ry'],
+  teacher: ['teach','er'], turtle: ['tur','tle'],
+  window: ['win','dow'], yellow: ['yel','low'],
+  happy: ['hap','py'], candy: ['can','dy'],
+  sunny: ['sun','ny'], funny: ['fun','ny'],
+  story: ['sto','ry'], water: ['wa','ter'],
+  tiger: ['ti','ger'], paper: ['pa','per'],
+  magic: ['mag','ic'], today: ['to','day'],
+  along: ['a','long'], about: ['a','bout'],
+  potato: ['po','ta','to'], tomato: ['to','ma','to'],
+  banana: ['ba','na','na'], elephant: ['el','e','phant'],
+  animal: ['an','i','mal'], hospital: ['hos','pi','tal'],
+  holiday: ['hol','i','day'],
+};
+window.PH_ALIAS = PH_ALIAS;
+window.PH_EXTRA_SEGS = PH_EXTRA_SEGS;
+window.PH_SYL = PH_SYL;
 /* ================= 字母音的中文提示（2026-11-15 / 第三轮复检 N12） =================
    字母岛 data.js 的 szh 是「象形故事 + 拼音对照」，给的是汉字谐音（丝/特/泼/讷）。
    那套写法在字母岛的语境里没问题，但拼读课 L1 教的是**音素本身**：
@@ -292,7 +356,10 @@ function phBlockURL(b) {
   if (!k) return '';
   if (typeof phonicsURL !== 'function') return '';
   if (k.length === 1 && /^[a-z]$/.test(k)) return phonicsURL(k);
-  return PH_BLEND_OK.has(k) ? phonicsURL(k) : '';
+  if (PH_BLEND_OK.has(k)) return phonicsURL(k);
+  /* 同音异拼：双写辅音、wh、ea/ie、ue、ge/dge、词尾 le 都借同音的那个录音 */
+  const alias = PH_ALIAS[k];
+  return alias ? phonicsURL(alias) : '';
 }
 
 /* 单块发音（点按拼读块 / 字母音卡片） */
