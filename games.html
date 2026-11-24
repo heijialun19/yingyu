@@ -74,7 +74,7 @@
 <script src="js/data.js?v=48"></script>
 <script src="js/build-data.js?v=3"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=214"></script>
+<script src="js/app.js?v=215"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/grammar-engine.js?v=10"></script>
@@ -958,10 +958,16 @@ function gPhonics() {
      上一局下一题若是听词选图（可拼词不足 6 个的词族很常见），看起来就是
      「点了拼读闯关，却进了听词选图」，且标题栏还留着上一局的词族名。 */
   Flow.reset();
+  /* ★ 2026-11-24.3：拼读闯关只出「能拼的词」。
+     用户反馈「里面有很多不是拼单词的内容」——原来每族最多 6 题，可拼词不够就用
+     听词选图补齐；ch（2/5）、ng（3/5）、ar（4/6）这些族一半以上是选图，等于把
+     「拼读闯关」做成了「听词选图」。现在：词族至少要有 4 个可拼词才进池，
+     一局只从可拼词里抽（4-6 题），选图题彻底不出现在这个游戏里。
+     不可拼的词在单词镇、听词选图里照样练得到，教学覆盖不减。 */
   const usable = PHONICS.map(p => ({
     name: p.name, tip: p.tip, segs: p.segs || {},
-    ws: p.words.map(w => ALLW[w]).filter(w => w && hasIcon(w))
-  })).filter(p => p.ws.length >= 4 && p.ws.some(w => phBlendable(p.segs[w.w])));
+    blend: p.words.map(w => ALLW[w]).filter(w => w && hasIcon(w) && phBlendable((p.segs || {})[w.w]))
+  })).filter(p => p.blend.length >= 4);
   /* ★ 2026-11-11.3：拼读闯关必须真有词可拼。a_e / i_e / o_e 三族没有 segs
      （硬拼会把 cake 读成 /kæke/，教学上故意不做拼词），整族 phBlendable()
      恒 false；原来随机挑中它们就是整局 6 题全走听词选图，家长点「拼读闯关」
@@ -971,12 +977,28 @@ function gPhonics() {
   if (!usable.length) { $('#app').innerHTML = `<div class="card" style="text-align:center"><p>词族数据还没准备好～</p>${gameHomeBtn()}</div>`; return; }
 
   const P = pick(usable);
-  /* 优先出「能拼」的词（那才是拼读训练），不够 6 题再用听词选图补齐 */
-  const blend = shuffle(P.ws.filter(w => phBlendable(P.segs[w.w])));
-  const plain = shuffle(P.ws.filter(w => !phBlendable(P.segs[w.w])));
-  const picks = blend.concat(plain).slice(0, 6);
+  const picks = shuffle(P.blend).slice(0, 6);
 
   const S = { idx: 0, score: 0, first: true, answered: false, ans: [], pool: [], seg: [], cur: null, opts: [] };
+
+  /* ★ 2026-11-24.3：自动播放被浏览器拦掉时，下一次点击补播。
+     iOS Safari / 微信里，「题目渲染出来 400-500ms 后自动响」这种播放会被拒
+     （NotAllowedError），孩子听到的就是「单词不出声」；桌面 Chrome 有粘性激活，
+     开发机复现不了。这里不猜：1.3 秒后看 window.__lastMediaStart（play() 成功
+     才写）有没有更新，没更新就挂一次性 pointerdown，孩子下一次点任何地方先补播
+     这个词，再走他本来点的那个动作。 */
+  function armWord(w, idx) {
+    const t0 = Date.now();
+    setTimeout(() => {
+      if ((window.__lastMediaStart || 0) > t0) return;        // 已经响了，不打扰
+      const h = () => {
+        document.removeEventListener('pointerdown', h, true);
+        if (S.idx === idx && !S.answered) speak(w.w);
+      };
+      document.addEventListener('pointerdown', h, true);
+      setTimeout(() => document.removeEventListener('pointerdown', h, true), 10000);
+    }, 1300);
+  }
 
   /* ---- 渲染：拼词题 ---- */
   function slotsHTML() {
@@ -1089,7 +1111,7 @@ function gPhonics() {
         <div class="card" data-w="${w.w}" style="max-width:640px;margin:0 auto;text-align:center">
           ${bar}
           <div class="explain" style="margin:6px 0">${P.tip}<br>听这个词，把下面的块按顺序点出来 —— 蓝色块是一个整体，算一格。</div>
-          <div style="font-size:66px;line-height:1.1;margin:6px 0">${iconOf(w)}</div>
+          <div style="font-size:66px;line-height:1.1;margin:6px 0;cursor:pointer" onclick="phPlay()" title="点一下再听一遍">${iconOf(w)}</div>
           <button class="btn coral big" style="font-size:1.1rem;margin:4px 0 10px" onclick="phPlay()">🔊 听这个词</button>
           <div id="phSlots" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0"></div>
           <div id="phPool" class="opt-row" style="gap:10px"></div>
@@ -1101,6 +1123,7 @@ function gPhonics() {
         </div>`;
       paint();
       Flow.after(480, () => speak(w.w));
+      armWord(w, S.idx);
     } else {
       /* ② 听词选图（块音不可靠 / 字母块凑不出正确读音时） */
       S.seg = [];
@@ -1128,6 +1151,7 @@ function gPhonics() {
           <div style="margin-top:12px">${gameHomeBtn()}</div>
         </div>`;
       Flow.after(400, () => speak(w.w));
+      armWord(w, S.idx);
     }
   }
   phShow();

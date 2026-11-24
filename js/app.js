@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-24.2';
+const BUILD = '2026-11-24.3';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -1959,6 +1959,20 @@ const __audioSources = t => {
   const l = localAudioURL(t);
   return l ? [l] : [];
 };
+/* ===== 「声音真的响了」时间戳（2026-11-24.3）=====
+   iOS Safari / 微信内置浏览器会拦掉「非点击内触发」的播放：延时 400-500ms 后
+   speak() 的 play() 直接被拒（NotAllowedError），孩子听到的就是「这个词不出声」。
+   桌面 Chrome 有 5 秒粘性激活，所以开发机上永远复现不了。
+   这里只做一件事：每次 play() 成功就记一个时间戳，页面侧据此判断「刚才那次自动播放
+   到底响没响」，没响就退化成「下一次点击时补播」。不改任何播放策略。 */
+try {
+  const __play0 = HTMLMediaElement.prototype.play;
+  HTMLMediaElement.prototype.play = function () {
+    const r = __play0.apply(this, arguments);
+    if (r && r.then) r.then(() => { window.__lastMediaStart = Date.now(); }).catch(() => {});
+    return r;
+  };
+} catch (e) {}
 let __curAudio = null;
 let __inflight = new Set();   // 所有在途 Audio（含预热），统一管理
 let __firstPlayDone = false;
