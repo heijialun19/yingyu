@@ -6,8 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#4EC5F1">
 <meta name="description" content="小学 1-6 年级 999 条必背词条（含 13 条常用短语），按年级分主题，每个词都有记忆法拆解；练一练、拼写工坊、中英搜索、艾宾浩斯复习。">
-<link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="单词镇 · 小学 999 词 · 小鸟英语乐园">
@@ -18,7 +18,7 @@
 <title>单词镇 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/words.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=57" onerror="this.onerror=null;this.href='css/style.css?v=57&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=58" onerror="this.onerror=null;this.href='css/style.css?v=58&amp;retry=1'">
 <style>
 /* ---------- 拼写工坊 · 六步法 ---------- */
 .sp-steps{display:flex;gap:4px;list-style:none;padding:0;margin:0 0 14px}
@@ -110,17 +110,20 @@
 .today-card{border:3px solid var(--grape);background:linear-gradient(160deg,#FDFBFF,#F6F1FF)}
 .today-card .tc-bar{height:14px;background:#EDE7FA;border-radius:999px;overflow:hidden;margin:10px 0 4px}
 .today-card .tc-bar i{display:block;height:100%;background:linear-gradient(90deg,#7C5CFF,#B9A5F5);border-radius:999px;transition:.4s}
-.today-card .tc-big{width:100%;padding:15px 10px;font-size:1.15rem;border:none;border-radius:18px;background:linear-gradient(135deg,#5B3FD6,#6A45E8);color:#fff;font-family:inherit;font-weight:800;cursor:pointer;box-shadow:0 5px 0 rgba(124,92,255,.3);transition:.15s}
+.today-card .tc-big{width:100%;padding:15px 10px;font-size:1.08rem;border:none;border-radius:16px;background:#4F46E5;color:#fff;font-family:inherit;font-weight:800;cursor:pointer;box-shadow:0 3px 0 rgba(79,70,229,.22);transition:.15s;letter-spacing:.3px}
 .today-card .tc-big:hover{transform:translateY(-2px)}
 .today-card .tc-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.today-card .tc-row .btn{flex:1;min-width:86px;padding:9px 4px;font-size:.85rem}
+.today-card .tc-row .btn{flex:1;min-width:86px;padding:10px 4px;font-size:.85rem;background:#F5F7FB;color:#3F4658;
+  border:1px solid #E6EBF3;box-shadow:none;font-weight:700}
+.today-card .tc-row .btn:active{background:#EDF1F8}
 
 /* ---------- 一屏一个决定（2026-11-22） ----------
    主题卡置顶、选择器折叠、四个练法排成 2×2。
    ⚠️ 这几条必须写在 words.html 自己的 <style> 里：页面内联样式在
       style.css 之后加载，写在全局文件里会被下面原有的 .tc-row{flex} 压掉
       （第一版就是这么错的，截图里成了 3+1）。 */
-.today-card{border-width:2px;border-radius:22px}
+.today-card{position:relative;border:1px solid #E9EEF6;border-radius:22px;overflow:hidden;padding-top:18px}
+.today-card::before{content:'';position:absolute;left:0;right:0;top:0;height:4px;background:var(--tc,#7C5CFF)}
 .today-card .tc-head{display:flex;align-items:center;gap:8px;justify-content:space-between}
 .today-card .tc-head h2{margin:0;font-size:1.12rem;letter-spacing:.2px}
 .today-card .tc-listen{flex:none;border:1px solid #DCD2F7;background:#fff;color:#5B3FD6;border-radius:999px;padding:7px 11px;font:700 .74rem/1 inherit;cursor:pointer;min-height:36px}
@@ -183,7 +186,7 @@
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=212"></script>
+<script src="js/app.js?v=213"></script>
 <script src="js/grammar-engine.js?v=10"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
@@ -375,7 +378,7 @@ function renderBrowse() {
     <!-- ① 今日主题：一屏只留一个主操作（开始卡片学），四种练法收成 2×2。
          原来是「复习条 + 搜索 + 2 入口 + 6 年级 + 11 主题 + 主卡 + 5 个按钮」，
          320px 下要翻过 20 多个胶囊才看见「开始学」，主操作被埋掉了。 -->
-    <div class="card today-card" style="border-color:${t.color}">
+    <div class="card today-card" style="--tc:${t.color}">
       <div class="tc-head">
         <h2>${t.emoji} ${t.name}</h2>
         <button class="tc-listen" onclick="listenAll()" title="把本主题的词从头听一遍">🔊 听一遍</button>
@@ -386,7 +389,7 @@ function renderBrowse() {
       <button class="tc-big" style="margin-top:10px" onclick="startCardFlow()">🃏 开始卡片学（10 张）</button>
       <div class="tc-row">
         <button class="btn mint" onclick="startPractice()">✏️ 练一练</button>
-        <button class="btn" style="background:#4F46E5;color:#fff" onclick="startDictation()">📝 听写</button>
+        <button class="btn" onclick="startDictation()">📝 听写</button>
         <button class="btn orange" onclick="startSpeak()">🎤 跟读</button>
         <button class="btn grape" onclick="startSpell()">🔤 拼写</button>
       </div>

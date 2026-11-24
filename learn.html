@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#4EC5F1">
 <meta name="description" content="小鸟英语乐园学习主页：继续上次的学习、今日任务，以及单词镇、自然拼读、字母岛、读书馆、课本同步与句子工厂。">
-<link rel="icon" type="image/svg+xml" href="icon.svg?v=2">
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="小鸟英语乐园 Birdie ABC">
 <meta property="og:title" content="学习 · 小鸟英语乐园">
@@ -16,7 +16,7 @@
 <title>学习 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/learn.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=57" onerror="this.onerror=null;this.href='css/style.css?v=57&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=58" onerror="this.onerror=null;this.href='css/style.css?v=58&amp;retry=1'">
 <style>
 /* ============================================================
    学习主页（2026-11-22.2）
@@ -35,20 +35,25 @@
 .ln-who > span{display:block;font-size:.76rem;color:#6B7385;margin-top:2px}
 .ln-who a{color:#5B3FD6;font-weight:700}
 
-.ln-card .cd-due{display:inline-flex;align-items:center;margin-top:5px;padding:3px 8px;
-  border-radius:999px;background:#FFF4E5;color:#A65A00;font-size:.68rem;font-weight:800}
+.ln-card .cd-due{position:absolute;top:11px;right:11px;display:inline-flex;align-items:center;
+  padding:3px 8px;border-radius:999px;background:#FFF4E5;color:#A65A00;font-size:.66rem;font-weight:800}
 
 .ln-group{margin:24px 0 10px;font-size:.74rem;font-weight:800;color:#6B7385;letter-spacing:2px}
 .ln-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.ln-card{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:18px 16px 16px;
+.ln-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:16px 14px 14px;
   background:#fff;border:1px solid #E9EEF6;border-radius:20px;box-shadow:0 2px 8px rgba(24,39,75,.05);
-  cursor:pointer;font:inherit;color:inherit;text-align:left;transition:transform .15s;min-height:132px}
+  cursor:pointer;font:inherit;color:inherit;text-align:left;transition:transform .15s;min-height:150px}
 .ln-card:active{transform:scale(.985)}
-.ln-card .ce{font-size:34px;line-height:1.1;margin-bottom:6px}
+.ln-card .ce{width:40px;height:40px;border-radius:13px;margin-bottom:9px;font-size:23px;line-height:1;
+  background:linear-gradient(155deg,#F2F8FF,#EEF0FF);display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 1px rgba(78,197,241,.10)}
 .ln-card .cn{font-size:1.02rem;font-weight:800}
-.ln-card .cd{font-size:.75rem;color:#6B7385;line-height:1.5;margin-top:2px}
+.ln-card .cd{font-size:.75rem;color:#6B7385;line-height:1.5;margin-top:2px;max-width:100%;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ln-card .cp{margin-top:auto;padding-top:10px;font-size:.72rem;font-weight:700;color:#4B5468;
-  display:flex;align-items:center;gap:6px;width:100%}
+  display:flex;align-items:center;gap:6px;width:100%;min-height:24px}
+.ln-card .ctip{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-weight:600;color:#8A93A6}
 .ln-card .cb{flex:1;height:6px;border-radius:999px;background:#EEF2F8;overflow:hidden}
 .ln-card .cb i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#4EC5F1,#6BCB77)}
 .ln-card .cgo{color:#A9B2C3;font-size:1rem}
@@ -56,8 +61,8 @@
   .ln-hero{margin-top:0}
   .ln-avatar{width:48px;height:48px;font-size:27px;border-radius:16px}
   .ln-grid{gap:10px}
-  .ln-card{padding:15px 13px 13px;border-radius:18px;min-height:124px}
-  .ln-card .ce{font-size:30px;margin-bottom:4px}
+  .ln-card{padding:14px 12px 12px;border-radius:18px;min-height:146px}
+  .ln-card .ce{width:37px;height:37px;border-radius:12px;font-size:21px;margin-bottom:8px}
   .ln-card .cn{font-size:.96rem}
   .ln-card .cd{font-size:.71rem}
 }
@@ -95,7 +100,7 @@
 <script src="js/words-data.js?v=48"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=212"></script>
+<script src="js/app.js?v=213"></script>
 <script src="js/getsmart-data.js?v=19"></script>
 <script>
 renderNav('learn'); renderDecor();
@@ -136,14 +141,14 @@ renderNav('learn'); renderDecor();
     words:   { e:'🏘️', n:'单词镇', d:`${g.name} ${wDone}/${wAll} 个词`, href:'words.html',
                now:wDone, all:wAll, due: due.length },
     phonics: { e:'🔤', n:'自然拼读', d:'见词能读 · 听音能写', href:'phonics.html',
-               now:0, all:0, tip:'13 关，从字母音到同音异拼' },
+               now:0, all:0, tip:'13 关 · 字母音到同音异拼' },
     letters: { e:'🏝️', n:'字母岛', d:`${lN}/26 个字母`, href:'letters.html', now:lN, all:26 },
     read:    { e:'📚', n:'读书馆', d:'120 本分级读物', href:'read.html',
                now:0, all:0, tip:'从 28 词读到 212 词' },
-    pep:     { e:'🏫', n:'人教课本', d:'3-6 年级逐单元同步', href:'pep.html', now:0, all:0, tip:'跟着课本一课一课过' },
+    pep:     { e:'🏫', n:'人教课本', d:'3-6 年级逐单元同步', href:'pep.html', now:0, all:0, tip:'跟着课本一课一课' },
     getsmart:{ e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html', now:0, all:0, tip:'外教课本同步' },
     powerup: { e:'🚀', n:'Power Up', d:'剑桥体系 · 6 级 72 单元', href:'powerup.html',
-               now:0, all:0, tip:'Pre A1 Starters → B1 Preliminary' },
+               now:0, all:0, tip:'Pre A1 → B1' },
     grammar: { e:'🚂', n:'句子工厂', d:`已通过 ${grDone}/${grAll} 关`, href:'grammar.html', now:grDone, all:grAll },
   };
   const card = k => {
@@ -156,7 +161,7 @@ renderNav('learn'); renderDecor();
       ${c.due ? `<span class="cd-due">🔔 ${c.due} 个词待复习</span>` : ''}
       ${c.all
         ? `<span class="cp"><span class="cb"><i style="width:${pct}%"></i></span><span>${pct}%</span><span class="cgo">›</span></span>`
-        : `<span class="cp"><span style="flex:1;font-weight:600;color:#8A93A6">${esc(c.tip || '')}</span><span class="cgo">›</span></span>`}
+        : `<span class="cp"><span class="ctip">${esc(c.tip || '')}</span><span class="cgo">›</span></span>`}
     </button>`;
   };
   document.getElementById('lnMain').innerHTML = ['words','phonics','letters','read'].map(card).join('');
