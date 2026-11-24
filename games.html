@@ -74,7 +74,7 @@
 <script src="js/data.js?v=48"></script>
 <script src="js/build-data.js?v=3"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=215"></script>
+<script src="js/app.js?v=216"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/grammar-engine.js?v=10"></script>
@@ -1013,7 +1013,9 @@ function gPhonics() {
     return S.pool.map((b, i) => {
       const used = S.ans.some(x => x.i === i);
       const multi = String(b).length > 1;   // 多字母块标出来：这是一个音
-      return `<button class="opt" style="min-width:60px;font-size:1.2rem;padding:13px 10px;` +
+      /* 2026-11-24.4：块按钮不再用 .opt 的 flex:1 —— 5 个块时最后一块会被拉成整行宽
+         （截图里那个横跨全屏的 "t"），改成固定尺寸 + 居中排。 */
+      return `<button class="opt" style="flex:0 0 auto;min-width:64px;min-height:60px;font-size:1.25rem;padding:12px 14px;` +
         `${multi ? 'background:#E0F2FE;border-color:#7DD3FC;' : ''}` +
         `${used ? 'opacity:.3;pointer-events:none;' : ''}" onclick="phBlk(${i})"><b lang="en">${b}</b></button>`;
     }).join('');
@@ -1114,7 +1116,7 @@ function gPhonics() {
           <div style="font-size:66px;line-height:1.1;margin:6px 0;cursor:pointer" onclick="phPlay()" title="点一下再听一遍">${iconOf(w)}</div>
           <button class="btn coral big" style="font-size:1.1rem;margin:4px 0 10px" onclick="phPlay()">🔊 听这个词</button>
           <div id="phSlots" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px 0"></div>
-          <div id="phPool" class="opt-row" style="gap:10px"></div>
+          <div id="phPool" class="opt-row" style="gap:10px;justify-content:center"></div>
           <div class="explain" id="phexp"></div>
           <div style="margin-top:10px">
             <button class="btn ghost" style="padding:6px 14px;font-size:.78rem" onclick="phBack()">⌫ 退一格</button>
