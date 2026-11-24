@@ -17,7 +17,7 @@
 <title>家长中心 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/parents.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=58" onerror="this.onerror=null;this.href='css/style.css?v=58&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=59" onerror="this.onerror=null;this.href='css/style.css?v=59&amp;retry=1'">
 <style>
 /* 「我的」：孩子档案在最上 → 学习报告 → 家长工具（收起） → 说明（收起）
    合并依据：Khan Kids / Lingokids / ABCmouse / Duolingo 都不把「家长中心」
@@ -51,6 +51,7 @@
 /* 首次建档（2026-11-22.2）：原来占一个独立首页，现在归位到「我的」 */
 .intro-card{max-width:520px;margin:8px auto;text-align:center;padding:28px 20px}
 .intro-card>span{display:block;font-size:56px;margin-bottom:4px}
+.intro-chick{display:block;width:120px;height:120px;margin:0 auto 4px;animation:bob 2.6s ease-in-out infinite}
 .intro-card h2{justify-content:center;font-size:1.3rem}
 .intro-card p{color:#6B7385;font-size:.84rem;line-height:1.7;margin:6px 0 16px}
 .mini-input{width:100%;max-width:280px;padding:12px 16px;border:1px solid #E4D98A;
@@ -83,7 +84,7 @@
   </section>
 </noscript>
   <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
-    <div style="font-size:52px">🐤</div>
+    <img class="boot-chick" src="art/brand/chick-128.png" alt="" width="92" height="92">
     <div style="font-size:.9rem;color:#3F4658;font-weight:700">加载中，请稍等…</div>
   </div>
 <main>
@@ -94,7 +95,7 @@
 
   <section class="section" id="introBlock" style="display:none">
     <div class="card intro-card">
-      <span aria-hidden="true">🐤</span>
+      <img class="intro-chick" src="art/brand/chick-128.png" alt="" width="120" height="120">
       <h2>你好呀！我是啾啾</h2>
       <p>先起个名字、选个头像和年级，就可以开始学英语啦</p>
       <input id="introName" class="mini-input" type="text" placeholder="写上你的名字" maxlength="10">
@@ -375,7 +376,7 @@
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=213"></script>
+<script src="js/app.js?v=214"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>
