@@ -23,43 +23,57 @@
 /* 拼读课页内样式（不进 style.css：只有这一页用） */
 /* ---- 关卡地图 ---- */
 /* 13 关分三组：基础 / 组合 / 高阶。组标题一行，关卡卡只留 图标 + 关号 + 名字。 */
-.ph-streak{margin:0 2px 10px;font-size:.78rem;color:var(--ink2)}
+.ph-streak{margin:0 2px 6px;font-size:.76rem;color:var(--ink2)}
 .ph-earn{margin:12px 0 0;border-top:1px dashed #E7ECF4;padding-top:8px}
 .ph-earn>summary{list-style:none;cursor:pointer;font-size:.78rem;font-weight:800;color:#6B7385;display:flex;align-items:center;gap:6px}
 .ph-earn>summary::-webkit-details-marker{display:none}
 .ph-earn>summary::after{content:'▾';margin-left:auto;transition:.15s}
 .ph-earn[open]>summary::after{transform:rotate(180deg)}
 .ph-map{margin-top:2px}
-.ph-grp{margin:12px 2px 6px;font-size:.74rem;font-weight:800;color:#8A93A6;letter-spacing:.4px}
-.ph-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.ph-lv{flex:0 0 calc((100% - 16px)/3);min-width:0}
-@media (min-width:760px){.ph-lv{flex-basis:calc((100% - 32px)/5)}}
-.ph-lv{position:relative;background:#fff;border:2px solid #E8EAF0;border-radius:14px;padding:9px 6px 8px;
-  cursor:pointer;transition:.15s;text-align:center;font-family:inherit;box-shadow:0 2px 0 rgba(45,49,66,.06)}
-.ph-lv:hover{transform:translateY(-3px);border-color:var(--lemon)}
+.ph-grp{margin:8px 2px 4px;font-size:.72rem;font-weight:800;color:#8A93A6;letter-spacing:.4px}
+/* ★ 2026-11-24.5 关卡地图改 2 列横向卡
+   原来 3 列方块，基础组 4 关排成 3+1、组合组 5 关排成 3+2，每行都留半格缺口，
+   13 关还要滚一点才看得全。现在 2 列（宽 165），图标左、编号+名称右、星星右，
+   三组 4/5/4 关分别排 2/3/2 行，一屏看全、没有缺口。 */
+.ph-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (min-width:760px){.ph-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.ph-lv{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;
+  gap:1px 8px;background:#fff;border:2px solid #E8EAF0;border-radius:12px;padding:5px 8px;
+  cursor:pointer;transition:.15s;text-align:left;font-family:inherit;box-shadow:0 2px 0 rgba(45,49,66,.06)}
+.ph-lv:hover{transform:translateY(-2px);border-color:var(--lemon)}
 .ph-lv.cur{border-color:var(--lake);background:#EFF8FF;outline:3px solid rgba(78,197,241,.25)}
 .ph-lv.done{border-color:var(--mint);background:#F2FCF4}
-.ph-lv-icon{font-size:1.35rem;line-height:1.15}
-.ph-lv b{display:inline-block;font-size:.64rem;font-weight:800;color:#2A5578;background:#EAF3FF;border-radius:999px;padding:1px 7px;margin:2px 0 1px}
+.ph-lv-icon{font-size:1.25rem;line-height:1.1}
+.ph-lv-meta{display:flex;flex-direction:column;gap:1px;min-width:0}
+.ph-lv b{align-self:flex-start;font-size:.6rem;font-weight:800;color:#2A5578;background:#EAF3FF;
+  border-radius:999px;padding:0 6px;line-height:1.5}
 .ph-lv.done b{background:var(--mint);color:#1E6647}
-.ph-lv-name{display:block;font-size:.78rem;font-weight:800;color:var(--ink);line-height:1.3}
-.ph-lv-star{position:absolute;top:4px;right:5px;font-size:.8rem}
+.ph-lv-name{display:block;font-size:.78rem;font-weight:800;color:var(--ink);line-height:1.25;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ph-lv-star{font-size:.76rem;line-height:1}
+.ph-lv-wide{grid-column:1 / -1}
 .ph-map-note{margin:10px 4px 2px;font-size:.8rem;color:var(--ink2);line-height:1.7}
 /* ---- 关卡舞台 ---- */
-.ph-stage-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:2px 4px 10px}
-.ph-stage-head .ph-num{font-size:1.7rem;font-weight:800;color:var(--ink)}
-.ph-stage-head h2{margin:0;font-size:1.28rem}
-.ph-stage-head .ph-goal{flex:1 1 100%;margin:2px 0 0;color:var(--ink2);font-size:.86rem;line-height:1.6}
-.ph-goals{display:flex;flex-wrap:wrap;gap:8px;margin:10px 4px 4px}
-.ph-goals span{font-size:.78rem;font-weight:700;color:#2F7B52;background:#EDFAF0;border:2px solid var(--mint);
-  border-radius:999px;padding:5px 12px}
-.ph-sec-label{margin:18px 4px 8px;font-size:.92rem;font-weight:800;color:var(--ink)}
+/* ★ 2026-11-24.5 课程屏一屏优化（App/手机）
+   原来进课程先被 400px 的标题+说明+3 个目标胶囊吃掉半屏，首屏只看得到 2 个词。
+   现在：说明压到 2 行、目标改单行横向滚动的胶囊，标题区整体省掉约 180px。 */
+.ph-stage-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:0 4px 6px}
+.ph-stage-head .ph-num{font-size:1.35rem;font-weight:800;color:var(--ink)}
+.ph-stage-head h2{margin:0;font-size:1.12rem}
+.ph-stage-head .ph-goal{flex:1 1 100%;margin:1px 0 0;color:var(--ink2);font-size:.78rem;line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ph-goals{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;margin:6px 4px 2px;padding-bottom:3px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.ph-goals::-webkit-scrollbar{display:none}
+.ph-goals span{font-size:.7rem;font-weight:700;color:#2F7B52;background:#EDFAF0;border:1.5px solid var(--mint);
+  border-radius:999px;padding:3px 9px;white-space:nowrap;flex:none}
+.ph-sec-label{margin:12px 4px 6px;font-size:.88rem;font-weight:800;color:var(--ink)}
 .ph-sec-label small{font-weight:600;color:var(--ink2);font-size:.78rem;margin-left:6px}
 /* 折叠卡（一屏只展开一个） */
-.ph-fold{margin:10px 4px;background:#fff;border:3px solid #E8EAF0;border-radius:18px;overflow:hidden}
+.ph-fold{margin:8px 4px;background:#fff;border:2px solid #E8EAF0;border-radius:16px;overflow:hidden}
 .ph-fold[open]{border-color:var(--sky2,#B9E2FA)}
-.ph-fold > summary{cursor:pointer;list-style:none;padding:13px 16px;font-weight:800;font-size:.98rem;
-  display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--ink);background:#FAFCFF}
+.ph-fold > summary{cursor:pointer;list-style:none;padding:10px 13px;font-weight:800;font-size:.94rem;
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap;color:var(--ink);background:#FAFCFF}
 .ph-fold > summary::-webkit-details-marker{display:none}
 .ph-fold > summary::before{content:'▸';color:var(--lake);font-size:1rem;transition:.15s}
 .ph-fold[open] > summary::before{content:'▾'}
@@ -96,21 +110,29 @@
   font-family:inherit;font-weight:800;font-size:.9rem;cursor:pointer}
 .ph-rule{font-size:.78rem;color:var(--ink2);padding:7px 12px;background:#F5F6FA;border-radius:999px}
 .ph-rows{display:flex;flex-direction:column;gap:8px}
-.pw-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#FAFCFF;
-  border:2px solid #E8EAF0;border-radius:16px;padding:8px 12px}
-.pw-icon{font-size:34px;line-height:1;width:44px;text-align:center;flex:none}
-.pw-icon svg{width:44px;height:44px;vertical-align:middle}
-.ph-tile{display:inline-flex;width:40px;height:40px;align-items:center;justify-content:center;
-  border-radius:12px;background:#EEF3F8;font-weight:800;font-size:1.2rem;color:var(--ink2)}
-.pw-word{font-size:1.25rem;font-weight:800;min-width:74px}
-.pw-zh{font-size:.82rem;color:var(--ink2);min-width:40px}
-.pw-blocks{display:flex;gap:5px;flex-wrap:wrap}
-.pw-blocks .pb{min-width:38px;height:40px;border-radius:11px;border:2px solid var(--lake);
-  background:#EAF6FD;font-family:inherit;font-weight:800;font-size:.95rem;cursor:pointer;color:var(--ink)}
+/* ★ 2026-11-24.5 词行压到 ~86px（原来 ~180px，一屏只能看到 2 个词）
+   两行：① 图标 + 单词 + 中文 + 🔊  ② 拼读块 + 拼一拼
+   整词播放改成「点图标 / 点单词」——孩子本来就会去点那个词，比多一个按钮更自然。 */
+/* 单行：图标 · 单词+中文 · 拼读块 · 拼一拼（块多/词长时自动换到第二行，不裁字） */
+.pw-row{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;background:#FAFCFF;
+  border:2px solid #E8EAF0;border-radius:13px;padding:5px 8px}
+.pw-icon{font-size:24px;line-height:1;width:34px;text-align:center;flex:none;
+  background:none;border:0;padding:0;cursor:pointer;font-family:inherit}
+.pw-icon svg{width:32px;height:32px;vertical-align:middle}
+.ph-tile{display:inline-flex;width:32px;height:32px;align-items:center;justify-content:center;
+  border-radius:10px;background:#EEF3F8;font-weight:800;font-size:1rem;color:var(--ink2)}
+.pw-main{display:flex;align-items:baseline;gap:7px;min-width:0;flex:1 1 auto;
+  background:none;border:0;padding:2px 0;font-family:inherit;cursor:pointer;text-align:left}
+.pw-word{font-size:1.05rem;font-weight:800;min-width:0}
+.pw-zh{font-size:.74rem;color:var(--ink2);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pw-spk{font-size:.82rem;color:#93A0B4;flex:none}
+.pw-blocks{display:flex;gap:4px;flex-wrap:wrap;align-items:center;flex:0 1 auto}
+.pw-blocks .pb{min-width:30px;height:31px;border-radius:9px;border:2px solid var(--lake);padding:0 6px;
+  background:#EAF6FD;font-family:inherit;font-weight:800;font-size:.84rem;cursor:pointer;color:var(--ink)}
 .pw-blocks .pb:hover{background:var(--lake);color:var(--ink)}
-.pw-tag{font-size:.72rem;color:#7A5B00;background:#FFF3C4;border-radius:999px;padding:4px 10px}
-.pw-go{padding:7px 12px;font-size:.8rem;min-height:0}
-.pw-full{padding:7px 12px;font-size:.8rem;min-height:0}
+.pw-tag{font-size:.68rem;color:#7A5B00;background:#FFF3C4;border-radius:999px;padding:3px 9px}
+.pw-go{padding:3px 8px;font-size:.72rem;min-height:0;min-width:0;border-radius:9px;flex:none}
+.pw-full{padding:4px 10px;font-size:.74rem;min-height:0}
 /* 视觉词 / 可解码句 */
 .sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px}
 .sw-card{background:#fff;border:3px solid #D8E6F2;border-radius:16px;padding:12px 10px;text-align:center}
@@ -265,14 +287,14 @@ body:not(.ph-report) #phReport{ display:none; }
     <div class="card">
       <div class="ph-streak" id="phStreak"></div>
       <div class="ph-map" id="phMap"></div>
-      <details class="ph-earn">
-        <summary>🥚 彩蛋收集</summary>
-        <div class="ph-eggs" id="phEggs"></div>
-      </details>
       <div class="ph-actions">
         <button class="btn orange" onclick="plStart()">🎯 定级测</button>
         <button class="btn ghost" onclick="phGo('report')">👨‍👩‍👧 学习报告</button>
       </div>
+      <details class="ph-earn">
+        <summary>🥚 彩蛋收集</summary>
+        <div class="ph-eggs" id="phEggs"></div>
+      </details>
       <details class="ph-audio">
         <summary>🔈 音素速查 · 点一点就发音</summary>
         <p class="ph-audio-note">5 个短元音 + 13 个常见拼读块，和闯关里是同一套母语者录音。</p>
@@ -303,7 +325,7 @@ body:not(.ph-report) #phReport{ display:none; }
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=216"></script>
+<script src="js/app.js?v=217"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/phonics.js?v=14"></script>
@@ -448,11 +470,11 @@ function famInnerHTML(f, lvId) {
          <button class="btn mint pw-go" onclick="phRowBlend(${i})">🔊 拼一拼</button>`
       : `<span class="pw-tag">整体认读</span>`;
     return `<div class="pw-row">
-      <span class="pw-icon">${wIcon(w)}</span>
-      <span class="pw-word" lang="en">${esc(w)}</span>
-      <span class="pw-zh">${esc(wZh(w))}</span>
+      <button class="pw-icon" onclick="phRowWord(${i})" title="听整词 ${esc(w)}" aria-label="听 ${esc(w)} 的读音">${wIcon(w)}</button>
+      <button class="pw-main" onclick="phRowWord(${i})" title="听整词 ${esc(w)}">
+        <b class="pw-word" lang="en">${esc(w)}</b><span class="pw-zh">${esc(wZh(w))}</span><span class="pw-spk">🔊</span>
+      </button>
       ${blocks}
-      <button class="btn ghost pw-full" onclick="phRowWord(${i})">🔊 整词</button>
     </div>`;
   };
   /* ★ 2026-11-20.5：这一关还要往后的块才能拼的词，单独归到「先整体认读」，
@@ -996,20 +1018,20 @@ const PH_GROUPS = [
   { t: '高阶 · 规则与例外', ids: ['L10', 'L11', 'L12', 'L13', 'TX'] },
 ];
 function renderMap() {
-  const card = lv => {
+  const card = (lv, i, n) => {
     const done = !!phProg.done[lv.id];
     const cur = lv.id === CUR;
-    return `<button class="ph-lv ${done ? 'done' : ''} ${cur ? 'cur' : ''}" onclick="phGo('${lv.id}')">
+    const wide = (n % 2 === 1 && i === n - 1) ? ' ph-lv-wide' : '';
+    return `<button class="ph-lv ${done ? 'done' : ''} ${cur ? 'cur' : ''}${wide}" onclick="phGo('${lv.id}')">
+      <span class="ph-lv-icon">${lv.icon}</span>
+      <span class="ph-lv-meta"><b>${esc(lv.id)}</b><span class="ph-lv-name">${esc(lv.name)}</span></span>
       <span class="ph-lv-star">${done ? '⭐' : (lv.id === 'TX' ? '🧰' : '☆')}</span>
-      <div class="ph-lv-icon">${lv.icon}</div>
-      <b>${esc(lv.id)}</b>
-      <span class="ph-lv-name">${esc(lv.name)}</span>
     </button>`;
   };
   document.getElementById('phMap').innerHTML = PH_GROUPS.map(g => {
     const items = g.ids.map(id => PH_LEVELS.find(l => l.id === id)).filter(Boolean);
     if (!items.length) return '';
-    return `<div class="ph-grp">${g.t}</div><div class="ph-grid">${items.map(card).join('')}</div>`;
+    return `<div class="ph-grp">${g.t}</div><div class="ph-grid">${items.map((lv, i) => card(lv, i, items.length)).join('')}</div>`;
   }).join('');
 }
 

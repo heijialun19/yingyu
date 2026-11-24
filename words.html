@@ -129,21 +129,30 @@
 .today-card .tc-listen{flex:none;border:1px solid #DCD2F7;background:#fff;color:#5B3FD6;border-radius:999px;padding:10px 13px;font:700 .76rem/1 inherit;cursor:pointer;min-height:44px}
 .today-card .tc-sub{color:#5A6274;font-size:.76rem;margin:6px 0 0;line-height:1.5}
 .today-card .tc-bar{height:10px;background:#EDE9F8;margin:12px 0 4px}
-.picker{border:1px solid #E9EEF6;border-radius:16px;background:#fff;margin:8px 0;overflow:hidden}
-.picker>summary{list-style:none;cursor:pointer;padding:12px 14px;font-size:.86rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px;min-height:48px}
+/* ★ 2026-11-24.5 App 一屏：页头压 18px，配合主卡/折叠行收紧，整页刚好一屏 */
+@media (max-width:520px){
+  .page-title{margin:0 0 8px}
+  .page-title h1{font-size:1.28rem}
+  .page-title p{font-size:.72rem;margin-top:2px;line-height:1.4}
+}
+.picker{border:1px solid #E9EEF6;border-radius:16px;background:#fff;margin:6px 0;overflow:hidden}
+.picker>summary{list-style:none;cursor:pointer;padding:9px 13px;font-size:.84rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px;min-height:44px}
 .picker>summary::-webkit-details-marker{display:none}
 .picker>summary::after{content:'▾';margin-left:auto;color:#8A93A6;font-weight:700;transition:.15s}
 .picker[open]>summary::after{transform:rotate(180deg)}
 .picker>summary b{color:#5B3FD6}
 .picker .theme-tabs{padding:0 12px 12px;margin-bottom:0;flex-wrap:wrap;overflow:visible}
-.pool-row{display:flex;gap:8px;margin:10px 0}
+.pool-row{display:flex;gap:8px;margin:8px 0}
 .pool-row .theme-tab{flex:1;justify-content:center;min-height:46px;font-size:.82rem;padding:8px 6px}
-.search-row{display:flex;gap:8px;margin:12px 0;align-items:center}
+.search-row{display:flex;gap:8px;margin:8px 0;align-items:center}
 .search-row input{flex:1 1 auto;min-width:0;padding:13px 18px;border:2px solid #E9D98A;border-radius:999px;font-size:1rem;font-family:inherit;background:#fff;box-shadow:0 2px 8px rgba(24,39,75,.05)}
 .search-row .search-clear{flex:0 0 auto}
 @media (max-width:720px){
-  .today-card .tc-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .today-card .tc-row .btn{min-width:0;padding:12px 4px;font-size:.9rem;min-height:46px;flex:none}
+  /* ★ 2026-11-24.5 App 一屏：四个练法从 2×2 收成一行四列（省 56px），
+     主卡 + 换年级/主题 + 词单/错题 + 搜索 一屏内排得下 */
+  .today-card .tc-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .today-card .tc-row .btn{min-width:0;padding:9px 2px;font-size:.76rem;min-height:44px;flex:none;
+    flex-direction:column;gap:1px;line-height:1.15}
 }
 </style>
 </head>
@@ -186,7 +195,7 @@
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=216"></script>
+<script src="js/app.js?v=217"></script>
 <script src="js/grammar-engine.js?v=10"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>

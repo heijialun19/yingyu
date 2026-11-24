@@ -24,7 +24,7 @@
    18 个音素」全铺在一起，和底部导航几乎一一重复，孩子进来先选一遍入口。
    现在这一页 = 顶部一个继续学习（唯一主操作）+ 今日三任务 + 课程地图。
    ============================================================ */
-.ln-hero{display:flex;align-items:center;gap:12px;margin:4px 0 14px;padding:0 2px}
+.ln-hero{display:flex;align-items:center;gap:12px;margin:2px 0 10px;padding:0 2px}
 .ln-avatar{flex:none;width:54px;height:54px;border-radius:18px;border:1px solid #E4EBF5;
   background:linear-gradient(160deg,#EFF7FF,#F7F4FF);display:flex;align-items:center;
   justify-content:center;font-size:30px;cursor:pointer;font-family:inherit}
@@ -38,13 +38,13 @@
 .ln-card .cd-due{position:absolute;top:11px;right:11px;display:inline-flex;align-items:center;
   padding:3px 8px;border-radius:999px;background:#FFF4E5;color:#A65A00;font-size:.66rem;font-weight:800}
 
-.ln-group{margin:24px 0 10px;font-size:.74rem;font-weight:800;color:#6B7385;letter-spacing:2px}
-.ln-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.ln-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:16px 14px 14px;
+.ln-group{margin:14px 0 8px;font-size:.72rem;font-weight:800;color:#6B7385;letter-spacing:2px}
+.ln-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.ln-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:12px 12px 11px;
   background:#fff;border:1px solid #E9EEF6;border-radius:20px;box-shadow:0 2px 8px rgba(24,39,75,.05);
-  cursor:pointer;font:inherit;color:inherit;text-align:left;transition:transform .15s;min-height:150px}
+  cursor:pointer;font:inherit;color:inherit;text-align:left;transition:transform .15s;min-height:132px}
 .ln-card:active{transform:scale(.985)}
-.ln-card .ce{width:40px;height:40px;border-radius:13px;margin-bottom:9px;font-size:23px;line-height:1;
+.ln-card .ce{width:34px;height:34px;border-radius:11px;margin-bottom:6px;font-size:20px;line-height:1;
   background:linear-gradient(155deg,#F2F8FF,#EEF0FF);display:flex;align-items:center;justify-content:center;
   box-shadow:inset 0 0 0 1px rgba(78,197,241,.10)}
 .ln-card .cn{font-size:1.02rem;font-weight:800}
@@ -61,8 +61,9 @@
   .ln-hero{margin-top:0}
   .ln-avatar{width:48px;height:48px;font-size:27px;border-radius:16px}
   .ln-grid{gap:10px}
-  .ln-card{padding:14px 12px 12px;border-radius:18px;min-height:146px}
-  .ln-card .ce{width:37px;height:37px;border-radius:12px;font-size:21px;margin-bottom:8px}
+  /* ★ 2026-11-24.5 App 一屏：8 张卡必须在 844 高度里排完（原来最后一行被底栏压住） */
+  .ln-card{padding:11px 11px 10px;border-radius:18px;min-height:124px}
+  .ln-card .ce{width:32px;height:32px;border-radius:11px;font-size:19px;margin-bottom:6px}
   .ln-card .cn{font-size:.96rem}
   .ln-card .cd{font-size:.71rem}
 }
@@ -100,7 +101,7 @@
 <script src="js/words-data.js?v=48"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=216"></script>
+<script src="js/app.js?v=217"></script>
 <script src="js/getsmart-data.js?v=19"></script>
 <script>
 renderNav('learn'); renderDecor();
