@@ -20,22 +20,24 @@
      str/spr/thr（三个辅音连读）、old/all/ell/ill/ing/ang/ong/ung（韵脚，
      里面还含独立音素）、air（ai+r 已能覆盖）—— 留着会把 grandma 切成 gr·a·nd·m·a。
    保留 ear/ire 是因为它们对应 /ɪə/、/aɪə/ 一个韵，例外表另有处理。 */
-const PEP_TRIGRAPHS = ['tion', 'igh', 'eau', 'ear', 'ire'];
+const PEP_TRIGRAPHS = ['tion', 'igh', 'eau', 'ear', 'ire', 'tch', 'dge'];
 /* ★（B2）辅音连缀全部移除：st sp sk tr dr cr fr gr pr br pl bl cl fl gl sl sw
    tw sm sn nd nk nt mp ld lt ft pt lk —— 它们各自由两个音素组成，当成一个块
    会让孩子把 nt、nd 读成一个音（elephant → e·l·e·ph·a·nt 就是它造成的）。
    ll ss tt ff pp rr dd 保留：双写只读一个音，确实是一个块。 */
 const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu',
   'oo', 'ee', 'ea', 'ai', 'ay', 'oa', 'ow', 'ou', 'oi', 'oy',
-  'ar', 'or', 'er', 'ir', 'ur', 'au', 'ew', 'ei', 'eo', 'ie', 'ui', 'kn',
-  'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd'];
+  'ar', 'or', 'er', 'ir', 'ur', 'au', 'aw', 'ew', 'ei', 'eo', 'ie', 'ui', 'kn',
+  /* 2026-11-25.15：gh / ey 以前没当块，cough 被拆成 c·ou·g·h（两块都哑）、
+     monkey 被拆成 m·o·n·k·e·y（ey 读 /i/ 却无处可发）。 */
+  'gh', 'ey', 'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd'];
 /* ★ 2026-11-15（第三轮复检 B2 精准修）：phonics.js 明确宣布「整体认读」的词。
    这些词在拼读课里没有 segs（硬拼会把 cake 读成 /kæke/、把 shoe 的哑巴 e 念出来）。
    词卡之前仍走 splitBlocks 逐音拆，属于同一站两套标准：对这些词改为整词认读提示。
    其余词保持逐音素拆——那正是 phonics.js segs 的做法（cat→c·a·t），实测 106/109 一致。 */
 const PH_WHOLE_WORDS = new Set('rabbit egg doctor wash shoe chair peach teacher thumb cake lake name plate grape whale gate game kite bike nine white ice five rice time nose rose home bone stone rope afternoon away today garden market horse short chicken young along cute use rule'.split(' '));
 /* 视觉词（phonics.js SIGHT_WORDS 同步清单）：逐音拆会把 the 拆成 t·h·e，必须整词认读。 */
-const PH_SIGHT_WORDS = new Set('the a is my he she we you are they this that said one two was has were come some have do does of to them there what where who why out now all her'.split(' '));
+const PH_SIGHT_WORDS = new Set('the a is my he she we you are they this that said one two was has were come some have do does of to them there what where who why out now all her eye i'.split(' '));
 const EAR_NOT_IER = { bear: 1, wear: 1, pear: 1, learn: 1, early: 1, earth: 1, search: 1, heart: 1, swear: 1 };
 /* 组合例外表：这些词在特定位置组合并不成立，命中也要跳过（回到逐字母诚实拆分）。
    - homework/bathroom：复合词边界（home|work、bath|room）上的 ew/thr 是假组合
@@ -46,7 +48,9 @@ const COMBO_EXC = {
   homework: ['ew'], bathroom: ['thr'],
   laugh: ['au'], laughed: ['au'], because: ['au'],
   science: ['ie'], scientist: ['ie'], worried: ['ie'], heavier: ['ie'], view: ['ie'], alien: ['ie'],
-  direct: ['ire'], building: ['ui'],
+  direct: ['ire'], direction: ['ire'], direc: ['ire', 'ir'], building: ['ui'],
+  /* 2026-11-25.15：aw 新成块后，away / Hawaii 的 a+w 跨音节，不能被并成一个 aw 块 */
+  away: ['aw'], hawaii: ['aw'],
   /* 全库扫描第二轮补录：ui 特读（biscuit /ɪ/、guide /aɪ/、guitar /ɪ/、penguin /wɪ/） */
   biscuit: ['ui'], biscuits: ['ui'], guide: ['ui'], guitar: ['ui'], penguin: ['ui'],
   /* all 特读（balloon /əl/、alley /æl/） */
@@ -125,7 +129,7 @@ function phonicsLine(w) {
    ============================================================================ */
 
 /* 与 phonics.js 的 PH_BLEND_OK / PH_ALIAS 逐字一致（口径同源，四页可用） */
-const PBX_BLEND_OK = new Set('sh ch th ai ay oa ck ee oo ar or ir ng oo_short i_long ow oi th_v schwa ear air tion sion u_e'.split(' '));
+const PBX_BLEND_OK = new Set('sh ch th ai ay oa ck ee oo ar or ir ng oo_short i_long ow oi th_v schwa ear air tion sion u_e zh'.split(' '));
 const PBX_ALIAS = {
   bb:'b', cc:'c', dd:'d', ff:'f', gg:'g', ll:'l', mm:'m', nn:'n',
   pp:'p', rr:'r', ss:'s', tt:'t', zz:'z',
@@ -248,7 +252,8 @@ function pbxDecode(w) {
       base += rawBlocks.length;
       syls.push({ raw: sraw, blocks: blocks, playable: blocks.some(b => !!b.url) });
     });
-    const whole = !!wholeSet.has(low) && syls.length === 1;
+    /* 视觉词一律整词认读：eye 会被切成 ey|e 两段，按音节数卡会把整词拆散 */
+    const whole = !!wholeSet.has(low);
     return { raw: raw, syls: syls, magic: magic, whole: whole,
              wholeNote: whole ? pbxSightNote(low) : '' };
   });
@@ -435,6 +440,11 @@ const SYL_COMPOUNDS = {
   gingerbread: ['gin', 'ger', 'bread'], ginger: ['gin', 'ger'],
   bungee: ['bun', 'gee'], oranges: ['or', 'an', 'ges'],
   goodbye: ['good', 'bye'], grandma: ['grand', 'ma'], grandpa: ['grand', 'pa'],
+  /* 2026-11-25.15：oi / ew 落在音节边界上被误并成块（doing 曾拆成 d·oi·ng、
+     sidewalk 曾拆成 s·i / d·ew / a·l·k），按真实音节切。 */
+  doing: ['do', 'ing'], sidewalk: ['side', 'walk'],
+  away: ['a', 'way'], hawaii: ['ha', 'wai', 'i'],
+  direction: ['di', 'rec', 'tion'], national: ['na', 'tion', 'al'],
   grandfather: ['grand', 'father'], grandmother: ['grand', 'mother'],
   grandparent: ['grand', 'parent'], grandson: ['grand', 'son'],
   granddaughter: ['grand', 'daughter'], classroom: ['class', 'room'],

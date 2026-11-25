@@ -5046,3 +5046,36 @@ picture/nature/furniture/pictures 里 `ur` 和词尾 `e` 也按 ture 词尾统�
 **审计**：发声块 vs 整词 IPA 0 冲突；解释里声称的音必须在 IPA 里 2,784 条全过；魔法 e/ture/tch/ur 误判 0。浏览器严格 autoplay 实测：book 的 oo、teacher 的 er、fire 的 ire 真点击出声。
 
 BUILD .13→.14 / CACHE v286→v287 / app 225→226 / PHONICS_VER 7→8 / app-manifest 12,110 项。
+
+## 2026-11-25.15 · 拆块发音收尾：全站 0 个词全静音
+
+用户问「刚才补的发音都补上了么，有没有漏的」。独立复核（不看上一版自报，直接拿最终产物反推）查出三类真漏，已全部修掉。
+
+**一、两个键表没同步，等于白补**
+- `phonics.js` 的 `PH_BLEND_OK` 还是旧的 13 个键：拼读课/闯关里 oo_short、i_long、ow、oi、th_v、schwa、ear、air、tion、sion、u_e 全部按「无录音」处理 → 已补成 25 个。
+- `pep-points.js` 的 `PBX_BLEND_OK` 缺 `zh`：garage / usually / treasure 的软 g、软 s 点下去没有声音 → 已补。
+- `pbx-fix.js` 内容改了但 URL 还是 `?v=3`，老用户会吃缓存 → 升 v4。
+
+**二、候选音表缺音，导致「有音素却对齐不上」**
+补了 12 个已存在的录音键到对应字母：a→/ɪ/、y→/i/、i→/i/、o→/w/ /ɪ/、u→/w/、ie→/eɪ/ /ə/、ea→/oʊ/ /ə/、ai→/aɪ/、ou→/ɑ/ /ɜr/、ow→/ɑ/、oa→/ʌ/ /ə/、au→/ɑ/ /ə/、or→/ʌ/、ur→/ɑ/ /ʊ/、ir→/aɪə/、ei→/er/。
+另外 **ei / eo / gh / ey 四个组合此前根本没有定义**（走到 fallback 必然不响），已补。
+
+**三、拆块规则本身会造出假块**
+- `aw` / `gh` / `tch` / `dge` / `ey` 之前不是块：cough 拆成 c·ou·g·h（两块都哑）、drawing 拆成 d·r·a·w、catch 拆成 c·a·t·ch、monkey 拆成 m·o·n·k·e·y。
+- 反过来，`oi` / `ew` / `ire` 在音节边界被误并：doing 拆成 d·oi·ng、sidewalk 拆成 s·i/d·ew/a·l·k、direction 拆成 d·ire·c/（tion）。
+  修法：aw/gh/tch/dge/ey 进组合表；away、Hawaii 进例外表（a+w 跨音节）；doing、sidewalk、direction、national 进音节表按真实音节切；direction 额外过滤掉 ir。
+- `tokenize` 曾把 ɔɪ 当一个整体，drawing 的 aw(/ɔ/)+i(/ɪ/) 因此永远对不上 → 不再合并 ɔɪ，改由 oi/oy 显式吃两个音素。
+- 补了 national / hawaii / macao 三个缺失音标。
+
+**四、早期硬编码该退休了**
+`FIX.pie` / `FIX.tie` 是还没有 i_long 录音时写的「ie 没有单块录音」，一直强行压着不发 → 删除。现在 pie/tie 播 i_long。
+
+**结果**（1921 词，10,288 块）
+- 全静音词 **0**（上一版 4 个：I / eye / ear / there；I 与 eye 改为视觉词整体认读）
+- 全块有声 **1,221** 词，部分有声 612 词，视觉词整体认读 88 词
+- 有声块 **9,554**（上一版 9,342，+212），有声率 92.9%
+- 无声块 734 个，逐个抽查后**全部是真哑音**：词尾/魔法 e 435、卷舌 r 40、stle/often 的 t 38、哑 l、哑 w、mb、kn、gh、双写第二字——这些本来就不该响
+
+**审计**：发声块 vs 整词 IPA **0 冲突**；解释里声称的音 2,786 条 **0 不符**；魔法 e / ture / tch / ur 误判 0（gh 1 条是审计器把 spaghetti 的「h 不发音」误读，实际正确）。
+
+BUILD .14→.15 / CACHE v287→v288 / app 226→227 / pep-points 32→33 / pbx-fix v3→v4 / phonics 15→16 / ipa 10→11。

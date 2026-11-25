@@ -215,4 +215,7 @@ const IPA = {
   "present":"/ˈprezənt/", "protect the earth":"/prəˈtekt ðə ɜrθ/", "read":"/rid/", "save water":"/seɪv ˈwɔtər/",
   "T-shirt":"/ˈti ʃɜrt/", "tear":"/tɪr/", "teddy bear":"/ˈtedi ber/", "use":"/juz/",
   "wind":"/wɪnd/", "yo-yo":"/ˈjoʊ joʊ/",
+  "national":"/ˈnæʃnəl/",
+  "hawaii":"/həˈwaɪi/",
+  "macao":"/məˈkaʊ/",
 };

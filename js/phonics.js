@@ -27,7 +27,9 @@
    不在集合里的多字母块一律不发声 —— 宁可不响，也不放错音。
    ⚠️ 绝不要给不在 audio/phonics/ 里的字符串走 localAudioURL()：
       TTS 会把 "sh" 念成字母名 "S H"（2026-11-08 踩过）。 */
-const PH_BLEND_OK = new Set(['sh', 'ch', 'th', 'ai', 'ay', 'oa', 'ck', 'ee', 'oo', 'ar', 'or', 'ir', 'ng']);
+const PH_BLEND_OK = new Set(['sh', 'ch', 'th', 'ai', 'ay', 'oa', 'ck', 'ee', 'oo', 'ar', 'or', 'ir', 'ng',
+  /* 2026-11-25.15：11 个补录音素 + 派生 /ʒ/，与 pep-points 的 PBX_BLEND_OK 保持同一份清单。 */
+  'oo_short', 'i_long', 'ow', 'oi', 'th_v', 'schwa', 'ear', 'air', 'tion', 'sion', 'u_e', 'zh']);
 
 /* ================= 2026-11-24.6 长词切分（用户：「单词很长的你都弄整体认读，不能切分么？」）=================
    一、同一发音的另一种写法（同音异拼）
