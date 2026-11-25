@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-25.11",
-  "note": "2026-11-25.11 · 拆块解释逐词校对：-ture / tch / gh / 魔法 e / 英式 r 音节 的说明全部按真实音标重写；元音+r 支持先发元音再发 r；question 的 tion 不再只发 /n/；suggest 补回 /ɡ/。音频、音素、插画、词库未动。"
+  "build": "2026-11-25.12",
+  "note": "2026-11-25.12 · 修 -ture 系列：picture/nature/pictures 的 ur、e 也按 ture 词尾说明（pictures 读 /tʃəz/），不再单独说成 /ər/。"
 }

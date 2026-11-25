@@ -5014,3 +5014,7 @@ App 里拼读关卡题目渲染后的自动播放被严格 autoplay 策略拒绝
 ## 2026-11-25.11 · 拆块解释逐词校正（说错话比不发声更糟）
 
 逐词复查「解释和音标是否一致」，修掉四类系统性错话：① `-ture` 词（picture/nature/future）原来把 t 说成「不发音」、把 ur 说成 /ɜːr/，现在统一说「ture 是固定词尾，一起读 /tʃər/」；② office/orange/bridge 这类词尾 e 被误判魔法 e，现在只有真把前面元音拉成字母名才说魔法 e，否则说「让 c/g 读软音」或「词尾 e 不发音」；③ gh 按真实音标分 /f/（laugh、enough）、/ɡ/（ghost）、哑音（eight、through）三种说法，tch 说成 /tʃ/、dge 说成 /dʒ/；④ 元音 + r 支持「先发元音、r 在下一块单独发」（carrot /æ/+/r/、board /ɔ/+/r/、deer /ɪ/+/r/），英式音标的 /ɪə/ /eə/ /ɜː/ 与哑 r 也照实说明。另修 question 的 tion 只发 /n/、suggest 音标漏 /ɡ/。三套审计：发声块与 IPA 零冲突、解释里声称的音在 IPA 中全部存在、魔法 e/ture/tch/ur 误判 0。BUILD .10→.11 / CACHE v283→v284 / app 222→223 / pep-points 31→32 / pbx-fix v2 / ipa v10。
+
+## 2026-11-25.12 · -ture 系列收尾
+
+picture/nature/furniture/pictures 里 `ur` 和词尾 `e` 也按 ture 词尾统一说明（原来只有 t 块说对了，ur 还在说「读 /ər/」、e 还说「词尾 e 不发音」各自为政）；复数 pictures 按音标读 /tʃəz/，不再写成 /tʃər/。三套审计仍为零冲突，音频/音素/插画/词库未动。BUILD .11→.12 / CACHE v284→v285 / app 223→224 / pbx-fix v3。
