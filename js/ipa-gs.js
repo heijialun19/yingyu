@@ -81,7 +81,7 @@ const IPA_GS = {
   "government":"/ˈɡʌvərnmənt/", "grandfather":"/ˈɡrænfɑðər/", "grandmother":"/ˈɡrænmʌðər/", "grapes":"/ɡreɪps/",
   "greenhouse":"/ˈɡrinhaʊs/", "grocery store":"/ˈɡroʊsəri stɔr/", "guide":"/ɡaɪd/", "Gym":"/dʒɪm/",
   "hands":"/hændz/", "hang out":"/hæŋ aʊt/", "harmful":"/ˈhɑrmfəl/", "headphones":"/ˈhedfoʊnz/",
-  "hear":"/hir/", "heat":"/hit/", "height":"/haɪt/", "helmet":"/ˈhelmət/",
+  "hear":"/hɪr/", "heat":"/hit/", "height":"/haɪt/", "helmet":"/ˈhelmət/",
   "hero":"/ˈhiroʊ/", "hide":"/haɪd/", "hide and seek":"/haɪd ənd sik/", "high jump":"/haɪ dʒʌmp/",
   "highway":"/ˈhaɪweɪ/", "hip hop":"/hɪp hɑp/", "hobby":"/ˈhɑbi/", "hold":"/hoʊld/",
   "hole":"/hoʊl/", "honey":"/ˈhʌni/", "honeycomb":"/ˈhʌniˌkoʊm/", "horns":"/hɔrnz/",

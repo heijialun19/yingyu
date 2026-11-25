@@ -69,6 +69,10 @@ function splitBlocks(w) {
   const exc = COMBO_EXC[s];
   let trigs = EAR_NOT_IER[s] ? PEP_TRIGRAPHS.filter(d => d !== 'ear') : PEP_TRIGRAPHS;
   let digs = PEP_DIGRAPHS;
+  /* 2026-11-25.14：orange / change / danger 里的 ng 不是 /ŋ/，是 n + 软 g /dʒ/。
+     拆成 n|g 两块，n 发 /n/、g 在 e/i/y 前发 /dʒ/，两块都能响；
+     finger 这类是 fin|ger 音节，ng 不会落在同一音节里，不受影响。 */
+  if (/ng[eyi]/.test(s)) { trigs = trigs.filter(d => d !== 'ng'); digs = digs.filter(d => d !== 'ng'); }
   if (exc) {
     trigs = trigs.filter(d => !exc.includes(d));
     digs = digs.filter(d => !exc.includes(d));
@@ -121,7 +125,7 @@ function phonicsLine(w) {
    ============================================================================ */
 
 /* 与 phonics.js 的 PH_BLEND_OK / PH_ALIAS 逐字一致（口径同源，四页可用） */
-const PBX_BLEND_OK = new Set('sh ch th ai ay oa ck ee oo ar or ir ng'.split(' '));
+const PBX_BLEND_OK = new Set('sh ch th ai ay oa ck ee oo ar or ir ng oo_short i_long ow oi th_v schwa ear air tion sion u_e'.split(' '));
 const PBX_ALIAS = {
   bb:'b', cc:'c', dd:'d', ff:'f', gg:'g', ll:'l', mm:'m', nn:'n',
   pp:'p', rr:'r', ss:'s', tt:'t', zz:'z',
@@ -424,6 +428,12 @@ function sylIsLegalOnset(units) {
 
 /* 复合词：先按词根切，切不动再走音节规则（goodbye → good·bye） */
 const SYL_COMPOUNDS = {
+  /* -nge 的软 g：g 属于后一个音节（dan·ger），拆开 n 和 g 才能各发各的音。
+     singer 不在表里——它的 g 本来就不发音，仍走 sing·er。 */
+  danger: ['dan', 'ger'], dangerous: ['dan', 'ger', 'ous'],
+  endangered: ['en', 'dan', 'gered'], engineer: ['en', 'gi', 'neer'],
+  gingerbread: ['gin', 'ger', 'bread'], ginger: ['gin', 'ger'],
+  bungee: ['bun', 'gee'], oranges: ['or', 'an', 'ges'],
   goodbye: ['good', 'bye'], grandma: ['grand', 'ma'], grandpa: ['grand', 'pa'],
   grandfather: ['grand', 'father'], grandmother: ['grand', 'mother'],
   grandparent: ['grand', 'parent'], grandson: ['grand', 'son'],

@@ -5028,3 +5028,21 @@ picture/nature/furniture/pictures 里 `ur` 和词尾 `e` 也按 ture 词尾统�
 **范围**：词库 999 条里重写 177 条；PEP 专有记忆法（pep-mem.js，891 条）重写 47 条最牵强的；`tiger / candy / bear / jeep / bat / lunch / improve` 等存疑词源改成「可能/来源不确定」或可核实的事实。其余保留（如 school←希腊语「闲暇」、island 的 s 是后人误加、beef/pork 的诺曼征服分层，这些是真词源）。
 
 **验证**：999 条 dec 全非空、无重复模板（仅 am/is/are、this/that、wh- 三个词族共用说明）；390×844 真机宽度渲染，长解释自动换行不溢出；PEP 页 `PEP_MEM` 与 `pepMemOf` 实测返回新文案。音频、音素、插画、拼读数据未动。BUILD .12→.13 / CACHE v285→v286 / app 224→225 / words-data v49 / pep-mem v9。
+
+## 2026-11-25.14 · 补全真人音素：单词拼读「有音无录音」降到 0
+
+**源头找到了**：39 个音素来自 GitHub `s5s5/phonics`（MIT，Copyright (c) 2022 Xiaochao Liu），`public/sound/` 下共 **108 条**录音，不是只有 39 条。当初只取了「26 字母音 + 13 拼读块」，剩下的 /ʊ/ /aɪ/ /aʊ/ /ɔɪ/ /ð/ /ə/ /ɪɹ/ /ɛɹ/ /ʃən/ /ʒən/ /ju/ 一直躺在源库里没取——这就是 oo 短音、i 长音、ou/ow、oi/oy、浊 th、er 弱读、ear/air、tion/sion、u_e 一直「没有单块录音」的真正原因。
+
+**补录**：从同一源库补 11 个（oo_short / i_long / ow / oi / th_v / schwa / ear / air / tion / sion / u_e），处理与原有 39 个逐项一致（去首尾静音、RMS 对齐 0.15、22050 mono 48k）。源库没有单独的 /ʒ/，从同一位说话人的 ʒən 按能量/周期性找擦音边界，切出前 0.16s 作为 zh.mp3；不是合成、没变调，已在 THIRD-PARTY-NOTICES 写明。音素总数 39→51。
+
+**顺手修掉的切分/数据问题**：
+- orange / change / danger 的 `ng` 是 n + 软 g /dʒ/，不是 /ŋ/：`-nge` 音节里把 n 与 g 拆开（危险/工程师/姜饼等 8 个词进 SYL_COMPOUNDS），两块都能响。
+- ear / hear / here 的站内音标由 /ir/ 改成美音 /ɪr/（与 near/year 一致）。
+- 短语首段误用整句音标：cross the street 的 cross 曾被后面的 ðə 带跑，o 误判成 /ə/；现在多段短语只用词段自己的音标。
+- 英式 /ɜː/（不带 r）也给 ir 录音，workbook/worry/password 这类不再静音；解释写明「美音 /ɜːr/，英式写作 /ɜː/」。
+
+**结果**：`_audit/pbx_fixgen.js` 的 NOAUDIO 计数 = **0**（有音素却无录音的块，一个不剩）；全站 1,921 词 **没有一个全静音**；1,222 词所有块都能响，其余 699 词只剩真哑音字母（词尾 e、双写、哑 h/k/w/l/t/d）——那些本来就不该响。剩余无声块 811 个，全部是哑音字母。
+
+**审计**：发声块 vs 整词 IPA 0 冲突；解释里声称的音必须在 IPA 里 2,784 条全过；魔法 e/ture/tch/ur 误判 0。浏览器严格 autoplay 实测：book 的 oo、teacher 的 er、fire 的 ire 真点击出声。
+
+BUILD .13→.14 / CACHE v286→v287 / app 225→226 / PHONICS_VER 7→8 / app-manifest 12,110 项。
