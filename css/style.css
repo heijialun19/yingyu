@@ -572,7 +572,15 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 
 /* ---------- 游戏乐园 ---------- */
 .game-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
-.mem-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 560px; margin: 0 auto; }
+.mem-grid {
+  /* ★ 2026-11-25.18：原来没有 width，作为 flex 子项被压到内容宽度（390px 实测只剩 40px 宽），
+     8 张卡片挤成一条、图根本看不见。必须显式占满一行。 */
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  width: 100%; max-width: 560px; margin: 0 auto;
+  /* 卡片区吃掉剩余高度并垂直居中，否则按钮被 margin-top:auto 顶到底，
+     中间空出 300px（390×844 实测）。 */
+  flex: 1; align-content: center;
+}
 .mem-card {
   aspect-ratio: 1; border-radius: 20px; border: 3px solid var(--grape); background: #fff;
   display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700;
@@ -588,7 +596,18 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .mem-card .back { display: flex; background: linear-gradient(135deg, var(--grape), #B79CFF); font-size: 30px; }
 .mem-card.open .back { display: none; }
 .mem-card.open .front { display: flex; }
-.mem-pic { font-size: 2.4rem; line-height: 1; }
+.mem-pic {
+  /* ★ 2026-11-25.18：原来是纯字号（2.4rem），而 .mem-pic .wsvg 又被写成 1.25em，
+     390px 屏上 4 列卡片 83px、图只有 38px，孩子看不清。
+     现在图位撑满卡片、wsvg 按百分比走，emoji 兜底仍用字号。 */
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%; font-size: 3.4rem; line-height: 1;
+}
+/* 翻翻乐是「看图认词」，图要尽量大：
+   去掉 .wsvg 的淡底和内边距、撑到 96%，再把图形放大 1.12 倍
+   （画布是 100×100，不少图形只画到 54~80，留白太多会显得图很小）。 */
+.mem-pic .wsvg { width: 96%; height: 96%; padding: 0; background: transparent; border-radius: 0; }
+.mem-pic .wsvg svg { transform: scale(1.12); }
 /* 单词卡按长度缩字号：最长 11 个字母（watermelon / pencil-box），
    原来一律 2rem，在 4 列网格里会被裁掉一半。 */
 .mem-word { display: block; max-width: 100%; word-break: break-word; line-height: 1.15; font-size: 1.6rem; }
@@ -832,7 +851,8 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 @media (max-width: 420px) {
   .mem-grid { gap: 8px; }
   .mem-card { border-width: 2px; border-radius: 16px; }
-  .mem-pic { font-size: 1.9rem; }
+  .mem-pic { font-size: 2.7rem; }
+  .mem-pic .wsvg { width: 96%; height: 96%; }
   .mem-word { font-size: 1.35rem; }
   .mem-word.w-l { font-size: 1.15rem; }
   .mem-word.w-xl { font-size: .95rem; }
@@ -912,7 +932,6 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
    里面的图形才仍然接近原来的 1em（1.25 - 0.32 ≈ 0.93em），
    既不撑破按钮，也不会让图形明显变小。 */
 .opt .oe .wsvg,
-.mem-pic .wsvg,
 .sp-bigimg .wsvg,
 .sp-ask-e .wsvg,
 .qexp-inline .wsvg { width: 1.25em; height: 1.25em; }
@@ -986,12 +1005,15 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .pbx .pbx-tag{font-size:.78rem;opacity:.75;flex:0 0 auto}
 .pbx .pbx-syls{display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px 3px;flex:1 1 auto;min-width:0}
 .pbx .pbx-syl{display:inline-flex;align-items:center;gap:2px;cursor:pointer;
-  padding:1px 3px;border-radius:7px;background:rgba(122,138,168,.09)}
+  padding:2px 4px;border-radius:8px;background:rgba(122,138,168,.09)}
 .pbx .pbx-syl:active{background:rgba(122,138,168,.2)}
-.pbx .pbx-b{display:inline-block;min-width:20px;text-align:center;
-  padding:1px 5px;border:1px solid #C7D3E6;border-radius:6px;
-  background:#fff;color:#3D4459;font-weight:700;font-size:.8rem;
-  cursor:pointer;line-height:1.4;font-family:inherit}
+.pbx .pbx-b{display:inline-flex;align-items:center;justify-content:center;
+  min-width:26px;min-height:30px;text-align:center;
+  padding:2px 6px;border:1px solid #C7D3E6;border-radius:7px;
+  background:#fff;color:#3D4459;font-weight:700;font-size:.88rem;
+  cursor:pointer;line-height:1.2;font-family:inherit;
+  /* ★ 2026-11-25.18：原来 20×21px，手指点不准（390px 实测 18×21）。
+     触控目标至少 30px，块之间留 3px，误触才少。 */}
 .pbx .pbx-b:active{transform:scale(.92)}
 .pbx .pbx-b-x{border-style:dashed;border-color:#E0B7A0;color:#A86A43;background:#FFF6F0}
 .pbx .pbx-dot,.pbx .pbx-mid{font-style:normal;color:#9AA6BC;font-size:.75rem;padding:0 1px}
@@ -999,10 +1021,10 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 .pbx .pbx-whole{cursor:pointer;color:#7A5AA6;font-weight:700;
   background:#F3ECFA;border:1px dashed #C9B2E6;border-radius:7px;padding:2px 8px}
 .pbx .pbx-go{flex:0 0 auto;margin-left:auto;border:none;border-radius:8px;
-  padding:3px 9px;background:var(--mint,#3FBF8F);color:#fff;font-weight:800;
-  font-size:.76rem;cursor:pointer;white-space:nowrap;line-height:1.4}
+  min-height:30px;padding:3px 11px;background:var(--mint,#3FBF8F);color:#fff;font-weight:800;
+  font-size:.8rem;cursor:pointer;white-space:nowrap;line-height:1.3}
 .pbx .pbx-go:active{transform:scale(.94)}
 .pbx .pbx-note{flex:1 1 100%;font-size:.74rem;line-height:1.5;color:#8A5A32;
   background:#FFF6EC;border-radius:7px;padding:5px 8px;margin-top:3px}
-.pbx-slim{font-size:.78rem}
-.pbx-slim .pbx-b{min-width:18px;padding:1px 4px;font-size:.76rem}
+.pbx-slim{font-size:.8rem}
+.pbx-slim .pbx-b{min-width:24px;min-height:30px;padding:2px 5px;font-size:.84rem}

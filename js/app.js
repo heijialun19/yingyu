@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-25.17';
+const BUILD = '2026-11-25.18';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -2930,7 +2930,10 @@ function speakSentenceWords(text) {
   const next = () => {
     if (i >= words.length) { __inflight.delete(el); return; }
     const w = words[i++];
-    playDictAudio(w, 1, next, next, false, 9000, 0, el);
+    /* 逐词兜底同样要弱读冠词：句首 "A cat…" 的 A 也是冠词，不分大小写 */
+    const low = w.toLowerCase();
+    const key = (low === 'a' || low === 'an') ? 'weak_' + low : w;
+    playDictAudio(key, 1, next, next, false, 9000, 0, el);
   };
   next();
 }
@@ -2967,7 +2970,19 @@ function speakWord(word) {
   /* 2026-11-15.3：点词只出人声，不再先播 520Hz 的 sfx.pop。
      家长反馈「很多单词有杂音」——这个 80ms 短音在语音起点叠着响，
      连续点词就是「啵-词-啵-词」，容易被当成底噪。 */
-  speak(String(word).trim(), 'en-US', 1);
+  const w = String(word).trim();
+  const low = w.toLowerCase();
+  /* ★ 2026-11-25.18：冠词 a / an 单独点必须弱读。
+     audio/a.mp3 是字母岛的**字母名 /eɪ/**，词卡、短语分段（"a pair of shoes"）、
+     拆句点 a 都会读成「诶」。长句走 speakSentence 时早就换成 weak_a 了，
+     但单点和拆段走的是这里，所以一直漏。
+     只认小写：大写 A 走字母表（speak(l.nameEn)），不该被改。 */
+  if (w === low && (low === 'a' || low === 'an')
+      && typeof localAudioURL === 'function' && localAudioURL('weak_' + low)) {
+    playDictAudio('weak_' + low, 1, null, null);
+    return;
+  }
+  speak(w, 'en-US', 1);
 }
 
 /* ---------------- 移动端声音解锁与预热 ----------------

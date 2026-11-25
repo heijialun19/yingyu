@@ -5122,3 +5122,23 @@ BUILD .15→.16 / CACHE v288→v289 / app 227→228 / pep-points 34 / pbx-fix v5
 
 PHONICS_VER 8→9（音素文件内容变了，老用户会重下这 5 个小文件）。
 BUILD .16→.17 / CACHE v289→v290 / app 228→229。
+
+## 2026-11-25.18 · 冠词 a 弱读 + 图词翻翻乐 App 化
+
+**一、冠词 a 读成字母名（用户：「a 当冠词时读额，不是 A」）**
+根因：`audio/a.mp3` 是字母岛的**字母名 /eɪ/**（质心 1845Hz、双元音滑动），而 `speakWord('a')` 直接播它。长句走 `speakSentence` 时早就换成 `weak_a` 了（2026-11-13.10 修过），**但词卡、短语分段（pbxPlayPart）、逐词兜底 `speakSentenceWords` 这三条路一直漏**。
+修法：`speakWord` 里判断小写 `a`/`an` → 走 `weak_a` / `weak_an`；`speakSentenceWords` 同样处理（句首大写 A 也算冠词）。大写 `A` 不动，字母表仍读 /eɪ/。
+实测四条链路：`speakWord('a')`→weak_a、`speakWord('A')`→a.mp3、逐词兜底→weak_a、整句→weak_a。
+
+**二、图词翻翻乐：不只是图小，是整个网格塌了**
+390×844 实测：`.mem-grid` 没有 `width`，作为 flex 子项被压到 **40×16px**，8 张卡挤成一条，图根本看不见。
+三层修：
+1. `.mem-grid { width:100% }` → 332×162，卡片 77px；
+2. `.mem-pic` 原来只有字号（移动端 1.9rem≈30px），而 `.mem-pic .wsvg` 又被锁成 `1.25em` → 图仅 38px。改成图位撑满卡片、`wsvg` 96%、去掉淡底内边距、`scale(1.12)` → 图 66px 占卡片 90%；
+3. 4 对 8 张在 390px 上只能占半屏、下半空 300px → 改 **6 对 12 张（4 列 3 行）**，卡片回正方形、网格 `flex:1` 垂直居中，整屏填满。
+
+**三、举一反三：拼读块触控太小**
+`words.html` 实测 `.pbx-b` 只有 **18×21px**，手指点不准。放大到 24×30（`.pbx-slim` 同步），`▶拼` 按钮也加到 30px 高。
+其余 9 个主页面（index/learn/pep/getsmart/powerup/phonics/read/letters）与另外 7 个游戏逐个量过，未发现同类塌陷或过小触控目标。
+
+BUILD .17→.18 / CACHE v290→v291 / app 229→230 / css v60→v61。
