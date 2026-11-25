@@ -5018,3 +5018,13 @@ App 里拼读关卡题目渲染后的自动播放被严格 autoplay 策略拒绝
 ## 2026-11-25.12 · -ture 系列收尾
 
 picture/nature/furniture/pictures 里 `ur` 和词尾 `e` 也按 ture 词尾统一说明（原来只有 t 块说对了，ur 还在说「读 /ər/」、e 还说「词尾 e 不发音」各自为政）；复数 pictures 按音标读 /tʃəz/，不再写成 /tʃər/。三套审计仍为零冲突，音频/音素/插画/词库未动。BUILD .11→.12 / CACHE v284→v285 / app 223→224 / pbx-fix v3。
+
+## 2026-11-25.13 · 单词记忆法大清理（弱智解释改成可用钩子）
+
+用户问「记忆法有没有比较弱智的解释」。逐条读完 999 条词库 dec 后确认：有，而且是成片的。典型是「head 头——脑袋」「face 脸——脸面」「sing 唱歌——歌声唱唱」「write 写——笔写写」「here 这里——就在这里」——把中文换个说法，没有任何新信息；还有一批牵强的字母联想（「t 像眼泪」「f 像鼓起的肚子」「win + ter 冬天赢了雪花」）和几条站不住的词源（tiger 来自「箭」、candy 和 cane 同根、improve = im + prove「好」）。
+
+**改法**：有可靠词源的保留词源；没有的改用三类可核实的钩子——① 拼读规则（head 的 ea 发 /e/、walk 的 l 不发音、write 的 w 不发音）；② 词族/构词（singer、bedroom、bookshelf）；③ 高频搭配与易混对比（look at、be afraid of、quiet vs quite、weak vs week）。不编故事，不硬拆。
+
+**范围**：词库 999 条里重写 177 条；PEP 专有记忆法（pep-mem.js，891 条）重写 47 条最牵强的；`tiger / candy / bear / jeep / bat / lunch / improve` 等存疑词源改成「可能/来源不确定」或可核实的事实。其余保留（如 school←希腊语「闲暇」、island 的 s 是后人误加、beef/pork 的诺曼征服分层，这些是真词源）。
+
+**验证**：999 条 dec 全非空、无重复模板（仅 am/is/are、this/that、wh- 三个词族共用说明）；390×844 真机宽度渲染，长解释自动换行不溢出；PEP 页 `PEP_MEM` 与 `pepMemOf` 实测返回新文案。音频、音素、插画、拼读数据未动。BUILD .12→.13 / CACHE v285→v286 / app 224→225 / words-data v49 / pep-mem v9。
