@@ -5079,3 +5079,29 @@ BUILD .13→.14 / CACHE v286→v287 / app 225→226 / PHONICS_VER 7→8 / app-ma
 **审计**：发声块 vs 整词 IPA **0 冲突**；解释里声称的音 2,786 条 **0 不符**；魔法 e / ture / tch / ur 误判 0（gh 1 条是审计器把 spaghetti 的「h 不发音」误读，实际正确）。
 
 BUILD .14→.15 / CACHE v287→v288 / app 226→227 / pep-points 32→33 / pbx-fix v3→v4 / phonics 15→16 / ipa 10→11。
+
+## 2026-11-25.16 · 无声块清单化，假哑全部补掉
+
+用户要「734 个无声块按原因列个清单，能补都补上」。
+
+**先纠正口径**：734 是含 88 个视觉词的块数；视觉词整体认读不拆块，实际显示范围是 1,833 个非视觉词、9,677 块，**无声 672 个（6.9%）**。
+
+**按原因分 12 类**（明细见工作区 `无声块清单.md`）：
+词尾/魔法 e 335、双写第二字 122、后缀/中间 e 68、哑辅音 51、卷舌 r 32、其他哑字母 23、元音被邻块吃掉 16、缩写/ture 词尾 e 15、ci/ti/si 的 i 8、缺音标 2。
+这 672 个全部是英语拼写本身不发音的字母——给它们配一个音就是教错（cake 的 e 发 /ə/ → /keɪ-kə/；happy 第二个 p 发 /p/ → /p-p/；car 的 r 再发一次 → /kɑ-r/）。
+
+**又挖出 10 个词的假哑（有音没录），全部补上**：
+- century / statue：tu 读 /tʃə/、/tʃu/，C.t 缺 /tʃ/ 候选 → 补，走 ch 录音
+- graduate：du 读 /dʒu/，C.d 缺 /dʒ/ → 补，走 j 录音
+- Zhuhai：zh 不是块 → 新增 zh 块（读 /dʒ/）+ 补音标
+- postcards：站内音标漏了 t → /ˈpoʊstkɑrdz/
+- lighthouse：音标把 θ 写成 th 两个字母 → /ˈlaɪθaʊs/
+- decisions：-sion 被切成 si·ons → 音节改 de·ci·sions，e 和 c 都能发声
+- founding / o'clock / yours：补独立音标；o'clock 的 o 从早期硬编码改成 schwa；yours 音标漏 r 补上
+
+**哑音说明逐条改具体**：autumn 的 n 说「mn 结尾」、Christmas 的 t 说「stm」、sign/design 的 g 说「gn 结尾」、grandfather 的 d 说「复合词边界」、island 的 s 说「后人误加」、Wednesday 的 d 说「星期名」、sandwich 的 d、cupboard 的 p、sew 的 ew；英式哑 r 标明「美音会卷舌」。
+
+**交互兜底**：剩下 672 个真哑块，点一下改为**播整词读音 + 显示这条原因**（以前只弹一行字，孩子以为坏了）。听到的是正确的整词，不会把哑音硬读出来。
+
+审计：发声块 vs IPA 0 冲突；解释声称音 2,798 条 0 不符；魔法 e/ture/tch/ur 误判 0。
+BUILD .15→.16 / CACHE v288→v289 / app 227→228 / pep-points 34 / pbx-fix v5 / ipa 12。

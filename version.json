@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-25.15",
-  "note": "2026-11-25.15 · 补全拆块发音：候选音表补 /ɪ/ /i/ /ɑ/ /oʊ/ /ʌ/ /w/ /aɪə/ 等，ei/eo/gh/ey/aw/tch/dge 成为正式块，修正 doing/sidewalk/direction/away/Hawaii 的误切；全站 0 个词全静音，有声块 +212。"
+  "build": "2026-11-25.16",
+  "note": "2026-11-25.16 · 无声块清单化：697 个无声块按 12 类原因归类，补掉 10 个词（century/statue/graduate/Zhuhai/postcards/lighthouse/decisions/founding/o\u0027clock/yours）的假哑；其余真哑音块点一下改播整词读音。"
 }

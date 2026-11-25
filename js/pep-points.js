@@ -20,7 +20,7 @@
      str/spr/thr（三个辅音连读）、old/all/ell/ill/ing/ang/ong/ung（韵脚，
      里面还含独立音素）、air（ai+r 已能覆盖）—— 留着会把 grandma 切成 gr·a·nd·m·a。
    保留 ear/ire 是因为它们对应 /ɪə/、/aɪə/ 一个韵，例外表另有处理。 */
-const PEP_TRIGRAPHS = ['tion', 'igh', 'eau', 'ear', 'ire', 'tch', 'dge'];
+const PEP_TRIGRAPHS = ['tion', 'sion', 'igh', 'eau', 'ear', 'ire', 'tch', 'dge'];
 /* ★（B2）辅音连缀全部移除：st sp sk tr dr cr fr gr pr br pl bl cl fl gl sl sw
    tw sm sn nd nk nt mp ld lt ft pt lk —— 它们各自由两个音素组成，当成一个块
    会让孩子把 nt、nd 读成一个音（elephant → e·l·e·ph·a·nt 就是它造成的）。
@@ -30,7 +30,7 @@ const PEP_DIGRAPHS = ['ch', 'sh', 'th', 'ph', 'wh', 'ck', 'ng', 'qu',
   'ar', 'or', 'er', 'ir', 'ur', 'au', 'aw', 'ew', 'ei', 'eo', 'ie', 'ui', 'kn',
   /* 2026-11-25.15：gh / ey 以前没当块，cough 被拆成 c·ou·g·h（两块都哑）、
      monkey 被拆成 m·o·n·k·e·y（ey 读 /i/ 却无处可发）。 */
-  'gh', 'ey', 'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd'];
+  'gh', 'ey', 'zh', 'll', 'ss', 'tt', 'ff', 'pp', 'rr', 'dd'];
 /* ★ 2026-11-15（第三轮复检 B2 精准修）：phonics.js 明确宣布「整体认读」的词。
    这些词在拼读课里没有 segs（硬拼会把 cake 读成 /kæke/、把 shoe 的哑巴 e 念出来）。
    词卡之前仍走 splitBlocks 逐音拆，属于同一站两套标准：对这些词改为整词认读提示。
@@ -275,7 +275,10 @@ function pbxPlayOne(i, pi, si, bi) {
   const e = PBR[i]; if (!e) return;
   const p = e.d.parts[pi]; if (!p) return;
   const blk = p.syls[si] && p.syls[si].blocks[bi]; if (!blk) return;
-  if (!blk.url) { pbxExplain(i, pi, si, bi); return; }
+  /* 2026-11-25.16：真哑音字母（词尾 e、双写第二字、哑 h/k/w/l）本身没有音，
+     以前点了只有一行解释，孩子以为「坏了」。现在点一下给整词读音 + 解释：
+     听到的是它所在词的正确发音，不会把哑音硬读出来。 */
+  if (!blk.url) { pbxExplain(i, pi, si, bi); sfx && sfx.pop && sfx.pop(); speakWord(e.w); return; }
   sfx && sfx.pop && sfx.pop();
   playAudioChain([blk.url]);
 }
@@ -344,7 +347,8 @@ function pbxHTML(w, opt) {
       const chips = s.blocks.map((b, bi) => {
         const cls = b.url ? 'pbx-b' : 'pbx-b pbx-b-x';
         const fn = b.url ? 'pbxPlayOne' : 'pbxExplain';
-        const tip = b.url ? ('点我听 ' + b.raw + ' 的音') : (b.note || (b.raw + ' 没有单块录音'));
+        const tip = b.url ? ('点我听 ' + b.raw + ' 的音')
+          : ((b.note || (b.raw + ' 在这个词里不单独发音')) + '（点一下听整词）');
         return `<button class="${cls}" onclick="event.stopPropagation();${fn}(${i},${pi},${si},${bi})" title="${escPB(tip)}">${escPB(b.raw)}</button>`;
       }).join('');
       sylHTML.push(`<span class="pbx-syl" onclick="event.stopPropagation();pbxPlaySyl(${i},${pi},${si})" title="点音节听拼读">${chips}</span>`);
@@ -444,6 +448,8 @@ const SYL_COMPOUNDS = {
      sidewalk 曾拆成 s·i / d·ew / a·l·k），按真实音节切。 */
   doing: ['do', 'ing'], sidewalk: ['side', 'walk'],
   away: ['a', 'way'], hawaii: ['ha', 'wai', 'i'],
+  /* -sion 是固定词尾，别切成 si·ons（否则 sion 块永远拼不出来） */
+  decisions: ['de', 'ci', 'sions'],
   direction: ['di', 'rec', 'tion'], national: ['na', 'tion', 'al'],
   grandfather: ['grand', 'father'], grandmother: ['grand', 'mother'],
   grandparent: ['grand', 'parent'], grandson: ['grand', 'son'],
