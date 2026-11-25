@@ -977,3 +977,32 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   .ipa-cmp{font-size:.74rem}
   .ipa-cmp th,.ipa-cmp td{padding:5px 5px}
 }
+
+/* ===== ★ 2026-11-24.9 全站统一可点读拼读模块 .pbx =====
+   单词下面的音素块：点一块发一个真音素音，点「▶拼」逐块拼+整词收尾；
+   发不出来的块点一下给读音例外解释。紧凑一行，390px 自动换行。 */
+.pbx{display:flex;flex-wrap:wrap;align-items:center;gap:3px 4px;
+  font-size:.82rem;line-height:1.5;margin:5px 0 2px;min-height:22px}
+.pbx .pbx-tag{font-size:.78rem;opacity:.75;flex:0 0 auto}
+.pbx .pbx-syls{display:inline-flex;flex-wrap:wrap;align-items:center;gap:2px 3px;flex:1 1 auto;min-width:0}
+.pbx .pbx-syl{display:inline-flex;align-items:center;gap:2px;cursor:pointer;
+  padding:1px 3px;border-radius:7px;background:rgba(122,138,168,.09)}
+.pbx .pbx-syl:active{background:rgba(122,138,168,.2)}
+.pbx .pbx-b{display:inline-block;min-width:20px;text-align:center;
+  padding:1px 5px;border:1px solid #C7D3E6;border-radius:6px;
+  background:#fff;color:#3D4459;font-weight:700;font-size:.8rem;
+  cursor:pointer;line-height:1.4;font-family:inherit}
+.pbx .pbx-b:active{transform:scale(.92)}
+.pbx .pbx-b-x{border-style:dashed;border-color:#E0B7A0;color:#A86A43;background:#FFF6F0}
+.pbx .pbx-dot,.pbx .pbx-mid{font-style:normal;color:#9AA6BC;font-size:.75rem;padding:0 1px}
+.pbx .pbx-slash{color:#B6C0D2;font-size:.75rem;padding:0 2px}
+.pbx .pbx-whole{cursor:pointer;color:#7A5AA6;font-weight:700;
+  background:#F3ECFA;border:1px dashed #C9B2E6;border-radius:7px;padding:2px 8px}
+.pbx .pbx-go{flex:0 0 auto;margin-left:auto;border:none;border-radius:8px;
+  padding:3px 9px;background:var(--mint,#3FBF8F);color:#fff;font-weight:800;
+  font-size:.76rem;cursor:pointer;white-space:nowrap;line-height:1.4}
+.pbx .pbx-go:active{transform:scale(.94)}
+.pbx .pbx-note{flex:1 1 100%;font-size:.74rem;line-height:1.5;color:#8A5A32;
+  background:#FFF6EC;border-radius:7px;padding:5px 8px;margin-top:3px}
+.pbx-slim{font-size:.78rem}
+.pbx-slim .pbx-b{min-width:18px;padding:1px 4px;font-size:.76rem}

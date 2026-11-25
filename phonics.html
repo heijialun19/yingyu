@@ -18,7 +18,7 @@
 <title>自然拼读课 · 分级闯关 · 小鸟英语乐园</title>
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/phonics.html">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="css/style.css?v=59" onerror="this.onerror=null;this.href='css/style.css?v=59&amp;retry=1'">
+<link rel="stylesheet" href="css/style.css?v=60" onerror="this.onerror=null;this.href='css/style.css?v=60&amp;retry=1'">
 <style>
 /* 拼读课页内样式（不进 style.css：只有这一页用） */
 /* ---- 关卡地图 ---- */
@@ -332,10 +332,11 @@ body:not(.ph-report) #phReport{ display:none; }
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=220"></script>
+<script src="js/app.js?v=221"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/phonics.js?v=15"></script>
+<script src="js/pep-points.js?v=29"></script>
 <script>
 renderNav('phonics'); renderDecor();
 
@@ -512,7 +513,9 @@ function famInnerHTML(f, lvId) {
           ? `<span class="pw-blocks"><span class="pw-syls">${syl.map((x, j) =>
               `<button class="pw-syl" onclick="phRowWord(${i})" title="点一下听整词 ${esc(w)}（第 ${j + 1} 段：${esc(x)}）">${esc(x)}</button>`
             ).join('')}</span><span class="pw-tag syl">${syl.length} 个音节</span></span>`
-          : `<span class="pw-blocks"><span class="pw-tag">整体认读</span></span>`);
+          : (withBlocks && typeof pbxHTML === 'function'
+              ? pbxHTML(w, { slim: true })   /* ★ 2026-11-24.9：能拆就拆（魔法e/igh/ou…拆块+解释），不再一律整体认读 */
+              : `<span class="pw-blocks"><span class="pw-tag">整体认读</span></span>`));
     return `<div class="pw-row">
       <button class="pw-icon" onclick="phRowWord(${i})" title="听整词 ${esc(w)}" aria-label="听 ${esc(w)} 的读音">${wIcon(w)}</button>
       <button class="pw-main" onclick="phRowWord(${i})" title="听整词 ${esc(w)}">

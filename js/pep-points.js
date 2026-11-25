@@ -104,6 +104,213 @@ function phonicsLine(w) {
   }).join(' ／ ');
 }
 
+/* ============================================================================
+   ★ 2026-11-24.9 全站统一「可点读拼读拆解」引擎 pbx（phonics blocks extended）
+   用户诉求：「单词下面的拼读模块太多整体认读，能拆都拆；拆开后每个音节用自然
+   拼读发音；不是自然拼读的给解释；单词镇/人教/GS/PU 全部都要。」
+
+   设计红线（务必遵守）：
+     · 音素录音只有 39 个真人音（26 单字母 + 13 组合），禁止合成新音。
+     · 所以「发音」只走这些真音 + 同音异拼 alias；发不出来的组合不硬造音，
+       而是给一句为什么（读音例外），这正是用户说的「给解释」。
+     · 音节只是视觉分组，真正发声的是音节内的音素块——这才是纯正自然拼读。
+     · 整词标准音永远用 speakWord()（站内词音频），是唯一权威读音。
+
+   本函数不依赖 js/phonics.js（四页未加载），只依赖 app.js 暴露的全局：
+   window.phonicsURL / window.playAudioChain / window.speakWord。
+   ============================================================================ */
+
+/* 与 phonics.js 的 PH_BLEND_OK / PH_ALIAS 逐字一致（口径同源，四页可用） */
+const PBX_BLEND_OK = new Set('sh ch th ai ay oa ck ee oo ar or ir ng'.split(' '));
+const PBX_ALIAS = {
+  bb:'b', cc:'c', dd:'d', ff:'f', gg:'g', ll:'l', mm:'m', nn:'n',
+  pp:'p', rr:'r', ss:'s', tt:'t', zz:'z',
+  ea:'ee', ie:'ee', ue:'oo', wh:'w', le:'l', ge:'j', dge:'j'
+};
+/* 块 → 真人音素录音 URL；'' 表示没有可靠录音（不发声，改给解释） */
+function pbxSoundURL(b) {
+  const k = String(b == null ? '' : b).toLowerCase().trim();
+  if (!k || typeof phonicsURL !== 'function') return '';
+  if (/^[a-z]$/.test(k)) return phonicsURL(k);
+  if (PBX_BLEND_OK.has(k)) return phonicsURL(k);
+  const a = PBX_ALIAS[k];
+  return a ? phonicsURL(a) : '';
+}
+/* 视觉词（高频不规则）：整词认读，给一句「为什么不能按字母拼」 */
+const PBX_SIGHT_NOTE = {
+  the:'th 在这里是浊音 /ð/（不像 think 的清音），e 读轻声，整体记住',
+  a:'a 在句子里读轻声 /ə/，不是字母名 /eɪ/',
+  is:'s 在这里读 /z/，整体记住',
+  my:'词尾 y 读 /aɪ/，整体记住', he:'词尾 e 读 /iː/，整体记住',
+  she:'词尾 e 读 /iː/，整体记住', we:'词尾 e 读 /iː/，整体记住',
+  you:'ou 在这里读 /uː/，不是 /aʊ/，整体记住',
+  are:'are 读 /ɑːr/，不是 a+r 分开念', they:'ey 读 /eɪ/，整体记住',
+  this:'th 是浊音 /ð/，整体记住', that:'th 是浊音 /ð/，整体记住',
+  said:'ai 在这里读 /e/（例外），整体记住',
+  one:'o 读 /wʌ/，开头有 w 音，整体记住',
+  two:'tw 读 /t/（w 不发音），整体记住',
+  was:'a 读 /ɒ/、s 读 /z/，整体记住',
+  has:'a 读 /æ/、s 读 /z/，整体记住',
+  were:'ere 读 /ɜːr/，整体记住',
+  come:'o 读 /ʌ/、词尾 e 不发音，整体记住',
+  some:'o 读 /ʌ/、词尾 e 不发音，整体记住',
+  have:'a 读 /æ/、词尾 e 不发音，整体记住',
+  do:'o 读 /uː/，整体记住', does:'o 读 /ʌ/，整体记住',
+  of:'o 读 /ə/、f 读 /v/，整体记住', to:'o 读 /uː/，整体记住',
+  them:'th 是浊音 /ð/，整体记住', there:'th 浊音、ere 读 /er/，整体记住',
+  what:'wh 读 /w/、a 读 /ɒ/，整体记住', where:'wh 读 /w/、ere 读 /er/，整体记住',
+  who:'wh 读 /h/、o 读 /uː/，整体记住', why:'wh 读 /w/、y 读 /aɪ/，整体记住',
+  out:'ou 读 /aʊ/，整体记住', now:'ow 读 /aʊ/，整体记住',
+  all:'al 读 /ɔː/，整体记住', her:'er 读 /ɜːr/，整体记住',
+};
+function pbxSightNote(w) {
+  return PBX_SIGHT_NOTE[String(w).toLowerCase()] || '这是高频词，有特别读音，整体记住';
+}
+
+/* 发不出来的块，给一句「为什么不是自然拼读」的解释 */
+const PBX_NOTE = {
+  er:'er 读 /ɚ/（带 r 的音），没有单块录音，跟着整词念',
+  ir:'ir 读 /ɜːr/，和 er 很像，跟着整词念',
+  ur:'ur 读 /ɜːr/，和 ir 很像，跟着整词念',
+  ar:'ar 读 /ɑːr/，跟着整词念',
+  or:'or 读 /ɔːr/，跟着整词念',
+  ou:'ou 多数读 /aʊ/（house），也读 /u/（you）、/ʌ/（young）——按整词记',
+  ow:'ow 读 /aʊ/（cow）或 /oʊ/（snow、yellow）——按整词记',
+  'igh':'igh 读 /aɪ/，和字母 I 同名（night、light、high）',
+  ear:'ear 多读 /ɪə/（hear、near），也读 /eə/（bear）、/ɜː/（learn）',
+  ew:'ew 读 /uː/（new）或 /juː/（few、new）',
+  ui:'ui 常读 /uː/（fruit、juice 这里例外读 /ɪ/）',
+  oi:'oi 读 /ɔɪ/（coin、choice）',
+  oy:'oy 读 /ɔɪ/（boy、toy），和 oi 同音',
+  au:'au 读 /ɔː/（autumn）或 /ɑː/（because 例外）',
+  aw:'aw 读 /ɔː/（draw、law、saw）',
+  'tion':'tion 读 /ʃən/，是名词后缀（action、station）',
+  ph:'ph 读 /f/（phone、photo、elephant）',
+  qu:'qu 读 /kw/（queen、quick、question）',
+  kn:'k 不发音，kn 只读 /n/（knee、know、knife）',
+  wr:'w 不发音，wr 只读 /r/（write、wrong）',
+  mb:'词尾 b 不发音（comb、climb、bomb）',
+  'e': '词尾的 e 不发音——它让前面的元音念自己的字母名（magic e）',
+};
+function pbxNote(b) {
+  const k = String(b == null ? '' : b).toLowerCase().trim();
+  if (PBX_NOTE[k]) return PBX_NOTE[k];
+  /* 魔法 e：a_e / i_e / o_e / u_e */
+  if (/^[aiou]_e$/.test(k)) return '魔法 e：结尾 e 不出声，让 ' + k[0] + ' 读字母名';
+  return '这组字母有特别读音，先听整词记住它';
+}
+/* 词尾哑音 e 检测：cake / bike / nose / cute（元音+辅音+不发音e） */
+function pbxMagicE(s) {
+  return /^[a-z]+$/.test(s) && s.length >= 3 && s.endsWith('e') &&
+    /[aeiou]/.test(s[s.length - 3]) && !/[aeiou]/.test(s[s.length - 2]) &&
+    !/(che|she|the|ge|be|me|we|he|re|ve)$/.test(s);
+}
+/* 解码一个词（短语按空格/连字符分段）。每段 → 音节 → 音素块。
+   返回 { parts:[{raw, syls:[{raw, blocks:[{raw,url,note?}], playable}]}], whole:bool } */
+function pbxDecode(w) {
+  /* 只有「视觉词」真正整体认读（the/is/my… 硬拼会读错）。
+     PH_WHOLE_WORDS 里的魔法e/缺块词（cake/night/boy…）现在都按新引擎拆：
+     能发音的块发音，缺录音的块给解释——这正是用户要的「能拆都拆」。 */
+  const wholeSet = PH_SIGHT_WORDS;
+  const parts = splitPhrase(w).map(raw => {
+    const low = raw.toLowerCase().replace(/[^a-z]/g, '');
+    const magic = pbxMagicE(low);
+    const syls = splitSyllables(raw).map((sraw, sidx, arr) => {
+      const blocks = splitBlocks(sraw).map((br, bidx) => {
+        /* 魔法 e：最后音节的最后一块 e 不发音（硬发会让 cake→/kæ-ke/） */
+        const isMagicE = magic && sidx === arr.length - 1 && bidx === splitBlocks(sraw).length - 1
+          && br.toLowerCase() === 'e';
+        const url = isMagicE ? '' : pbxSoundURL(br);
+        const note = url ? '' : (isMagicE ? pbxNote('a_e') : pbxNote(br));
+        return { raw: br, url: url, note: note };
+      });
+      return { raw: sraw, blocks: blocks, playable: blocks.some(b => !!b.url) };
+    });
+    const whole = !!wholeSet.has(low) && syls.length === 1;
+    return { raw: raw, syls: syls, magic: magic, whole: whole,
+             wholeNote: whole ? pbxSightNote(low) : '' };
+  });
+  return { parts: parts };
+}
+
+/* 渲染注册表：索引 → 解码结果 + 原始词 */
+const PBR = [];
+function pbxReg(w) { PBR.push({ w: String(w), d: pbxDecode(w) }); return PBR.length - 1; }
+function escPB(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* 播放：单块 / 单音节（块串）/ 整词（块串+标准音收尾） */
+function pbxPlayOne(i, si, bi) {
+  const e = PBR[i]; if (!e) return;
+  const blk = e.d.parts[0].syls[si].blocks[bi];
+  if (!blk.url) { pbxExplain(i, si, bi); return; }
+  sfx && sfx.pop && sfx.pop();
+  playAudioChain([blk.url]);
+}
+function pbxPlaySyl(i, si) {
+  const e = PBR[i]; if (!e) return;
+  const urls = e.d.parts[0].syls[si].blocks.map(b => b.url).filter(Boolean);
+  sfx && sfx.pop && sfx.pop();
+  if (urls.length) playAudioChain(urls, null, 240);
+  else speakWord(e.w);
+}
+function pbxBlend(i) {
+  const e = PBR[i]; if (!e) return;
+  sfx && sfx.pop && sfx.pop();
+  /* 视觉词/整体认读词：不按字母逐块拼（会把 the 读成 t-h-e），直接整词发音 */
+  if (e.d.parts.some(p => p.whole)) {
+    const note = document.getElementById('pbxNote' + i);
+    if (note) { note.textContent = '💡 ' + e.d.parts.find(p => p.whole).wholeNote; note.style.display = 'block'; }
+    speakWord(e.w); return;
+  }
+  const urls = [];
+  e.d.parts.forEach(p => p.syls.forEach(s => s.blocks.forEach(b => { if (b.url) urls.push(b.url); })));
+  if (urls.length) playAudioChain(urls, () => speakWord(e.w), 200);
+  else speakWord(e.w);
+}
+function pbxExplain(i, si, bi) {
+  const e = PBR[i]; if (!e) return;
+  const blk = e.d.parts[0].syls[si].blocks[bi];
+  const el = document.getElementById('pbxNote' + i);
+  if (el) { el.textContent = '💡 ' + blk.raw + '：' + blk.note; el.style.display = 'block'; }
+}
+window.PBR = PBR; window.pbxPlayOne = pbxPlayOne; window.pbxPlaySyl = pbxPlaySyl;
+window.pbxBlend = pbxBlend; window.pbxExplain = pbxExplain; window.pbxReg = pbxReg;
+
+/* 生成可点读拼读模块 HTML：紧凑一行（音素块 chip + 拼一拼），解释默认收起。
+   参数 opt.slim=true 时更精简（用于课本词卡窄行）。 */
+function pbxHTML(w, opt) {
+  opt = opt || {};
+  const i = pbxReg(w);
+  const e = PBR[i];
+  const sylSep = opt.slim ? '<i class="pbx-dot">·</i>' : '<i class="pbx-mid">·</i>';
+  const sylHTML = [];
+  e.d.parts.forEach((p, pi) => {
+    if (pi) sylHTML.push('<span class="pbx-slash">／</span>');
+    p.syls.forEach((s, si) => {
+      if (si) sylHTML.push(sylSep);
+      const chips = s.blocks.map((b, bi) => {
+        const cls = b.url ? 'pbx-b' : 'pbx-b pbx-b-x';
+        const fn = b.url ? 'pbxPlayOne' : 'pbxExplain';
+        const tip = b.url ? ('点我听 ' + b.raw + ' 的音') : (b.raw + '：' + b.note);
+        return `<button class="${cls}" onclick="event.stopPropagation();${fn}(${i},${si},${bi})" title="${escPB(tip)}">${escPB(b.raw)}</button>`;
+      }).join('');
+      sylHTML.push(`<span class="pbx-syl" onclick="event.stopPropagation();pbxPlaySyl(${i},${si})" title="点音节听拼读">${chips}</span>`);
+    });
+  });
+  const wholePart = e.d.parts.find(p => p.whole);
+  const sylsArea = wholePart
+    ? `<span class="pbx-whole" onclick="event.stopPropagation();pbxBlend(${i})" title="点我听整词">${escPB(e.d.parts.map(p=>p.raw).join(' '))} · 整体认读</span>`
+    : sylHTML.join('');
+  return `<div class="pbx${opt.slim ? ' pbx-slim' : ''}">
+    <span class="pbx-tag">🔤</span>
+    <span class="pbx-syls">${sylsArea}</span>
+    <button class="pbx-go" onclick="event.stopPropagation();pbxBlend(${i})" title="${wholePart ? '听整词读音' : '按自然拼读逐块拼，再读整词'}">${wholePart ? '🔊' : '▶拼'}</button>
+    <div class="pbx-note" id="pbxNote${i}" style="display:none"></div>
+  </div>`;
+}
+window.pbxHTML = pbxHTML;
+window.pbxDecode = pbxDecode;
+
 /* ================= 音节切分（2026-11-11.11 / B2） =================
    用途：拆词（"按一口气读得出来分"）、跟读音节。
    与上面的 splitBlocks 不是一回事：那个切「音」，这个切「音节」。
