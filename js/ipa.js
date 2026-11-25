@@ -186,7 +186,7 @@ const IPA = {
   "inside":"/ɪnˈsaɪd/", "outside":"/ˌaʊtˈsaɪd/", "until":"/ənˈtɪl/", "since":"/sɪns/", "although":"/ɔlˈðoʊ/",
   "however":"/haʊˈevər/", "meet":"/mit/", "introduce":"/ɪntrəˈdus/", "agree":"/əˈɡri/", "share":"/ʃer/",
   "care":"/ker/", "promise":"/ˈprɑməs/", "praise":"/preɪz/", "argue":"/ˈɑrɡju/", "cheer":"/tʃɪr/",
-  "greet":"/ɡrit/", "discuss":"/dɪˈskʌs/", "suggest":"/səˈdʒest/", "explain":"/ɪkˈspleɪn/", "rule":"/rul/",
+  "greet":"/ɡrit/", "discuss":"/dɪˈskʌs/", "suggest":"/səɡˈdʒest/", "explain":"/ɪkˈspleɪn/", "rule":"/rul/",
   "law":"/lɔ/", "police":"/pəˈlis/", "protect":"/prəˈtekt/", "save":"/seɪv/", "danger":"/ˈdeɪndʒər/",
   "accident":"/ˈæksɪdənt/", "team":"/tim/", "group":"/ɡrup/", "neighbour":"/ˈneɪbər/", "crowd":"/kraʊd/",
   "volunteer":"/vɑlənˈtɪr/", "activity":"/ækˈtɪvəti/", "event":"/ɪˈvent/", "kind":"/kaɪnd/", "brave":"/breɪv/",

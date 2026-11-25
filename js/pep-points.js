@@ -237,7 +237,7 @@ function pbxDecode(w) {
           note = ov[1] || (url ? '' : pbxNote(br));
         } else {
           url = isMagicE ? '' : pbxSoundURL(br);
-          note = url ? '' : (isMagicE ? pbxNote('a_e') : pbxNote(br));
+          note = url ? '' : (isMagicE ? pbxNote((low[low.length - 3] || 'a') + '_e') : pbxNote(br));
         }
         return { raw: br, url: url, note: note };
       });
