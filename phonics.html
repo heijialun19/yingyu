@@ -332,12 +332,32 @@ body:not(.ph-report) #phReport{ display:none; }
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=218"></script>
+<script src="js/app.js?v=219"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/phonics.js?v=15"></script>
 <script>
 renderNav('phonics'); renderDecor();
+
+/* ★ 2026-11-25：App（WebWindow/微信）会拦掉「非点击内触发」的延时播放，
+   而桌面 Chrome 有粘性激活——这就是「网站有声音、App 关卡里没声音」的根因。
+   关卡进入/答错重听都是 setTimeout 自动播放，且本页此前没有 games.html 那套补播。
+   这里照搬同一机制：1.3 秒后看 window.__lastMediaStart（play() 成功才写）有没有更新，
+   没更新就挂一次性 pointerdown，孩子下一次点任何地方先补播那次声音，再走他原本的点击。
+   不改播放策略、不猜设备。 */
+function armPh(fn) {
+  const t0 = Date.now();
+  setTimeout(() => {
+    if ((window.__lastMediaStart || 0) > t0) return;   // 自动播放已成功，不打扰
+    const h = () => {
+      document.removeEventListener('pointerdown', h, true);
+      try { fn(); } catch (e) {}
+    };
+    document.addEventListener('pointerdown', h, true);
+    setTimeout(() => document.removeEventListener('pointerdown', h, true), 10000);
+  }, 1300);
+}
+window.armPh = armPh;
 
 /* 词表映射（词图 + 中文） */
 const ALLW = {};
@@ -735,7 +755,7 @@ function mgPaint() {
     : MG.mode === 'sight' ? '听一听，点出这个词 👇'
     : MG.mode === 'pattern' ? '听这个词，它用的是哪种写法？' + (MG.cur.sound ? '（' + MG.cur.sound + '）' : '')
     : '听一听，点出你听到的那个 👇';
-  setTimeout(mgPlaySound, 150);
+  setTimeout(() => armPh(mgPlaySound), 150);
 }
 function mgPaintSpell() {
   const S = MG.spell;
@@ -797,7 +817,7 @@ function mgPlayWordThenNext() {
     if (!MG.spell) return;
     mgNewSpell();
     mgPaint();
-    setTimeout(mgPlaySound, 200);
+    setTimeout(() => armPh(mgPlaySound), 200);
   }, 700);
 }
 function mgSetBatch(i) {
@@ -822,7 +842,7 @@ function mgPick(o) {
     phStat.rec(CUR, 0, 1);
     if (btn) btn.classList.add('bad');
     document.getElementById('mgMsg').textContent = '❌ 不对哦，再听一遍，这题会重来';
-    setTimeout(mgPlaySound, 350);
+    setTimeout(() => armPh(mgPlaySound), 350);
   }
 }
 function mgRestart() {
@@ -901,7 +921,7 @@ function renderPlace() {
     <div class="ph-mg-msg" id="plMsg">定级只为找到合适的起点，答错也没关系 🙂</div>
     <p class="ph-place-note">每关摸底 1 题：从第一道做错的题对应的关卡开始学；全对就从 L13 听音能写开始。</p>
   </div>`;
-  setTimeout(plSound, 150);
+  setTimeout(() => armPh(plSound), 150);
 }
 function plPick(o) {
   const q = PL.qs[PL.idx];
