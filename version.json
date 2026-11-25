@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-25.16",
-  "note": "2026-11-25.16 · 无声块清单化：697 个无声块按 12 类原因归类，补掉 10 个词（century/statue/graduate/Zhuhai/postcards/lighthouse/decisions/founding/o\u0027clock/yours）的假哑；其余真哑音块点一下改播整词读音。"
+  "build": "2026-11-25.17",
+  "note": "2026-11-25.17 · 音素录音去元音尾：n/m/l/w/th_v 原来带一个 schwa 尾（sun 的 n 听起来像「恩」），已裁成纯辅音；k/p/t/s 等清辅音本来就干净。PHONICS_VER 8→9。"
 }
