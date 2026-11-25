@@ -51,6 +51,74 @@
 .gs-how>summary::after{content:'▾';margin-left:auto;color:#8A93A6}
 .gs-how[open]>summary::after{transform:rotate(180deg)}
 .gs-how[open]>summary{margin-bottom:10px}
+
+/* ===== ★ 2026-11-25.8 关卡地图：阶段快速跳转 + 继续学习 =====
+   23 关一屏放不下，原来只能一路滚。三个 tab 一点直达阶段，
+   「继续学习」按钮直接跳到第一关没通关的关卡。 */
+.gs-stages{display:flex;gap:7px;margin:0 0 12px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.gs-stages::-webkit-scrollbar{display:none}
+.gs-stage-tab{flex:0 0 auto;padding:8px 14px;min-height:40px;border:2px solid var(--grape);
+  border-radius:999px;background:#fff;color:#6B3FA0;font-weight:800;font-size:.8rem;
+  white-space:nowrap;cursor:pointer;font-family:inherit}
+.gs-stage-tab.on{background:var(--grape);color:#fff}
+.gs-continue{display:block;width:100%;margin:0 0 12px;padding:13px 16px;min-height:50px;
+  border:0;border-radius:16px;background:linear-gradient(135deg,#7C4DFF,#5B2FD6);color:#fff;
+  font-weight:800;font-size:.95rem;cursor:pointer;font-family:inherit;box-shadow:0 4px 0 rgba(45,49,66,.14)}
+.gs-stage-sec{scroll-margin-top:12px}
+
+/* ===== ★ 2026-11-25.8 句子工厂关卡内页「一屏舞台」=====
+   用户反馈：进关第一题的口诀框（旧 .chant 紫色大框 300px）把题目和选项挤到屏幕外；
+   答对后「下一个」按钮藏在解析最底部，要滚到底才能点。
+   改法：口诀/介绍折叠成一行摘要条；题干+选项垂直排进一屏；
+   解析+翻页条 sticky 贴在卡片底部，答对就地可点，不必滚。 */
+/* 卡片按内容收高：白卡里留一大片空白比原问题更糟（.5 试过 min-height:100dvh 已回退）。
+   首屏只放题目本身，下面留给页面背景；答题后解析+按钮自然撑开。 */
+.gs-stage{display:flex;flex-direction:column;max-width:640px;margin:0 auto;
+  padding:12px 14px 14px;gap:9px}
+.gs-stage .score-bar{flex-wrap:nowrap;gap:6px;font-size:.85rem;margin:0}
+.gs-stage .score-bar b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.85rem}
+.gs-stage .score-bar .gs-exit{flex:none;font-size:.7rem;padding:3px 10px;min-height:0}
+.gs-stage .score-bar .gs-prog{flex:none;font-size:.74rem;color:var(--ink2)}
+/* 口诀+介绍折成一行：默认只露标题条（40px），点开才占空间 */
+.gs-chant{margin:0;border:2px solid var(--grape);border-radius:12px;background:#F7F2FF;overflow:hidden}
+.gs-chant summary{list-style:none;cursor:pointer;min-height:38px;display:flex;align-items:center;gap:6px;
+  padding:6px 12px;font-weight:800;font-size:.84rem;color:#6B3FA0}
+.gs-chant summary::-webkit-details-marker{display:none}
+.gs-chant summary::after{content:'▾';margin-left:auto;color:#9B7BD8}
+.gs-chant[open] summary::after{transform:rotate(180deg)}
+.gs-chant .gs-chant-body{padding:0 12px 12px;font-size:.82rem;line-height:1.65;color:#4A5162}
+.gs-chant .gs-chant-body .chant{border-width:2px;border-radius:12px;padding:10px 12px;margin:8px 0 0;
+  font-size:.9rem;line-height:1.7;white-space:pre-line}
+.gs-chant .gs-chant-body .chant small{font-size:.72em}
+/* 题干：不设大 margin，字号够读即可 */
+.gs-stage .quiz-q{font-size:1rem;line-height:1.6;margin:0}
+.gs-stage .quiz-tag{font-size:.7rem;color:#2F7D3B;font-weight:700}
+.gs-stage .gs-hint{font-size:.8rem;color:#3F4658;line-height:1.5;margin:0}
+/* 选项整句纵向，压缩高度；词块选项 2 列 */
+.gs-stage .opt-row{margin:0;gap:8px}
+.gs-stage .opt-row.long-row .opt{min-height:52px;font-size:.94rem}
+.gs-stage .opt{min-height:56px;font-size:.94rem;border-radius:16px;padding:8px}
+/* 造句台：插槽一行、词块紧凑换行，训练结果压矮 */
+.gs-stage .build-slots{margin:0;gap:6px}
+.gs-stage .slot{min-width:78px;min-height:52px;padding:6px 10px;font-size:.94rem;border-radius:14px}
+.gs-stage .slot .role{font-size:.52em}
+.gs-stage .slot-bank{gap:6px}
+.gs-stage .bank-chip{padding:7px 12px;font-size:.92rem;border-radius:13px;border-width:2px}
+.gs-stage .train-result{margin:0;min-height:36px;font-size:1.05rem}
+/* 解析+翻页：sticky 贴底，答对就地可点。解析不占满屏，句子解析面板也压矮 */
+.gs-stage .gs-foot{position:sticky;bottom:0;background:#fff;
+  padding-top:8px;z-index:2}
+.gs-stage .gs-foot:has(> .explain:empty){padding-top:0;position:static}
+.gs-stage .explain{margin-top:6px;padding:7px 11px;font-size:.8rem;line-height:1.55;border-left-width:4px;border-radius:10px}
+.gs-stage .parse{margin-top:7px;padding:8px 9px;border-radius:11px}
+.gs-stage .parse-row{gap:5px}
+.gs-stage .pcell{min-width:48px;max-width:104px;padding:4px 6px;border-radius:8px}
+.gs-stage .pcell b{font-size:.88rem}
+.gs-stage .pcell span{font-size:.62rem}
+.gs-stage .pcell small{font-size:.56rem}
+.gs-stage .parse-note{margin-top:6px;font-size:.74rem;line-height:1.5}
+.gs-stage .gs-next{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.gs-stage .gs-next .btn{padding:9px 16px;min-height:0;font-size:.86rem}
 </style>
 </head>
 <!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
@@ -104,7 +172,7 @@
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=219"></script>
+<script src="js/app.js?v=220"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/grammar-engine.js?v=10"></script>
@@ -717,8 +785,17 @@ function renderLevels() {
   Flow.reset();          // 离开关卡：作废所有挂起的推进与朗读
   const done = i => !!Store.d.grammar[GRAMMAR_LEVELS[i].id];
   const unlocked = i => i === 0 || done(i - 1);
+  /* 继续学习：第一关未通关且已解锁的（通关的从头复习则跳 L1） */
+  const nextIdx = GRAMMAR_LEVELS.findIndex((lv, i) => unlocked(i) && !done(i));
+  const resume = nextIdx < 0 ? 0 : nextIdx;
+  const resumeText = nextIdx < 0 ? '🏆 全部通关 · 从第 1 关复习'
+    : `▶ 继续学习：第 ${resume + 1} 关 · ${GRAMMAR_LEVELS[resume].title}`;
 
   $('#app').innerHTML = `
+    <button class="gs-continue" onclick="startLevel(${resume})">${resumeText}</button>
+    <div class="gs-stages">
+      ${GRAMMAR_STAGES.map(st => `<button class="gs-stage-tab" data-stage="${st.id}" onclick="jumpStage('${st.id}',this)">${st.emoji} ${st.name}</button>`).join('')}
+    </div>
     <details class="card gs-how" style="margin-bottom:14px;border-color:var(--grape)">
       <summary>🚂 句子怎么造？一句话公式</summary>
       <div class="train-demo">
@@ -739,7 +816,7 @@ function renderLevels() {
     ${GRAMMAR_STAGES.map(st => {
       const lvs = GRAMMAR_LEVELS.map((lv, i) => ({ lv, i })).filter(x => x.lv.stage === st.id);
       return `
-      <div class="section">
+      <div class="section gs-stage-sec" id="gssec-${st.id}">
         <h2 style="margin:0 0 12px;font-size:1.2rem">${st.emoji} ${st.name}
           <small style="font-weight:400;color:#3F4658;font-size:.8rem">${st.tip}</small></h2>
         <div class="level-grid">
@@ -760,6 +837,12 @@ function renderLevels() {
 }
 
 function lockTip() { toast('🔒 先通过上一关，才能开这一关哦！'); }
+function jumpStage(id, btn) {
+  document.querySelectorAll('.gs-stage-tab').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  const sec = document.getElementById('gssec-' + id);
+  if (sec && sec.scrollIntoView) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
 /* ---------------- 进入关卡 ---------------- */
 function startLevel(i) {
@@ -780,46 +863,48 @@ function renderItem() {
   sess.tries = 0;          // 错了几次：第 2 次给答案，不让孩子卡死
 
   const head = `
-    <div class="card" style="max-width:720px;margin:0 auto">
+    <div class="card gs-stage">
       <div class="score-bar">
+        <button class="btn ghost gs-exit" onclick="renderLevels()">← 关卡地图</button>
         <b>${lv.emoji} 第 ${curLevel + 1} 关 · ${lv.title}</b>
-        <span>第 ${sess.idx + 1} / ${sess.items.length} 题 · ✅ ${sess.score}</span>
+        <span class="gs-prog">${sess.idx + 1}/${sess.items.length} · ✅${sess.score}</span>
       </div>
-      <div style="text-align:right;margin:-2px 0 8px"><button class="btn ghost" style="padding:4px 14px;font-size:.75rem" onclick="renderLevels()">← 退出关卡</button></div>
       ${sess.idx === 0 ? `
-      <p style="font-size:.9rem;line-height:1.9;color:#3F4658;margin:6px 0">${lv.intro}</p>
-      <div class="chant">
-        <small>🎵 本关口诀（跟着屏幕读两遍）</small>
-        ${lv.chant}
-      </div>` : ''}`;
+      <details class="gs-chant">
+        <summary>🎵 本关口诀 · ${lv.formula}</summary>
+        <div class="gs-chant-body">
+          <p style="margin:0">${lv.intro}</p>
+          <div class="chant">${lv.chant}</div>
+        </div>
+      </details>` : ''}`;
 
+  const tagHtml = it.generated ? `<div class="quiz-tag">🏘️ 单词镇出题${it.fromTheme ? ' · ' + it.fromTheme : ''}</div>` : '';
   let body = '';
   if (it.type === 'choice') {
     body = `
-      ${it.generated ? `<div style="font-size:.72rem;color:#2F7D3B;font-weight:700;margin-bottom:4px">🏘️ 单词镇出题${it.fromTheme ? ' · ' + it.fromTheme : ''}</div>` : ''}
-      <div class="quiz-q" style="font-size:1.05rem;line-height:1.8">${it.prompt}</div>
+      ${tagHtml}
+      <div class="quiz-q">${it.prompt}</div>
       <div class="opt-row${it.options.some(o => String(o).length > 14) ? ' long-row' : ''}">
-        ${shuffle(it.options.map((o, j) => ({ o, j }))).map(x => `<button class="opt" data-j="${x.j}" style="font-size:${String(x.o).length > 24 ? '.85rem' : '1rem'}" onclick="chooseAns(this,${x.j},${it.options.length})">${esc(x.o)}</button>`).join('')}
-      </div>
-      <div class="explain" id="iexp"></div>`;
+        ${shuffle(it.options.map((o, j) => ({ o, j }))).map(x => `<button class="opt" data-j="${x.j}" onclick="chooseAns(this,${x.j},${it.options.length})">${esc(x.o)}</button>`).join('')}
+      </div>`;
   } else { // build 造句
     sess.sels = Array(it.slots.length).fill(null);
     const bank = shuffle([...new Set(it.slots.flat())]);
     body = `
-      ${it.generated ? `<div style="font-size:.72rem;color:#2F7D3B;font-weight:700;margin-bottom:4px">🏘️ 单词镇出题${it.fromTheme ? ' · ' + it.fromTheme : ''}</div>` : ''}
-      <div class="quiz-q" style="font-size:1.05rem;line-height:1.8">${it.prompt}</div>
-      ${it.hint ? `<div class="explain" style="margin:0 0 10px">💡 ${it.hint}</div>` : ''}
+      ${tagHtml}
+      <div class="quiz-q">${it.prompt}</div>
+      ${it.hint ? `<div class="gs-hint">💡 ${it.hint}</div>` : ''}
       <div class="build-slots" id="slots">
-        ${it.slots.map((s, i2) => `<button class="slot" data-i="${i2}" onclick="clearSlot(${i2})"><span class="role">${ROLES[i2]}</span><span id="slotv${i2}" style="min-height:24px;display:block">？</span></button>`).join('')}
+        ${it.slots.map((s, i2) => `<button class="slot" data-i="${i2}" onclick="clearSlot(${i2})"><span class="role">${ROLES[i2]}</span><span id="slotv${i2}">？</span></button>`).join('')}
         <button class="btn mint" id="checkBtn" onclick="checkBuild()" disabled>✅ 检查</button>
       </div>
       <div class="slot-bank">
         ${bank.map(w => `<button class="bank-chip" data-w="${esc(w)}" onclick="placeChip(this,'${String(w).replace(/'/g, "\\'")}')">${esc(w)}</button>`).join('')}
       </div>
-      <div class="train-result" id="trainResult">🚂 - - -</div>
-      <div class="explain" id="iexp"></div>`;
+      <div class="train-result" id="trainResult">🚂 - - -</div>`;
   }
-  $('#app').innerHTML = head + body + '</div>';
+  /* 解析 + 翻页按钮放 sticky 底栏：答对后就地可点，不用滚到解析最底下 */
+  $('#app').innerHTML = head + body + `<div class="gs-foot"><div class="explain" id="iexp"></div></div></div>`;
 }
 
 /* --- 造句交互 --- */
@@ -898,10 +983,10 @@ function showNext(say) {
   const replay = __itemSay
     ? `<button class="btn ghost big" onclick="__sayAgain()">🔊 再听</button>` : '';
   box.insertAdjacentHTML('beforeend',
-    `<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px">
+    `<div class="gs-next">
        <button class="btn grape big" id="nextBtn" onclick="__itemGo()">${last ? '看结果 🏁' : '下一个 ▶'}</button>${replay}
      </div>`);
-  /* 手机小屏时解析可能把按钮顶到屏幕外：滚到看得见为止（已经可见就不动） */
+  /* 解析在 sticky 底栏，按钮天然可见；只在解析超出可视高度时才滚一下 */
   if (box.scrollIntoView) { try { box.scrollIntoView({ block: 'nearest' }); } catch (e) {} }
 }
 function __sayAgain() { if (__itemSay) speakSentence(__itemSay); }
