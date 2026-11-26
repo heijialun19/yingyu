@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-26.26';
+const BUILD = '2026-11-26.27';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -2825,7 +2825,7 @@ function stopAllSpeech() {
    ★ 单独版本号：重做字母音只升 PHONICS_VER，不动 AUDIO_VER
      （后者一动，用户已缓存的十几 MB 词音频全部作废重下）。
    ★ 文件在 audio/phonics/，SW 的 /audio/ 分支会自动缓存，发版不清理。 */
-const PHONICS_VER = 15;   /* 2026-11-26.25：z 四次修，按用户试听反馈定稿。
+const PHONICS_VER = 16;   /* 2026-11-26.25：z 四次修，按用户试听反馈定稿。
      用户判定：s18 字母名「是对的」；110ms 音素「太短」；ljspeech zoo「发音不对」。
      ① 音素 z 拉长到 0.40s（与站内 th 0.38s / s·f 0.54s 同量级），源为 s18 zoo 的
         length_scale 3.0 前 400ms；前 140ms 浊音起音 ×3 增益补偿（否则 rms 0.004 听不见），
