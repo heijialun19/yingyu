@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-26.25';
+const BUILD = '2026-11-26.26';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -561,7 +561,12 @@ const AUDIO_VER = 6;
    pe / with：早期版本尾音含混，重录过。
    hi：裸词被 G2P 读成字母 I（ASR 实测 "I."），改用 "Hi!" 合成后才读 /haɪ/。
    yes：结尾 /s/ 齿音过锐（6–8kHz 占 37%），做过 -3.5dB 柔化 + 10kHz 低通。 */
-const AUDIO_FIX = new Set(['pe', 'with', 'hi', 'yes', 'zoo', 'z']);  /* zoo/z: 1126.24 z 与 zoo 改用带浊音起音的声线，单独失效缓存，不升 AUDIO_VER */
+const AUDIO_FIX = new Set(['pe', 'with', 'hi', 'yes']);
+/* ★ 2026-11-26.26 教训：.24 把 z/zoo 放进 AUDIO_FIX 走 &f=1，.25 又换了这两个文件的
+   内容但 URL 没变 —— SW 的 /audio/ 是「缓存优先 + 按完整 URL 精确匹配」，于是老用户
+   继续命中 .24 的旧音频，表现为「网站根本没改」。单个词重做必须让查询串也变。
+   加一层「第二次修」集合走 &f=2，和 /h/ 的 f=5 互不干扰。 */
+const AUDIO_FIX2 = new Set(['zoo', 'z']);
 /* 2026-11-22.12 /h/ 修复（&f=2）：136 个 h 词全部重切。
    病灶：词首 /h/ 在 piper 孤立词合成中被吞（hen→"And"、hat→"At"、hot→"I"），
    但句中 /h/ 完好——是 utterance-initial /h/ 弱化，不是整个发音系统坏。
@@ -575,7 +580,7 @@ const __H_FIX_SKIP = new Set(['h', 'hour', 'hours', 'honest', 'hi']);
    .17：修切尾丢弱辅音（hospital 0.58→0.25s 丢 /pɪtəl/）+ 响度归一到有声段 RMS 4792
    （原来中位 2926，比非 h 词低 4.3dB）。查询串 f=4→f=5。 */
 const __audioFixQS = k => ((typeof k === 'string' && k.length > 1 && k[0] === 'h' && !__H_FIX_SKIP.has(k))
-  ? '&f=5' : (AUDIO_FIX.has(k) ? '&f=1' : ''));
+  ? '&f=5' : (AUDIO_FIX2.has(k) ? '&f=2' : (AUDIO_FIX.has(k) ? '&f=1' : '')));
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
    有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
