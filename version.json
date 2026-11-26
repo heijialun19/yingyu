@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-26.22",
-  "note": "2026-11-26.22c · 记忆法打磨第二轮：after/hear/bad/mine/pair/large/waste/centre/shout/direct/basket 十一条无意义硬拆改为词族/拼读/易混对比/搭配（pep-mem.js v11）；BUILD 保持 .22，发音/音频零改动。"
+  "build": "2026-11-26.23",
+  "note": "2026-11-26.23 · 修复 z 音素：s5s5 源库 z/v/ð 原录音缺摩擦成分，z 发成元音「乌」导致 zoo 拼读听着像「乌乌」；从 zoo.mp3 词首切出真 /z/ 擦音段替换 z.mp3（ZCR 0.04→0.56，能量与站内擦音对齐）。v/th_v 因 Piper 词音频摩擦太弱、无可靠切音源，暂不替换。PHONICS_VER 11→12 / CACHE v298 / app.js v235；仅改 z 一个音素，其余音频零改动。"
 }
