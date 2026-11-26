@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-26.27';
+const BUILD = '2026-11-26.28';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -566,6 +566,8 @@ const AUDIO_FIX = new Set(['pe', 'with', 'hi', 'yes']);
    内容但 URL 没变 —— SW 的 /audio/ 是「缓存优先 + 按完整 URL 精确匹配」，于是老用户
    继续命中 .24 的旧音频，表现为「网站根本没改」。单个词重做必须让查询串也变。
    加一层「第二次修」集合走 &f=2，和 /h/ 的 f=5 互不干扰。 */
+/* .28 第二次换内容：字母名 audio/z.mp3 从 s18 合成换成真人剪接的 /ziː/，
+   查询串再进一位（f=2 → f=3），否则老缓存永远命中 .25 的 s18 版本。 */
 const AUDIO_FIX2 = new Set(['zoo', 'z']);
 /* 2026-11-22.12 /h/ 修复（&f=2）：136 个 h 词全部重切。
    病灶：词首 /h/ 在 piper 孤立词合成中被吞（hen→"And"、hat→"At"、hot→"I"），
@@ -580,7 +582,7 @@ const __H_FIX_SKIP = new Set(['h', 'hour', 'hours', 'honest', 'hi']);
    .17：修切尾丢弱辅音（hospital 0.58→0.25s 丢 /pɪtəl/）+ 响度归一到有声段 RMS 4792
    （原来中位 2926，比非 h 词低 4.3dB）。查询串 f=4→f=5。 */
 const __audioFixQS = k => ((typeof k === 'string' && k.length > 1 && k[0] === 'h' && !__H_FIX_SKIP.has(k))
-  ? '&f=5' : (AUDIO_FIX2.has(k) ? '&f=2' : (AUDIO_FIX.has(k) ? '&f=1' : '')));
+  ? '&f=5' : (AUDIO_FIX2.has(k) ? '&f=3' : (AUDIO_FIX.has(k) ? '&f=1' : '')));
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
    有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
@@ -2825,15 +2827,21 @@ function stopAllSpeech() {
    ★ 单独版本号：重做字母音只升 PHONICS_VER，不动 AUDIO_VER
      （后者一动，用户已缓存的十几 MB 词音频全部作废重下）。
    ★ 文件在 audio/phonics/，SW 的 /audio/ 分支会自动缓存，发版不清理。 */
-const PHONICS_VER = 16;   /* 2026-11-26.25：z 四次修，按用户试听反馈定稿。
-     用户判定：s18 字母名「是对的」；110ms 音素「太短」；ljspeech zoo「发音不对」。
-     ① 音素 z 拉长到 0.40s（与站内 th 0.38s / s·f 0.54s 同量级），源为 s18 zoo 的
-        length_scale 3.0 前 400ms；前 140ms 浊音起音 ×3 增益补偿（否则 rms 0.004 听不见），
-        140-260ms ×1.6，之后原始。结构=浊音起音→摩擦渐强→弱收尾。
-     ② zoo 整词改用 s18 原始合成（不裁剪拼接，避免 12 版裁短留下的接缝），0.53s。
-     ③ 字母名 audio/z.mp3 保持 s18 不动（用户已认可）。
-     根因：ljspeech 的 z 一律清音化（词首低频≈0、ZCR 0.7 = /s/）；s5s5 源库 z 是元音「乌」。
-     v/th_v 无可靠真人切音源，仍保留源库原版。
+const PHONICS_VER = 17;   /* 2026-11-26.28：z 定型为真人长音（覆盖 .25 的 s18 方案）。
+     ★ 结论先行：Piper 这条路对 /z/ 彻底不通 —— ljspeech medium 与 high 两个模型，
+       词首、句中、载体句（say Z again）全都把 /z/ 清化成 [s]（质心 7000+、ZCR 0.7、
+       低频≈0）；libritts s18 的浊音段 rms 只有 0.004、底噪 0.0026，×3 增益只是把
+       底噪一起放大（用户听感＝「难听」）。s5s5 源库的 z.mp3 逐帧是元音「乌」。
+     ① 音素 z：LJSpeech（公有领域，单人女声）zero 词首 /z/ 的 6.195-6.330s 段，
+        atempo 0.25 慢放到 0.44s（噪声段拉伸、音高不变），2.6kHz 以上 +4dB 补摩擦，
+        rms 0.088 / 带声 0.74 / 2-6kHz 占比 0.40 —— 与站内 s(0.54s)、f(0.54s)、
+        sh(0.64s) 同量级，是「可以跟着模仿的 zzzz」而不是一眨眼的小碎片。
+     ② 字母名 audio/z.mp3：同一位说话人的 /z/（同上源）+ See 的 /iː/ 剪接成 /ziː/，
+        0.44s，只做等功率交叉淡化与响度归一，未合成、未变调。
+     ③ zoo 整词仍是 s18 原始合成（0.53s），未动。
+     ★ 别再试的坑：短促的 40-150ms 真人 /z/ 单独播放会被听成 /b/ 或 /d/（whisper 反复
+       识别成 "Bee"/"Deal"/"Beep"），因为浊音杠强、摩擦噪声弱，听感就是一个浊塞音的
+       浊音段。教学音素必须把摩擦拉长到 0.3s 以上才立得住。
      .18 曾把全部音素回退到 s5s5 裁切前原版（裁尾让 b 爆破消失、"听不清"）；
      /ə/ 重读化音高 266→293Hz、时长×1.1、响度对齐，音色仍是本人。 */
 const phonicsURL = L => `audio/phonics/${String(L).toLowerCase()}.mp3?v=${PHONICS_VER}`;
