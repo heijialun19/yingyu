@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-26.23';
+const BUILD = '2026-11-26.24';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -561,7 +561,7 @@ const AUDIO_VER = 6;
    pe / with：早期版本尾音含混，重录过。
    hi：裸词被 G2P 读成字母 I（ASR 实测 "I."），改用 "Hi!" 合成后才读 /haɪ/。
    yes：结尾 /s/ 齿音过锐（6–8kHz 占 37%），做过 -3.5dB 柔化 + 10kHz 低通。 */
-const AUDIO_FIX = new Set(['pe', 'with', 'hi', 'yes']);
+const AUDIO_FIX = new Set(['pe', 'with', 'hi', 'yes', 'zoo', 'z']);  /* zoo/z: 1126.24 z 与 zoo 改用带浊音起音的声线，单独失效缓存，不升 AUDIO_VER */
 /* 2026-11-22.12 /h/ 修复（&f=2）：136 个 h 词全部重切。
    病灶：词首 /h/ 在 piper 孤立词合成中被吞（hen→"And"、hat→"At"、hot→"I"），
    但句中 /h/ 完好——是 utterance-initial /h/ 弱化，不是整个发音系统坏。
@@ -2820,10 +2820,12 @@ function stopAllSpeech() {
    ★ 单独版本号：重做字母音只升 PHONICS_VER，不动 AUDIO_VER
      （后者一动，用户已缓存的十几 MB 词音频全部作废重下）。
    ★ 文件在 audio/phonics/，SW 的 /audio/ 分支会自动缓存，发版不清理。 */
-const PHONICS_VER = 12;   /* 2026-11-26.23：修复 z 音素。s5s5 源库 z/v/ð 三个浊擦音原录音缺失摩擦成分
-     （共振峰≈155/470Hz、ZCR 0.04，实为元音「乌」），z 导致 zoo 拼读听着像「乌乌」。
-     z 改从站内 zoo.mp3 词首切真 /z/ 擦音段（ZCR 0.56、能量与同套擦音对齐）。
-     v/th_v 因词音频摩擦太弱、无可靠真人切音源，暂保留源库原版。
+const PHONICS_VER = 14;   /* 2026-11-26.24：z 三次修。句框 ASR 证明 ljspeech 的 z 一律清音化
+     （词首低频占比≈0、ZCR 0.7，实为 /s/），用户两次反馈「zoo/z 听着怪、字母名不对」。
+     改用 libritts-high speaker 18 合成：前 50ms 带声 0.5-0.64、低频占比 0.43-0.56（真浊音 bar），
+     后段才是摩擦——这才是 /z/ 的生理结构。字母名 audio/z.mp3 同步换成同一声线（有浊音起音），
+     zoo.mp3 词首擦音 220→110ms（句框 ASR "Sioux"→"zoo"）。
+     根因：s5s5 源库 z/v/ð 浊擦音原录音缺摩擦（实为元音「乌」）；v/th_v 无可靠切音源仍保留。
      .18 曾把全部音素回退到 s5s5 裁切前原版（裁尾让 b 爆破消失、"听不清"）；
      /ə/ 重读化音高 266→293Hz、时长×1.1、响度对齐，音色仍是本人。 */
 const phonicsURL = L => `audio/phonics/${String(L).toLowerCase()}.mp3?v=${PHONICS_VER}`;
