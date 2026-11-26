@@ -144,6 +144,12 @@ function pbxSoundURL(b) {
   const a = PBX_ALIAS[k];
   return a ? phonicsURL(a) : '';
 }
+/* ★ 2026-11-26：纯大写缩写词（OK / TV / USA…）的「字母名」音频。
+   audio/phonics/t.mp3 是自然拼读 /t/；audio/t.mp3 才是字母名 /tiː/。
+   缩写词按字母读，必须走后者，否则 T-V 会被读成 /t/+/v/。 */
+function pbxLetterURL(ch) {
+  return typeof localAudioURL === 'function' ? localAudioURL(ch) : '';
+}
 /* 视觉词（高频不规则）：整词认读，给一句「为什么不能按字母拼」 */
 const PBX_SIGHT_NOTE = {
   the:'th 在这里是浊音 /ð/（不像 think 的清音），e 读轻声，整体记住',
@@ -227,6 +233,18 @@ function pbxDecode(w) {
   const fixAll = (typeof window !== 'undefined' && window.PBX_WORD_FIX) ||
                  (typeof PBX_WORD_FIX !== 'undefined' ? PBX_WORD_FIX : null);
   const parts = splitPhrase(w).map(raw => {
+    /* ★ 2026-11-26：纯大写缩写词（OK / TV / …）按「字母名」逐字母读，
+       不按自然拼读拆。整词音频（audio/tv.mp3=/tiːˈviː/）本来就是字母音，
+       但拼读块以前走 phonicsURL('t')=/t/ + phonicsURL('v')=/v/，
+       孩子点 T、V 听到的是 /t+v/ 而不是「提-维」。这里让每个字母块
+       直接播字母名音频（audio/t.mp3=/tiː/），与整词口径一致。 */
+    if (/^[A-Z]{2,6}$/.test(raw)) {
+      const blocks = raw.split('').map(ch => ({
+        raw: ch, url: pbxLetterURL(ch), note: ''
+      }));
+      return { raw, syls: [{ raw, blocks, playable: true }], magic: false,
+               whole: false, wholeNote: '', caps: true };
+    }
     const low = raw.toLowerCase().replace(/[^a-z]/g, '');
     const magic = pbxMagicE(low);
     const fix = fixAll && fixAll[low] ? fixAll[low] : null;
