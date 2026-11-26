@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-26.24';
+const BUILD = '2026-11-26.25';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -2820,12 +2820,15 @@ function stopAllSpeech() {
    ★ 单独版本号：重做字母音只升 PHONICS_VER，不动 AUDIO_VER
      （后者一动，用户已缓存的十几 MB 词音频全部作废重下）。
    ★ 文件在 audio/phonics/，SW 的 /audio/ 分支会自动缓存，发版不清理。 */
-const PHONICS_VER = 14;   /* 2026-11-26.24：z 三次修。句框 ASR 证明 ljspeech 的 z 一律清音化
-     （词首低频占比≈0、ZCR 0.7，实为 /s/），用户两次反馈「zoo/z 听着怪、字母名不对」。
-     改用 libritts-high speaker 18 合成：前 50ms 带声 0.5-0.64、低频占比 0.43-0.56（真浊音 bar），
-     后段才是摩擦——这才是 /z/ 的生理结构。字母名 audio/z.mp3 同步换成同一声线（有浊音起音），
-     zoo.mp3 词首擦音 220→110ms（句框 ASR "Sioux"→"zoo"）。
-     根因：s5s5 源库 z/v/ð 浊擦音原录音缺摩擦（实为元音「乌」）；v/th_v 无可靠切音源仍保留。
+const PHONICS_VER = 15;   /* 2026-11-26.25：z 四次修，按用户试听反馈定稿。
+     用户判定：s18 字母名「是对的」；110ms 音素「太短」；ljspeech zoo「发音不对」。
+     ① 音素 z 拉长到 0.40s（与站内 th 0.38s / s·f 0.54s 同量级），源为 s18 zoo 的
+        length_scale 3.0 前 400ms；前 140ms 浊音起音 ×3 增益补偿（否则 rms 0.004 听不见），
+        140-260ms ×1.6，之后原始。结构=浊音起音→摩擦渐强→弱收尾。
+     ② zoo 整词改用 s18 原始合成（不裁剪拼接，避免 12 版裁短留下的接缝），0.53s。
+     ③ 字母名 audio/z.mp3 保持 s18 不动（用户已认可）。
+     根因：ljspeech 的 z 一律清音化（词首低频≈0、ZCR 0.7 = /s/）；s5s5 源库 z 是元音「乌」。
+     v/th_v 无可靠真人切音源，仍保留源库原版。
      .18 曾把全部音素回退到 s5s5 裁切前原版（裁尾让 b 爆破消失、"听不清"）；
      /ə/ 重读化音高 266→293Hz、时长×1.1、响度对齐，音色仍是本人。 */
 const phonicsURL = L => `audio/phonics/${String(L).toLowerCase()}.mp3?v=${PHONICS_VER}`;
