@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-26.28",
-  "note": "2026-11-26.28 · z 音素改长音、字母名换成真人剪接。拼读音素：LJSpeech（公有领域）真人 /z/ 6.195-6.330s 段，atempo 慢放 + 2.6kHz 以上 +4dB 补偿，0.44s / rms 0.088 / 带声 0.74 / 2-6kHz 占比 0.40（与站内 s 0.54s、f 0.54s、sh 0.64s 同量级）。字母名：同源 /z/ + 同一位说话人 See 的 /iː/ 剪接（0.44s），未合成、未变调。两个文件同源同声线；PHONICS_VER 16→17 / BUILD .28 / CACHE v303 / app.js v240；audio/z.mp3 查询串 f=2→f=3 强制刷新。"
+  "build": "2026-11-26.29",
+  "note": "2026-11-26.29 · 修字母名播错文件的根因。字母岛「🔤 字母名 Z」走的是 data.js 的 nameEn（'zee'）→ audio/zee.mp3，不是 audio/z.mp3；而 zee.mp3 首段实测是清擦音（质心 6000-6900、过零率 0.6、低频 0.00，就是 [s]），所以一直听着像“see”。现在 audio/zee.mp3 与 audio/z.mp3 都换成同一段真人剪接的 /ziː/（LJSpeech 同一声线 /z/ + /iː/，0.44s），zero 词首 /z/ 拉长到 0.44s 作拼读音素（2-6kHz 占比 0.40，可跟读）。BUILD .29 / CACHE v304 / app.js v241 / AUDIO_FIX2 增 zee（查询串 f=3）；PHONICS_VER 仍 17。"
 }
