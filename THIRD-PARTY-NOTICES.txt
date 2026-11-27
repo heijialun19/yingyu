@@ -11,7 +11,8 @@
   二、音标数据 —— CMUdict（BSD 风格许可）
   三、语音合成 —— Piper（MIT）+ en_US-ljspeech-medium（训练数据 LJSpeech，公有领域）
   三之二、字母音与拼读块录音 —— s5s5/phonics（MIT）
-  三之三、字母 Z 发音（z/zee/zoo 与 /z/ 音素）—— Kokoro-82M（Apache-2.0）
+  三之三、Kokoro-82M（Apache-2.0）—— 字母 Z 发音（z/zee/zoo 与 /z/ 音素）、
+          整句音频（audio/sentences/ 7522 句，af_kore 女声，2026-11-27.33 起）
   四、音素化后端 —— eSpeak NG（GPLv3，仅构建期使用，不随站分发）
   五、课程内容与教材名称
   六、本站原创内容的授权范围
@@ -92,6 +93,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             length_scale 1.1 / 128kbps / 22050Hz mono / 响度 −2dB；
             补 15ms 静音 + 8ms 淡入，尾部 60ms（词）/ 100ms（句）静音
   分发形式：只分发合成出的 mp3 音频文件，不分发数据集、引擎二进制或模型权重
+
+  ── 整句声线更新（2026-11-27.33 起）────────────────────────────
+  自本版起，audio/sentences/ 下 7522 句整句音频改用 Kokoro 模型的 af_kore
+  女声合成（用户试听选定，语速 speed=0.85 对齐原 Piper 语速）。单词音频、
+  字母名与自然拼读音素仍由上一节的 Piper/ljspeech 与「三之二」母语录音生成，
+  不受本更新影响。
+
+    合成引擎：Kokoro-82M（hexgrad/Kokoro），ONNX 推理，Apache-2.0
+    声线：    af_kore（模型内置 style vector，Apache-2.0）
+    生成方式：模型原生文本合成，不裁切、不拼接；输入文本来自站内权威句库
+              （含标点），个别历史句按 slug 无损还原（修复撇号缩写）
+    后处理：  22050Hz/mono/128kbps、−2dB、15ms 静音 + 8ms 淡入、
+              尾部留 100ms + 40ms 淡出（与原整句规格一致）
 
   ── 训练数据说明 ──────────────────────────────────────────────
   数据集：LJSpeech（https://keithito.com/LJ-Speech-Dataset/）

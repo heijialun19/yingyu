@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-27.32';
+const BUILD = '2026-11-27.33';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -664,8 +664,12 @@ __registerAudioList();          /* audio-list.js 比 app.js 先执行时直接�
    AUDIO_VER 不升；本条只影响 audio/sentences/。
    ★ 2026-11-15.4 v8：换声线 libritts → ljspeech-medium（公有领域）。934 条全部重新
    合成，句内底噪 -65.6 → -70.3dB。ljspeech 无前导静音（第 0 采样即语音），
-   故不裁头、改为补 15ms 静音后 8ms 淡入，避免起首辅音爆音或被削。 */
-const SENTENCE_VER = 8;
+   故不裁头、改为补 15ms 静音后 8ms 淡入，避免起首辅音爆音或被削。
+   ★ 2026-11-27.33 v9：整句声线 ljspeech → Kokoro-82M af_kore（Apache-2.0 开源女声，
+   用户试听选定）。全部 7522 句用模型原生合成、speed=0.85 对齐原语速，不裁词尾；
+   后处理仍按旧规格（15ms 静音 + 8ms 淡入 + 尾留 100ms + 40ms 淡出 + -2dB）。
+   ★ 只换 audio/sentences/：字母名、音素、单词音频一个字节没动，AUDIO_VER / PHONICS_VER 不升。 */
+const SENTENCE_VER = 9;
 const SENTENCE_AUDIO = new Set([
   "a_bad_cat_a_sad_cat", "a_ball", "a_bee_can_fly_up_high", "a_bee_is_in_the_tree", "a_bee_looks_for_sweet_food_in_a_flower_the_sweet_food_is_deep_inside_the_flower", "a_better_question_is_a_better_idea",
   "a_better_question_is_a_start", "a_big_cat", "a_big_day_for_my_duck_and_pig", "a_big_dog", "a_big_drum", "a_big_fish_a_big_fish",

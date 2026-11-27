@@ -1,4 +1,4 @@
 {
-  "build": "2026-11-27.32",
-  "note": "2026-11-27.32 · z 三处全部换成 Kokoro af_kore 女声「原生发音」，彻底告别裁剪拼接。用户反馈 .31 的 /z/+元音剪接版仍是「两个声音拼接、太难听」，且嫌真人 /z/ 太短太清。新方案：11 个开源女声逐一 ASR + 声学筛选，排除被听成 see 的 aoede/nicole，选 af_kore（/z/ 带声 0.65 最强、ZCR 0.059 最低）。① 拼读音 audio/phonics/z.mp3 = 音素输入 'z' 原生生成 0.23s（句框 ASR→'Z.'）；② 字母名 zee.mp3/z.mp3 = 文本 'zee' 原生 0.36s（ASR→'Z.'，不是 see）；③ zoo.mp3 = 文本 'zoo' 原生 0.32s（句框 ASR→'Look at the zoo.'）。不裁切、不拉伸、不拼接、不 EQ，三处同一声线。BUILD .32 / CACHE v307 / app.js v244 / PHONICS_VER 19 / 查询串 f=4→f=6。"
+  "build": "2026-11-27.33",
+  "note": "2026-11-27.33 · 全站 7522 句合成整句音频由 Piper ljspeech 换成 Kokoro af_kore 女声（用户试听选定，声音更好听）。speed=0.85 对齐原语速，模型原生合成、不裁词尾，后处理仍按旧规格（15ms 静音+8ms 淡入+尾留 100ms+40ms 淡出+-2dB/128k/22050/mono）。文本取自站内权威句库 2928 条 + report 109 条，其余 4485 条按 slug 无损反推（修复撇号缩写），ASR 抽样 8 条全命中。字母名、音素（自然拼读）、单词音频一个字节没动：AUDIO_VER/PHONICS_VER 不升。只升 SENTENCE_VER 8→9、BUILD .33、CACHE v308、app.js v245。"
 }
