@@ -296,8 +296,8 @@ function pbxPlayOne(i, pi, si, bi) {
   /* 2026-11-25.16：真哑音字母（词尾 e、双写第二字、哑 h/k/w/l）本身没有音，
      以前点了只有一行解释，孩子以为「坏了」。现在点一下给整词读音 + 解释：
      听到的是它所在词的正确发音，不会把哑音硬读出来。 */
-  if (!blk.url) { pbxExplain(i, pi, si, bi); sfx && sfx.pop && sfx.pop(); speakWord(e.w); return; }
-  sfx && sfx.pop && sfx.pop();
+  if (!blk.url) { pbxExplain(i, pi, si, bi); speakWord(e.w); return; }
+  
   playAudioChain([blk.url]);
 }
 function pbxPlaySyl(i, pi, si) {
@@ -308,7 +308,7 @@ function pbxPlaySyl(i, pi, si) {
   const notes = syl.blocks.filter(b => !b.url && b.note).map(b => b.note);
   /* ★ 同一音节里「有音的块照发，没录音的块给解释」：teacher·cher 既发 ch 也解释 er */
   if (notes.length) pbxShowNote(i, notes.join('；'));
-  sfx && sfx.pop && sfx.pop();
+  
   /* ★ 全部块都无可录音时绝不播整词（teacher 的 er 曾误播成 teacher） */
   if (urls.length) { playAudioChain(urls, null, 240); return; }
   if (!notes.length) {
@@ -320,7 +320,7 @@ function pbxPlayPart(i, pi) {
   const e = PBR[i]; if (!e) return;
   const p = e.d.parts[pi]; if (!p) return;
   if (p.wholeNote) pbxShowNote(i, p.wholeNote);
-  sfx && sfx.pop && sfx.pop();
+  
   speakWord(p.raw);
 }
 function pbxBlend(i) {
@@ -331,7 +331,7 @@ function pbxBlend(i) {
     p.syls.forEach(s => s.blocks.forEach(b => { if (b.url) urls.push(b.url); }));
   });
   if (notes.length) pbxShowNote(i, notes[0]);
-  sfx && sfx.pop && sfx.pop();
+  
   if (urls.length) playAudioChain(urls, () => speakWord(e.w), 200);
   else speakWord(e.w);
 }

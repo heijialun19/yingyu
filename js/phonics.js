@@ -381,7 +381,6 @@ function phPlayWord(w) {
 
 /* 卡片点击发音：比 phPlayWord 多一个按压音效（沿用 speakWord 的手感） */
 function phSpeakWord(w) {
-  sfx.pop();
   phPlayWord(w);
 }
 

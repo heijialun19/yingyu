@@ -69,7 +69,7 @@
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=241"></script>
+<script src="js/app.js?v=242"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script>
@@ -196,23 +196,23 @@ function renderStage(speakIt) {
    ② 字母音：只读这个字母自己的音素（A 读 /æ/、B 读 /b/），不读单词
       —— 2026-11-08 之前这里播的是代表词 apple，那不是 letter sound
    ③ 完整口诀：字母名 → 字母音 → 代表词，三步各一遍
-   每次点击只出一个声音；想多听几遍，多点几次就好 */
+   每次点击只出一个声音；想多听几遍，多点几次就好
+   ★ 2026-11-26.30：这里不许再调 sfx.pop()。520Hz 的「啵」会和字母音同时响，
+     对 /z/ /s/ /f/ /ʃ/ 这类持续摩擦音就是「两个声音重叠」（用户实测反馈）。
+     凡是「点了要发音」的按钮，一律不加点击音效。 */
 function sayName() {
   const l = LETTERS[cur];
-  sfx.pop();
   speak(l.nameEn || l.L, 'en-US', 1);
 }
 /* 字母音 = 这个字母在单词里的那个音素（/æ/、/b/…），
    不是代表词。以前播 apple，孩子听到的是 /æpl/，等于没教 letter sound。 */
 function saySound() {
   const l = LETTERS[cur];
-  sfx.pop();
   playPhonics(l.L);
 }
 /* 完整口诀 = 名字 → 字母音 → 例词（自然拼读的标准三步） */
 function sayChant() {
   const l = LETTERS[cur];
-  sfx.pop();
   playAudioChain([
     localAudioURL(l.nameEn || l.L),
     phonicsURL(l.L),
