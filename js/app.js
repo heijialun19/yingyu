@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-26.31';
+const BUILD = '2026-11-27.32';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -566,11 +566,13 @@ const AUDIO_FIX = new Set(['pe', 'with', 'hi', 'yes']);
    内容但 URL 没变 —— SW 的 /audio/ 是「缓存优先 + 按完整 URL 精确匹配」，于是老用户
    继续命中 .24 的旧音频，表现为「网站根本没改」。单个词重做必须让查询串也变。
    加一层「第二次修」集合走 &f=2，和 /h/ 的 f=5 互不干扰。 */
-/* .28/.29 第二次换内容：字母名换成真人剪接的 /ziː/，查询串再进一位（f=2 → f=3）。
+/* .32 第三次换内容：z/zee/zoo 全部换成 Kokoro af_kore 女声原生发音（零裁切零拼接），
+   查询串再进一位（f=4 → f=6，避开 /h/ 占用的 f=5）。
    ★ .29 才发现：字母岛「🔤 字母名 Z」读的是 data.js 里的 nameEn（'zee'）→ audio/zee.mp3，
-     不是 audio/z.mp3。之前 .25-.28 一直在改 audio/z.mp3，孩子根本听不到；
-     zee.mp3 首段实测是清擦音（质心 6000-6900、ZCR 0.6、低频 0.00 = [s]），所以一直像「see」。
-     现在 zee 与 z 两个文件内容相同，都指向真人 /ziː/。 */
+     不是 audio/z.mp3。所以 zee / z 两个文件必须同内容。
+   ★ .31 的 LJSpeech /z/+See /iː/ 剪接版被用户判定「两个声音拼接、太难听」，彻底弃用。
+   ★ .32 现行：Kokoro af_kore 原生读 "zee"（字母名）+ 音素输入原生发 /z/（拼读音）+ 原生 "zoo"，
+     不裁切、不拉伸、不拼接，三处同一声线（F0 175Hz 女声）。ASR 句框 zee→"Z."、zoo→"zoo"。 */
 const AUDIO_FIX2 = new Set(['zoo', 'z', 'zee']);
 /* 2026-11-22.12 /h/ 修复（&f=2）：136 个 h 词全部重切。
    病灶：词首 /h/ 在 piper 孤立词合成中被吞（hen→"And"、hat→"At"、hot→"I"），
@@ -585,7 +587,7 @@ const __H_FIX_SKIP = new Set(['h', 'hour', 'hours', 'honest', 'hi']);
    .17：修切尾丢弱辅音（hospital 0.58→0.25s 丢 /pɪtəl/）+ 响度归一到有声段 RMS 4792
    （原来中位 2926，比非 h 词低 4.3dB）。查询串 f=4→f=5。 */
 const __audioFixQS = k => ((typeof k === 'string' && k.length > 1 && k[0] === 'h' && !__H_FIX_SKIP.has(k))
-  ? '&f=5' : (AUDIO_FIX2.has(k) ? '&f=4' : (AUDIO_FIX.has(k) ? '&f=1' : '')));
+  ? '&f=5' : (AUDIO_FIX2.has(k) ? '&f=6' : (AUDIO_FIX.has(k) ? '&f=1' : '')));
 const audioSlug = t => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 /* ===== 例句逐词朗读的补充音频（2026-11-07）=====
    有道 dictvoice 是「词典真人录音查词」，不是语音合成：整句请求一律 500
@@ -2830,19 +2832,18 @@ function stopAllSpeech() {
    ★ 单独版本号：重做字母音只升 PHONICS_VER，不动 AUDIO_VER
      （后者一动，用户已缓存的十几 MB 词音频全部作废重下）。
    ★ 文件在 audio/phonics/，SW 的 /audio/ 分支会自动缓存，发版不清理。 */
-const PHONICS_VER = 18;   /* 2026-11-26.31：z 走「纯真人原速」，禁止任何拉伸（覆盖 .25 / .28 方案）。
-     ★ 三次踩坑，记住结论：
+const PHONICS_VER = 19;   /* 2026-11-27.32：z 拼读音换成 Kokoro af_kore 女声「音素输入」原生生成，
+     ★ 四种尝试的历史结论（别再回头）：
        ① s5s5 源库的 z.mp3 逐帧是元音「乌」，不是擦音；
-       ② Piper 的 ljspeech medium 与 high 都把 /z/ 清化成 [s]（质心 7000+、ZCR 0.7、低频≈0），
-          孤立词、句中、载体句（say Z again）全一样 —— TTS 对 /z/ 无解；
-       ③ .28 用 atempo 把 0.135s 拉长到 0.44s，用户听感是「两个声音拼接、太难听」。
-          原因：浊擦音有强基音，4 倍时间伸缩会把浊音杠与摩擦噪声拉成两层，任何参数都救不回来。
-     ★ 现行方案（唯一）：LJSpeech（公有领域，单人女声）zero 词首 /z/ 的 6.195-6.300s 原速段，
-       0.107s，只做淡入淡出与响度归一。带声 0.75、2-6kHz 峰值 0.30。
-       短是短，但它是**一个完整的真人摩擦音**，不是拼出来的。
-     ★ 字母名 /ziː/（audio/zee.mp3 与 audio/z.mp3 同内容）：同一段 /z/ + 同一位说话人 See 的 /iː/，
-       原速、45ms 等功率交叉淡化、元音起音加 45ms 自然渐强（否则接缝会像爆破音）。
-     ★ 要改 z 的音，先想清楚「拉长」这条路已经被用户否掉两次，别再试。
+       ② Piper 的 ljspeech medium / high、libritts 都把 /z/ 清化成 [s]（质心 7000+、ZCR 0.7、低频≈0）；
+       ③ .28/.29 atempo 把 0.135s 拉长 4 倍 → 用户「两个声音拼接、太难听」：浊擦音有强基音，
+          时间伸缩把浊音杠与摩擦噪声拉成两层，任何参数都救不回来；
+       ④ .31 LJSpeech zero 词首原速 0.107s —— 太短太清，用户仍未认可。
+     ★ 现行方案：Kokoro-82M（Apache-2.0）af_kore 女声，is_phonemes=True 直接喂音素 "z"，
+       模型原生发浊擦音，0.23s，ZCR 0.03、2-6kHz 占比 0.11、句框 ASR→"Z."。
+       全程不裁切内部、不拉伸、不拼接、不 EQ。11 个 af 女声里 af_kore 的 /z/ 带声最强(0.65)，
+       af_aoede / af_nicole 被听成 "see" 已排除。
+     ★ 改 z 前先想清楚：「拉长」「剪接」两条路都被用户否掉，别再试。
      .18 曾把全部音素回退到 s5s5 裁切前原版（裁尾让 b 爆破消失、"听不清"）；
      /ə/ 重读化音高 266→293Hz、时长×1.1、响度对齐，音色仍是本人。 */
 const phonicsURL = L => `audio/phonics/${String(L).toLowerCase()}.mp3?v=${PHONICS_VER}`;
