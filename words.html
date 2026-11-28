@@ -202,11 +202,12 @@
 <script src="svg/word-svg.js?v=7"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=251"></script>
+<script src="js/app.js?v=252"></script>
 <script src="js/grammar-engine.js?v=10"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <script src="js/sentence.js?v=52"></script>
 <script src="js/speech.js?v=1"></script>
+<script src="js/speech-xfei.js?v=1"></script>
 <script src="js/speech-dtw.js?v=1"></script>
 <script src="js/ipa.js?v=12"></script>
 <script src="js/pep-data.js?v=3"></script>
@@ -1057,6 +1058,13 @@ function renderSpeak() {
     try {
       const secs = Math.min(4.5, Math.max(2.8, q.sentence.length * 0.14));
       r = await SpeechDTW.scoreRepeat({ refUrl: q.refUrl, seconds: secs });
+      /* ★ 云评测优先（讯飞 ISE），失败/未开启回退 DTW（audit 7.6 A档#4：得星解耦不回退） */
+      if (window.SpeechXfei && SpeechXfei.enabled() && SpeechXfei.hasCredentials()) {
+        try {
+          const xr = await SpeechXfei.scoreRepeat({ refText: q.word.w, seconds: secs });
+          if (xr) r = { ok: true, score: xr.score, accuracy: xr.accuracy, complete: xr.integrity, fluent: xr.fluency, isXfei: true };
+        } catch (xe) { /* 讯飞异常 → DTW 兜底 */ }
+      }
     } catch (e) { r = { ok: false, detail: 'error' }; }
     if (!document.getElementById('spResult')) return;
     mic.disabled = false;
