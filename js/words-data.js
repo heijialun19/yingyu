@@ -1,7 +1,7 @@
 /* ============================================================
-   小鸟英语乐园 · 小学 999 词库
+   小鸟英语乐园 · 小学 1029 词库
    覆盖 1-6 年级义务教育英语课程标准必背词汇
-   按年级 → 主题分类，共 61 个主题、999 词，全局无重复
+   按年级 → 主题分类，共 62 个主题、1029 词，全局无重复
    W(单词, 中文, 图解emoji, 记忆法)
    pos: 主题默认词性（个别词在 data.js 里覆盖）
    ============================================================ */
@@ -50,7 +50,7 @@ const GRADES = [
     W('purple','紫色','','紫色染料古代取自海螺，极珍贵，只有帝王穿得起——帝王紫','n'), W('brown','棕色','','brown 和 bruise（瘀青）同根：瘀青是棕黑色的','n'), W('grey','灰色','','grey 是黑白之间；grizzle（灰白头发）同根','n'),
     /* ★ 2026-11-09.15：colour / color 原来是两条独立词条（释义「颜色(英式)」「颜色(美式)」、
        同一张 🌈），同一个意思占两个词位，看图题里也难分。家长拍板合并成一条：
-       只留 colour，记忆法里说明美式写作 color。词库 1000 → 999 词。 */
+       只留 colour，记忆法里说明美式写作 color。词库 1000 → 1029 词。 */
     W('colour','颜色','🌈','colour（英式拼写）＝ 美式 color；colourful 多彩的，两种写法读音相同','n') ]},
   { id: 'school', name: '学校文具', emoji: '🏫', color: '#4EC5F1', pos: 'n', words: [
     W('school','学校','🏫','school 学校——来自希腊语「闲暇」：古人只有闲下来才读书'), W('book','书','📖','book 书——原来是「山毛榉树皮」，古人把字写在树皮上'), W('pen','钢笔','🖊️','pen 钢笔——原来是「羽毛」，古人用羽毛蘸墨写字'),
@@ -387,6 +387,41 @@ const GRADES = [
     W('many', '许多', '','many 许多：接可数名词复数；how many 多少个'), W('each', '每个', '','each 每个：ea 发 /iː/；each other 互相'), W('every', '每一个', '', 'ever + y'), W('all', '全部', '', 'all 全部——a-l-l 三个字母排排站，一个不落'),
     W('some', '一些', '', 'some 一些——「s-ome」像抓一把'), W('any', '任何的', '', 'any 任何——「a-ny」像随便哪个都行'), W('both', '两个都', '', 'both 两个都——来自古英语「那两个」：左手右手各一个'), W('other', '其他的', '','other 其他的：th 发 /ð/；the other 另一个'),
     W('next', '下一个', '', 'next 和 nigh（近）同源——next 就是「最近的」'), W('last', '最后的', '', 'last 和 late 同源——last 就是「最迟的」'), W('once', '一次', '', 'one + -s：只做一次'), W('twice', '两次', '', 'tw-（二）+ -ice：两次。tw- = 二：two、twelve、twenty、twice') ]},
+  { id:'book-sup', name:'绘本高频词', emoji:'📚', color:'#8E7CC3', pos:'n', words:[
+    W("by", "被；由；经过", "🚌", "bye 是再见，by 少个 e：被、由、经过", "prep"),
+    W("cannot", "不能", "🚫", "cannot = can + not 写成一个词，意思一样", "v"),
+    W("sound", "声音", "🔊", "s + ound：和 round（圆）同韵族", "n"),
+    W("dark", "黑暗的", "🌑", "dark 和 bark（狗叫）、park（公园）同韵族：-ark", "adj"),
+    W("whole", "整个的", "🍉", "whole 和 hole（洞）字母相同顺序相反：w 搬家", "adj"),
+    W("page", "页", "📄", "page 和 age（年龄）同族：翻开书的新一页", "n"),
+    W("clear", "清楚的", "🔍", "clear 和 clean（干净）像兄弟：看得干净=看得清楚", "adj"),
+    W("measure", "测量", "📏", "mea + sure：量一量才确定 sure", "v"),
+    W("thick", "厚的", "📕", "thick 和 thin（薄）都姓 th，一对反义词", "adj"),
+    W("step", "台阶；一步", "👣", "step 和 stop（停）像兄弟：一步一步走别停", "n"),
+    W("lot", "许多", "🧀", "a lot of = 许多；lot 和 let、lit 只换中间元音", "n"),
+    W("bit", "一点", "🤏", "a bit = 一点点；bit 是 bite（咬）的过去式：咬一小口", "n"),
+    W("compare", "比较", "⚖️", "com-（共同）+ pair（一对）：把两个放一起看=比较", "v"),
+    W("sense", "感觉", "🧠", "sense 和 since（既然）长得像：五官的感觉", "n"),
+    W("sure", "确定的", "👌", "sure 和 sugar 开头都是 su：读 /ʃ/", "adj"),
+    W("simple", "简单的", "➖", "simple 里藏着 -ple（满，同 complete 完成）：一学就会", "adj"),
+    W("hit", "打；击", "🏏", "hit 和 hot、hat 只换中间元音：hit 是打中", "v"),
+    W("boil", "煮沸", "♨️", "boil 和 soil（土壤）同韵族：-oil；水开冒泡", "v"),
+    W("wide", "宽的", "↔️", "wide 和 side（边）、ride（骑）同韵族：-ide", "adj"),
+    W("dim", "昏暗的", "🕯️", "dim 和 dim sum（点心）同头：光线很弱", "adj"),
+    W("bench", "长凳", "🪑", "bench 和 lunch、punch 同韵族：-ench", "n"),
+    W("case", "情况；箱子", "📦", "case 和 bookcase（书柜）同族：装东西的壳", "n"),
+    W("happen", "发生", "❓", "happen 源自 happe（运气）：碰巧发生", "v"),
+    W("mean", "意思是", "💬", "mean 三态 mean-meant：What does it mean?", "v"),
+    W("strange", "奇怪的", "🦄", "strange 和 stranger（陌生人）同族：陌生=奇怪", "adj"),
+    W("point", "点；指", "👉", "point 本义「尖端」：pointed 削尖的——指出来", "v"),
+    W("wonder", "想知道", "❔", "wonder 也指「奇迹」：对奇迹想知道", "v"),
+    W("mind", "头脑；介意", "🧠", "mind 和 remind（提醒）同族：re + mind = 再放进心里", "n"),
+    W("rush", "冲；赶", "🏃", "rush 拟声词：呼——地冲过去", "v"),
+    W("mend", "修补", "🧵", "mend 是 amend（修正）去掉 a：缝缝补补", "v"),
+    W("pat", "轻拍", "🫱", "pat 拟声词：啪嗒、啪嗒轻轻拍", "v"),
+    W("fill", "装满", "🥛", "fill 和 full（满）同族：fill 到 full", "v")
+  ]},
+
 ]},
 ];
 

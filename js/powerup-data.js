@@ -5,7 +5,7 @@
    · L4-L6：剑桥官方 Map of the book 逐列对齐（spec_v2）——
      L4/L5 用第二版官方 PDF（cambridgelatamcatalogue.org），
      L6 用官方第一版样章（oxico.sk power_up_6.pdf，两版单元名与语法一致）
-   · words 全部来自站内 999 词库（音频零缺口），按官方 Vocabulary 话题选取
+   · words 全部来自站内 1029 词库（音频零缺口），按官方 Vocabulary 话题选取
    · 单元新增 vocab/spell/cc/lit/sel/m1/m2/exam 官方列，供页面与卡片使用
    ============================================================ */
 'use strict';

@@ -397,6 +397,7 @@ window.__AUDIO_LIST = [
   "you","you_re","young","younger","your","yours","yuan","yuans",
   "yummy","z","zebra","zebras","zee","zero","zip","zongzi",
   "zoo"
-];
+,
+  "by","cannot","sound","dark","whole","page","clear","measure","thick","step","lot","bit","compare","sense","sure","simple","hit","boil","wide","dim","bench","case","happen","mean","strange","point","wonder","mind","rush","mend","pat","fill"];
 window.__audioListReady = true;
 if (typeof window.__registerAudioList === 'function') window.__registerAudioList();
