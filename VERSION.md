@@ -5203,6 +5203,37 @@ build .34 / 12110 条）。发版当日 gradle 三次尝试均被文件锁拦截
 accept-app-v39 89 项断言全过；并将 .34 assets 回填 site/yingyu-main，消除「_patch(.33) /
 site(.33) / assets(.34)」三处基线漂移。site 侧此后以 .34 为准。
 
+## 2026-11-27.34 · 全站整句降速 + 分句停顿（由 _push_gql_v12 GraphQL 推送，见附录 U）
+
+· speed 0.85→0.72 + 分句插 0.3s 停顿；修 2 条 an one→one；全量音素审计 0 异常
+· SENTENCE_VER 9→10 / CACHE v309 / app.js v246
+· 本节由接手会话补记（.34 发版日文件锁无法写 _patch）
+
+## 2026-11-28.35 · Power Up L4-L6 官方目录对齐 + 跟读打分修复 + 审计修复批
+
+· Power Up L4-L6 按官方 Map of the book 逐列对齐（spec_v2，修正 5 个旧自创单元名）
+· 跟读：静音门限 1e-9→相对 -38dB + 掐头去尾 + 得星解耦（念对 56→81+ 分）
+· 插画缓存：sw.js /^\/art\// 锚定修复 + ART_CACHE v4→v5
+· 字母岛答题不再写单词 SRS；掌握数/错题本加词库过滤
+· 27 个文件单批 GraphQL（_push_gql_v35.py）
+· BUILD .35 / CACHE v310 / app.js v247 / versionCode 39
+
+## 2026-11-28.36 · M3 绘本高频词 32 词补库 + 审计修复批
+
+· 词库 999→1030 词 / 61→62 主题（六年级追加 book-sup）
+· 音频双引擎：4 词 Piper 载体句 + 28 词 Kokoro af_kore 整词
+· audio-list 登记 +32 slug；全站口径 999→1030 / 61→62
+· （由并行会话推送，与本机 _patch 内容 sha 12/12 一致）
+· versionCode 40→41
+
+## 2026-11-28.37 · 记忆法科学性校对修正
+
+· whole 改同音词对比（原「字母顺序相反」表述有误）
+· bench 归 nch 发音族 /ntʃ/（原 -ench 韵族归并不成立）
+· clear/sense/measure 措辞收紧（去中文复述、纯拼写拆分）
+· 仅 words-data.js 单文件（_push_gql_v37.py）
+· versionCode 41→42
+
 ## 2026-11-28 · 双 AI 审计修复批（跟读打分救活 + 插画缓存 + 数据污染 + 内容修正）
 
 两份外部深度审计（共五轮、含 8400 题模糊测试与算法数值复现）指出的问题，逐条复核后修复合并进本版（与 Power Up L4-L6 对齐同批发版）：
