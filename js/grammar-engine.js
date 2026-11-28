@@ -545,7 +545,7 @@ const canTakeArticle = takesArticle;   // 语义别名，模板里读起来更�
        a one-way street（o 发 /w/）→ 现在给的是 an one（错）
      例外表比规则可靠：小学词库会踩坑的就这几个，穷举掉最稳。 */
 const AN_WORDS = new Set(['hour','honest','honor','honour','heir','herb','honorary']);
-const A_WORDS = new Set(['one','once','useful','useless','university','uniform','united',
+const A_WORDS = new Set(['one','once','use','useful','useless','university','uniform','united',
   'unit','union','unique','user','usual','usually','utility','european','music',
   'ukulele','eulogy','ewe','ubiquitous']);
 function artOf(w) {

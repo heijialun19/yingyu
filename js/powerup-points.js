@@ -1,10 +1,8 @@
 /* ============================================================
-   Power Up 知识点卡 v3.0（2026-11-22 按人教版密度扩容）
-   由 _pu/build_v3_points.py 生成，勿手改。
-   · L1-L3：每单元 5-6 张（对齐 pep-lessons.js 密度），讲解大量复用人教版手写卡；
-     例句用本单元词汇，五字段 t/kid/tip/en/zh 齐全，多词例句配整句音频。
-   · L4-L6：旧卡原样保留（结构未重建，密度已达 5.5 张/单元）。
-   · Review 单元各 3 张复习卡（修 0 词 0 卡点进去崩的问题）。
+   Power Up 知识点卡 v2.2（2026-11-28 L4-L6 官方目录对齐）
+   由 _pu/build_spec_v2.py 生成，勿手改。
+   · L1-L3：v2.0 卡保持不变；L4-L6：按官方 Map 重写（语法讲解逐单元手写）
+   · 每单元 3 张：语法 / 拼读（官方 Sounds and spelling 或 Pronunciation）/ 拓展（跨学科+阅读+SEL+考试对接）
    ============================================================ */
 'use strict';
 const POWERUP_POINTS = {
@@ -1535,400 +1533,192 @@ const POWERUP_POINTS = {
   ]
  },
  "pu4": {
+  "pu4-u0": [
+   {
+    "t": "📐 语法：复习 Level 3 全部语法",
+    "kid": "新学年欢迎回来！把 Level 3 学过的自我介绍、have got、like 和过去式捡起来复习一遍，很快就能进入状态。",
+    "tip": "本单元语法",
+    "en": ""
+   }
+  ],
   "pu4-u1": [
    {
-    "t": "🎯 语法聚焦：like/love/enjoy + doing",
-    "kid": "先看例句：I like art best of all the subjects. —— 它用的就是本单元核心「like/love/enjoy + doing」。本单元任务里就会反复用到：做一张个人课表并排喜好。",
-    "tip": "like/love/enjoy + doing",
-    "en": "I like art best of all the subjects.",
-    "zh": "学校学科"
+    "t": "📐 语法：might/may 表推测（It might be ",
+    "kid": "猜事情用 might 或 may：It might be hot.（可能很热）You may need boots.（你可能需要靴子）。不定代词一族要记牢：everywhere 到处、somewhere 某处、anywhere 任何处、nowhere 无处；人用 everyone / someone / anyone / no-one，物用 everything / something / anything / nothing。",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：Chinese",
-    "kid": "点开本单元词卡的拼读行，按音节把 Chinese 读准，再连读整词。",
+    "t": "🔤 拼读：月份词的重音",
+    "kid": "本单元的拼读/语音点是 月份词的重音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "Chinese",
-    "zh": "拼读示范词"
+    "en": "month"
    },
    {
-    "t": "📝 A2 Flyers → A2 Key · Flyers Reading & Writing Part 5（故事填词）",
-    "kid": "本单元任务：做一张个人课表并排喜好。 学完这些词和句型，A2 Flyers → A2 Key 的「Flyers Reading & Writing Part 5（故事填词）」你就有把握了——考的就是它们。",
-    "tip": "Flyers Reading & Writing Part 5（故事填词）",
-    "en": "English",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🎨 CLIL · 艺术：课程表设计",
-    "kid": "给课表配上颜色和图标——信息设计得好看，一眼就能看明白。",
-    "tip": "CLIL 跨学科",
-    "en": "Chinese",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 每科都认真",
-    "kid": "不喜欢的科目也要认真——认真是你对所有事的尊重。",
-    "tip": "社会价值观",
-    "en": "Chinese",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "Chinese：China 中国 + -ese 表「某国的」 ｜ English：England 英格兰 + -ish 表「某国的」 ｜ math：math 是 mathematics 的缩写，来自希腊语 manthanein（学习）——数学就是「学习」的学问（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "Chinese / English / math",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：What's the climate like? 气候与气候带 · The Arabian Desert；本单元阅读：The lion of the Seas（儿童百科条目）；社会情感：文化意识；考试对接：A2 Reading and Writing。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu4-u2": [
    {
-    "t": "🎯 语法聚焦：in + 月份",
-    "kid": "先看例句：My birthday is in April, on the twelfth. —— 它用的就是本单元核心「in + 月份」。本单元任务里就会反复用到：做一张生日日历。",
-    "tip": "in + 月份",
-    "en": "My birthday is in April, on the twelfth.",
-    "zh": "时间与日期"
+    "t": "📐 语法：一般过去时复习：规则与不规则动词 + ago（We ",
+    "kid": "说「多久以前」把 ago 放在时间后面：three days ago 三天前。too 表示太多（带贬义）：There is too much pollution.；enough 表示足够：There is not enough ice. 过去式不规则变化要背：go→went、sleep→slept。",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：hour",
-    "kid": "点开本单元词卡的拼读行，按音节把 hour 读准，再连读整词。",
+    "t": "🔤 拼读：silent e 不发音的 e",
+    "kid": "本单元的拼读/语音点是 silent e 不发音的 e。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "hour",
-    "zh": "拼读示范词"
+    "en": "earth"
    },
    {
-    "t": "📝 A2 Flyers → A2 Key · Flyers Speaking Part 3（图片讨论）",
-    "kid": "本单元任务：做一张生日日历。 学完这些词和句型，A2 Flyers → A2 Key 的「Flyers Speaking Part 3（图片讨论）」你就有把握了——考的就是它们。",
-    "tip": "Flyers Speaking Part 3（图片讨论）",
-    "en": "minute",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🔢 CLIL · 数学：日历里的数学",
-    "kid": "一年 12 个月 365 天，一个月约 30 天——日历里藏着除法和余数。",
-    "tip": "CLIL 跨学科",
-    "en": "hour",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 守时",
-    "kid": "约好的时间就要到——守时的人让每个人都安心。",
-    "tip": "社会价值观",
-    "en": "hour",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "hour：hour 小时——来自希腊语「时辰」 ｜ minute：minute 分钟——来自拉丁「小的」：小小的时刻 ｜ half：half 一半——一半一半（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "hour / minute / half",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Save our world 濒危动物 · Animals in Australia；本单元阅读：When Dad lost his glasses（诗歌）；社会情感：系统思维 · 欣赏相互依存；考试对接：A2 Listening。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu4-u3": [
    {
-    "t": "🎯 语法聚焦：the largest/one of the ...（最高级初步）",
-    "kid": "先看例句：The whale is the largest animal in the sea. —— 它用的就是本单元核心「the largest/one of the ...（最高级初步）」。本单元任务里就会反复用到：做一张海洋生物海报。",
-    "tip": "the largest/one of the ...（最高级初步）",
-    "en": "The whale is the largest animal in the sea.",
-    "zh": "海洋动物"
+    "t": "📐 语法：现在完成时表经历（Have you ever won",
+    "kid": "问「你有没有做过某事」用 Have you ever …?：Have you ever won a race? 已经做完了用 already：I have already taken 100 photos. 还没做用 yet（放句尾）：I have not seen the pyramids yet. 刚刚做完用 just：We have just finished in Brazil.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 拼读词族：sh（如 shark / goldfish）",
-    "kid": "shark、goldfish、starfish 都属于 sh 词族——同一组字母读同一个音。点开词卡上的拼读行，跟着读三遍，见词就能读。",
-    "tip": "sh 词族",
-    "en": "shark",
-    "zh": "拼读词族"
+    "t": "🔤 拼读：b 和 v 的辨音",
+    "kid": "本单元的拼读/语音点是 b 和 v 的辨音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
+    "tip": "见词能读",
+    "en": "race"
    },
    {
-    "t": "📝 A2 Flyers → A2 Key · Key Reading & Writing Part 1（标识选择题）",
-    "kid": "本单元任务：做一张海洋生物海报。 学完这些词和句型，A2 Flyers → A2 Key 的「Key Reading & Writing Part 1（标识选择题）」你就有把握了——考的就是它们。",
-    "tip": "Key Reading & Writing Part 1（标识选择题）",
-    "en": "dolphin",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 CLIL · 科学：海洋哺乳动物",
-    "kid": "whale 和 dolphin 住在海里却呼吸空气——它们是哺乳动物，要浮上水面换气。",
-    "tip": "CLIL 跨学科",
-    "en": "whale",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 海洋垃圾问题",
-    "kid": "塑料袋在海里像水母，海龟会误食——少用一个塑料袋就是救一条生命。",
-    "tip": "社会价值观",
-    "en": "whale",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "whale：whale 鲸鱼——海里最大的鲸 ｜ dolphin：dolphin 来自希腊语 delphis（海豚） ｜ shark：shark 的词源没有定论（一说与「切」的词根有关）——记住这个词就行，别当规律用（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "whale / dolphin / shark",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Making music history 乐器的历史 · Brazilian carnival music；本单元阅读：The local football hero（真实故事）；社会情感：创意思维；考试对接：A2 Listening。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu4-u4": [
    {
-    "t": "🎯 语法聚焦：will 表预测（It will rain）",
-    "kid": "先看例句：It will be stormy tomorrow, so take an umbrella. —— 它用的就是本单元核心「will 表预测（It will rain）」。本单元任务里就会反复用到：播报未来三天天气预报。",
-    "tip": "will 表预测（It will rain）",
-    "en": "It will be stormy tomorrow, so take an umbrella.",
-    "zh": "季节与天气"
+    "t": "📐 语法：过去进行时（We were waiting at t",
+    "kid": "过去某一刻正在做的事用 was/were + 动词-ing：I was looking for my ticket when it started to rain. 「从过去某点持续到现在」用 since（起点）或 for（时长）：since I was a teenager / for 22 years。",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 拼读词族：er（如 summer / weather）",
-    "kid": "summer、weather、shower 都属于 er 词族——同一组字母读同一个音。点开词卡上的拼读行，跟着读三遍，见词就能读。",
-    "tip": "er 词族",
-    "en": "summer",
-    "zh": "拼读词族"
+    "t": "🔤 拼读：ee 的多种拼法",
+    "kid": "本单元的拼读/语音点是 ee 的多种拼法。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
+    "tip": "见词能读",
+    "en": "o'clock"
    },
    {
-    "t": "📝 A2 Flyers → A2 Key · Key Reading & Writing Part 4（完形填空）",
-    "kid": "本单元任务：播报未来三天天气预报。 学完这些词和句型，A2 Flyers → A2 Key 的「Key Reading & Writing Part 4（完形填空）」你就有把握了——考的就是它们。",
-    "tip": "Key Reading & Writing Part 4（完形填空）",
-    "en": "summer",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 CLIL · 科学：水循环",
-    "kid": "海面蒸发成云、云变成 rain 落下、雨水流回大海——水一直在旅行，这就是水循环。",
-    "tip": "CLIL 跨学科",
-    "en": "spring",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 提醒家人",
-    "kid": "出门前看天气预报，提醒家人带伞——看天气是一种关心。",
-    "tip": "社会价值观",
-    "en": "spring",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "spring：spring 原意是「跳/涌出」——草木从土里「跳」出来 ｜ summer：summer 夏天——太热了，太阳在头顶猛晒 ｜ autumn：autumn 来自拉丁 autumnus（n 不发音）（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "spring / summer / autumn",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Time zones 时区 · New Year celebrations around the world；本单元阅读：The legend of Mother Mountain（传说）；社会情感：数字素养 · 欣赏相互依存；考试对接：A2 Listening。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu4-u5": [
    {
-    "t": "🎯 语法聚焦：have to / has to 表示必须",
-    "kid": "先看例句：I have to wash the dishes after dinner. —— 它用的就是本单元核心「have to / has to 表示必须」。本单元任务里就会反复用到：做一张家务轮值表。",
-    "tip": "have to / has to 表示必须",
-    "en": "I have to wash the dishes after dinner.",
-    "zh": "日常与家务"
+    "t": "📐 语法：will/won't（We will not go ",
+    "kid": "天气预报用 will：It will snow tonight. 否定 won't。说「因为」用 because（接原因），说「所以」用 so（接结果）：We did not go skiing because it was foggy. / It was foggy, so we did not ski.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 拼读词族：ch（如 kitchen / watch）",
-    "kid": "kitchen、watch 都属于 ch 词族——同一组字母读同一个音。点开词卡上的拼读行，跟着读三遍，见词就能读。",
-    "tip": "ch 词族",
-    "en": "kitchen",
-    "zh": "拼读词族"
+    "t": "🔤 拼读：-er / -ar / -or 结尾复习",
+    "kid": "本单元的拼读/语音点是 -er / -ar / -or 结尾复习。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
+    "tip": "见词能读",
+    "en": "weather"
    },
    {
-    "t": "📝 A2 Flyers → A2 Key · Key Listening Part 2（听对话填空）",
-    "kid": "本单元任务：做一张家务轮值表。 学完这些词和句型，A2 Flyers → A2 Key 的「Key Listening Part 2（听对话填空）」你就有把握了——考的就是它们。",
-    "tip": "Key Listening Part 2（听对话填空）",
-    "en": "clean",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🔢 CLIL · 数学：家务时间统计",
-    "kid": "把一周的家务时间记下来画成图表——数据会告诉你谁做得最多。",
-    "tip": "CLIL 跨学科",
-    "en": "wash",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 家务人人有份",
-    "kid": "家是每个人的家——家务不是妈妈一个人的事。",
-    "tip": "社会价值观",
-    "en": "wash",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "wash：wash 洗——用水洗（w- 水） ｜ clean：clean 干净——擦得干干净净（和 clear 同源） ｜ cook：cook 来自拉丁 coquere（烹调）——cook 做、kitchen 厨房同根（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "wash / clean / cook",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Spring, summer, autumn, winter 四季成因 · Climate in Argentina；本单元阅读：Tomás and the snowman（真实故事）；社会情感：创意思维；考试对接：A2 Speaking。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu4-u6": [
    {
-    "t": "🎯 语法聚焦：be + 性格形容词",
-    "kid": "先看例句：She is kind to everyone in our class. —— 它用的就是本单元核心「be + 性格形容词」。本单元任务里就会反复用到：给一位同学写「性格奖状」。",
-    "tip": "be + 性格形容词",
-    "en": "She is kind to everyone in our class.",
-    "zh": "性格与品格"
+    "t": "📐 语法：反义疑问句（You are a mechanic, ",
+    "kid": "反义疑问句：前面肯定后面就否定，前面否定后面就肯定——You are a mechanic, are not you? / You cannot fix robots, can you? 回应别人用短问句：I have got a problem. — Have you?",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：kind",
-    "kid": "点开本单元词卡的拼读行，按音节把 kind 读准，再连读整词。",
+    "t": "🔤 拼读：复合名词的重音",
+    "kid": "本单元的拼读/语音点是 复合名词的重音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "kind",
-    "zh": "拼读示范词"
+    "en": "job"
    },
    {
-    "t": "📝 A2 Flyers → A2 Key · Key Speaking Part 2（图片讨论）",
-    "kid": "本单元任务：给一位同学写「性格奖状」。 学完这些词和句型，A2 Flyers → A2 Key 的「Key Speaking Part 2（图片讨论）」你就有把握了——考的就是它们。",
-    "tip": "Key Speaking Part 2（图片讨论）",
-    "en": "brave",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 📖 CLIL · 文学：从行为看性格",
-    "kid": "故事里不直接说人物性格——他扶起摔倒的同学，你就知道他很 kind。",
-    "tip": "CLIL 跨学科",
-    "en": "kind",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 发现别人的优点",
-    "kid": "每天发现一位同学的一个优点——你也会变成大家最喜欢的同学。",
-    "tip": "社会价值观",
-    "en": "kind",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "kind：kind 善良——对人好（原意「天性」） ｜ brave：brave 勇敢——小英雄挺身而出 ｜ smart：smart 聪明——小脑瓜聪明（原意「刺痛」）（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "kind / brave / smart",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Inventions and robotics 发明与机器人 · South Korean inventions；本单元阅读：Buddie has fun（科幻故事）；社会情感：情感发展 · 数字素养；考试对接：A2 Reading and Writing。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu4-u7": [
    {
-    "t": "🎯 语法聚焦：How much is/are ...? too + 形容词（too expensive）",
-    "kid": "先看例句：This T-shirt is too expensive for me. —— 它用的就是本单元核心「How much is/are ...? too + 形容词（too expensive）」。本单元任务里就会反复用到：模拟商店买卖对话。",
-    "tip": "How much is/are ...? too + 形容词（too expensive）",
-    "en": "This T-shirt is too expensive for me.",
-    "zh": "金钱与购物"
+    "t": "📐 语法：过去分词 seen/found/driven/rid",
+    "kid": "过去分词是完成时和被动语态的积木：seen、found、taken、broken…。说「被用来做某事」用 be used to do 或 be used for doing：They were used to bury the kings. / It is used for teaching people.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：money",
-    "kid": "点开本单元词卡的拼读行，按音节把 money 读准，再连读整词。",
+    "t": "🔤 拼读：j 的拼法",
+    "kid": "本单元的拼读/语音点是 j 的拼法。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "money",
-    "zh": "拼读示范词"
+    "en": "home"
    },
    {
-    "t": "📝 A2 Flyers → A2 Key · Flyers Reading & Writing Part 5（故事填词）",
-    "kid": "本单元任务：模拟商店买卖对话。 学完这些词和句型，A2 Flyers → A2 Key 的「Flyers Reading & Writing Part 5（故事填词）」你就有把握了——考的就是它们。",
-    "tip": "Flyers Reading & Writing Part 5（故事填词）",
-    "en": "price",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🔢 CLIL · 数学：价格计算",
-    "kid": "两件 15 元的东西加起来是多少？找零怎么算？购物是最真实的数学课。",
-    "tip": "CLIL 跨学科",
-    "en": "money",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 理性消费",
-    "kid": "买之前问自己：需要，还是想要？想清楚再花钱。",
-    "tip": "社会价值观",
-    "en": "money",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "money：money 钱——来自拉丁 Moneta（铸钱女神）！ ｜ price：price 来自拉丁 pretium（价值）——precious（珍贵的）同根 ｜ cheap：cheap 来自古英语 cēap（交易/买卖）——cheap 原意是「能买到的」（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "money / price / cheap",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Time machines 物品的演化 · The pyramids of Ancient Egypt；本单元阅读：The boy king（历史小说）；社会情感：社会责任；考试对接：A2 Reading and Writing。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu4-u8": [
    {
-    "t": "🎯 语法聚焦：be going to 表计划",
-    "kid": "先看例句：We are going to the beach by car. —— 它用的就是本单元核心「be going to 表计划」。本单元任务里就会反复用到：设计一次周末旅行计划卡。",
-    "tip": "be going to 表计划",
-    "en": "We are going to the beach by car.",
-    "zh": "旅行与地点"
+    "t": "📐 语法：will 和 going to（We are goi",
+    "kid": "打算做的事用 be going to：We are going to have a special visitor. 预测用 will：Some people think we will live on Mars. 三种过去时（一般 / 进行 / 完成）按场景选，讲故事时尤其要分清。",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：travel",
-    "kid": "点开本单元词卡的拼读行，按音节把 travel 读准，再连读整词。",
+    "t": "🔤 拼读：s + 辅音连缀",
+    "kid": "本单元的拼读/语音点是 s + 辅音连缀。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "travel",
-    "zh": "拼读示范词"
+    "en": "star"
    },
    {
-    "t": "📝 A2 Flyers → A2 Key · Flyers Speaking Part 3（图片讨论）",
-    "kid": "本单元任务：设计一次周末旅行计划卡。 学完这些词和句型，A2 Flyers → A2 Key 的「Flyers Speaking Part 3（图片讨论）」你就有把握了——考的就是它们。",
-    "tip": "Flyers Speaking Part 3（图片讨论）",
-    "en": "trip",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🌍 CLIL · 地理：海滩是怎么形成的",
-    "kid": "海浪把石头打磨了几千年，变成了 sand——beach 是大海的雕刻作品。",
-    "tip": "CLIL 跨学科",
-    "en": "travel",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 旅行环保",
-    "kid": "离开沙滩时带走自己的垃圾——把美丽留给下一批游客。",
-    "tip": "社会价值观",
-    "en": "travel",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "travel：travel 来自法语 travail（辛苦的工作）——travel 原意是「辛苦的旅程」！ ｜ trip：trip 来自法语 tripper（绊倒/快走）——trip 原是「快步走」 ｜ tour：tour 来自拉丁 tornare（转一圈）——tour 就是「转一圈」。tournament 锦标赛同根（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "travel / trip / tour",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Preparing for Mars 火星探索 · The International Space Station；本单元阅读：My space blog（博客）；社会情感：想象替代未来；考试对接：A2 Reading and Writing。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu4-u9": [
    {
-    "t": "🎯 语法聚焦：like/love + doing 复习",
-    "kid": "先看例句：There is a concert on TV tonight. —— 它用的就是本单元核心「like/love + doing 复习」。本单元任务里就会反复用到：做一份班级节目单。",
-    "tip": "like/love + doing 复习",
-    "en": "There is a concert on TV tonight.",
-    "zh": "媒体与艺术"
+    "t": "📐 语法：It smells/tastes/looks/fee",
+    "kid": "闻起来 / 尝起来 / 看起来像什么用感官动词 + like：It smells like carrot cake. / It looked like a nest. 「让某人觉得怎么样」用 make + 人 + 形容词：The smell is making me hungry.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：TV",
-    "kid": "点开本单元词卡的拼读行，按音节把 TV 读准，再连读整词。",
+    "t": "🔤 拼读：sh 的拼法",
+    "kid": "本单元的拼读/语音点是 sh 的拼法。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "TV",
-    "zh": "拼读示范词"
+    "en": "breakfast"
    },
    {
-    "t": "📝 A2 Flyers → A2 Key · Key Reading & Writing Part 1（标识选择题）",
-    "kid": "本单元任务：做一份班级节目单。 学完这些词和句型，A2 Flyers → A2 Key 的「Key Reading & Writing Part 1（标识选择题）」你就有把握了——考的就是它们。",
-    "tip": "Key Reading & Writing Part 1（标识选择题）",
-    "en": "phone",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🎨 CLIL · 艺术：乐器家族",
-    "kid": "piano 和 violin 是弦与键的家族——不同乐器振动的方式不同，声音就不同。",
-    "tip": "CLIL 跨学科",
-    "en": "TV",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 尊重表演者",
-    "kid": "演出结束再鼓掌，安静听完整首曲子——掌声是最好的赞美。",
-    "tip": "社会价值观",
-    "en": "TV",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "TV：TV 是 television 的缩写：tele-（远）+ vis（看）：「看远处的东西」 ｜ phone：phone 来自希腊语 phone（声音）——telephone = tele（远）+ phone（声）：远处的声音 ｜ email：e-（电子）+ mail（邮件）（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "TV / phone / email",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：How chocolate is made 巧克力生产 · Traditional food in the UK；本单元阅读：The gingerbread girl's adventure（童话改编）；社会情感：情感发展 · 欣赏文化多样性；考试对接：A2 Reading and Writing。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu4-r1": [
@@ -2025,398 +1815,182 @@ const POWERUP_POINTS = {
  "pu5": {
   "pu5-u1": [
    {
-    "t": "🎯 语法聚焦：must/mustn't 表示义务与禁止",
-    "kid": "先看例句：We must protect the earth and save water. —— 它用的就是本单元核心「must/mustn't 表示义务与禁止」。本单元任务里就会反复用到：写一份班级环保公约。",
-    "tip": "must/mustn't 表示义务与禁止",
-    "en": "We must protect the earth and save water.",
-    "zh": "自然与环境"
+    "t": "📐 语法：比较级形容词、副词与 as … as（The blu",
+    "kid": "比较级：more expensive than（比…更贵）、fits better（更合身）；同级比较 as … as：It is not as heavy as the grey jacket. 时刻表类的将来用一般现在时：The show starts at one o'clock tomorrow.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：earth",
-    "kid": "点开本单元词卡的拼读行，按音节把 earth 读准，再连读整词。",
+    "t": "🔤 拼读：复数 s 的发音",
+    "kid": "本单元的拼读/语音点是 复数 s 的发音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "earth",
-    "zh": "拼读示范词"
+    "en": "shirt"
    },
    {
-    "t": "📝 A2 Key for Schools · Reading & Writing Part 1（标识选择题）",
-    "kid": "本单元任务：写一份班级环保公约。 学完这些词和句型，A2 Key for Schools 的「Reading & Writing Part 1（标识选择题）」你就有把握了——考的就是它们。",
-    "tip": "Reading & Writing Part 1（标识选择题）",
-    "en": "planet",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 CLIL · 科学：垃圾去哪了",
-    "kid": "一个塑料瓶要 450 年才能消失——recycle 让它变成新瓶子，这是垃圾的第二次生命。",
-    "tip": "CLIL 跨学科",
-    "en": "earth",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 随手环保",
-    "kid": "随手关灯、自带水杯、双面用纸——环保不是大事，是每天的小事。",
-    "tip": "社会价值观",
-    "en": "earth",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "earth：earth 地球——泥土/大地 ｜ planet：planet 来自希腊语「游荡的」——行星是「游荡的星」 ｜ space：space 来自拉丁 spatium（空间）（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "earth / planet / space",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Clothes throughout history 服饰的过去、现在与未来；本单元阅读：King Canute's day on the beach（面对挫折的故事）；社会情感：情感发展 · 探索解决方案；考试对接：A2 Key for Schools: Reading and Writing Part 1 / Listening Part 1。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu5-u2": [
    {
-    "t": "🎯 语法聚焦：形状/尺寸形容词排序（a big round …）",
-    "kid": "先看例句：This box is heavy but small. —— 它用的就是本单元核心「形状/尺寸形容词排序（a big round …）」。本单元任务里就会反复用到：「神秘物品」描述猜谜游戏。",
-    "tip": "形状/尺寸形容词排序（a big round …）",
-    "en": "This box is heavy but small.",
-    "zh": "描述事物"
+    "t": "📐 语法：第一条件句（If something breaks,",
+    "kid": "恒真条件用零条件句：If you press this button, it turns on.（按就亮，永远成立）将来可能发生用第一条件句：If something breaks, a robot will fix it.——if 从句用现在时，主句用 will。",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 拼读词族：ea（如 heavy / easy）",
-    "kid": "heavy、easy、clean 都属于 ea 词族——同一组字母读同一个音。点开词卡上的拼读行，跟着读三遍，见词就能读。",
-    "tip": "ea 词族",
-    "en": "heavy",
-    "zh": "拼读词族"
+    "t": "🔤 拼读：双音节词的音节重音",
+    "kid": "本单元的拼读/语音点是 双音节词的音节重音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
+    "tip": "见词能读",
+    "en": "computer"
    },
    {
-    "t": "📝 A2 Key for Schools · Reading & Writing Part 4（完形填空）",
-    "kid": "本单元任务：「神秘物品」描述猜谜游戏。 学完这些词和句型，A2 Key for Schools 的「Reading & Writing Part 4（完形填空）」你就有把握了——考的就是它们。",
-    "tip": "Reading & Writing Part 4（完形填空）",
-    "en": "square",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 CLIL · 科学：材料属性",
-    "kid": "wood 浮在水面、stone 沉下去——材料不同，本领不同，用途就不同。",
-    "tip": "CLIL 跨学科",
-    "en": "circle",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 描述准确",
-    "kid": "说清楚「多大、多重、什么做的」——准确的描述是一种诚实。",
-    "tip": "社会价值观",
-    "en": "circle",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "circle：circle 的词根 circ- = 圆：circle 圆、circus 马戏场（圆形场地）、circulate 循环 ｜ square：square = ex-（完全）+ quadr-（四）：完全四四方方。quadr- = 四：quarter 四分之一 ｜ triangle：tri- = 三：triangle 三角、tricycle 三轮车、triple 三倍（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "circle / square / triangle",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：How to make an app 什么是应用、怎么做一个；本单元阅读：The Tech Times（关于嫉妒的报纸文章）；社会情感：创意思维 · 沟通；考试对接：A2 Key for Schools: Speaking Part 1 / Reading and Writing Part 2。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu5-u3": [
    {
-    "t": "🎯 语法聚焦：How often ...? 频率回答",
-    "kid": "先看例句：Exercise keeps you healthy and strong. —— 它用的就是本单元核心「How often ...? 频率回答」。本单元任务里就会反复用到：做一周健康习惯打卡表。",
-    "tip": "How often ...? 频率回答",
-    "en": "Exercise keeps you healthy and strong.",
-    "zh": "健康与习惯"
+    "t": "📐 语法：一般现在时被动语态（The hosts are de",
+    "kid": "被动语态 = be + 过去分词，说「由谁决定」：The hosts are decided by the World Rugby Council. 提议三件套：Shall we watch…? / I think we should ask Mum. / Maybe we could look online.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：health",
-    "kid": "点开本单元词卡的拼读行，按音节把 health 读准，再连读整词。",
+    "t": "🔤 拼读：元音发音",
+    "kid": "本单元的拼读/语音点是 元音发音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "health",
-    "zh": "拼读示范词"
+    "en": "football"
    },
    {
-    "t": "📝 A2 Key for Schools · Reading & Writing Part 6（写便条 25 词）",
-    "kid": "本单元任务：做一周健康习惯打卡表。 学完这些词和句型，A2 Key for Schools 的「Reading & Writing Part 6（写便条 25 词）」你就有把握了——考的就是它们。",
-    "tip": "Reading & Writing Part 6（写便条 25 词）",
-    "en": "healthy",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 CLIL · 科学：习惯与身体",
-    "kid": "每天刷牙、按时睡觉、经常锻炼——身体的分数是按天攒出来的。",
-    "tip": "CLIL 跨学科",
-    "en": "health",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 坚持好习惯",
-    "kid": "好习惯做一天容易，做一年才厉害——坚持就是你对自己说的话。",
-    "tip": "社会价值观",
-    "en": "health",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "health：health 和 heal（治愈）同根：健康就是「被治愈」的状态 ｜ healthy：health 健康 + -y ｜ exercise：exercise = ex-（出）+ arcere（阻止）：「去除惰性」→锻炼（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "health / healthy / exercise",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Practice makes perfect 运动员赛前怎么训练吃睡；本单元阅读：The Spartan Princess（关于坚持的漫画）；社会情感：创意思维；考试对接：A2 Key for Schools: Listening Part 2 / Reading and Writing Part 5。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu5-u4": [
    {
-    "t": "🎯 语法聚焦：祈使指路 Turn left / Go along",
-    "kid": "先看例句：Go along this street, then turn right at the corner. —— 它用的就是本单元核心「祈使指路 Turn left / Go along」。本单元任务里就会反复用到：画出从学校到家的路线图。",
-    "tip": "祈使指路 Turn left / Go along",
-    "en": "Go along this street, then turn right at the corner.",
-    "zh": "方向与位置"
+    "t": "📐 语法：现在完成时 + how long/for/since",
+    "kid": "问「持续多久了」用 How long + 现在完成时：How long has your arm been sore? 回答用 for（时长）或 since（起点）：for three days / since yesterday。已安排好的将来用现在进行时：I am seeing the doctor again.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：map",
-    "kid": "点开本单元词卡的拼读行，按音节把 map 读准，再连读整词。",
+    "t": "🔤 拼读：句子重音",
+    "kid": "本单元的拼读/语音点是 句子重音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "map",
-    "zh": "拼读示范词"
+    "en": "doctor"
    },
    {
-    "t": "📝 A2 Key for Schools · Reading & Writing Part 7（看图写短文）",
-    "kid": "本单元任务：画出从学校到家的路线图。 学完这些词和句型，A2 Key for Schools 的「Reading & Writing Part 7（看图写短文）」你就有把握了——考的就是它们。",
-    "tip": "Reading & Writing Part 7（看图写短文）",
-    "en": "east",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🌍 CLIL · 地理：地图与方向",
-    "kid": "上北下南左西右东——看懂地图的人，走到哪都不会迷路。",
-    "tip": "CLIL 跨学科",
-    "en": "map",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 帮助问路的人",
-    "kid": "有人问路时，说清楚、有耐心——你曾是找不到路的小孩吗？",
-    "tip": "社会价值观",
-    "en": "map",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "map：map 是 mappa（布）的缩写——古人把世界画在布上 ｜ east：east 的 e- 表「出」——太阳「出来」的方向 ｜ west：west 就是太阳「落」的方向（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "map / east / west",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Making lives better 科学如何改善生活；本单元阅读：The £20,000 adventure（关于情绪的故事）；社会情感：情感发展 · 学会学习；考试对接：A2 Key for Schools: Reading and Writing Part 4 / Listening Part 4。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu5-u5": [
    {
-    "t": "🎯 语法聚焦：play the + 乐器（play the piano） vs play + 球类 的区别",
-    "kid": "先看例句：She plays the violin in the school band. —— 它用的就是本单元核心「play the + 乐器（play the piano） vs play + 球类 的区别」。本单元任务里就会反复用到：策划一场班级音乐会。",
-    "tip": "play the + 乐器（play the piano） vs play + 球类 的区别",
-    "en": "She plays the violin in the school band.",
-    "zh": "音乐与表演"
+    "t": "📐 语法：prefer、would prefer 和 woul",
+    "kid": "「更喜欢」三兄弟：I prefer eating salad.（prefer + doing）/ I would prefer to have salmon. / I would rather have steak. 过去被动：Pizza was first made in Italy. / The cookies were invented by Ruth Wakefield.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：piano",
-    "kid": "点开本单元词卡的拼读行，按音节把 piano 读准，再连读整词。",
+    "t": "🔤 拼读：动词过去式结尾的发音",
+    "kid": "本单元的拼读/语音点是 动词过去式结尾的发音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "piano",
-    "zh": "拼读示范词"
+    "en": "rice"
    },
    {
-    "t": "📝 A2 Key for Schools · Listening Part 2（听对话填空）",
-    "kid": "本单元任务：策划一场班级音乐会。 学完这些词和句型，A2 Key for Schools 的「Listening Part 2（听对话填空）」你就有把握了——考的就是它们。",
-    "tip": "Listening Part 2（听对话填空）",
-    "en": "guitar",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🔢 CLIL · 数学：节拍里的分数",
-    "kid": "一个音拍 1 拍，半个音拍 1/2 拍——音乐里的节奏就是数学的分数。",
-    "tip": "CLIL 跨学科",
-    "en": "piano",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 练习需要坚持",
-    "kid": "台上一分钟，台下十年功——每一次练习都在靠近舞台。",
-    "tip": "社会价值观",
-    "en": "piano",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "piano：piano 来自意大利语 pianoforte（轻和响）——钢琴能「轻能响」！ ｜ guitar：guitar 来自希腊语 kithara（琴） ｜ violin：violin 来自意大利语 viola 的「小」版——violin 小提琴（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "piano / guitar / violin",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Healthy eating 为什么有些食物对健康有益；本单元阅读：A very interesting week in the life of Juana Sánchez（关于情绪管理的日记）；社会情感：情感发展 · 系统思维；考试对接：A2 Key for Schools: Listening Part 5 / Reading and Writing Part 7。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu5-u6": [
    {
-    "t": "🎯 语法聚焦：邮件格式 Dear ... / Best wishes",
-    "kid": "先看例句：I sent you an email with a photo. —— 它用的就是本单元核心「邮件格式 Dear ... / Best wishes」。本单元任务里就会反复用到：写一封 50 词的英文邮件。",
-    "tip": "邮件格式 Dear ... / Best wishes",
-    "en": "I sent you an email with a photo.",
-    "zh": "通讯与媒体"
+    "t": "📐 语法：a few/a little/a lot of/lo",
+    "kid": "数量词分家：可数用 a few（a few toy cars）、不可数用 a little（a little water）、大量用 lots of。环保提议用反义疑问收尾：We could be more friendly, could we not? / We should not throw plastic here, should we?",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：phone",
-    "kid": "点开本单元词卡的拼读行，按音节把 phone 读准，再连读整词。",
+    "t": "🔤 拼读：schwa 弱央元音",
+    "kid": "本单元的拼读/语音点是 schwa 弱央元音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "phone",
-    "zh": "拼读示范词"
+    "en": "tree"
    },
    {
-    "t": "📝 A2 Key for Schools · Speaking Part 2（图片讨论）",
-    "kid": "本单元任务：写一封 50 词的英文邮件。 学完这些词和句型，A2 Key for Schools 的「Speaking Part 2（图片讨论）」你就有把握了——考的就是它们。",
-    "tip": "Speaking Part 2（图片讨论）",
-    "en": "email",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 💻 CLIL · 信息：邮件的结构",
-    "kid": "一封邮件 = 收件人 + 主题 + 正文 + 结尾——结构清楚，别人一看就懂。",
-    "tip": "CLIL 跨学科",
-    "en": "phone",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 回消息是礼貌",
-    "kid": "收到消息及时回复——让别人等待是小事，也是大事。",
-    "tip": "社会价值观",
-    "en": "phone",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "phone：phone 来自希腊语 phone（声音）——telephone = tele（远）+ phone（声）：远处的声音 ｜ email：e-（电子）+ mail（邮件） ｜ message：message 来自拉丁 mittere（送）——message 就是「送出去的话」。missile 导弹同根（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "phone / email / message",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Ecosystems 城市里的动物家园；本单元阅读：The fall of a Mayan city（保护环境的故事）；社会情感：推动积极改变 · 系统思维；考试对接：A2 Key for Schools: Speaking Part 2 / Reading and Writing Part 6。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu5-u7": [
    {
-    "t": "🎯 语法聚焦：want to be / hope to do",
-    "kid": "先看例句：My dream is to go to college and study science. —— 它用的就是本单元核心「want to be / hope to do」。本单元任务里就会反复用到：「二十年后的我」演讲卡。",
-    "tip": "want to be / hope to do",
-    "en": "My dream is to go to college and study science.",
-    "zh": "职业与梦想"
+    "t": "📐 语法：have to/don't have to/need",
+    "kid": "「必须」两兄弟：have to（外界要求）/ must（自己强烈觉得）：I really must study. 不必 = needn't，禁止 = mustn't。「如此…以至于」：I felt so scared that I wanted to go home! / I took such a deep breath that everyone heard it!",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：job",
-    "kid": "点开本单元词卡的拼读行，按音节把 job 读准，再连读整词。",
+    "t": "🔤 拼读：/b/ /v/ /w/ 辨音",
+    "kid": "本单元的拼读/语音点是 /b/ /v/ /w/ 辨音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "job",
-    "zh": "拼读示范词"
+    "en": "happy"
    },
    {
-    "t": "📝 A2 Key for Schools · Reading & Writing Part 1（标识选择题）",
-    "kid": "本单元任务：「二十年后的我」演讲卡。 学完这些词和句型，A2 Key for Schools 的「Reading & Writing Part 1（标识选择题）」你就有把握了——考的就是它们。",
-    "tip": "Reading & Writing Part 1（标识选择题）",
-    "en": "dream",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🌍 CLIL · 社会：职业学习路径",
-    "kid": "想当 scientist 就要先学好 science 和 math——每个梦想都有一条通向它的路。",
-    "tip": "CLIL 跨学科",
-    "en": "job",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 尊重每个梦想",
-    "kid": "有人想当 pilot，有人想当 vet——每个认真的梦想都值得鼓掌。",
-    "tip": "社会价值观",
-    "en": "job",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "job：job 的原意是「一块/一项工作」——job 就是「一件活儿」 ｜ dream：dream 原意是「欢乐/音乐」——后来才指「梦」 ｜ goal：goal 原是「终点线」（古英语 gal 界限）（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "job / dream / goal",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Emotional awareness 同理心与情绪表达；本单元阅读：The cowboy who cried wolf（诚实的故事）；社会情感：情感发展；考试对接：A2 Key for Schools: Reading and Writing Part 3 / Listening Part 3。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu5-u8": [
    {
-    "t": "🎯 语法聚焦：both/and 与 but/however 的对比句式",
-    "kid": "先看例句：Both festivals are about family and food. —— 它用的就是本单元核心「both/and 与 but/however 的对比句式」。本单元任务里就会反复用到：对比中外一个节日的异同。",
-    "tip": "both/and 与 but/however 的对比句式",
-    "en": "Both festivals are about family and food.",
-    "zh": "节日与文化"
+    "t": "📐 语法：间接疑问句（Could you tell us wh",
+    "kid": "客气地问长句用间接疑问句（陈述语序）：Could you tell us what that big building is, please? 说「过去的习惯」用 used to：People did not use to have running water. They used to collect water from the well.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：festival",
-    "kid": "点开本单元词卡的拼读行，按音节把 festival 读准，再连读整词。",
+    "t": "🔤 拼读：疑问句的语调",
+    "kid": "本单元的拼读/语音点是 疑问句的语调。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "festival",
-    "zh": "拼读示范词"
+    "en": "city"
    },
    {
-    "t": "📝 A2 Key for Schools · Reading & Writing Part 4（完形填空）",
-    "kid": "本单元任务：对比中外一个节日的异同。 学完这些词和句型，A2 Key for Schools 的「Reading & Writing Part 4（完形填空）」你就有把握了——考的就是它们。",
-    "tip": "Reading & Writing Part 4（完形填空）",
-    "en": "Christmas",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🌍 CLIL · 社会：节日比较表",
-    "kid": "春节和 Christmas 都吃团圆饭——把两个节日做成对比表，异同一目了然。",
-    "tip": "CLIL 跨学科",
-    "en": "festival",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 了解别人的文化",
-    "kid": "别人的节日你不必过，但要懂得尊重——了解让人成为好朋友。",
-    "tip": "社会价值观",
-    "en": "festival",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "festival：festival 来自拉丁 festum（节日） ｜ Christmas：Christ 基督 + mas 弥撒：基督的弥撒 ｜ present：present = pre-（前）+ sent（在）：「放在前面」的东西 = 礼物（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "festival / Christmas / present",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Responsible tourism 假期如何爱护景点；本单元阅读：The case of the Butterfly Diamond（管理压力的故事）；社会情感：创意思维 · 社会责任；考试对接：A2 Key for Schools: Reading and Writing Part 4 / B1 Preliminary for Schools: Reading Part 6。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu5-u9": [
    {
-    "t": "🎯 语法聚焦：people in + 国家",
-    "kid": "先看例句：People in France speak French. —— 它用的就是本单元核心「people in + 国家」。本单元任务里就会反复用到：做一张世界旅行护照手册。",
-    "tip": "people in + 国家",
-    "en": "People in France speak French.",
-    "zh": "国家与旅行"
+    "t": "📐 语法：have / get something done（",
+    "kid": "「让别人做好某事」用 have / get something done：We are having the costumes made.（我们正在找人做戏服）假想句用第二条件句（过去式 + would）：If I had 250 million euros, I would give lots of it to charity.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：country",
-    "kid": "点开本单元词卡的拼读行，按音节把 country 读准，再连读整词。",
+    "t": "🔤 拼读：单词重音",
+    "kid": "本单元的拼读/语音点是 单词重音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "country",
-    "zh": "拼读示范词"
+    "en": "TV"
    },
    {
-    "t": "📝 A2 Key for Schools · Reading & Writing Part 6（写便条 25 词）",
-    "kid": "本单元任务：做一张世界旅行护照手册。 学完这些词和句型，A2 Key for Schools 的「Reading & Writing Part 6（写便条 25 词）」你就有把握了——考的就是它们。",
-    "tip": "Reading & Writing Part 6（写便条 25 词）",
-    "en": "world",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🌍 CLIL · 地理：国家与首都",
-    "kid": "China—Beijing、France—Paris、Japan—Tokyo——国家与首都像钥匙和锁，一一配对。",
-    "tip": "CLIL 跨学科",
-    "en": "country",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 世界很大，去看看",
-    "kid": "学好英语就是带上世界的钥匙——它能打开更多的大门。",
-    "tip": "社会价值观",
-    "en": "country",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "country：country = contra（对面）+ -ry：「对面的那片地」，和 contrast（对比）同根 ｜ world：world = wer（人）+ old（时代）：「人的时代」就是世界 ｜ language：lingu- = 舌/语言：language 语言、linguistics 语言学、bilingual 双语（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "country / world / language",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Special effects 电影特效怎么做；本单元阅读：Lost in the Rainforest（环保电影脚本）；社会情感：创意思维；考试对接：A2 Key for Schools: Reading and Writing Part 7 / B1 Preliminary for Schools: Writing Part 1。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu5-r1": [
@@ -2513,398 +2087,182 @@ const POWERUP_POINTS = {
  "pu6": {
   "pu6-u1": [
    {
-    "t": "🎯 语法聚焦：一般将来 will/going to 复习",
-    "kid": "先看例句：Learning English takes practice every day. —— 它用的就是本单元核心「一般将来 will/going to 复习」。本单元任务里就会反复用到：写 5 条「高效学习法」清单。",
-    "tip": "一般将来 will/going to 复习",
-    "en": "Learning English takes practice every day.",
-    "zh": "学会学习"
+    "t": "📐 语法：形容词 + 介词（I am interested i",
+    "kid": "形容词配固定介词：interested in（对…感兴趣）、keen on（热衷于）、perfect for（正适合）。附和别人的肯定用 So have we!（我们也是！）否定用 Nor do I.（我也不）。",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：learn",
-    "kid": "点开本单元词卡的拼读行，按音节把 learn 读准，再连读整词。",
+    "t": "🔤 拼读：辅音连缀的连读",
+    "kid": "本单元的拼读/语音点是 辅音连缀的连读。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "learn",
-    "zh": "拼读示范词"
+    "en": "music"
    },
    {
-    "t": "📝 B1 Preliminary for Schools · Reading Part 1（理解短讯）",
-    "kid": "本单元任务：写 5 条「高效学习法」清单。 学完这些词和句型，B1 Preliminary for Schools 的「Reading Part 1（理解短讯）」你就有把握了——考的就是它们。",
-    "tip": "Reading Part 1（理解短讯）",
-    "en": "teach",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🧠 CLIL · 心理学：遗忘曲线",
-    "kid": "学完 20 分钟忘 40%，一天后忘 70%——review 就是把忘记的东西抢回来。",
-    "tip": "CLIL 跨学科",
-    "en": "learn",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 复述是最好的学习",
-    "kid": "把学到的讲给别人听——能讲明白，才是真的懂了。",
-    "tip": "社会价值观",
-    "en": "learn",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "learn：learn 和 lore（知识）同源：学到的就是 lore ｜ teach：teach 原意是「展示」——teacher 就是「展示给你看的人」 ｜ understand：understand = under + stand（置身其中）——「钻进去」才能理解（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "learn / teach / understand",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Eighteenth-century music 贝多芬与莫扎特；本单元阅读：The Concert（日记）；社会情感：社交情感技能：自信；考试对接：Preliminary for Schools: Reading Part 1 / Listening Part 1。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu6-u2": [
    {
-    "t": "🎯 语法聚焦：must/have to/need to 的强弱",
-    "kid": "先看例句：Everyone must follow the school rules. —— 它用的就是本单元核心「must/have to/need to 的强弱」。本单元任务里就会反复用到：为学校写三条新规则并说明理由。",
-    "tip": "must/have to/need to 的强弱",
-    "en": "Everyone must follow the school rules.",
-    "zh": "社区与规则"
+    "t": "📐 语法：关系从句（My cousins who live i",
+    "kid": "关系从句给名词加说明：My cousins who live in Portugal speak Portuguese.（住在葡萄牙的表亲）比数量：可数用 fewer、不可数用 less——People can drink less water than camels. 最高级 the most / the fewest / the best。",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 拼读词族：ou（如 group / neighbour）",
-    "kid": "group、neighbour 都属于 ou 词族——同一组字母读同一个音。点开词卡上的拼读行，跟着读三遍，见词就能读。",
-    "tip": "ou 词族",
-    "en": "group",
-    "zh": "拼读词族"
+    "t": "🔤 拼读：比较结构的重音",
+    "kid": "本单元的拼读/语音点是 比较结构的重音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
+    "tip": "见词能读",
+    "en": "world"
    },
    {
-    "t": "📝 B1 Preliminary for Schools · Reading Part 3（人物观点配对）",
-    "kid": "本单元任务：为学校写三条新规则并说明理由。 学完这些词和句型，B1 Preliminary for Schools 的「Reading Part 3（人物观点配对）」你就有把握了——考的就是它们。",
-    "tip": "Reading Part 3（人物观点配对）",
-    "en": "law",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🌍 CLIL · 社会：规则如何保护大家",
-    "kid": "traffic rules 让马路安全、class rules 让课堂安静——规则不是限制，是保护。",
-    "tip": "CLIL 跨学科",
-    "en": "rule",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 规则面前的公平",
-    "kid": "规则对每个人都一样——不因为关系好就不遵守，这才是公平。",
-    "tip": "社会价值观",
-    "en": "rule",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "rule：rule 来自拉丁 regula（直尺）——reg- = 直！rule 原是「直尺/规矩」 ｜ law：law 来自北欧语 lag（放好的东西）——law 原是「定好的规矩」 ｜ police：police 来自拉丁 polis（城市）——police 就是「城市管理」。politics 政治同根！（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "rule / law / police",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Coral reefs 珊瑚礁；本单元阅读：Festivals round the world（杂志文章）；社会情感：社交情感技能：拥抱其他文化；考试对接：Preliminary for Schools: Speaking Part 1 / Reading Part 4。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu6-u3": [
    {
-    "t": "🎯 语法聚焦：be + 形容词 + to do（It's kind of you to ...）",
-    "kid": "先看例句：It was brave of him to speak first. —— 它用的就是本单元核心「be + 形容词 + to do（It's kind of you to ...）」。本单元任务里就会反复用到：评选班级「品格之星」并写颁奖词。",
-    "tip": "be + 形容词 + to do（It's kind of you to ...）",
-    "en": "It was brave of him to speak first.",
-    "zh": "品格与价值观"
+    "t": "📐 语法：动词+动名词、动词+不定式（They need to",
+    "kid": "动词后面跟什么有讲究：need to do（要去做）、enjoy doing（喜欢做）、fancy doing（想要做吗——Do you fancy buying one?）动名词还能当主语：Shopping is great! / Learning about tea is fun.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：kind",
-    "kid": "点开本单元词卡的拼读行，按音节把 kind 读准，再连读整词。",
+    "t": "🔤 拼读：gerunds 发音",
+    "kid": "本单元的拼读/语音点是 gerunds 发音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "kind",
-    "zh": "拼读示范词"
+    "en": "money"
    },
    {
-    "t": "📝 B1 Preliminary for Schools · Writing Part 1（写邮件 100 词）",
-    "kid": "本单元任务：评选班级「品格之星」并写颁奖词。 学完这些词和句型，B1 Preliminary for Schools 的「Writing Part 1（写邮件 100 词）」你就有把握了——考的就是它们。",
-    "tip": "Writing Part 1（写邮件 100 词）",
-    "en": "brave",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 📖 CLIL · 文学：从行为推断性格",
-    "kid": "故事不会直接写「他很勇敢」——他第一个冲上去，你就读懂了。",
-    "tip": "CLIL 跨学科",
-    "en": "kind",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 看见别人的努力",
-    "kid": "夸奖别人的努力而不只是聪明——努力是每个人都拥有的力量。",
-    "tip": "社会价值观",
-    "en": "kind",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "kind：kind 善良——对人好（原意「天性」） ｜ brave：brave 勇敢——小英雄挺身而出 ｜ smart：smart 聪明——小脑瓜聪明（原意「刺痛」）（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "kind / brave / smart",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：The history of money 货币的历史；本单元阅读：Where's Wanda?（故事）；社会情感：社交情感技能：珍惜收到的礼物；考试对接：Preliminary for Schools: Speaking Part 3 / Reading Part 6。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu6-u4": [
    {
-    "t": "🎯 语法聚焦：比较级 + than 的论证句式",
-    "kid": "先看例句：Phones are cheaper than before, and screens are bigger. —— 它用的就是本单元核心「比较级 + than 的论证句式」。本单元任务里就会反复用到：辩论「屏幕时间」利与弊。",
-    "tip": "比较级 + than 的论证句式",
-    "en": "Phones are cheaper than before, and screens are bigger.",
-    "zh": "科技与媒体"
+    "t": "📐 语法：被动语态复习（Singapore Airport w",
+    "kid": "被动语态复习：一般过去 was built、现在完成 has been open。短语动词的宾语是代词时必须放中间：He put on his trunks. = He put them on.（不能说 put on them）",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：computer",
-    "kid": "点开本单元词卡的拼读行，按音节把 computer 读准，再连读整词。",
+    "t": "🔤 拼读：弱读形式",
+    "kid": "本单元的拼读/语音点是 弱读形式。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "computer",
-    "zh": "拼读示范词"
+    "en": "plane"
    },
    {
-    "t": "📝 B1 Preliminary for Schools · Listening Part 3（听独白判断）",
-    "kid": "本单元任务：辩论「屏幕时间」利与弊。 学完这些词和句型，B1 Preliminary for Schools 的「Listening Part 3（听独白判断）」你就有把握了——考的就是它们。",
-    "tip": "Listening Part 3（听独白判断）",
-    "en": "phone",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 CLIL · 科学：技术迭代",
-    "kid": "手机从大砖头变成小屏幕，十年一小变——技术的进步是一代代人攒出来的。",
-    "tip": "CLIL 跨学科",
-    "en": "computer",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 屏幕时间管理",
-    "kid": "屏幕是好工具也是时间黑洞——定好时间，做完该做的事再玩。",
-    "tip": "社会价值观",
-    "en": "computer",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "computer：computer = compute（计算）+ -er（机器）：计算的机器。compute = com + putare ｜ phone：phone 来自希腊语 phone（声音）——telephone = tele（远）+ phone（声）：远处的声音 ｜ TV：TV 是 television 的缩写：tele-（远）+ vis（看）：「看远处的东西」（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "computer / phone / TV",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Women aviators 女飞行员 Amy Johnson；本单元阅读：How we got back from our holiday（科幻故事）；社会情感：社交情感技能：保持冷静；考试对接：Preliminary for Schools: Reading Part 2 / Listening Part 2。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu6-u5": [
    {
-    "t": "🎯 语法聚焦：should/shouldn't/ought to 建议",
-    "kid": "先看例句：We recycle rubbish so that we protect the earth. —— 它用的就是本单元核心「should/shouldn't/ought to 建议」。本单元任务里就会反复用到：设计一个校园环保项目海报。",
-    "tip": "should/shouldn't/ought to 建议",
-    "en": "We recycle rubbish so that we protect the earth.",
-    "zh": "保护地球"
+    "t": "📐 语法：一般过去时与现在完成时的时间短语（Ten days ",
+    "kid": "过去时和现在完成时的时间词不混用：Ten days ago, I borrowed…（ago 配过去式）I have never felt so great!（never/already 配完成时）。过去完成时 had done 表示「过去的过去」：I thought that I had never seen those questions.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：environment",
-    "kid": "点开本单元词卡的拼读行，按音节把 environment 读准，再连读整词。",
+    "t": "🔤 拼读：句子重音",
+    "kid": "本单元的拼读/语音点是 句子重音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "environment",
-    "zh": "拼读示范词"
+    "en": "school"
    },
    {
-    "t": "📝 B1 Preliminary for Schools · Speaking Part 3（图片描述）",
-    "kid": "本单元任务：设计一个校园环保项目海报。 学完这些词和句型，B1 Preliminary for Schools 的「Speaking Part 3（图片描述）」你就有把握了——考的就是它们。",
-    "tip": "Speaking Part 3（图片描述）",
-    "en": "pollution",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 CLIL · 科学：循环经济",
-    "kid": "一个瓶子 recycle 后变成新瓶子——垃圾是放错位置的资源。",
-    "tip": "CLIL 跨学科",
-    "en": "environment",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 每个人都是一环",
-    "kid": "环保不是一个人的大事，是每个人的小事——你也是重要的一环。",
-    "tip": "社会价值观",
-    "en": "environment",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "environment：environ（围绕）+ -ment：围绕我们的环境 ｜ pollution：pollute（弄脏）+ -ion。pollute 来自拉丁 polluere ｜ rubbish：rubbish 来自古法语 robbe（破布）——rubbish 原是「破烂」（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "environment / pollution / rubbish",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Education in the past 100 年前的学校；本单元阅读：My first camping trip（故事）；社会情感：社交情感技能：面对恐惧；考试对接：Preliminary for Schools: Reading Part 5 / Writing Part 2 (an article or a story)。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu6-u6": [
    {
-    "t": "🎯 语法聚焦：used to 表示过去习惯",
-    "kid": "先看例句：I used to lose my keys, but not any more. —— 它用的就是本单元核心「used to 表示过去习惯」。本单元任务里就会反复用到：写「我的过去与现在」对比短文。",
-    "tip": "used to 表示过去习惯",
-    "en": "I used to lose my keys, but not any more.",
-    "zh": "时间与变化"
+    "t": "📐 语法：情态动词表推测（It must be an old ",
+    "kid": "猜测东西是什么用情态动词：肯定的猜 must（It must be an old printer.）、否定的猜 can't（It cannot be an ice-cream maker.）、可能的猜 might。「一直做到现在」用现在完成进行时：I have been working full-time for four years.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：history",
-    "kid": "点开本单元词卡的拼读行，按音节把 history 读准，再连读整词。",
+    "t": "🔤 拼读：词群的连读",
+    "kid": "本单元的拼读/语音点是 词群的连读。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "history",
-    "zh": "拼读示范词"
+    "en": "job"
    },
    {
-    "t": "📝 B1 Preliminary for Schools · Speaking Part 4（话题讨论）",
-    "kid": "本单元任务：写「我的过去与现在」对比短文。 学完这些词和句型，B1 Preliminary for Schools 的「Speaking Part 4（话题讨论）」你就有把握了——考的就是它们。",
-    "tip": "Speaking Part 4（话题讨论）",
-    "en": "future",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 📖 CLIL · 历史：过去与现在对比",
-    "kid": "把「以前的学校」和「现在的学校」列成两栏对比——历史学家的方法你也会用。",
-    "tip": "CLIL 跨学科",
-    "en": "history",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 改变从今天开始",
-    "kid": "想变成更好的自己？改变从今天的第一小步开始。",
-    "tip": "社会价值观",
-    "en": "history",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "history：history 和 story 同源（拉丁 historia）——history 就是「讲出来的故事」 ｜ future：future 来自拉丁 futurus（将要来的） ｜ century：cent- = 百（拉丁 centum）：century 世纪（一百年）、cent 分（百分之一元）（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "history / future / century",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Economic sectors 产业链与服务；本单元阅读：The daydreamer（故事）；社会情感：社交情感技能：主动进取；考试对接：Preliminary for Schools: Listening Part 4 / Reading Part 6。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu6-u7": [
    {
-    "t": "🎯 语法聚焦：if 条件句（真实条件）",
-    "kid": "先看例句：If it costs too much, I won't buy it. —— 它用的就是本单元核心「if 条件句（真实条件）」。本单元任务里就会反复用到：做一份零花钱预算表。",
-    "tip": "if 条件句（真实条件）",
-    "en": "If it costs too much, I won't buy it.",
-    "zh": "金钱与选择"
+    "t": "📐 语法：间接引语（He said she could wal",
+    "kid": "转述别人的话叫间接引语：动词往后退一格时态——He said she could walk in a circle. 疑问句转述用 asked + if / 疑问词 + 陈述语序：Luis asked Clara why her hair was wet. / Luis asked Dan if he could tell him the answer.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：money",
-    "kid": "点开本单元词卡的拼读行，按音节把 money 读准，再连读整词。",
+    "t": "🔤 拼读：对比重音",
+    "kid": "本单元的拼读/语音点是 对比重音。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "money",
-    "zh": "拼读示范词"
+    "en": "news"
    },
    {
-    "t": "📝 B1 Preliminary for Schools · Reading Part 1（理解短讯）",
-    "kid": "本单元任务：做一份零花钱预算表。 学完这些词和句型，B1 Preliminary for Schools 的「Reading Part 1（理解短讯）」你就有把握了——考的就是它们。",
-    "tip": "Reading Part 1（理解短讯）",
-    "en": "price",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🔢 CLIL · 数学：预算与比较",
-    "kid": "零花钱 50 元，东西一共 65 元——超支了怎么办？学会取舍就是预算。",
-    "tip": "CLIL 跨学科",
-    "en": "money",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 需要与想要",
-    "kid": "需要的先买，想要的想一想——管好零花钱是管理自己的第一步。",
-    "tip": "社会价值观",
-    "en": "money",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "money：money 钱——来自拉丁 Moneta（铸钱女神）！ ｜ price：price 来自拉丁 pretium（价值）——precious（珍贵的）同根 ｜ cheap：cheap 来自古英语 cēap（交易/买卖）——cheap 原意是「能买到的」（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "money / price / cheap",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Forensic science 指纹的发明；本单元阅读：The hours（报纸文章）；社会情感：社交情感技能：诚实；考试对接：Preliminary for Schools: Reading Part 3 / Listening Part 2。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu6-u8": [
    {
-    "t": "🎯 语法聚焦：一般现在/现在完成的时间标志词对比（ever/never/already）",
-    "kid": "先看例句：Have you ever been abroad? I'd love to travel. —— 它用的就是本单元核心「一般现在/现在完成的时间标志词对比（ever/never/already）」。本单元任务里就会反复用到：给外国笔友写一封介绍家乡的信。",
-    "tip": "一般现在/现在完成的时间标志词对比（ever/never/already）",
-    "en": "Have you ever been abroad? I'd love to travel.",
-    "zh": "旅行与文化"
+    "t": "📐 语法：反身代词（We really enjoyed our",
+    "kid": "反身代词表示「自己」：We really enjoyed ourselves! / My mum makes them herself. too…to 表示「太…而不能」：They are too messy to hold. enough 表示「足够…能」：It is not sweet enough for me to drink.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：travel",
-    "kid": "点开本单元词卡的拼读行，按音节把 travel 读准，再连读整词。",
+    "t": "🔤 拼读：语调",
+    "kid": "本单元的拼读/语音点是 语调。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "travel",
-    "zh": "拼读示范词"
+    "en": "sweet"
    },
    {
-    "t": "📝 B1 Preliminary for Schools · Reading Part 3（人物观点配对）",
-    "kid": "本单元任务：给外国笔友写一封介绍家乡的信。 学完这些词和句型，B1 Preliminary for Schools 的「Reading Part 3（人物观点配对）」你就有把握了——考的就是它们。",
-    "tip": "Reading Part 3（人物观点配对）",
-    "en": "journey",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🌍 CLIL · 地理：文化多样性",
-    "kid": "同一个节日，不同国家有不同过法——差异不是对错，是色彩。",
-    "tip": "CLIL 跨学科",
-    "en": "travel",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 好奇而不评判",
-    "kid": "先了解再评价——对世界保持好奇，对差异保持尊重。",
-    "tip": "社会价值观",
-    "en": "travel",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "travel：travel 来自法语 travail（辛苦的工作）——travel 原意是「辛苦的旅程」！ ｜ journey：journey 来自法语 journée（一天的行程）——journey 原是「一天的路」 ｜ culture：culture 来自拉丁 colere（耕种/照料）——culture 原是「耕种」，后来才指文化！（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "travel / journey / culture",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Food labels 学会看食品标签；本单元阅读：The girl who turned blue（剧本）；社会情感：社交情感技能：努力带来成功；考试对接：Preliminary for Schools: Listening Part 3 / Speaking Part 4。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu6-u9": [
    {
-    "t": "🎯 语法聚焦：计划表达 plan to / decide to",
-    "kid": "先看例句：My goal is to pass the B1 exam this year. —— 它用的就是本单元核心「计划表达 plan to / decide to」。本单元任务里就会反复用到：制定本学期学习目标与行动计划。",
-    "tip": "计划表达 plan to / decide to",
-    "en": "My goal is to pass the B1 exam this year.",
-    "zh": "成功技能"
+    "t": "📐 语法：第一/第二条件句复习（If it is sunny ",
+    "kid": "条件句总复习：真实可能用一条件（If it is sunny, I will play football.）；假想用二条件（过去式 + would）。许愿用 I wish + 过去式：I wish it was snowing today.（可惜现在没下）I wish I could talk to animals.",
+    "tip": "本单元语法",
+    "en": ""
    },
    {
-    "t": "🔤 语音拼读：work",
-    "kid": "点开本单元词卡的拼读行，按音节把 work 读准，再连读整词。",
+    "t": "🔤 拼读：条件句的语调",
+    "kid": "本单元的拼读/语音点是 条件句的语调。点开词卡的拼读行，一个音一个音拼出来，拼对再连读整词，见词就能读。",
     "tip": "见词能读",
-    "en": "work",
-    "zh": "拼读示范词"
+    "en": "weather"
    },
    {
-    "t": "📝 B1 Preliminary for Schools · Writing Part 1（写邮件 100 词）",
-    "kid": "本单元任务：制定本学期学习目标与行动计划。 学完这些词和句型，B1 Preliminary for Schools 的「Writing Part 1（写邮件 100 词）」你就有把握了——考的就是它们。",
-    "tip": "Writing Part 1（写邮件 100 词）",
-    "en": "success",
-    "zh": "考试重点词"
-   },
-   {
-    "t": "🔬 🧠 CLIL · 学习科学：刻意练习",
-    "kid": "只练会的不够——专挑不会的练，进步最快。",
-    "tip": "CLIL 跨学科",
-    "en": "work",
-    "zh": "跨学科链接"
-   },
-   {
-    "t": "💛 素养 · 努力比天赋更可靠",
-    "kid": "聪明是天生的，努力是自己的——努力的人走到哪都发光。",
-    "tip": "社会价值观",
-    "en": "work",
-    "zh": "素养成长"
-   },
-   {
-    "t": "🧠 记忆加速",
-    "kid": "work：work 工作——认真干活 ｜ success：suc-（下面）+ cess（走）：「一路走下去」= 成功。cess = 走：process 过程 ｜ fail：fail 来自拉丁 fallere（欺骗）——fail 原是「辜负/欺骗」（前 10 词为课本核心词 ⭐）",
-    "tip": "词库记忆法",
-    "en": "work / success / fail",
-    "zh": "记忆加速"
+    "t": "🌍 这一单元还学什么",
+    "kid": "跨学科：Wild weather 飓风的形成；本单元阅读：Lost in the hills（故事）；社会情感：社交情感技能：觉察决定对他人影响；考试对接：Preliminary for Schools: Reading Part 1 (an email) / Speaking Part 3。这些内容和本单元的词汇、语法是配套的，读一读、说一说就够了，不用背。",
+    "tip": "跨学科与阅读",
+    "en": ""
    }
   ],
   "pu6-r1": [

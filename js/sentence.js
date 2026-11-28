@@ -107,7 +107,6 @@ function __speakFrom(tokens, spans, i, fails, voice) {
     __prewarmChunk(tokens, i + 1);         // 播当前词的同时预热下一个
   } catch (e) {
     /* 任何意外都不许把整句卡死在半路：跳过这一段，接着念下一段 */
-    try { if (window.console) console.warn('[speak] 跳过第', i, '段:', e && e.message); } catch (x) {}
     setTimeout(() => __speakFrom(tokens, spans, i + 1, 0, voice), 30);
   }
 }

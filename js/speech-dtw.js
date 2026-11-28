@@ -130,15 +130,26 @@ function dtwFeatures(x, alpha) {
 
   const rows = [];
   let voiced = 0;
+  let maxE = 0;
+  /* 预扫最大帧能量：静音门限取「相对峰值 -38dB」（修复：原 1e-9 绝对阈值形同虚设，
+     峰值归一后任何底噪都超过它，静音帧全进 DTW → 音准崩、流利度恒 100。2026-11-28） */
+  const frameE = [], frameStart = [];
   for (let start = 0; start + N <= y.length; start += hop) {
-    let energy = 0;
+    let e = 0;
+    for (let i = 0; i < N; i++) { const v = y[start + i]; e += v * v; }
+    frameE.push(e); frameStart.push(start);
+    if (e > maxE) maxE = e;
+  }
+  const gate = Math.max(maxE * Math.pow(10, -38 / 10), 2e-5);  /* 绝对下限：纯数字静音 maxE=0 时兜底 */
+  for (let fi = 0; fi < frameStart.length; fi++) {
+    if (frameE[fi] < gate) continue;               /* 静音帧：真正跳过 */
+    const start = frameStart[fi];
+    let energy = frameE[fi];
     const re = new Float64Array(N), im = new Float64Array(N);
     for (let i = 0; i < N; i++) {
       const v = y[start + i] * win[i];
-      re[i] = v; energy += y[start + i] * y[start + i];
+      re[i] = v; /* energy 已预扫 */
     }
-    /* 帧能量相对峰值 -38dB 以下算静音，直接跳过（否则静音段的噪声会毁掉对齐） */
-    if (energy < 1e-9) continue;
     dtwFFT(re, im);
     const power = new Float64Array(N / 2 + 1);
     for (let i = 0; i < power.length; i++) power[i] = re[i] * re[i] + im[i] * im[i];
@@ -249,7 +260,30 @@ async function dtwDecode(blobOrBuf, ctx) {
   let peak = 0;
   for (let i = 0; i < x.length; i++) peak = Math.max(peak, Math.abs(x[i]));
   if (peak > 1e-6) for (let i = 0; i < x.length; i++) x[i] /= peak;
-  return x;
+  return { x, peak };   /* peak=归一前峰值电平：用于「没说话」判定 */
+}
+
+
+/* 掐头去尾静音：帧能量低于「峰值帧 -30dB」视为静音，返回有效语音段
+   （修复：固定录音窗口里大片静音垫底 → 时长比失真、完整度被压死。2026-11-28） */
+function dtwTrim(x) {
+  const N = 512, hop = Math.round(DTW_CFG.sampleRate * DTW_CFG.hopMs / 1000);
+  const n = Math.max(0, Math.floor((x.length - N) / hop) + 1);
+  if (n < 3) return x;
+  const E = new Float64Array(n);
+  let maxE = 0;
+  for (let fi = 0; fi < n; fi++) {
+    let e = 0; const s0 = fi * hop;
+    for (let i = 0; i < N; i++) { const v = x[s0 + i] || 0; e += v * v; }
+    E[fi] = e; if (e > maxE) maxE = e;
+  }
+  const gate = Math.max(maxE * Math.pow(10, -30 / 10), 2e-5);
+  let a = 0, b = n - 1;
+  while (a < n && E[a] < gate) a++;
+  while (b > a && E[b] < gate) b--;
+  const start = Math.max(0, a * hop - Math.round(N / 2));
+  const end = Math.min(x.length, (b + 1) * hop + N);
+  return x.slice(start, end);
 }
 
 /* ---------- 对外唯一入口 ---------- */
@@ -276,8 +310,10 @@ async function scoreRepeat(opts) {
       dtwRecord(opts.seconds || 3.6),
     ]);
 
-    const ref = await dtwDecode(refBuf, ctx);
-    const test = await dtwDecode(voiceBlob, ctx);
+    const refD = await dtwDecode(refBuf, ctx), testD = await dtwDecode(voiceBlob, ctx);
+    /* 最低电平判定：归一前峰值 -36dBFS 以下视为没说话（防对着空气/纯底噪得星） */
+    if (testD.peak < 0.015) return { ok: false, detail: 'too-quiet' };
+    const ref = dtwTrim(refD.x), test = dtwTrim(testD.x);
     const refF = dtwFeatures(ref, 1);
 
     /* 孩子声道短、共振峰比成人参考音高 15-25%：只在测试侧搜 alpha */
@@ -290,6 +326,8 @@ async function scoreRepeat(opts) {
     }
     if (!bestFeat) return { ok: false, detail: 'too-quiet' };
 
+    /* 最低开口判定：有效语音不足 0.25s 视为没说话（防对着空气得星） */
+    if (test.length < DTW_CFG.sampleRate * 0.25) return { ok: false, detail: 'too-quiet' };
     const duration = test.length / DTW_CFG.sampleRate;
     const refDur = ref.length / DTW_CFG.sampleRate;
     const ratio = duration / Math.max(0.1, refDur);

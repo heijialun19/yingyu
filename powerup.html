@@ -183,7 +183,7 @@
 <script src="js/ipa.js?v=12"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=246"></script>
+<script src="js/app.js?v=247"></script>
 <script defer src="js/sentence.js?v=52"></script>
 <script defer src="js/audio-list.js?v=19"></script>
 <!-- 2026-11-12.3：课本页是唯一用到全部三块的页面；数据先载、工具后载。 -->
@@ -262,7 +262,7 @@ puEnsurePage();
 /* ---------- 教材版本（2026-11-22）：第二版（2025 Map of the book）/ 第一版 ----------
    两版单元名、语法、词表完全一致；差异只在 Mission 任务措辞与个别 Literature / 社会情感标题。
    数据字段：m1 / lit1 / sel1 = 第一版；m2 / lit / sel = 第二版（无差异时只写第二版值）。
-   L4-L6 尚未按官方目录对齐（两版暂无差异），页面已标注。 */
+   L4-L6 已按官方 Map of the book 对齐（2026-11-28，spec_v2：L4/L5 第二版官方 PDF、L6 官方第一版样章，两版单元名与语法一致）。 */
 function puEd() { puEnsurePage(); return Store.d.pu.ed === 'v1' ? 'v1' : 'v2'; }
 function puSetEd(ed) {
   puEnsurePage();
@@ -339,7 +339,7 @@ function renderLevels() {
         <summary>这套课是什么 · 与出版社教材的关系</summary>
         <p>按剑桥 Power Up 1-6 的官方目录编排：L1-L3 单元名与官方 Map of the book 一致，
         词表按官方话题从本站 999 词库选词（不复制教材逐词表）。
-        <b style="color:#8A5A00">L4-L6 尚未按官方目录对齐，是本站在该体系上的配套内容。</b>
+        <b style="color:#2E7D32">L1-L6 全部按官方 Map of the book 对齐（2026-11-28 更新 L4-L6）。</b>
         上方可切换第一版 / 第二版——两版单元名与语法相同，Mission 任务与个别阅读篇目不同。</p>
       </details>
       <div class="pep-grid" style="margin-top:12px">${cards}</div>

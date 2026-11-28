@@ -1,17 +1,12 @@
 /* ============================================================
-   Power Up 教材系列 · 站点数据 v2.0（2026-11-22 按官方目录重建）
-   由 _pu/build_v2.js 生成，勿手改。
-
-   ★ 数据来源（逐条可核）：
-     · L1-L3：剑桥官方 Map of the book（第二版 2025 PDF）
-       https://cambridgelatamcatalogue.org/wp-content/uploads/2025/06/Power-Up-Level-N-Map-of-the-book.pdf
-     · 第一版对照：oxico.sk 官方样章 power_up_1..6.pdf + 用户提供的 L2 第一版目录照片
-       （两版单元名与语法完全一致，差异只在 Mission 措辞与个别 Literature 标题；
-         差异写在 m1 / lit1 / sel1 字段里，页面按版本切换）
-     · L4-L6：仍为旧版自编结构，**尚未按官方目录对齐**，页面已标注。
-
-   ★ 词表口径：按官方 Vocabulary 话题从本站 999 词库选词（每单元 14 词、册内不重复）。
-     官方教材的逐词表是版权内容，本站不复制，只按话题选同水平词。
+   Power Up 教材系列 · 站点数据 v2.2（2026-11-28 L4-L6 官方目录对齐）
+   由 _pu/build_spec_v2.py 生成，勿手改。
+   · L1-L3：剑桥官方 Map of the book 第二版（spec_v1），保持不变
+   · L4-L6：剑桥官方 Map of the book 逐列对齐（spec_v2）——
+     L4/L5 用第二版官方 PDF（cambridgelatamcatalogue.org），
+     L6 用官方第一版样章（oxico.sk power_up_6.pdf，两版单元名与语法一致）
+   · words 全部来自站内 999 词库（音频零缺口），按官方 Vocabulary 话题选取
+   · 单元新增 vocab/spell/cc/lit/sel/m1/m2/exam 官方列，供页面与卡片使用
    ============================================================ */
 'use strict';
 const POWERUP_LEVELS = [
@@ -2886,12 +2881,150 @@ const POWERUP_LEVELS = [
   "title": "剑桥 Power Up 4（Flyers 备考收官 · 通往 A2 Key）",
   "units": [
    {
+    "id": "pu4-u0",
+    "mod": 0,
+    "title": "Welcome to Diversicus",
+    "zh": "欢迎来到迪维西城",
+    "page": 4,
+    "vocab": "主角人名 · 人物描写",
+    "grammar": "复习 Level 3 全部语法",
+    "spell": "",
+    "cc": "",
+    "lit": "",
+    "sel": "",
+    "m1": "",
+    "m2": "",
+    "exam": "",
+    "words": [
+     {
+      "w": "welcome",
+      "zh": "欢迎",
+      "e": "🎊"
+     },
+     {
+      "w": "friend",
+      "zh": "朋友",
+      "e": "🤝"
+     },
+     {
+      "w": "boy",
+      "zh": "男孩",
+      "e": "👦"
+     },
+     {
+      "w": "girl",
+      "zh": "女孩",
+      "e": "👧"
+     },
+     {
+      "w": "name",
+      "zh": "名字",
+      "e": ""
+     },
+     {
+      "w": "happy",
+      "zh": "开心的",
+      "e": "😄"
+     },
+     {
+      "w": "twin",
+      "zh": "双胞胎",
+      "e": ""
+     },
+     {
+      "w": "family",
+      "zh": "家",
+      "e": "👨‍👩‍👧‍👦"
+     }
+    ]
+   },
+   {
     "id": "pu4-u1",
     "mod": 1,
-    "title": "Unit 1 · School subjects",
-    "zh": "学校学科",
-    "tip": "本单元任务：做一张个人课表并排喜好。",
-    "grammar": "like/love/enjoy + doing；序数词 first/second/third",
+    "title": "This year's trip",
+    "zh": "今年的旅行",
+    "page": 6,
+    "vocab": "月份与序数词 · 旅程",
+    "grammar": "might/may 表推测（It might be hot.）；不定代词 everywhere/somewhere/anywhere/nowhere、everyone/someone/anyone/no-one、everything/something/anything/nothing",
+    "spell": "月份词的重音",
+    "cc": "What's the climate like? 气候与气候带 · The Arabian Desert",
+    "lit": "The lion of the Seas（儿童百科条目）",
+    "sel": "文化意识",
+    "m1": "",
+    "m2": "Plan a trip with a friend",
+    "exam": "A2 Reading and Writing",
+    "words": [
+     {
+      "w": "month",
+      "zh": "月份",
+      "e": "📆"
+     },
+     {
+      "w": "year",
+      "zh": "年",
+      "e": ""
+     },
+     {
+      "w": "first",
+      "zh": "首先",
+      "e": ""
+     },
+     {
+      "w": "last",
+      "zh": "最后的",
+      "e": ""
+     },
+     {
+      "w": "next",
+      "zh": "下一个",
+      "e": ""
+     },
+     {
+      "w": "trip",
+      "zh": "旅程",
+      "e": ""
+     },
+     {
+      "w": "travel",
+      "zh": "旅行",
+      "e": ""
+     },
+     {
+      "w": "journey",
+      "zh": "旅途",
+      "e": ""
+     },
+     {
+      "w": "ticket",
+      "zh": "票",
+      "e": "🎫"
+     },
+     {
+      "w": "map",
+      "zh": "地图",
+      "e": "🗺️"
+     },
+     {
+      "w": "warm",
+      "zh": "温暖",
+      "e": ""
+     },
+     {
+      "w": "cool",
+      "zh": "凉爽",
+      "e": ""
+     },
+     {
+      "w": "hot",
+      "zh": "热",
+      "e": "🥵"
+     },
+     {
+      "w": "raincoat",
+      "zh": "雨衣",
+      "e": ""
+     }
+    ],
     "sentences": [
      {
       "en": "I like art best of all.",
@@ -2905,119 +3038,105 @@ const POWERUP_LEVELS = [
       "en": "Science is interesting but hard.",
       "zh": "科学有趣但是难。"
      }
-    ],
-    "clil": {
-     "t": "🎨 CLIL · 艺术：课程表设计",
-     "kid": "给课表配上颜色和图标——信息设计得好看，一眼就能看明白。"
-    },
-    "values": {
-     "t": "💛 素养 · 每科都认真",
-     "kid": "不喜欢的科目也要认真——认真是你对所有事的尊重。"
-    },
-    "words": [
-     {
-      "w": "Chinese",
-      "zh": "语文",
-      "e": "🀄",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "English",
-      "zh": "英语",
-      "e": "🔠",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "math",
-      "zh": "数学",
-      "e": "➗",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "music",
-      "zh": "音乐",
-      "e": "🎵",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "art",
-      "zh": "美术",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "PE",
-      "zh": "体育",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "science",
-      "zh": "科学",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "computer",
-      "zh": "电脑",
-      "e": "💻",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "lesson",
-      "zh": "课",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "homework",
-      "zh": "作业",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "subject",
-      "zh": "学科",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "test",
-      "zh": "测验",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "notebook",
-      "zh": "笔记本",
-      "e": "📓",
-      "reuse": true
-     },
-     {
-      "w": "dictionary",
-      "zh": "词典",
-      "e": "📕",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu4-u2",
     "mod": 2,
-    "title": "Unit 2 · Time and dates",
-    "zh": "时间与日期",
-    "tip": "本单元任务：做一张生日日历。",
-    "grammar": "in + 月份；on + 具体日期；half past / a quarter to",
+    "title": "Our beautiful planet",
+    "zh": "我们美丽的星球",
+    "page": 18,
+    "vocab": "自然界 · 动物",
+    "grammar": "一般过去时复习：规则与不规则动词 + ago（We got here three days ago.）；too 和 enough（There is too much pollution. / There is not enough ice.）",
+    "spell": "silent e 不发音的 e",
+    "cc": "Save our world 濒危动物 · Animals in Australia",
+    "lit": "When Dad lost his glasses（诗歌）",
+    "sel": "系统思维 · 欣赏相互依存",
+    "m1": "",
+    "m2": "Make an explorer's expedition diary",
+    "exam": "A2 Listening",
+    "words": [
+     {
+      "w": "earth",
+      "zh": "地球",
+      "e": "🌍"
+     },
+     {
+      "w": "sky",
+      "zh": "天空",
+      "e": ""
+     },
+     {
+      "w": "star",
+      "zh": "星星",
+      "e": "⭐"
+     },
+     {
+      "w": "moon",
+      "zh": "月亮",
+      "e": "🌙"
+     },
+     {
+      "w": "sun",
+      "zh": "太阳",
+      "e": "☀️"
+     },
+     {
+      "w": "tree",
+      "zh": "树",
+      "e": "🌳"
+     },
+     {
+      "w": "flower",
+      "zh": "花",
+      "e": "🌸"
+     },
+     {
+      "w": "river",
+      "zh": "河",
+      "e": "🏞️"
+     },
+     {
+      "w": "mountain",
+      "zh": "大山",
+      "e": "⛰️"
+     },
+     {
+      "w": "sea",
+      "zh": "大海",
+      "e": "🌊"
+     },
+     {
+      "w": "panda",
+      "zh": "熊猫",
+      "e": "🐼"
+     },
+     {
+      "w": "tiger",
+      "zh": "老虎",
+      "e": "🐯"
+     },
+     {
+      "w": "lion",
+      "zh": "狮子",
+      "e": "🦁"
+     },
+     {
+      "w": "elephant",
+      "zh": "大象",
+      "e": "🐘"
+     },
+     {
+      "w": "bird",
+      "zh": "小鸟",
+      "e": "🐦"
+     },
+     {
+      "w": "fish",
+      "zh": "鱼",
+      "e": "🐟"
+     }
+    ],
     "sentences": [
      {
       "en": "My birthday is in April.",
@@ -3031,119 +3150,85 @@ const POWERUP_LEVELS = [
       "en": "What's the date today?",
       "zh": "今天是几号？"
      }
-    ],
-    "clil": {
-     "t": "🔢 CLIL · 数学：日历里的数学",
-     "kid": "一年 12 个月 365 天，一个月约 30 天——日历里藏着除法和余数。"
-    },
-    "values": {
-     "t": "💛 素养 · 守时",
-     "kid": "约好的时间就要到——守时的人让每个人都安心。"
-    },
-    "words": [
-     {
-      "w": "hour",
-      "zh": "小时",
-      "e": "⏰",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "minute",
-      "zh": "分钟",
-      "e": "⏲️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "half",
-      "zh": "一半",
-      "e": "🌗",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "quarter",
-      "zh": "一刻钟",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "past",
-      "zh": "过去",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "noon",
-      "zh": "正午",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "midnight",
-      "zh": "午夜",
-      "e": "🌃",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "month",
-      "zh": "月份",
-      "e": "📆",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "year",
-      "zh": "年",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "January",
-      "zh": "一月",
-      "e": "1️⃣",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "February",
-      "zh": "二月",
-      "e": "2️⃣",
-      "reuse": true
-     },
-     {
-      "w": "March",
-      "zh": "三月",
-      "e": "3️⃣",
-      "reuse": true
-     },
-     {
-      "w": "April",
-      "zh": "四月",
-      "e": "4️⃣",
-      "reuse": true
-     },
-     {
-      "w": "date",
-      "zh": "日期",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu4-u3",
     "mod": 3,
-    "title": "Unit 3 · Ocean animals",
-    "zh": "海洋动物",
-    "tip": "本单元任务：做一张海洋生物海报。",
-    "grammar": "the largest/one of the ...（最高级初步）；whale/dolphin 量词搭配",
+    "title": "Let's celebrate!",
+    "zh": "一起庆祝吧",
+    "page": 30,
+    "vocab": "比赛 · 音乐与节日",
+    "grammar": "现在完成时表经历（Have you ever won a competition?）；现在完成时 + just/already/yet（I have already taken more than 100 photos. / I have not seen the pyramids yet.）",
+    "spell": "b 和 v 的辨音",
+    "cc": "Making music history 乐器的历史 · Brazilian carnival music",
+    "lit": "The local football hero（真实故事）",
+    "sel": "创意思维",
+    "m1": "",
+    "m2": "Have a quiz party",
+    "exam": "A2 Listening",
+    "words": [
+     {
+      "w": "race",
+      "zh": "比赛",
+      "e": "🏁"
+     },
+     {
+      "w": "winner",
+      "zh": "获胜者",
+      "e": "🏅"
+     },
+     {
+      "w": "music",
+      "zh": "音乐",
+      "e": "🎵"
+     },
+     {
+      "w": "song",
+      "zh": "歌曲",
+      "e": "🎶"
+     },
+     {
+      "w": "dance",
+      "zh": "跳舞",
+      "e": "💃"
+     },
+     {
+      "w": "sing",
+      "zh": "唱歌",
+      "e": "🎤"
+     },
+     {
+      "w": "game",
+      "zh": "游戏",
+      "e": "🎮"
+     },
+     {
+      "w": "win",
+      "zh": "赢",
+      "e": "🏆"
+     },
+     {
+      "w": "party",
+      "zh": "聚会",
+      "e": "🥳"
+     },
+     {
+      "w": "play",
+      "zh": "玩",
+      "e": "🎾"
+     },
+     {
+      "w": "photo",
+      "zh": "照片",
+      "e": "📷"
+     },
+     {
+      "w": "year",
+      "zh": "年",
+      "e": ""
+     }
+    ],
     "sentences": [
      {
       "en": "The whale is the largest animal in the sea.",
@@ -3157,101 +3242,23 @@ const POWERUP_LEVELS = [
       "en": "Whales breathe air, not water!",
       "zh": "鲸呼吸的是空气，不是水！"
      }
-    ],
-    "clil": {
-     "t": "🔬 CLIL · 科学：海洋哺乳动物",
-     "kid": "whale 和 dolphin 住在海里却呼吸空气——它们是哺乳动物，要浮上水面换气。"
-    },
-    "values": {
-     "t": "💛 素养 · 海洋垃圾问题",
-     "kid": "塑料袋在海里像水母，海龟会误食——少用一个塑料袋就是救一条生命。"
-    },
-    "words": [
-     {
-      "w": "whale",
-      "zh": "鲸鱼",
-      "e": "🐳",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "dolphin",
-      "zh": "海豚",
-      "e": "🐬",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "shark",
-      "zh": "鲨鱼",
-      "e": "🦈",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "octopus",
-      "zh": "章鱼",
-      "e": "🐙",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "crab",
-      "zh": "螃蟹",
-      "e": "🦀",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "goldfish",
-      "zh": "金鱼",
-      "e": "🐠",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "starfish",
-      "zh": "海星",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "seal",
-      "zh": "海豹",
-      "e": "🦭",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "sea",
-      "zh": "大海",
-      "e": "🌊",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "ocean",
-      "zh": "海洋",
-      "e": "🌊",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "island",
-      "zh": "岛",
-      "e": "🏝️",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu4-r1",
     "mod": 0,
     "title": "Review 1-3",
-    "zh": "复习 1-3",
-    "tip": "A2 Flyers 收官练 + A2 Key 入门题。",
-    "grammar": "复习：enjoy+doing、序数词、最高级初步",
+    "zh": "复习 1-3 单元",
+    "page": 0,
+    "vocab": "",
+    "grammar": "复习：might/may、不定代词、ago、too/enough、现在完成时",
+    "spell": "",
+    "cc": "",
+    "lit": "",
+    "sel": "",
+    "m1": "",
+    "m2": "",
+    "exam": "",
     "words": [
      {
       "w": "English",
@@ -3342,10 +3349,90 @@ const POWERUP_LEVELS = [
    {
     "id": "pu4-u4",
     "mod": 4,
-    "title": "Unit 4 · Seasons and weather",
-    "zh": "季节与天气",
-    "tip": "本单元任务：播报未来三天天气预报。",
-    "grammar": "will 表预测（It will rain）；wear + 服装建议",
+    "title": "Time of our lives",
+    "zh": "我们的时光",
+    "page": 44,
+    "vocab": "提供/承诺/请求的动词 · 报时",
+    "grammar": "过去进行时（We were waiting at the bus stop when it started to rain. / While we were getting on the bus, I was looking for my ticket.）；现在完成时 + since/for（I have worked in restaurants since I was a teenager.）",
+    "spell": "ee 的多种拼法",
+    "cc": "Time zones 时区 · New Year celebrations around the world",
+    "lit": "The legend of Mother Mountain（传说）",
+    "sel": "数字素养 · 欣赏相互依存",
+    "m1": "",
+    "m2": "Write a chain story",
+    "exam": "A2 Listening",
+    "words": [
+     {
+      "w": "o'clock",
+      "zh": "点钟",
+      "e": "🕐"
+     },
+     {
+      "w": "hour",
+      "zh": "小时",
+      "e": "⏰"
+     },
+     {
+      "w": "minute",
+      "zh": "分钟",
+      "e": "⏲️"
+     },
+     {
+      "w": "today",
+      "zh": "今天",
+      "e": ""
+     },
+     {
+      "w": "tonight",
+      "zh": "今晚",
+      "e": ""
+     },
+     {
+      "w": "tomorrow",
+      "zh": "明天",
+      "e": ""
+     },
+     {
+      "w": "yesterday",
+      "zh": "昨天",
+      "e": ""
+     },
+     {
+      "w": "now",
+      "zh": "现在",
+      "e": ""
+     },
+     {
+      "w": "early",
+      "zh": "早",
+      "e": "🌄"
+     },
+     {
+      "w": "late",
+      "zh": "晚",
+      "e": "🌜"
+     },
+     {
+      "w": "day",
+      "zh": "天",
+      "e": "📅"
+     },
+     {
+      "w": "week",
+      "zh": "星期",
+      "e": "🗓️"
+     },
+     {
+      "w": "wait",
+      "zh": "等待",
+      "e": "⏳"
+     },
+     {
+      "w": "look",
+      "zh": "看",
+      "e": "👀"
+     }
+    ],
     "sentences": [
      {
       "en": "It will be stormy tomorrow.",
@@ -3359,125 +3446,105 @@ const POWERUP_LEVELS = [
       "en": "The temperature is 15 degrees.",
       "zh": "气温十五度。"
      }
-    ],
-    "clil": {
-     "t": "🔬 CLIL · 科学：水循环",
-     "kid": "海面蒸发成云、云变成 rain 落下、雨水流回大海——水一直在旅行，这就是水循环。"
-    },
-    "values": {
-     "t": "💛 素养 · 提醒家人",
-     "kid": "出门前看天气预报，提醒家人带伞——看天气是一种关心。"
-    },
-    "words": [
-     {
-      "w": "spring",
-      "zh": "春天",
-      "e": "🌼",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "summer",
-      "zh": "夏天",
-      "e": "🌞",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "autumn",
-      "zh": "秋天",
-      "e": "🍁",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "season",
-      "zh": "季节",
-      "e": "🔄",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "weather",
-      "zh": "天气",
-      "e": "🌤️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "storm",
-      "zh": "暴风雨",
-      "e": "⛈️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "fog",
-      "zh": "雾",
-      "e": "🌫️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "ice",
-      "zh": "冰",
-      "e": "🧊",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "dry",
-      "zh": "干的",
-      "e": "🏜️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "wet",
-      "zh": "湿的",
-      "e": "💦",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "shower",
-      "zh": "阵雨",
-      "e": "🌦️",
-      "reuse": true
-     },
-     {
-      "w": "temperature",
-      "zh": "温度",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "degree",
-      "zh": "度数",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "raincoat",
-      "zh": "雨衣",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "umbrella",
-      "zh": "雨伞",
-      "e": "☂️",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu4-u5",
     "mod": 5,
-    "title": "Unit 5 · Daily routines and chores",
-    "zh": "日常与家务",
-    "tip": "本单元任务：做一张家务轮值表。",
-    "grammar": "have to / has to 表示必须；频率副词 always/usually/sometimes",
+    "title": "Let it snow!",
+    "zh": "让雪下吧",
+    "page": 56,
+    "vocab": "季节与天气 · 冬季",
+    "grammar": "will/won't（We will not go outside today. / You will stay at home.）；连词 so 和 because（We did not go skiing because it was foggy. / We could not see very well, so it was not safe to ski.）",
+    "spell": "-er / -ar / -or 结尾复习",
+    "cc": "Spring, summer, autumn, winter 四季成因 · Climate in Argentina",
+    "lit": "Tomás and the snowman（真实故事）",
+    "sel": "创意思维",
+    "m1": "",
+    "m2": "Prepare a TV weather report",
+    "exam": "A2 Speaking",
+    "words": [
+     {
+      "w": "weather",
+      "zh": "天气",
+      "e": "🌤️"
+     },
+     {
+      "w": "snow",
+      "zh": "雪",
+      "e": "❄️"
+     },
+     {
+      "w": "rain",
+      "zh": "雨",
+      "e": "🌧️"
+     },
+     {
+      "w": "wind",
+      "zh": "风",
+      "e": "🌬️"
+     },
+     {
+      "w": "cloud",
+      "zh": "云",
+      "e": "☁️"
+     },
+     {
+      "w": "hot",
+      "zh": "热",
+      "e": "🥵"
+     },
+     {
+      "w": "cold",
+      "zh": "冷",
+      "e": "🥶"
+     },
+     {
+      "w": "warm",
+      "zh": "温暖",
+      "e": ""
+     },
+     {
+      "w": "cool",
+      "zh": "凉爽",
+      "e": ""
+     },
+     {
+      "w": "sunny",
+      "zh": "晴朗的",
+      "e": "🔆"
+     },
+     {
+      "w": "rainy",
+      "zh": "下雨的",
+      "e": ""
+     },
+     {
+      "w": "windy",
+      "zh": "刮风的",
+      "e": "💨"
+     },
+     {
+      "w": "snowy",
+      "zh": "下雪的",
+      "e": "🌨️"
+     },
+     {
+      "w": "cloudy",
+      "zh": "多云的",
+      "e": "⛅"
+     },
+     {
+      "w": "raincoat",
+      "zh": "雨衣",
+      "e": ""
+     },
+     {
+      "w": "umbrella",
+      "zh": "雨伞",
+      "e": "☂️"
+     }
+    ],
     "sentences": [
      {
       "en": "I have to wash the dishes.",
@@ -3491,113 +3558,95 @@ const POWERUP_LEVELS = [
       "en": "I always clean my room on Sunday.",
       "zh": "我周日总是打扫房间。"
      }
-    ],
-    "clil": {
-     "t": "🔢 CLIL · 数学：家务时间统计",
-     "kid": "把一周的家务时间记下来画成图表——数据会告诉你谁做得最多。"
-    },
-    "values": {
-     "t": "💛 素养 · 家务人人有份",
-     "kid": "家是每个人的家——家务不是妈妈一个人的事。"
-    },
-    "words": [
-     {
-      "w": "wash",
-      "zh": "洗",
-      "e": "🚿",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "clean",
-      "zh": "干净的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "cook",
-      "zh": "厨师",
-      "e": "👩‍🍳",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "help",
-      "zh": "帮助",
-      "e": "🆘",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "make",
-      "zh": "制作",
-      "e": "🔨",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "put",
-      "zh": "放",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "take",
-      "zh": "拿走",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "bring",
-      "zh": "带来",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "kitchen",
-      "zh": "厨房",
-      "e": "🍳",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "fridge",
-      "zh": "冰箱",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "clock",
-      "zh": "钟",
-      "e": "🕰️",
-      "reuse": true
-     },
-     {
-      "w": "watch",
-      "zh": "手表",
-      "e": "⌚",
-      "reuse": true
-     },
-     {
-      "w": "mirror",
-      "zh": "镜子",
-      "e": "🪞",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu4-u6",
     "mod": 6,
-    "title": "Unit 6 · Personality",
-    "zh": "性格与品格",
-    "tip": "本单元任务：给一位同学写「性格奖状」。",
-    "grammar": "be + 性格形容词；who 描述人（a friend who is kind）",
+    "title": "Working together",
+    "zh": "一起工作",
+    "page": 68,
+    "vocab": "职业 · 职场",
+    "grammar": "反义疑问句（You are a mechanic, are not you? / You cannot fix robots, can you?）；短问句（I have got a problem. — Have you? / I cannot find my mobile phone. — Can not you?）",
+    "spell": "复合名词的重音",
+    "cc": "Inventions and robotics 发明与机器人 · South Korean inventions",
+    "lit": "Buddie has fun（科幻故事）",
+    "sel": "情感发展 · 数字素养",
+    "m1": "",
+    "m2": "Prepare for a job interview",
+    "exam": "A2 Reading and Writing",
+    "words": [
+     {
+      "w": "job",
+      "zh": "工作",
+      "e": ""
+     },
+     {
+      "w": "work",
+      "zh": "工作",
+      "e": ""
+     },
+     {
+      "w": "doctor",
+      "zh": "医生",
+      "e": "👨‍⚕️"
+     },
+     {
+      "w": "nurse",
+      "zh": "护士",
+      "e": "👩‍⚕️"
+     },
+     {
+      "w": "teacher",
+      "zh": "老师",
+      "e": "👩‍🏫"
+     },
+     {
+      "w": "driver",
+      "zh": "司机",
+      "e": ""
+     },
+     {
+      "w": "farmer",
+      "zh": "农民",
+      "e": "👨‍🌾"
+     },
+     {
+      "w": "worker",
+      "zh": "工人",
+      "e": "👷"
+     },
+     {
+      "w": "cook",
+      "zh": "厨师",
+      "e": "👩‍🍳"
+     },
+     {
+      "w": "pilot",
+      "zh": "飞行员",
+      "e": "👨‍✈️"
+     },
+     {
+      "w": "scientist",
+      "zh": "科学家",
+      "e": "🔬"
+     },
+     {
+      "w": "police",
+      "zh": "警察",
+      "e": "🚓"
+     },
+     {
+      "w": "robot",
+      "zh": "机器人",
+      "e": "🤖"
+     },
+     {
+      "w": "computer",
+      "zh": "电脑",
+      "e": "💻"
+     }
+    ],
     "sentences": [
      {
       "en": "She is kind to everyone.",
@@ -3611,107 +3660,23 @@ const POWERUP_LEVELS = [
       "en": "A friend who is honest is a real friend.",
       "zh": "诚实的朋友才是真朋友。"
      }
-    ],
-    "clil": {
-     "t": "📖 CLIL · 文学：从行为看性格",
-     "kid": "故事里不直接说人物性格——他扶起摔倒的同学，你就知道他很 kind。"
-    },
-    "values": {
-     "t": "💛 素养 · 发现别人的优点",
-     "kid": "每天发现一位同学的一个优点——你也会变成大家最喜欢的同学。"
-    },
-    "words": [
-     {
-      "w": "kind",
-      "zh": "善良的",
-      "e": "💞",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "brave",
-      "zh": "勇敢的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "smart",
-      "zh": "聪明的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "clever",
-      "zh": "机灵的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "lazy",
-      "zh": "懒惰的",
-      "e": "🦥",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "funny",
-      "zh": "滑稽的",
-      "e": "🤡",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "strict",
-      "zh": "严格的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "friendly",
-      "zh": "友好的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "honest",
-      "zh": "诚实的",
-      "e": "🤞",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "polite",
-      "zh": "有礼貌的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "patient",
-      "zh": "耐心的",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "active",
-      "zh": "活跃的",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu4-r2",
     "mod": 0,
     "title": "Review 4-6",
-    "zh": "复习 4-6",
-    "tip": "A2 Key 题型练：Reading Part 2。",
-    "grammar": "复习：will、have to、性格形容词",
+    "zh": "复习 4-6 单元",
+    "page": 0,
+    "vocab": "",
+    "grammar": "复习：过去进行时、since/for、will/won't、so/because、反义疑问句",
+    "spell": "",
+    "cc": "",
+    "lit": "",
+    "sel": "",
+    "m1": "",
+    "m2": "",
+    "exam": "",
     "words": [
      {
       "w": "spring",
@@ -3802,10 +3767,100 @@ const POWERUP_LEVELS = [
    {
     "id": "pu4-u7",
     "mod": 7,
-    "title": "Unit 7 · Money and shopping",
-    "zh": "金钱与购物",
-    "tip": "本单元任务：模拟商店买卖对话。",
-    "grammar": "How much is/are ...? too + 形容词（too expensive）",
+    "title": "Then and now",
+    "zh": "过去与现在",
+    "page": 82,
+    "vocab": "家中物品 · 描写物品的形容词",
+    "grammar": "过去分词 seen/found/driven/ridden/taken/broken/gone/left/tried/forgotten/put/stood/fallen/cut；be used for/to（They were used to bury the Egyptian kings. / They are used for teaching people about the Ancient Egyptians.）",
+    "spell": "j 的拼法",
+    "cc": "Time machines 物品的演化 · The pyramids of Ancient Egypt",
+    "lit": "The boy king（历史小说）",
+    "sel": "社会责任",
+    "m1": "",
+    "m2": "Make a poster about a household object",
+    "exam": "A2 Reading and Writing",
+    "words": [
+     {
+      "w": "home",
+      "zh": "家",
+      "e": "🏠"
+     },
+     {
+      "w": "house",
+      "zh": "房子",
+      "e": "🏡"
+     },
+     {
+      "w": "door",
+      "zh": "门",
+      "e": "🚪"
+     },
+     {
+      "w": "window",
+      "zh": "窗户",
+      "e": "🪟"
+     },
+     {
+      "w": "table",
+      "zh": "桌子",
+      "e": ""
+     },
+     {
+      "w": "sofa",
+      "zh": "沙发",
+      "e": "🛋️"
+     },
+     {
+      "w": "lamp",
+      "zh": "台灯",
+      "e": "💡"
+     },
+     {
+      "w": "kitchen",
+      "zh": "厨房",
+      "e": "🍳"
+     },
+     {
+      "w": "bedroom",
+      "zh": "卧室",
+      "e": "🛌"
+     },
+     {
+      "w": "chair",
+      "zh": "椅子",
+      "e": "💺"
+     },
+     {
+      "w": "bed",
+      "zh": "床",
+      "e": "🛏️"
+     },
+     {
+      "w": "big",
+      "zh": "大的",
+      "e": ""
+     },
+     {
+      "w": "small",
+      "zh": "小的",
+      "e": ""
+     },
+     {
+      "w": "new",
+      "zh": "新的",
+      "e": "🆕"
+     },
+     {
+      "w": "round",
+      "zh": "圆的",
+      "e": ""
+     },
+     {
+      "w": "black",
+      "zh": "黑色",
+      "e": ""
+     }
+    ],
     "sentences": [
      {
       "en": "This T-shirt is too expensive.",
@@ -3819,107 +3874,95 @@ const POWERUP_LEVELS = [
       "en": "I pay with my pocket money.",
       "zh": "我用零花钱付。"
      }
-    ],
-    "clil": {
-     "t": "🔢 CLIL · 数学：价格计算",
-     "kid": "两件 15 元的东西加起来是多少？找零怎么算？购物是最真实的数学课。"
-    },
-    "values": {
-     "t": "💛 素养 · 理性消费",
-     "kid": "买之前问自己：需要，还是想要？想清楚再花钱。"
-    },
-    "words": [
-     {
-      "w": "money",
-      "zh": "钱",
-      "e": "💰",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "price",
-      "zh": "价格",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "cheap",
-      "zh": "便宜的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "expensive",
-      "zh": "昂贵的",
-      "e": "💎",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "buy",
-      "zh": "买",
-      "e": "🛍️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "sell",
-      "zh": "卖",
-      "e": "🏷️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "pay",
-      "zh": "付款",
-      "e": "💳",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "cost",
-      "zh": "花费",
-      "e": "💸",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "market",
-      "zh": "市场",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "list",
-      "zh": "清单",
-      "e": "📋",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "size",
-      "zh": "尺码",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "customer",
-      "zh": "顾客",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu4-u8",
     "mod": 8,
-    "title": "Unit 8 · Travel and places",
-    "zh": "旅行与地点",
-    "tip": "本单元任务：设计一次周末旅行计划卡。",
-    "grammar": "be going to 表计划；by plane / on foot",
+    "title": "Space travel",
+    "zh": "太空旅行",
+    "page": 94,
+    "vocab": "太空 · 冒险词汇",
+    "grammar": "will 和 going to（We are going to have a special visitor. / Some people think we will live on Mars.）；过去时态总复习",
+    "spell": "s + 辅音连缀",
+    "cc": "Preparing for Mars 火星探索 · The International Space Station",
+    "lit": "My space blog（博客）",
+    "sel": "想象替代未来",
+    "m1": "",
+    "m2": "Write a space mission report",
+    "exam": "A2 Reading and Writing",
+    "words": [
+     {
+      "w": "star",
+      "zh": "星星",
+      "e": "⭐"
+     },
+     {
+      "w": "moon",
+      "zh": "月亮",
+      "e": "🌙"
+     },
+     {
+      "w": "sky",
+      "zh": "天空",
+      "e": ""
+     },
+     {
+      "w": "earth",
+      "zh": "地球",
+      "e": "🌍"
+     },
+     {
+      "w": "sun",
+      "zh": "太阳",
+      "e": "☀️"
+     },
+     {
+      "w": "plane",
+      "zh": "飞机",
+      "e": "✈️"
+     },
+     {
+      "w": "ship",
+      "zh": "轮船",
+      "e": "🚢"
+     },
+     {
+      "w": "boat",
+      "zh": "小船",
+      "e": "⛵"
+     },
+     {
+      "w": "light",
+      "zh": "轻的",
+      "e": "🪶"
+     },
+     {
+      "w": "high",
+      "zh": "高的",
+      "e": "🏔️"
+     },
+     {
+      "w": "far",
+      "zh": "远的",
+      "e": ""
+     },
+     {
+      "w": "first",
+      "zh": "首先",
+      "e": ""
+     },
+     {
+      "w": "photo",
+      "zh": "照片",
+      "e": "📷"
+     },
+     {
+      "w": "game",
+      "zh": "游戏",
+      "e": "🎮"
+     }
+    ],
     "sentences": [
      {
       "en": "We are going to the beach by car.",
@@ -3933,119 +3976,95 @@ const POWERUP_LEVELS = [
       "en": "I can't wait to see the sea!",
       "zh": "我等不及要看大海了！"
      }
-    ],
-    "clil": {
-     "t": "🌍 CLIL · 地理：海滩是怎么形成的",
-     "kid": "海浪把石头打磨了几千年，变成了 sand——beach 是大海的雕刻作品。"
-    },
-    "values": {
-     "t": "💛 素养 · 旅行环保",
-     "kid": "离开沙滩时带走自己的垃圾——把美丽留给下一批游客。"
-    },
-    "words": [
-     {
-      "w": "travel",
-      "zh": "旅行",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "trip",
-      "zh": "旅程",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "tour",
-      "zh": "观光",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "visit",
-      "zh": "参观",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "ticket",
-      "zh": "票",
-      "e": "🎫",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "suitcase",
-      "zh": "行李箱",
-      "e": "🧳",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "beach",
-      "zh": "海滩",
-      "e": "🏖️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "island",
-      "zh": "岛",
-      "e": "🏝️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "camp",
-      "zh": "露营",
-      "e": "⛺",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "photo",
-      "zh": "照片",
-      "e": "📷",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "vacation",
-      "zh": "度假",
-      "e": "🌴",
-      "reuse": true
-     },
-     {
-      "w": "map",
-      "zh": "地图",
-      "e": "🗺️",
-      "reuse": true
-     },
-     {
-      "w": "east",
-      "zh": "东方",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "west",
-      "zh": "西方",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu4-u9",
     "mod": 9,
-    "title": "Unit 9 · Media and arts",
-    "zh": "媒体与艺术",
-    "tip": "本单元任务：做一份班级节目单。",
-    "grammar": "like/love + doing 复习；句型 There is a programme about ...",
+    "title": "Great bakers",
+    "zh": "烘焙大师",
+    "page": 106,
+    "vocab": "三餐与零食 · 烹饪",
+    "grammar": "It smells/tastes/looks/feels/sounds like …（It felt like dry grass. / It smelt like carrot cake.）；make somebody + adjective（The smell is making me hungry.）",
+    "spell": "sh 的拼法",
+    "cc": "How chocolate is made 巧克力生产 · Traditional food in the UK",
+    "lit": "The gingerbread girl's adventure（童话改编）",
+    "sel": "情感发展 · 欣赏文化多样性",
+    "m1": "",
+    "m2": "Invent a new recipe",
+    "exam": "A2 Reading and Writing",
+    "words": [
+     {
+      "w": "breakfast",
+      "zh": "早餐",
+      "e": ""
+     },
+     {
+      "w": "lunch",
+      "zh": "午餐",
+      "e": ""
+     },
+     {
+      "w": "dinner",
+      "zh": "晚餐",
+      "e": ""
+     },
+     {
+      "w": "rice",
+      "zh": "米饭",
+      "e": "🍚"
+     },
+     {
+      "w": "bread",
+      "zh": "面包",
+      "e": "🍞"
+     },
+     {
+      "w": "egg",
+      "zh": "鸡蛋",
+      "e": "🥚"
+     },
+     {
+      "w": "milk",
+      "zh": "牛奶",
+      "e": "🥛"
+     },
+     {
+      "w": "cake",
+      "zh": "蛋糕",
+      "e": "🍰"
+     },
+     {
+      "w": "sweet",
+      "zh": "甜的",
+      "e": "🍯"
+     },
+     {
+      "w": "chocolate",
+      "zh": "巧克力",
+      "e": "🍫"
+     },
+     {
+      "w": "biscuit",
+      "zh": "饼干",
+      "e": "🍪"
+     },
+     {
+      "w": "cook",
+      "zh": "厨师",
+      "e": "👩‍🍳"
+     },
+     {
+      "w": "eat",
+      "zh": "吃",
+      "e": "🍽️"
+     },
+     {
+      "w": "drink",
+      "zh": "喝",
+      "e": "🥤"
+     }
+    ],
     "sentences": [
      {
       "en": "There is a concert on TV tonight.",
@@ -4059,119 +4078,23 @@ const POWERUP_LEVELS = [
       "en": "Music makes me happy.",
       "zh": "音乐让我开心。"
      }
-    ],
-    "clil": {
-     "t": "🎨 CLIL · 艺术：乐器家族",
-     "kid": "piano 和 violin 是弦与键的家族——不同乐器振动的方式不同，声音就不同。"
-    },
-    "values": {
-     "t": "💛 素养 · 尊重表演者",
-     "kid": "演出结束再鼓掌，安静听完整首曲子——掌声是最好的赞美。"
-    },
-    "words": [
-     {
-      "w": "TV",
-      "zh": "电视",
-      "e": "📺",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "phone",
-      "zh": "电话",
-      "e": "📱",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "email",
-      "zh": "电子邮件",
-      "e": "📧",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "film",
-      "zh": "电影",
-      "e": "🎬",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "cartoon",
-      "zh": "动画片",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "story",
-      "zh": "故事",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "magazine",
-      "zh": "杂志",
-      "e": "📔",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "piano",
-      "zh": "钢琴",
-      "e": "🎹",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "guitar",
-      "zh": "吉他",
-      "e": "🎸",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "violin",
-      "zh": "小提琴",
-      "e": "🎻",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "song",
-      "zh": "歌曲",
-      "e": "🎶",
-      "reuse": true
-     },
-     {
-      "w": "paint",
-      "zh": "绘画",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "brush",
-      "zh": "画笔",
-      "e": "🖌️",
-      "reuse": true
-     },
-     {
-      "w": "concert",
-      "zh": "音乐会",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu4-r3",
     "mod": 0,
     "title": "Review 7-9",
-    "zh": "复习 7-9",
-    "tip": "A2 Key 模拟题：Listening Part 2。",
-    "grammar": "复习：How much、be going to、媒体与艺术词",
+    "zh": "复习 7-9 单元",
+    "page": 0,
+    "vocab": "",
+    "grammar": "复习：过去分词、be used for/to、will 和 going to、感官动词 like",
+    "spell": "",
+    "cc": "",
+    "lit": "",
+    "sel": "",
+    "m1": "",
+    "m2": "",
+    "exam": "",
     "words": [
      {
       "w": "money",
@@ -4270,10 +4193,100 @@ const POWERUP_LEVELS = [
    {
     "id": "pu5-u1",
     "mod": 1,
-    "title": "Unit 1 · Nature and environment",
-    "zh": "自然与环境",
-    "tip": "本单元任务：写一份班级环保公约。",
-    "grammar": "must/mustn't 表示义务与禁止；protect + 名词",
+    "title": "In style",
+    "zh": "时尚风格",
+    "page": 4,
+    "vocab": "衣服 · 衣服部件",
+    "grammar": "比较级形容词、副词与 as … as（The blue jacket is more expensive than the grey jacket, but it fits better. / It is not as heavy as the grey jacket.）；一般现在时表将来（What time does the fashion show start tomorrow?）",
+    "spell": "复数 s 的发音",
+    "cc": "Clothes throughout history 服饰的过去、现在与未来",
+    "lit": "King Canute's day on the beach（面对挫折的故事）",
+    "sel": "情感发展 · 探索解决方案",
+    "m1": "",
+    "m2": "Plan a fashion show",
+    "exam": "A2 Key for Schools: Reading and Writing Part 1 / Listening Part 1",
+    "words": [
+     {
+      "w": "shirt",
+      "zh": "衬衫",
+      "e": "👔"
+     },
+     {
+      "w": "T-shirt",
+      "zh": "T恤",
+      "e": "👕"
+     },
+     {
+      "w": "dress",
+      "zh": "连衣裙",
+      "e": "👗"
+     },
+     {
+      "w": "skirt",
+      "zh": "短裙",
+      "e": "👚"
+     },
+     {
+      "w": "pants",
+      "zh": "裤子",
+      "e": "👖"
+     },
+     {
+      "w": "shorts",
+      "zh": "短裤",
+      "e": "🩳"
+     },
+     {
+      "w": "coat",
+      "zh": "大衣",
+      "e": "🧥"
+     },
+     {
+      "w": "sweater",
+      "zh": "毛衣",
+      "e": "🧶"
+     },
+     {
+      "w": "jacket",
+      "zh": "夹克",
+      "e": "🥼"
+     },
+     {
+      "w": "hat",
+      "zh": "帽子",
+      "e": "🎩"
+     },
+     {
+      "w": "cap",
+      "zh": "鸭舌帽",
+      "e": "🧢"
+     },
+     {
+      "w": "shoe",
+      "zh": "鞋",
+      "e": "👟"
+     },
+     {
+      "w": "sock",
+      "zh": "袜子",
+      "e": "🧦"
+     },
+     {
+      "w": "clothes",
+      "zh": "衣服",
+      "e": "🧺"
+     },
+     {
+      "w": "scarf",
+      "zh": "围巾",
+      "e": "🧣"
+     },
+     {
+      "w": "glove",
+      "zh": "手套",
+      "e": "🧤"
+     }
+    ],
     "sentences": [
      {
       "en": "We must protect the earth.",
@@ -4287,119 +4300,85 @@ const POWERUP_LEVELS = [
       "en": "Recycling saves energy.",
       "zh": "回收利用节约能源。"
      }
-    ],
-    "clil": {
-     "t": "🔬 CLIL · 科学：垃圾去哪了",
-     "kid": "一个塑料瓶要 450 年才能消失——recycle 让它变成新瓶子，这是垃圾的第二次生命。"
-    },
-    "values": {
-     "t": "💛 素养 · 随手环保",
-     "kid": "随手关灯、自带水杯、双面用纸——环保不是大事，是每天的小事。"
-    },
-    "words": [
-     {
-      "w": "earth",
-      "zh": "地球",
-      "e": "🌍",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "planet",
-      "zh": "行星",
-      "e": "🪐",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "space",
-      "zh": "太空",
-      "e": "🌌",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "rock",
-      "zh": "岩石",
-      "e": "🪨",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "sand",
-      "zh": "沙子",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "plant",
-      "zh": "植物",
-      "e": "🪴",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "wood",
-      "zh": "木头",
-      "e": "🪵",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "air",
-      "zh": "空气",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "smoke",
-      "zh": "烟",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "environment",
-      "zh": "环境",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "pollution",
-      "zh": "污染",
-      "e": "🏭",
-      "reuse": true
-     },
-     {
-      "w": "rubbish",
-      "zh": "垃圾",
-      "e": "🗑️",
-      "reuse": true
-     },
-     {
-      "w": "recycle",
-      "zh": "回收利用",
-      "e": "♻️",
-      "reuse": true
-     },
-     {
-      "w": "energy",
-      "zh": "能源",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu5-u2",
     "mod": 2,
-    "title": "Unit 2 · Describing things",
-    "zh": "描述事物",
-    "tip": "本单元任务：「神秘物品」描述猜谜游戏。",
-    "grammar": "形状/尺寸形容词排序（a big round …）；made of 材质表达",
+    "title": "Future technology",
+    "zh": "未来科技",
+    "page": 16,
+    "vocab": "科技 · 使用电脑的动词",
+    "grammar": "第一条件句（If something breaks, a robot will fix it.）；零条件句（If you press this button, it turns on.）",
+    "spell": "双音节词的音节重音",
+    "cc": "How to make an app 什么是应用、怎么做一个",
+    "lit": "The Tech Times（关于嫉妒的报纸文章）",
+    "sel": "创意思维 · 沟通",
+    "m1": "",
+    "m2": "Invent a piece of technology for a home of the future",
+    "exam": "A2 Key for Schools: Speaking Part 1 / Reading and Writing Part 2",
+    "words": [
+     {
+      "w": "computer",
+      "zh": "电脑",
+      "e": "💻"
+     },
+     {
+      "w": "robot",
+      "zh": "机器人",
+      "e": "🤖"
+     },
+     {
+      "w": "phone",
+      "zh": "电话",
+      "e": "📱"
+     },
+     {
+      "w": "screen",
+      "zh": "屏幕",
+      "e": "🖥️"
+     },
+     {
+      "w": "email",
+      "zh": "电子邮件",
+      "e": "📧"
+     },
+     {
+      "w": "game",
+      "zh": "游戏",
+      "e": "🎮"
+     },
+     {
+      "w": "TV",
+      "zh": "电视",
+      "e": "📺"
+     },
+     {
+      "w": "photo",
+      "zh": "照片",
+      "e": "📷"
+     },
+     {
+      "w": "write",
+      "zh": "写",
+      "e": "✍️"
+     },
+     {
+      "w": "draw",
+      "zh": "画画",
+      "e": "🎨"
+     },
+     {
+      "w": "read",
+      "zh": "读书",
+      "e": "📚"
+     },
+     {
+      "w": "play",
+      "zh": "玩",
+      "e": "🎾"
+     }
+    ],
     "sentences": [
      {
       "en": "This box is heavy but small.",
@@ -4413,125 +4392,105 @@ const POWERUP_LEVELS = [
       "en": "The bag is light and cheap.",
       "zh": "这个包又轻又便宜。"
      }
-    ],
-    "clil": {
-     "t": "🔬 CLIL · 科学：材料属性",
-     "kid": "wood 浮在水面、stone 沉下去——材料不同，本领不同，用途就不同。"
-    },
-    "values": {
-     "t": "💛 素养 · 描述准确",
-     "kid": "说清楚「多大、多重、什么做的」——准确的描述是一种诚实。"
-    },
-    "words": [
-     {
-      "w": "circle",
-      "zh": "圆形",
-      "e": "⭕",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "square",
-      "zh": "正方形",
-      "e": "🟥",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "triangle",
-      "zh": "三角形",
-      "e": "🔺",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "shape",
-      "zh": "形状",
-      "e": "🔷",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "round",
-      "zh": "圆的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "big",
-      "zh": "大的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "small",
-      "zh": "小的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "long",
-      "zh": "长的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "short",
-      "zh": "短的/矮的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "heavy",
-      "zh": "重的",
-      "e": "🏋️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "light",
-      "zh": "轻的",
-      "e": "🪶",
-      "reuse": true
-     },
-     {
-      "w": "hard",
-      "zh": "难的",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "easy",
-      "zh": "容易的",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "clean",
-      "zh": "干净的",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "dirty",
-      "zh": "脏的",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu5-u3",
     "mod": 3,
-    "title": "Unit 3 · Health and habits",
-    "zh": "健康与习惯",
-    "tip": "本单元任务：做一周健康习惯打卡表。",
-    "grammar": "How often ...? 频率回答；stay + 形容词（stay healthy）",
+    "title": "Jim-nastics",
+    "zh": "吉姆体操",
+    "page": 28,
+    "vocab": "运动 · 运动动作、人物与装备",
+    "grammar": "一般现在时被动语态（The hosts are decided by the World Rugby Council.）；shall/could/should 提议（Shall we watch the wheelchair rugby? / I think we should ask Mum and Dad.）",
+    "spell": "元音发音",
+    "cc": "Practice makes perfect 运动员赛前怎么训练吃睡",
+    "lit": "The Spartan Princess（关于坚持的漫画）",
+    "sel": "创意思维",
+    "m1": "",
+    "m2": "Create a news report about a sporting event",
+    "exam": "A2 Key for Schools: Listening Part 2 / Reading and Writing Part 5",
+    "words": [
+     {
+      "w": "football",
+      "zh": "足球",
+      "e": "⚽"
+     },
+     {
+      "w": "basketball",
+      "zh": "篮球",
+      "e": "🏀"
+     },
+     {
+      "w": "ping-pong",
+      "zh": "乒乓球",
+      "e": "🏓"
+     },
+     {
+      "w": "baseball",
+      "zh": "棒球",
+      "e": "⚾"
+     },
+     {
+      "w": "swim",
+      "zh": "游泳",
+      "e": "🏊"
+     },
+     {
+      "w": "run",
+      "zh": "跑",
+      "e": "🏃"
+     },
+     {
+      "w": "jump",
+      "zh": "跳",
+      "e": "🤸"
+     },
+     {
+      "w": "skate",
+      "zh": "滑冰",
+      "e": "⛸️"
+     },
+     {
+      "w": "ski",
+      "zh": "滑雪",
+      "e": "🎿"
+     },
+     {
+      "w": "ride",
+      "zh": "骑",
+      "e": "🚴"
+     },
+     {
+      "w": "race",
+      "zh": "比赛",
+      "e": "🏁"
+     },
+     {
+      "w": "win",
+      "zh": "赢",
+      "e": "🏆"
+     },
+     {
+      "w": "winner",
+      "zh": "获胜者",
+      "e": "🏅"
+     },
+     {
+      "w": "exercise",
+      "zh": "锻炼",
+      "e": ""
+     },
+     {
+      "w": "climb",
+      "zh": "爬",
+      "e": "🧗"
+     },
+     {
+      "w": "throw",
+      "zh": "扔",
+      "e": "🤾"
+     }
+    ],
     "sentences": [
      {
       "en": "How often do you exercise?",
@@ -4545,101 +4504,23 @@ const POWERUP_LEVELS = [
       "en": "Exercise makes your body strong.",
       "zh": "锻炼让身体强壮。"
      }
-    ],
-    "clil": {
-     "t": "🔬 CLIL · 科学：习惯与身体",
-     "kid": "每天刷牙、按时睡觉、经常锻炼——身体的分数是按天攒出来的。"
-    },
-    "values": {
-     "t": "💛 素养 · 坚持好习惯",
-     "kid": "好习惯做一天容易，做一年才厉害——坚持就是你对自己说的话。"
-    },
-    "words": [
-     {
-      "w": "health",
-      "zh": "健康",
-      "e": "💚",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "healthy",
-      "zh": "健康的",
-      "e": "🥗",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "exercise",
-      "zh": "锻炼",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "sick",
-      "zh": "生病的",
-      "e": "🤒",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "medicine",
-      "zh": "药",
-      "e": "💊",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "rest",
-      "zh": "休息",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "vitamin",
-      "zh": "维生素",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "body",
-      "zh": "身体",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "safe",
-      "zh": "安全的",
-      "e": "🦺",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "toothbrush",
-      "zh": "牙刷",
-      "e": "🪥",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "soap",
-      "zh": "香皂",
-      "e": "🧼",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu5-r1",
     "mod": 0,
     "title": "Review 1-3",
-    "zh": "复习 1-3",
-    "tip": "A2 Key 题型练：Reading Part 3。",
-    "grammar": "复习：must/mustn't、描述事物、How often",
+    "zh": "复习 1-3 单元",
+    "page": 0,
+    "vocab": "",
+    "grammar": "复习：as…as、一般现在时表将来、第一/零条件句、被动语态",
+    "spell": "",
+    "cc": "",
+    "lit": "",
+    "sel": "",
+    "m1": "",
+    "m2": "",
+    "exam": "",
     "words": [
      {
       "w": "earth",
@@ -4730,10 +4611,100 @@ const POWERUP_LEVELS = [
    {
     "id": "pu5-u4",
     "mod": 4,
-    "title": "Unit 4 · Directions and places",
-    "zh": "方向与位置",
-    "tip": "本单元任务：画出从学校到家的路线图。",
-    "grammar": "祈使指路 Turn left / Go along；near/far from",
+    "title": "Stay well!",
+    "zh": "保持健康",
+    "page": 42,
+    "vocab": "事故与疾病 · 健康与医药",
+    "grammar": "现在完成时 + how long/for/since（How long has your arm been sore? / I have felt worried about it since yesterday.）；现在进行时表将来（I am seeing the doctor again.）",
+    "spell": "句子重音",
+    "cc": "Making lives better 科学如何改善生活",
+    "lit": "The £20,000 adventure（关于情绪的故事）",
+    "sel": "情感发展 · 学会学习",
+    "m1": "",
+    "m2": "Make a wellness diary",
+    "exam": "A2 Key for Schools: Reading and Writing Part 4 / Listening Part 4",
+    "words": [
+     {
+      "w": "doctor",
+      "zh": "医生",
+      "e": "👨‍⚕️"
+     },
+     {
+      "w": "nurse",
+      "zh": "护士",
+      "e": "👩‍⚕️"
+     },
+     {
+      "w": "hospital",
+      "zh": "医院",
+      "e": "🏥"
+     },
+     {
+      "w": "medicine",
+      "zh": "药",
+      "e": "💊"
+     },
+     {
+      "w": "hurt",
+      "zh": "受伤",
+      "e": "🩹"
+     },
+     {
+      "w": "head",
+      "zh": "头",
+      "e": ""
+     },
+     {
+      "w": "tooth",
+      "zh": "牙齿",
+      "e": "🦷"
+     },
+     {
+      "w": "ear",
+      "zh": "耳朵",
+      "e": "👂"
+     },
+     {
+      "w": "eye",
+      "zh": "眼睛",
+      "e": "👁️"
+     },
+     {
+      "w": "sick",
+      "zh": "生病的",
+      "e": "🤒"
+     },
+     {
+      "w": "rest",
+      "zh": "休息",
+      "e": ""
+     },
+     {
+      "w": "safe",
+      "zh": "安全的",
+      "e": "🦺"
+     },
+     {
+      "w": "danger",
+      "zh": "危险",
+      "e": ""
+     },
+     {
+      "w": "help",
+      "zh": "帮助",
+      "e": "🆘"
+     },
+     {
+      "w": "arm",
+      "zh": "手臂",
+      "e": ""
+     },
+     {
+      "w": "well",
+      "zh": "好/井",
+      "e": ""
+     }
+    ],
     "sentences": [
      {
       "en": "Go along this street, then turn right.",
@@ -4747,119 +4718,105 @@ const POWERUP_LEVELS = [
       "en": "Is it near the park?",
       "zh": "在公园附近吗？"
      }
-    ],
-    "clil": {
-     "t": "🌍 CLIL · 地理：地图与方向",
-     "kid": "上北下南左西右东——看懂地图的人，走到哪都不会迷路。"
-    },
-    "values": {
-     "t": "💛 素养 · 帮助问路的人",
-     "kid": "有人问路时，说清楚、有耐心——你曾是找不到路的小孩吗？"
-    },
-    "words": [
-     {
-      "w": "map",
-      "zh": "地图",
-      "e": "🗺️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "east",
-      "zh": "东方",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "west",
-      "zh": "西方",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "north",
-      "zh": "北方",
-      "e": "⬆️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "south",
-      "zh": "南方",
-      "e": "⬇️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "direction",
-      "zh": "方向",
-      "e": "🧭",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "corner",
-      "zh": "角落",
-      "e": "📐",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "here",
-      "zh": "这里",
-      "e": "📍",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "there",
-      "zh": "那里",
-      "e": "📌",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "left",
-      "zh": "左边",
-      "e": "⬅️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "right",
-      "zh": "右边",
-      "e": "➡️",
-      "reuse": true
-     },
-     {
-      "w": "middle",
-      "zh": "中间",
-      "e": "🎯",
-      "reuse": true
-     },
-     {
-      "w": "near",
-      "zh": "在附近",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "far",
-      "zh": "远的",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu5-u5",
     "mod": 5,
-    "title": "Unit 5 · Music and performance",
-    "zh": "音乐与表演",
-    "tip": "本单元任务：策划一场班级音乐会。",
-    "grammar": "play the + 乐器（play the piano） vs play + 球类 的区别",
+    "title": "Fun foods",
+    "zh": "趣味食物",
+    "page": 54,
+    "vocab": "烹饪食材 · 烹饪动作与装备",
+    "grammar": "prefer、would prefer 和 would rather（I prefer eating salad to potatoes! / I would rather have steak.）；一般过去时被动语态（Pizza was first made in southern Italy! / Chocolate-chip cookies were invented by Ruth Wakefield!）",
+    "spell": "动词过去式结尾的发音",
+    "cc": "Healthy eating 为什么有些食物对健康有益",
+    "lit": "A very interesting week in the life of Juana Sánchez（关于情绪管理的日记）",
+    "sel": "情感发展 · 系统思维",
+    "m1": "",
+    "m2": "Present a traditional food or dish",
+    "exam": "A2 Key for Schools: Listening Part 5 / Reading and Writing Part 7",
+    "words": [
+     {
+      "w": "rice",
+      "zh": "米饭",
+      "e": "🍚"
+     },
+     {
+      "w": "noodle",
+      "zh": "面条",
+      "e": "🍜"
+     },
+     {
+      "w": "egg",
+      "zh": "鸡蛋",
+      "e": "🥚"
+     },
+     {
+      "w": "bread",
+      "zh": "面包",
+      "e": "🍞"
+     },
+     {
+      "w": "cake",
+      "zh": "蛋糕",
+      "e": "🍰"
+     },
+     {
+      "w": "milk",
+      "zh": "牛奶",
+      "e": "🥛"
+     },
+     {
+      "w": "cook",
+      "zh": "厨师",
+      "e": "👩‍🍳"
+     },
+     {
+      "w": "make",
+      "zh": "制作",
+      "e": "🔨"
+     },
+     {
+      "w": "eat",
+      "zh": "吃",
+      "e": "🍽️"
+     },
+     {
+      "w": "drink",
+      "zh": "喝",
+      "e": "🥤"
+     },
+     {
+      "w": "delicious",
+      "zh": "美味的",
+      "e": "😋"
+     },
+     {
+      "w": "fruit",
+      "zh": "水果",
+      "e": "🍏"
+     },
+     {
+      "w": "vegetable",
+      "zh": "蔬菜",
+      "e": "🥦"
+     },
+     {
+      "w": "sweet",
+      "zh": "甜的",
+      "e": "🍯"
+     },
+     {
+      "w": "chicken",
+      "zh": "鸡肉",
+      "e": "🍗"
+     },
+     {
+      "w": "beef",
+      "zh": "牛肉",
+      "e": "🥩"
+     }
+    ],
     "sentences": [
      {
       "en": "She plays the violin in the school band.",
@@ -4873,107 +4830,105 @@ const POWERUP_LEVELS = [
       "en": "Practice makes the music beautiful.",
       "zh": "练习让音乐变美。"
      }
-    ],
-    "clil": {
-     "t": "🔢 CLIL · 数学：节拍里的分数",
-     "kid": "一个音拍 1 拍，半个音拍 1/2 拍——音乐里的节奏就是数学的分数。"
-    },
-    "values": {
-     "t": "💛 素养 · 练习需要坚持",
-     "kid": "台上一分钟，台下十年功——每一次练习都在靠近舞台。"
-    },
-    "words": [
-     {
-      "w": "piano",
-      "zh": "钢琴",
-      "e": "🎹",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "guitar",
-      "zh": "吉他",
-      "e": "🎸",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "violin",
-      "zh": "小提琴",
-      "e": "🎻",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "drum",
-      "zh": "鼓",
-      "e": "🥁",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "song",
-      "zh": "歌曲",
-      "e": "🎶",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "band",
-      "zh": "乐队",
-      "e": "🎺",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "concert",
-      "zh": "音乐会",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "stage",
-      "zh": "舞台",
-      "e": "🎭",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "magic",
-      "zh": "魔法",
-      "e": "✨",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "sing",
-      "zh": "唱歌",
-      "e": "🎤",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "dance",
-      "zh": "跳舞",
-      "e": "💃",
-      "reuse": true
-     },
-     {
-      "w": "paint",
-      "zh": "绘画",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu5-u6",
     "mod": 6,
-    "title": "Unit 6 · Communication",
-    "zh": "通讯与媒体",
-    "tip": "本单元任务：写一封 50 词的英文邮件。",
-    "grammar": "邮件格式 Dear ... / Best wishes；send/收到 的搭配",
+    "title": "Environmentally friendly",
+    "zh": "环保生活",
+    "page": 66,
+    "vocab": "家 · 环境",
+    "grammar": "a few/a little/a lot of/lots of（There are a lot of old clothes in this box.）；反义疑问句（We could be more environmentally friendly, could we not? / We should not throw plastic into the wrong bin, should we?）",
+    "spell": "schwa 弱央元音",
+    "cc": "Ecosystems 城市里的动物家园",
+    "lit": "The fall of a Mayan city（保护环境的故事）",
+    "sel": "推动积极改变 · 系统思维",
+    "m1": "",
+    "m2": "Discover how schools could be more environmentally friendly",
+    "exam": "A2 Key for Schools: Speaking Part 2 / Reading and Writing Part 6",
+    "words": [
+     {
+      "w": "tree",
+      "zh": "树",
+      "e": "🌳"
+     },
+     {
+      "w": "flower",
+      "zh": "花",
+      "e": "🌸"
+     },
+     {
+      "w": "water",
+      "zh": "水",
+      "e": "💧"
+     },
+     {
+      "w": "air",
+      "zh": "空气",
+      "e": ""
+     },
+     {
+      "w": "rubbish",
+      "zh": "垃圾",
+      "e": "🗑️"
+     },
+     {
+      "w": "earth",
+      "zh": "地球",
+      "e": "🌍"
+     },
+     {
+      "w": "home",
+      "zh": "家",
+      "e": "🏠"
+     },
+     {
+      "w": "house",
+      "zh": "房子",
+      "e": "🏡"
+     },
+     {
+      "w": "garden",
+      "zh": "花园",
+      "e": "🌷"
+     },
+     {
+      "w": "plant",
+      "zh": "植物",
+      "e": "🪴"
+     },
+     {
+      "w": "save",
+      "zh": "拯救",
+      "e": "🦸"
+     },
+     {
+      "w": "green",
+      "zh": "绿色",
+      "e": ""
+     },
+     {
+      "w": "bird",
+      "zh": "小鸟",
+      "e": "🐦"
+     },
+     {
+      "w": "fish",
+      "zh": "鱼",
+      "e": "🐟"
+     },
+     {
+      "w": "duck",
+      "zh": "鸭子",
+      "e": "🦆"
+     },
+     {
+      "w": "grass",
+      "zh": "草",
+      "e": "🌱"
+     }
+    ],
     "sentences": [
      {
       "en": "I sent you an email.",
@@ -4987,101 +4942,23 @@ const POWERUP_LEVELS = [
       "en": "Write back soon!",
       "zh": "记得回信！"
      }
-    ],
-    "clil": {
-     "t": "💻 CLIL · 信息：邮件的结构",
-     "kid": "一封邮件 = 收件人 + 主题 + 正文 + 结尾——结构清楚，别人一看就懂。"
-    },
-    "values": {
-     "t": "💛 素养 · 回消息是礼貌",
-     "kid": "收到消息及时回复——让别人等待是小事，也是大事。"
-    },
-    "words": [
-     {
-      "w": "phone",
-      "zh": "电话",
-      "e": "📱",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "email",
-      "zh": "电子邮件",
-      "e": "📧",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "message",
-      "zh": "消息",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "call",
-      "zh": "打电话",
-      "e": "📞",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "video",
-      "zh": "视频",
-      "e": "📹",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "news",
-      "zh": "新闻",
-      "e": "📰",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "letter",
-      "zh": "信",
-      "e": "✉️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "radio",
-      "zh": "收音机",
-      "e": "📻",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "program",
-      "zh": "节目",
-      "e": "🎙️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "screen",
-      "zh": "屏幕",
-      "e": "🖥️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "channel",
-      "zh": "频道",
-      "e": "📡",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu5-r2",
     "mod": 0,
     "title": "Review 4-6",
-    "zh": "复习 4-6",
-    "tip": "A2 Key 题型练：Writing Part 6 便条。",
-    "grammar": "复习：祈使指路、play the+乐器、邮件格式",
+    "zh": "复习 4-6 单元",
+    "page": 0,
+    "vocab": "",
+    "grammar": "复习：现在完成时 how long/for/since、prefer/would rather、a few/a little、反义疑问句",
+    "spell": "",
+    "cc": "",
+    "lit": "",
+    "sel": "",
+    "m1": "",
+    "m2": "",
+    "exam": "",
     "words": [
      {
       "w": "map",
@@ -5172,10 +5049,90 @@ const POWERUP_LEVELS = [
    {
     "id": "pu5-u7",
     "mod": 7,
-    "title": "Unit 7 · Jobs and dreams",
-    "zh": "职业与梦想",
-    "tip": "本单元任务：「二十年后的我」演讲卡。",
-    "grammar": "want to be / hope to do；when I grow up 时间状语从句",
+    "title": "Feeling it",
+    "zh": "感受情绪",
+    "page": 80,
+    "vocab": "感受与情绪 · 身心健康",
+    "grammar": "have to/don't have to/needn't/must/mustn't（I really must study for the history test tomorrow. / You need not worry — you have studied a lot.）；so … that / such … that（I felt so scared that I wanted to go home!）",
+    "spell": "/b/ /v/ /w/ 辨音",
+    "cc": "Emotional awareness 同理心与情绪表达",
+    "lit": "The cowboy who cried wolf（诚实的故事）",
+    "sel": "情感发展",
+    "m1": "",
+    "m2": "Make a feelings chart",
+    "exam": "A2 Key for Schools: Reading and Writing Part 3 / Listening Part 3",
+    "words": [
+     {
+      "w": "happy",
+      "zh": "开心的",
+      "e": "😄"
+     },
+     {
+      "w": "sad",
+      "zh": "难过的",
+      "e": "😔"
+     },
+     {
+      "w": "angry",
+      "zh": "生气的",
+      "e": "😠"
+     },
+     {
+      "w": "tired",
+      "zh": "累的",
+      "e": "😪"
+     },
+     {
+      "w": "excited",
+      "zh": "兴奋的",
+      "e": "🤩"
+     },
+     {
+      "w": "afraid",
+      "zh": "害怕的",
+      "e": "😨"
+     },
+     {
+      "w": "smile",
+      "zh": "微笑",
+      "e": ""
+     },
+     {
+      "w": "cry",
+      "zh": "哭",
+      "e": "😢"
+     },
+     {
+      "w": "laugh",
+      "zh": "笑",
+      "e": "😂"
+     },
+     {
+      "w": "feel",
+      "zh": "感觉",
+      "e": "🫶"
+     },
+     {
+      "w": "brave",
+      "zh": "勇敢的",
+      "e": ""
+     },
+     {
+      "w": "kind",
+      "zh": "善良的",
+      "e": "💞"
+     },
+     {
+      "w": "friend",
+      "zh": "朋友",
+      "e": "🤝"
+     },
+     {
+      "w": "family",
+      "zh": "家",
+      "e": "👨‍👩‍👧‍👦"
+     }
+    ],
     "sentences": [
      {
       "en": "I want to be a scientist.",
@@ -5189,113 +5146,105 @@ const POWERUP_LEVELS = [
       "en": "Every job is important.",
       "zh": "每种工作都重要。"
      }
-    ],
-    "clil": {
-     "t": "🌍 CLIL · 社会：职业学习路径",
-     "kid": "想当 scientist 就要先学好 science 和 math——每个梦想都有一条通向它的路。"
-    },
-    "values": {
-     "t": "💛 素养 · 尊重每个梦想",
-     "kid": "有人想当 pilot，有人想当 vet——每个认真的梦想都值得鼓掌。"
-    },
-    "words": [
-     {
-      "w": "job",
-      "zh": "工作",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "dream",
-      "zh": "梦想",
-      "e": "💫",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "goal",
-      "zh": "目标",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "work",
-      "zh": "工作",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "success",
-      "zh": "成功",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "study",
-      "zh": "学习",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "exam",
-      "zh": "考试",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "review",
-      "zh": "复习",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "believe",
-      "zh": "相信",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "effort",
-      "zh": "努力",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "ideal",
-      "zh": "理想",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "college",
-      "zh": "大学",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "knowledge",
-      "zh": "知识",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu5-u8",
     "mod": 8,
-    "title": "Unit 8 · Festivals and cultures",
-    "zh": "节日与文化",
-    "tip": "本单元任务：对比中外一个节日的异同。",
-    "grammar": "both/and 与 but/however 的对比句式",
+    "title": "Pretty cities",
+    "zh": "美丽城市",
+    "page": 92,
+    "vocab": "城市游览 · 拜访新地方",
+    "grammar": "间接疑问句（Could you tell us what that big building is, please?）；used to / didn't use to（People didn't use to have running water in their kitchens.）",
+    "spell": "疑问句的语调",
+    "cc": "Responsible tourism 假期如何爱护景点",
+    "lit": "The case of the Butterfly Diamond（管理压力的故事）",
+    "sel": "创意思维 · 社会责任",
+    "m1": "",
+    "m2": "Plan a city visit",
+    "exam": "A2 Key for Schools: Reading and Writing Part 4 / B1 Preliminary for Schools: Reading Part 6",
+    "words": [
+     {
+      "w": "city",
+      "zh": "城市",
+      "e": "🏙️"
+     },
+     {
+      "w": "park",
+      "zh": "公园",
+      "e": ""
+     },
+     {
+      "w": "zoo",
+      "zh": "动物园",
+      "e": ""
+     },
+     {
+      "w": "shop",
+      "zh": "商店",
+      "e": "🏪"
+     },
+     {
+      "w": "supermarket",
+      "zh": "超市",
+      "e": "🛒"
+     },
+     {
+      "w": "hospital",
+      "zh": "医院",
+      "e": "🏥"
+     },
+     {
+      "w": "library",
+      "zh": "图书馆",
+      "e": ""
+     },
+     {
+      "w": "cinema",
+      "zh": "电影院",
+      "e": "🎦"
+     },
+     {
+      "w": "museum",
+      "zh": "博物馆",
+      "e": "🏛️"
+     },
+     {
+      "w": "hotel",
+      "zh": "旅馆",
+      "e": "🏨"
+     },
+     {
+      "w": "restaurant",
+      "zh": "餐馆",
+      "e": ""
+     },
+     {
+      "w": "street",
+      "zh": "街道",
+      "e": ""
+     },
+     {
+      "w": "road",
+      "zh": "马路",
+      "e": "🛣️"
+     },
+     {
+      "w": "bridge",
+      "zh": "桥",
+      "e": "🌉"
+     },
+     {
+      "w": "building",
+      "zh": "大楼",
+      "e": "🏢"
+     },
+     {
+      "w": "station",
+      "zh": "车站",
+      "e": "🚉"
+     }
+    ],
     "sentences": [
      {
       "en": "Both festivals are about family.",
@@ -5309,119 +5258,85 @@ const POWERUP_LEVELS = [
       "en": "Christmas is a festival in the West.",
       "zh": "圣诞节是西方的节日。"
      }
-    ],
-    "clil": {
-     "t": "🌍 CLIL · 社会：节日比较表",
-     "kid": "春节和 Christmas 都吃团圆饭——把两个节日做成对比表，异同一目了然。"
-    },
-    "values": {
-     "t": "💛 素养 · 了解别人的文化",
-     "kid": "别人的节日你不必过，但要懂得尊重——了解让人成为好朋友。"
-    },
-    "words": [
-     {
-      "w": "festival",
-      "zh": "节日",
-      "e": "🎉",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "Christmas",
-      "zh": "圣诞节",
-      "e": "🎄",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "present",
-      "zh": "礼物",
-      "e": "🎁",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "party",
-      "zh": "聚会",
-      "e": "🥳",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "candle",
-      "zh": "蜡烛",
-      "e": "🕯️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "lantern",
-      "zh": "灯笼",
-      "e": "🏮",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "dragon",
-      "zh": "龙",
-      "e": "🐉",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "celebrate",
-      "zh": "庆祝",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "New Year",
-      "zh": "新年",
-      "e": "🎇",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "invite",
-      "zh": "邀请",
-      "e": "💌",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "prepare",
-      "zh": "准备",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "China",
-      "zh": "中国",
-      "e": "🇨🇳",
-      "reuse": true
-     },
-     {
-      "w": "America",
-      "zh": "美国",
-      "e": "🇺🇸",
-      "reuse": true
-     },
-     {
-      "w": "culture",
-      "zh": "文化",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu5-u9",
     "mod": 9,
-    "title": "Unit 9 · Countries and travel",
-    "zh": "国家与旅行",
-    "tip": "本单元任务：做一张世界旅行护照手册。",
-    "grammar": "people in + 国家；语言与国籍词的关联记忆",
+    "title": "Lights, camera, action!",
+    "zh": "灯光、摄影、开拍！",
+    "page": 104,
+    "vocab": "影视类型 · 电视",
+    "grammar": "have / get something done（We are having the costumes made.）；第二条件句（If I had €250 million, I would give lots of it to charity.）",
+    "spell": "单词重音",
+    "cc": "Special effects 电影特效怎么做",
+    "lit": "Lost in the Rainforest（环保电影脚本）",
+    "sel": "创意思维",
+    "m1": "",
+    "m2": "Plan and record an interview with a celebrity",
+    "exam": "A2 Key for Schools: Reading and Writing Part 7 / B1 Preliminary for Schools: Writing Part 1",
+    "words": [
+     {
+      "w": "TV",
+      "zh": "电视",
+      "e": "📺"
+     },
+     {
+      "w": "film",
+      "zh": "电影",
+      "e": "🎬"
+     },
+     {
+      "w": "cartoon",
+      "zh": "动画片",
+      "e": ""
+     },
+     {
+      "w": "story",
+      "zh": "故事",
+      "e": ""
+     },
+     {
+      "w": "music",
+      "zh": "音乐",
+      "e": "🎵"
+     },
+     {
+      "w": "song",
+      "zh": "歌曲",
+      "e": "🎶"
+     },
+     {
+      "w": "star",
+      "zh": "星星",
+      "e": "⭐"
+     },
+     {
+      "w": "photo",
+      "zh": "照片",
+      "e": "📷"
+     },
+     {
+      "w": "dance",
+      "zh": "跳舞",
+      "e": "💃"
+     },
+     {
+      "w": "sing",
+      "zh": "唱歌",
+      "e": "🎤"
+     },
+     {
+      "w": "game",
+      "zh": "游戏",
+      "e": "🎮"
+     },
+     {
+      "w": "book",
+      "zh": "书",
+      "e": "📖"
+     }
+    ],
     "sentences": [
      {
       "en": "People in France speak French.",
@@ -5435,113 +5350,23 @@ const POWERUP_LEVELS = [
       "en": "Every country has its own flag.",
       "zh": "每个国家都有自己的国旗。"
      }
-    ],
-    "clil": {
-     "t": "🌍 CLIL · 地理：国家与首都",
-     "kid": "China—Beijing、France—Paris、Japan—Tokyo——国家与首都像钥匙和锁，一一配对。"
-    },
-    "values": {
-     "t": "💛 素养 · 世界很大，去看看",
-     "kid": "学好英语就是带上世界的钥匙——它能打开更多的大门。"
-    },
-    "words": [
-     {
-      "w": "country",
-      "zh": "国家",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "world",
-      "zh": "世界",
-      "e": "🌍",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "language",
-      "zh": "语言",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "flag",
-      "zh": "旗帜",
-      "e": "🚩",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "people",
-      "zh": "人们",
-      "e": "👥",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "foreign",
-      "zh": "外国的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "culture",
-      "zh": "文化",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "friendship",
-      "zh": "友谊",
-      "e": "🤝",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "abroad",
-      "zh": "国外",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "Japan",
-      "zh": "日本",
-      "e": "🇯🇵",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "France",
-      "zh": "法国",
-      "e": "🇫🇷",
-      "reuse": true
-     },
-     {
-      "w": "Australia",
-      "zh": "澳大利亚",
-      "e": "🇦🇺",
-      "reuse": true
-     },
-     {
-      "w": "Canada",
-      "zh": "加拿大",
-      "e": "🇨🇦",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu5-r3",
     "mod": 0,
     "title": "Review 7-9",
-    "zh": "复习 7-9",
-    "tip": "A2 Key 模拟题：Speaking Part 2。",
-    "grammar": "复习：want to be、both/however、国家与语言",
+    "zh": "复习 7-9 单元",
+    "page": 0,
+    "vocab": "",
+    "grammar": "复习：have to/mustn't、so/such…that、间接疑问句、used to、第二条件句",
+    "spell": "",
+    "cc": "",
+    "lit": "",
+    "sel": "",
+    "m1": "",
+    "m2": "",
+    "exam": "",
     "words": [
      {
       "w": "job",
@@ -5640,10 +5465,90 @@ const POWERUP_LEVELS = [
    {
     "id": "pu6-u1",
     "mod": 1,
-    "title": "Unit 1 · Learning how to learn",
-    "zh": "学会学习",
-    "tip": "本单元任务：写 5 条「高效学习法」清单。",
-    "grammar": "一般将来 will/going to 复习；动名词作主语（Learning English is ...）",
+    "title": "A song and a dance",
+    "zh": "歌与舞",
+    "page": 4,
+    "vocab": "音乐 · 描写性格的形容词",
+    "grammar": "形容词 + 介词（I am interested in all kinds of music. / It is perfect for people who are keen on music.）；so 和 nor 的短答（I had lots of fun! So have we! / I don't know. Nor do I.）",
+    "spell": "辅音连缀的连读",
+    "cc": "Eighteenth-century music 贝多芬与莫扎特",
+    "lit": "The Concert（日记）",
+    "sel": "社交情感技能：自信",
+    "m1": "Write a concert review",
+    "m2": "Write a concert review",
+    "exam": "Preliminary for Schools: Reading Part 1 / Listening Part 1",
+    "words": [
+     {
+      "w": "music",
+      "zh": "音乐",
+      "e": "🎵"
+     },
+     {
+      "w": "sing",
+      "zh": "唱歌",
+      "e": "🎤"
+     },
+     {
+      "w": "song",
+      "zh": "歌曲",
+      "e": "🎶"
+     },
+     {
+      "w": "dance",
+      "zh": "跳舞",
+      "e": "💃"
+     },
+     {
+      "w": "piano",
+      "zh": "钢琴",
+      "e": "🎹"
+     },
+     {
+      "w": "guitar",
+      "zh": "吉他",
+      "e": "🎸"
+     },
+     {
+      "w": "drum",
+      "zh": "鼓",
+      "e": "🥁"
+     },
+     {
+      "w": "concert",
+      "zh": "音乐会",
+      "e": ""
+     },
+     {
+      "w": "band",
+      "zh": "乐队",
+      "e": "🎺"
+     },
+     {
+      "w": "violin",
+      "zh": "小提琴",
+      "e": "🎻"
+     },
+     {
+      "w": "brave",
+      "zh": "勇敢的",
+      "e": ""
+     },
+     {
+      "w": "friend",
+      "zh": "朋友",
+      "e": "🤝"
+     },
+     {
+      "w": "happy",
+      "zh": "开心的",
+      "e": "😄"
+     },
+     {
+      "w": "play",
+      "zh": "玩",
+      "e": "🎾"
+     }
+    ],
     "sentences": [
      {
       "en": "Learning English takes practice.",
@@ -5657,107 +5562,105 @@ const POWERUP_LEVELS = [
       "en": "Never forget to ask why.",
       "zh": "别忘了多问为什么。"
      }
-    ],
-    "clil": {
-     "t": "🧠 CLIL · 心理学：遗忘曲线",
-     "kid": "学完 20 分钟忘 40%，一天后忘 70%——review 就是把忘记的东西抢回来。"
-    },
-    "values": {
-     "t": "💛 素养 · 复述是最好的学习",
-     "kid": "把学到的讲给别人听——能讲明白，才是真的懂了。"
-    },
-    "words": [
-     {
-      "w": "learn",
-      "zh": "学习",
-      "e": "🧠",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "teach",
-      "zh": "教",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "understand",
-      "zh": "明白",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "remember",
-      "zh": "记住",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "forget",
-      "zh": "忘记",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "know",
-      "zh": "知道",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "spell",
-      "zh": "拼写",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "mistake",
-      "zh": "错误",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "question",
-      "zh": "问题",
-      "e": "❓",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "answer",
-      "zh": "回答",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "homework",
-      "zh": "作业",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "grade",
-      "zh": "年级",
-      "e": "🎖️",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu6-u2",
     "mod": 2,
-    "title": "Unit 2 · Community and rules",
-    "zh": "社区与规则",
-    "tip": "本单元任务：为学校写三条新规则并说明理由。",
-    "grammar": "must/have to/need to 的强弱；because 从句说理",
+    "title": "Big wide world",
+    "zh": "广阔世界",
+    "page": 16,
+    "vocab": "大洲、语言与文化 · 我们周围的地方",
+    "grammar": "关系从句（My cousins who live in Portugal speak Portuguese.）；more … than, fewer … than, less … than, the most, the fewest, the best, the worst（People can drink less water than camels.）",
+    "spell": "比较结构的重音",
+    "cc": "Coral reefs 珊瑚礁",
+    "lit": "Festivals round the world（杂志文章）",
+    "sel": "社交情感技能：拥抱其他文化",
+    "m1": "Create a class encyclopaedia",
+    "m2": "Create a class encyclopaedia",
+    "exam": "Preliminary for Schools: Speaking Part 1 / Reading Part 4",
+    "words": [
+     {
+      "w": "world",
+      "zh": "世界",
+      "e": "🌍"
+     },
+     {
+      "w": "country",
+      "zh": "国家",
+      "e": ""
+     },
+     {
+      "w": "China",
+      "zh": "中国",
+      "e": "🇨🇳"
+     },
+     {
+      "w": "ocean",
+      "zh": "海洋",
+      "e": "🌊"
+     },
+     {
+      "w": "sea",
+      "zh": "大海",
+      "e": "🌊"
+     },
+     {
+      "w": "mountain",
+      "zh": "大山",
+      "e": "⛰️"
+     },
+     {
+      "w": "river",
+      "zh": "河",
+      "e": "🏞️"
+     },
+     {
+      "w": "city",
+      "zh": "城市",
+      "e": "🏙️"
+     },
+     {
+      "w": "map",
+      "zh": "地图",
+      "e": "🗺️"
+     },
+     {
+      "w": "language",
+      "zh": "语言",
+      "e": ""
+     },
+     {
+      "w": "flag",
+      "zh": "旗帜",
+      "e": "🚩"
+     },
+     {
+      "w": "earth",
+      "zh": "地球",
+      "e": "🌍"
+     },
+     {
+      "w": "fish",
+      "zh": "鱼",
+      "e": "🐟"
+     },
+     {
+      "w": "bird",
+      "zh": "小鸟",
+      "e": "🐦"
+     },
+     {
+      "w": "tree",
+      "zh": "树",
+      "e": "🌳"
+     },
+     {
+      "w": "flower",
+      "zh": "花",
+      "e": "🌸"
+     }
+    ],
     "sentences": [
      {
       "en": "Everyone must follow the rules.",
@@ -5771,107 +5674,105 @@ const POWERUP_LEVELS = [
       "en": "Rules protect everyone.",
       "zh": "规则保护每个人。"
      }
-    ],
-    "clil": {
-     "t": "🌍 CLIL · 社会：规则如何保护大家",
-     "kid": "traffic rules 让马路安全、class rules 让课堂安静——规则不是限制，是保护。"
-    },
-    "values": {
-     "t": "💛 素养 · 规则面前的公平",
-     "kid": "规则对每个人都一样——不因为关系好就不遵守，这才是公平。"
-    },
-    "words": [
-     {
-      "w": "rule",
-      "zh": "规则",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "law",
-      "zh": "法律",
-      "e": "⚖️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "police",
-      "zh": "警察",
-      "e": "🚓",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "protect",
-      "zh": "保护",
-      "e": "🛡️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "save",
-      "zh": "拯救",
-      "e": "🦸",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "danger",
-      "zh": "危险",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "accident",
-      "zh": "事故",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "team",
-      "zh": "团队",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "group",
-      "zh": "小组",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "neighbour",
-      "zh": "邻居",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "volunteer",
-      "zh": "志愿者",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "activity",
-      "zh": "活动",
-      "e": "🎪",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu6-u3",
     "mod": 3,
-    "title": "Unit 3 · Personality and values",
-    "zh": "品格与价值观",
-    "tip": "本单元任务：评选班级「品格之星」并写颁奖词。",
-    "grammar": "be + 形容词 + to do（It's kind of you to ...）",
+    "title": "Shopping around",
+    "zh": "购物攻略",
+    "page": 28,
+    "vocab": "购物词 · 购物场景",
+    "grammar": "动词+动名词、动词+不定式（They need to sleep and play! / Do you fancy buying one?）；动名词作主语和宾语（Shopping is great! / She's keen on learning about tea.）",
+    "spell": "gerunds 发音",
+    "cc": "The history of money 货币的历史",
+    "lit": "Where's Wanda?（故事）",
+    "sel": "社交情感技能：珍惜收到的礼物",
+    "m1": "Present tips on shopping",
+    "m2": "Present tips on shopping",
+    "exam": "Preliminary for Schools: Speaking Part 3 / Reading Part 6",
+    "words": [
+     {
+      "w": "money",
+      "zh": "钱",
+      "e": "💰"
+     },
+     {
+      "w": "buy",
+      "zh": "买",
+      "e": "🛍️"
+     },
+     {
+      "w": "sell",
+      "zh": "卖",
+      "e": "🏷️"
+     },
+     {
+      "w": "shop",
+      "zh": "商店",
+      "e": "🏪"
+     },
+     {
+      "w": "store",
+      "zh": "店铺",
+      "e": "🏬"
+     },
+     {
+      "w": "supermarket",
+      "zh": "超市",
+      "e": "🛒"
+     },
+     {
+      "w": "market",
+      "zh": "市场",
+      "e": ""
+     },
+     {
+      "w": "price",
+      "zh": "价格",
+      "e": ""
+     },
+     {
+      "w": "cheap",
+      "zh": "便宜的",
+      "e": ""
+     },
+     {
+      "w": "expensive",
+      "zh": "昂贵的",
+      "e": "💎"
+     },
+     {
+      "w": "pay",
+      "zh": "付款",
+      "e": "💳"
+     },
+     {
+      "w": "gift",
+      "zh": "礼物",
+      "e": "🎁"
+     },
+     {
+      "w": "clothes",
+      "zh": "衣服",
+      "e": "🧺"
+     },
+     {
+      "w": "book",
+      "zh": "书",
+      "e": "📖"
+     },
+     {
+      "w": "game",
+      "zh": "游戏",
+      "e": "🎮"
+     },
+     {
+      "w": "sweet",
+      "zh": "甜的",
+      "e": "🍯"
+     }
+    ],
     "sentences": [
      {
       "en": "It was brave of him to speak first.",
@@ -5885,107 +5786,23 @@ const POWERUP_LEVELS = [
       "en": "Helpful students are always welcome.",
       "zh": "乐于助人的学生总是受欢迎。"
      }
-    ],
-    "clil": {
-     "t": "📖 CLIL · 文学：从行为推断性格",
-     "kid": "故事不会直接写「他很勇敢」——他第一个冲上去，你就读懂了。"
-    },
-    "values": {
-     "t": "💛 素养 · 看见别人的努力",
-     "kid": "夸奖别人的努力而不只是聪明——努力是每个人都拥有的力量。"
-    },
-    "words": [
-     {
-      "w": "kind",
-      "zh": "善良的",
-      "e": "💞",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "brave",
-      "zh": "勇敢的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "smart",
-      "zh": "聪明的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "honest",
-      "zh": "诚实的",
-      "e": "🤞",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "polite",
-      "zh": "有礼貌的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "patient",
-      "zh": "耐心的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "helpful",
-      "zh": "乐于助人的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "careful",
-      "zh": "小心的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "gentle",
-      "zh": "温柔的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "friendly",
-      "zh": "友好的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "lazy",
-      "zh": "懒惰的",
-      "e": "🦥",
-      "reuse": true
-     },
-     {
-      "w": "strict",
-      "zh": "严格的",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu6-r1",
     "mod": 0,
     "title": "Review 1-3",
-    "zh": "复习 1-3",
-    "tip": "B1 Preliminary 题型练：Reading Part 3。",
-    "grammar": "复习：动名词主语、must/have to、品格形容词",
+    "zh": "复习 1-3 单元",
+    "page": 0,
+    "vocab": "",
+    "grammar": "复习：形容词+介词、so/nor 短答、关系从句、比较结构、动词+动名词",
+    "spell": "",
+    "cc": "",
+    "lit": "",
+    "sel": "",
+    "m1": "",
+    "m2": "",
+    "exam": "",
     "words": [
      {
       "w": "learn",
@@ -6076,10 +5893,100 @@ const POWERUP_LEVELS = [
    {
     "id": "pu6-u4",
     "mod": 4,
-    "title": "Unit 4 · Technology and media",
-    "zh": "科技与媒体",
-    "tip": "本单元任务：辩论「屏幕时间」利与弊。",
-    "grammar": "比较级 + than 的论证句式； agree/disagree 表达",
+    "title": "Getting about",
+    "zh": "出行交通",
+    "page": 42,
+    "vocab": "乘飞机旅行 · 周边出行",
+    "grammar": "被动语态复习（Singapore Airport was built to be fun. / It has been open since 2011.）；短语动词与宾语（He put on his swimming trunks. / He put them on.）",
+    "spell": "弱读形式",
+    "cc": "Women aviators 女飞行员 Amy Johnson",
+    "lit": "How we got back from our holiday（科幻故事）",
+    "sel": "社交情感技能：保持冷静",
+    "m1": "Write a travel guide",
+    "m2": "Write a travel guide",
+    "exam": "Preliminary for Schools: Reading Part 2 / Listening Part 2",
+    "words": [
+     {
+      "w": "plane",
+      "zh": "飞机",
+      "e": "✈️"
+     },
+     {
+      "w": "airport",
+      "zh": "机场",
+      "e": "🛫"
+     },
+     {
+      "w": "station",
+      "zh": "车站",
+      "e": "🚉"
+     },
+     {
+      "w": "bus",
+      "zh": "公交车",
+      "e": "🚌"
+     },
+     {
+      "w": "train",
+      "zh": "火车",
+      "e": "🚂"
+     },
+     {
+      "w": "taxi",
+      "zh": "出租车",
+      "e": "🚕"
+     },
+     {
+      "w": "ship",
+      "zh": "轮船",
+      "e": "🚢"
+     },
+     {
+      "w": "ticket",
+      "zh": "票",
+      "e": "🎫"
+     },
+     {
+      "w": "passport",
+      "zh": "护照",
+      "e": "🛂"
+     },
+     {
+      "w": "suitcase",
+      "zh": "行李箱",
+      "e": "🧳"
+     },
+     {
+      "w": "travel",
+      "zh": "旅行",
+      "e": ""
+     },
+     {
+      "w": "trip",
+      "zh": "旅程",
+      "e": ""
+     },
+     {
+      "w": "journey",
+      "zh": "旅途",
+      "e": ""
+     },
+     {
+      "w": "road",
+      "zh": "马路",
+      "e": "🛣️"
+     },
+     {
+      "w": "map",
+      "zh": "地图",
+      "e": "🗺️"
+     },
+     {
+      "w": "photo",
+      "zh": "照片",
+      "e": "📷"
+     }
+    ],
     "sentences": [
      {
       "en": "Phones are cheaper than before.",
@@ -6093,107 +6000,105 @@ const POWERUP_LEVELS = [
       "en": "Don't spend too much time on screens.",
       "zh": "别在屏幕上花太多时间。"
      }
-    ],
-    "clil": {
-     "t": "🔬 CLIL · 科学：技术迭代",
-     "kid": "手机从大砖头变成小屏幕，十年一小变——技术的进步是一代代人攒出来的。"
-    },
-    "values": {
-     "t": "💛 素养 · 屏幕时间管理",
-     "kid": "屏幕是好工具也是时间黑洞——定好时间，做完该做的事再玩。"
-    },
-    "words": [
-     {
-      "w": "computer",
-      "zh": "电脑",
-      "e": "💻",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "phone",
-      "zh": "电话",
-      "e": "📱",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "TV",
-      "zh": "电视",
-      "e": "📺",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "screen",
-      "zh": "屏幕",
-      "e": "🖥️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "email",
-      "zh": "电子邮件",
-      "e": "📧",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "message",
-      "zh": "消息",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "video",
-      "zh": "视频",
-      "e": "📹",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "film",
-      "zh": "电影",
-      "e": "🎬",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "news",
-      "zh": "新闻",
-      "e": "📰",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "magazine",
-      "zh": "杂志",
-      "e": "📔",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "radio",
-      "zh": "收音机",
-      "e": "📻",
-      "reuse": true
-     },
-     {
-      "w": "program",
-      "zh": "节目",
-      "e": "🎙️",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu6-u5",
     "mod": 5,
-    "title": "Unit 5 · Protecting the planet",
-    "zh": "保护地球",
-    "tip": "本单元任务：设计一个校园环保项目海报。",
-    "grammar": "should/shouldn't/ought to 建议；so that 目的从句",
+    "title": "Study smarter",
+    "zh": "高效学习",
+    "page": 54,
+    "vocab": "教育 · 个人感受",
+    "grammar": "一般过去时与现在完成时的时间短语（Ten days ago, I borrowed some books. / I have never felt so great!）；过去完成时（I thought that I could never get good marks. / There were two essay questions that I hadn't seen!）",
+    "spell": "句子重音",
+    "cc": "Education in the past 100 年前的学校",
+    "lit": "My first camping trip（故事）",
+    "sel": "社交情感技能：面对恐惧",
+    "m1": "Do a quiz",
+    "m2": "Do a quiz",
+    "exam": "Preliminary for Schools: Reading Part 5 / Writing Part 2 (an article or a story)",
+    "words": [
+     {
+      "w": "school",
+      "zh": "学校",
+      "e": "🏫"
+     },
+     {
+      "w": "class",
+      "zh": "班级",
+      "e": ""
+     },
+     {
+      "w": "lesson",
+      "zh": "课",
+      "e": ""
+     },
+     {
+      "w": "teacher",
+      "zh": "老师",
+      "e": "👩‍🏫"
+     },
+     {
+      "w": "student",
+      "zh": "学生",
+      "e": "🎓"
+     },
+     {
+      "w": "learn",
+      "zh": "学习",
+      "e": "🧠"
+     },
+     {
+      "w": "study",
+      "zh": "学习",
+      "e": ""
+     },
+     {
+      "w": "read",
+      "zh": "读书",
+      "e": "📚"
+     },
+     {
+      "w": "write",
+      "zh": "写",
+      "e": "✍️"
+     },
+     {
+      "w": "question",
+      "zh": "问题",
+      "e": "❓"
+     },
+     {
+      "w": "answer",
+      "zh": "回答",
+      "e": ""
+     },
+     {
+      "w": "homework",
+      "zh": "作业",
+      "e": ""
+     },
+     {
+      "w": "test",
+      "zh": "测验",
+      "e": ""
+     },
+     {
+      "w": "think",
+      "zh": "思考",
+      "e": "💭"
+     },
+     {
+      "w": "know",
+      "zh": "知道",
+      "e": ""
+     },
+     {
+      "w": "remember",
+      "zh": "记住",
+      "e": ""
+     }
+    ],
     "sentences": [
      {
       "en": "We recycle so that we protect the earth.",
@@ -6207,101 +6112,105 @@ const POWERUP_LEVELS = [
       "en": "Small actions make a big change.",
       "zh": "小行动带来大改变。"
      }
-    ],
-    "clil": {
-     "t": "🔬 CLIL · 科学：循环经济",
-     "kid": "一个瓶子 recycle 后变成新瓶子——垃圾是放错位置的资源。"
-    },
-    "values": {
-     "t": "💛 素养 · 每个人都是一环",
-     "kid": "环保不是一个人的大事，是每个人的小事——你也是重要的一环。"
-    },
-    "words": [
-     {
-      "w": "environment",
-      "zh": "环境",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "pollution",
-      "zh": "污染",
-      "e": "🏭",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "rubbish",
-      "zh": "垃圾",
-      "e": "🗑️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "recycle",
-      "zh": "回收利用",
-      "e": "♻️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "energy",
-      "zh": "能源",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "power",
-      "zh": "力量",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "fresh",
-      "zh": "新鲜的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "land",
-      "zh": "陆地",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "ocean",
-      "zh": "海洋",
-      "e": "🌊",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "protect the earth",
-      "zh": "保护地球",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "save water",
-      "zh": "节约用水",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu6-u6",
     "mod": 6,
-    "title": "Unit 6 · Time and change",
-    "zh": "时间与变化",
-    "tip": "本单元任务：写「我的过去与现在」对比短文。",
-    "grammar": "used to 表示过去习惯；一般过去 vs 现在完成的对比",
+    "title": "Good job!",
+    "zh": "好工作！",
+    "page": 66,
+    "vocab": "职业 · 工作",
+    "grammar": "情态动词表推测（It must be an old printer. / I think it might be an old hairdryer. / It can't be an ice-cream maker.）；现在完成进行时（I have been working full-time for the last four years.）",
+    "spell": "词群的连读",
+    "cc": "Economic sectors 产业链与服务",
+    "lit": "The daydreamer（故事）",
+    "sel": "社交情感技能：主动进取",
+    "m1": "Write about your dream job",
+    "m2": "Write about your dream job",
+    "exam": "Preliminary for Schools: Listening Part 4 / Reading Part 6",
+    "words": [
+     {
+      "w": "job",
+      "zh": "工作",
+      "e": ""
+     },
+     {
+      "w": "work",
+      "zh": "工作",
+      "e": ""
+     },
+     {
+      "w": "doctor",
+      "zh": "医生",
+      "e": "👨‍⚕️"
+     },
+     {
+      "w": "nurse",
+      "zh": "护士",
+      "e": "👩‍⚕️"
+     },
+     {
+      "w": "driver",
+      "zh": "司机",
+      "e": ""
+     },
+     {
+      "w": "cook",
+      "zh": "厨师",
+      "e": "👩‍🍳"
+     },
+     {
+      "w": "farmer",
+      "zh": "农民",
+      "e": "👨‍🌾"
+     },
+     {
+      "w": "writer",
+      "zh": "作家",
+      "e": ""
+     },
+     {
+      "w": "scientist",
+      "zh": "科学家",
+      "e": "🔬"
+     },
+     {
+      "w": "artist",
+      "zh": "画家",
+      "e": ""
+     },
+     {
+      "w": "dream",
+      "zh": "梦想",
+      "e": "💫"
+     },
+     {
+      "w": "success",
+      "zh": "成功",
+      "e": ""
+     },
+     {
+      "w": "computer",
+      "zh": "电脑",
+      "e": "💻"
+     },
+     {
+      "w": "phone",
+      "zh": "电话",
+      "e": "📱"
+     },
+     {
+      "w": "team",
+      "zh": "团队",
+      "e": ""
+     },
+     {
+      "w": "goal",
+      "zh": "目标",
+      "e": ""
+     }
+    ],
     "sentences": [
      {
       "en": "I used to lose my keys.",
@@ -6315,113 +6224,23 @@ const POWERUP_LEVELS = [
       "en": "Change starts with a small step.",
       "zh": "改变从小小一步开始。"
      }
-    ],
-    "clil": {
-     "t": "📖 CLIL · 历史：过去与现在对比",
-     "kid": "把「以前的学校」和「现在的学校」列成两栏对比——历史学家的方法你也会用。"
-    },
-    "values": {
-     "t": "💛 素养 · 改变从今天开始",
-     "kid": "想变成更好的自己？改变从今天的第一小步开始。"
-    },
-    "words": [
-     {
-      "w": "history",
-      "zh": "历史",
-      "e": "📜",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "future",
-      "zh": "未来",
-      "e": "🚀",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "century",
-      "zh": "世纪",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "past",
-      "zh": "过去",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "end",
-      "zh": "结束",
-      "e": "🔚",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "begin",
-      "zh": "开始",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "start",
-      "zh": "出发",
-      "e": "🚦",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "finish",
-      "zh": "完成",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "stop",
-      "zh": "停止",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "continue",
-      "zh": "继续",
-      "e": "⏭️",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "change",
-      "zh": "改变",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "become",
-      "zh": "变成",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "grow",
-      "zh": "生长",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu6-r2",
     "mod": 0,
     "title": "Review 4-6",
-    "zh": "复习 4-6",
-    "tip": "B1 Preliminary 题型练：Writing Part 2 短文。",
-    "grammar": "复习：比较级论证、should/ought to、used to",
+    "zh": "复习 4-6 单元",
+    "page": 0,
+    "vocab": "",
+    "grammar": "复习：被动语态、短语动词、过去完成时、情态推测、现在完成进行时",
+    "spell": "",
+    "cc": "",
+    "lit": "",
+    "sel": "",
+    "m1": "",
+    "m2": "",
+    "exam": "",
     "words": [
      {
       "w": "computer",
@@ -6512,10 +6331,90 @@ const POWERUP_LEVELS = [
    {
     "id": "pu6-u7",
     "mod": 7,
-    "title": "Unit 7 · Money and choices",
-    "zh": "金钱与选择",
-    "tip": "本单元任务：做一份零花钱预算表。",
-    "grammar": "if 条件句（真实条件）；cost/spend/pay/take 的区分",
+    "title": "It's the law!",
+    "zh": "这是法律！",
+    "page": 80,
+    "vocab": "新闻报道 · 转述动词",
+    "grammar": "间接引语（He said she could walk in a circle or go to jail! / He said that the man had to do a bike ride for charity.）；间接引语的疑问句（Luis asked Clara why her hair was wet. / Luis asked Dan if he could tell him the answer.）",
+    "spell": "对比重音",
+    "cc": "Forensic science 指纹的发明",
+    "lit": "The hours（报纸文章）",
+    "sel": "社交情感技能：诚实",
+    "m1": "Write a news report",
+    "m2": "Write a news report",
+    "exam": "Preliminary for Schools: Reading Part 3 / Listening Part 2",
+    "words": [
+     {
+      "w": "news",
+      "zh": "新闻",
+      "e": "📰"
+     },
+     {
+      "w": "police",
+      "zh": "警察",
+      "e": "🚓"
+     },
+     {
+      "w": "rule",
+      "zh": "规则",
+      "e": ""
+     },
+     {
+      "w": "law",
+      "zh": "法律",
+      "e": "⚖️"
+     },
+     {
+      "w": "safe",
+      "zh": "安全的",
+      "e": "🦺"
+     },
+     {
+      "w": "danger",
+      "zh": "危险",
+      "e": ""
+     },
+     {
+      "w": "help",
+      "zh": "帮助",
+      "e": "🆘"
+     },
+     {
+      "w": "protect",
+      "zh": "保护",
+      "e": "🛡️"
+     },
+     {
+      "w": "team",
+      "zh": "团队",
+      "e": ""
+     },
+     {
+      "w": "question",
+      "zh": "问题",
+      "e": "❓"
+     },
+     {
+      "w": "answer",
+      "zh": "回答",
+      "e": ""
+     },
+     {
+      "w": "speak",
+      "zh": "讲话",
+      "e": "🗣️"
+     },
+     {
+      "w": "tell",
+      "zh": "告诉",
+      "e": "📢"
+     },
+     {
+      "w": "ask",
+      "zh": "问",
+      "e": ""
+     }
+    ],
     "sentences": [
      {
       "en": "If it costs too much, I won't buy it.",
@@ -6529,107 +6428,105 @@ const POWERUP_LEVELS = [
       "en": "Needs come before wants.",
       "zh": "需要先于想要。"
      }
-    ],
-    "clil": {
-     "t": "🔢 CLIL · 数学：预算与比较",
-     "kid": "零花钱 50 元，东西一共 65 元——超支了怎么办？学会取舍就是预算。"
-    },
-    "values": {
-     "t": "💛 素养 · 需要与想要",
-     "kid": "需要的先买，想要的想一想——管好零花钱是管理自己的第一步。"
-    },
-    "words": [
-     {
-      "w": "money",
-      "zh": "钱",
-      "e": "💰",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "price",
-      "zh": "价格",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "cheap",
-      "zh": "便宜的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "expensive",
-      "zh": "昂贵的",
-      "e": "💎",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "cost",
-      "zh": "花费",
-      "e": "💸",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "pay",
-      "zh": "付款",
-      "e": "💳",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "bill",
-      "zh": "账单",
-      "e": "🧾",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "gift",
-      "zh": "礼物",
-      "e": "🎁",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "choice",
-      "zh": "选择",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "chance",
-      "zh": "机会",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "buy",
-      "zh": "买",
-      "e": "🛍️",
-      "reuse": true
-     },
-     {
-      "w": "sell",
-      "zh": "卖",
-      "e": "🏷️",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu6-u8",
     "mod": 8,
-    "title": "Unit 8 · Travel and cultures",
-    "zh": "旅行与文化",
-    "tip": "本单元任务：给外国笔友写一封介绍家乡的信。",
-    "grammar": "一般现在/现在完成的时间标志词对比（ever/never/already）",
+    "title": "Fantastic flavours",
+    "zh": "美味佳肴",
+    "page": 92,
+    "vocab": "三道式套餐 · 描写食物",
+    "grammar": "反身代词（We really enjoyed ourselves! / My mum makes them herself.）；too 和 enough（They are too messy to hold in your hands. / It is not sweet enough for me to want to drink.）",
+    "spell": "语调",
+    "cc": "Food labels 学会看食品标签",
+    "lit": "The girl who turned blue（剧本）",
+    "sel": "社交情感技能：努力带来成功",
+    "m1": "Write a café review",
+    "m2": "Write a café review",
+    "exam": "Preliminary for Schools: Listening Part 3 / Speaking Part 4",
+    "words": [
+     {
+      "w": "sweet",
+      "zh": "甜的",
+      "e": "🍯"
+     },
+     {
+      "w": "hot",
+      "zh": "热",
+      "e": "🥵"
+     },
+     {
+      "w": "delicious",
+      "zh": "美味的",
+      "e": "😋"
+     },
+     {
+      "w": "dumpling",
+      "zh": "饺子",
+      "e": "🥟"
+     },
+     {
+      "w": "noodle",
+      "zh": "面条",
+      "e": "🍜"
+     },
+     {
+      "w": "soup",
+      "zh": "汤",
+      "e": ""
+     },
+     {
+      "w": "chicken",
+      "zh": "鸡肉",
+      "e": "🍗"
+     },
+     {
+      "w": "beef",
+      "zh": "牛肉",
+      "e": "🥩"
+     },
+     {
+      "w": "fruit",
+      "zh": "水果",
+      "e": "🍏"
+     },
+     {
+      "w": "vegetable",
+      "zh": "蔬菜",
+      "e": "🥦"
+     },
+     {
+      "w": "cake",
+      "zh": "蛋糕",
+      "e": "🍰"
+     },
+     {
+      "w": "breakfast",
+      "zh": "早餐",
+      "e": ""
+     },
+     {
+      "w": "lunch",
+      "zh": "午餐",
+      "e": ""
+     },
+     {
+      "w": "dinner",
+      "zh": "晚餐",
+      "e": ""
+     },
+     {
+      "w": "rice",
+      "zh": "米饭",
+      "e": "🍚"
+     },
+     {
+      "w": "bread",
+      "zh": "面包",
+      "e": "🍞"
+     }
+    ],
     "sentences": [
      {
       "en": "Have you ever been abroad?",
@@ -6643,107 +6540,105 @@ const POWERUP_LEVELS = [
       "en": "Be curious, not judgemental.",
       "zh": "保持好奇，不要评判。"
      }
-    ],
-    "clil": {
-     "t": "🌍 CLIL · 地理：文化多样性",
-     "kid": "同一个节日，不同国家有不同过法——差异不是对错，是色彩。"
-    },
-    "values": {
-     "t": "💛 素养 · 好奇而不评判",
-     "kid": "先了解再评价——对世界保持好奇，对差异保持尊重。"
-    },
-    "words": [
-     {
-      "w": "travel",
-      "zh": "旅行",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "journey",
-      "zh": "旅途",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "culture",
-      "zh": "文化",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "language",
-      "zh": "语言",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "foreign",
-      "zh": "外国的",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "foreigner",
-      "zh": "外国人",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "abroad",
-      "zh": "国外",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "meet",
-      "zh": "遇见",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "introduce",
-      "zh": "介绍",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "agree",
-      "zh": "同意",
-      "e": "🙆",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "discuss",
-      "zh": "讨论",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "explain",
-      "zh": "解释",
-      "e": "",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu6-u9",
     "mod": 9,
-    "title": "Unit 9 · Skills for success",
-    "zh": "成功技能",
-    "tip": "本单元任务：制定本学期学习目标与行动计划。",
-    "grammar": "计划表达 plan to / decide to；目标句型 My goal is to ...",
+    "title": "Raining cats and dogs",
+    "zh": "倾盆大雨",
+    "page": 104,
+    "vocab": "天气 · 天气形容词",
+    "grammar": "第一/第二条件句复习（If it is sunny this weekend, I will play football and fly my kite. / If I was delighted if there was no more lightning!）；I wish …（I wish it was snowing today. / I wish I could talk to animals.）",
+    "spell": "条件句的语调",
+    "cc": "Wild weather 飓风的形成",
+    "lit": "Lost in the hills（故事）",
+    "sel": "社交情感技能：觉察决定对他人影响",
+    "m1": "Present a weather forecast",
+    "m2": "Present a weather forecast",
+    "exam": "Preliminary for Schools: Reading Part 1 (an email) / Speaking Part 3",
+    "words": [
+     {
+      "w": "weather",
+      "zh": "天气",
+      "e": "🌤️"
+     },
+     {
+      "w": "rain",
+      "zh": "雨",
+      "e": "🌧️"
+     },
+     {
+      "w": "snow",
+      "zh": "雪",
+      "e": "❄️"
+     },
+     {
+      "w": "wind",
+      "zh": "风",
+      "e": "🌬️"
+     },
+     {
+      "w": "cloud",
+      "zh": "云",
+      "e": "☁️"
+     },
+     {
+      "w": "storm",
+      "zh": "暴风雨",
+      "e": "⛈️"
+     },
+     {
+      "w": "fog",
+      "zh": "雾",
+      "e": "🌫️"
+     },
+     {
+      "w": "umbrella",
+      "zh": "雨伞",
+      "e": "☂️"
+     },
+     {
+      "w": "raincoat",
+      "zh": "雨衣",
+      "e": ""
+     },
+     {
+      "w": "sunny",
+      "zh": "晴朗的",
+      "e": "🔆"
+     },
+     {
+      "w": "rainy",
+      "zh": "下雨的",
+      "e": ""
+     },
+     {
+      "w": "ice",
+      "zh": "冰",
+      "e": "🧊"
+     },
+     {
+      "w": "cold",
+      "zh": "冷",
+      "e": "🥶"
+     },
+     {
+      "w": "warm",
+      "zh": "温暖",
+      "e": ""
+     },
+     {
+      "w": "sky",
+      "zh": "天空",
+      "e": ""
+     },
+     {
+      "w": "wind",
+      "zh": "风",
+      "e": "🌬️"
+     }
+    ],
     "sentences": [
      {
       "en": "My goal is to pass the B1 exam.",
@@ -6757,119 +6652,23 @@ const POWERUP_LEVELS = [
       "en": "Plan your work, then work your plan.",
       "zh": "计划你的学习，然后执行它。"
      }
-    ],
-    "clil": {
-     "t": "🧠 CLIL · 学习科学：刻意练习",
-     "kid": "只练会的不够——专挑不会的练，进步最快。"
-    },
-    "values": {
-     "t": "💛 素养 · 努力比天赋更可靠",
-     "kid": "聪明是天生的，努力是自己的——努力的人走到哪都发光。"
-    },
-    "words": [
-     {
-      "w": "work",
-      "zh": "工作",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "success",
-      "zh": "成功",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "fail",
-      "zh": "失败",
-      "e": "📉",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "study",
-      "zh": "学习",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "review",
-      "zh": "复习",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "exam",
-      "zh": "考试",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "believe",
-      "zh": "相信",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "effort",
-      "zh": "努力",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "ideal",
-      "zh": "理想",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "graduate",
-      "zh": "毕业",
-      "e": "",
-      "reuse": true,
-      "core": true
-     },
-     {
-      "w": "college",
-      "zh": "大学",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "knowledge",
-      "zh": "知识",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "plan",
-      "zh": "计划",
-      "e": "",
-      "reuse": true
-     },
-     {
-      "w": "practice",
-      "zh": "练习",
-      "e": "🔁",
-      "reuse": true
-     }
     ]
    },
    {
     "id": "pu6-r3",
     "mod": 0,
     "title": "Review 7-9",
-    "zh": "复习 7-9",
-    "tip": "B1 Preliminary 模拟题：Speaking Part 3-4。",
-    "grammar": "复习：if 条件句、ever/never、目标句型",
+    "zh": "复习 7-9 单元",
+    "page": 0,
+    "vocab": "",
+    "grammar": "复习：间接引语、反身代词、too/enough、第一/第二条件句、I wish",
+    "spell": "",
+    "cc": "",
+    "lit": "",
+    "sel": "",
+    "m1": "",
+    "m2": "",
+    "exam": "",
     "words": [
      {
       "w": "money",
@@ -6961,7 +6760,6 @@ const POWERUP_LEVELS = [
  }
 ];
 
-/* 单元语法聚焦（单元 id → 语法） */
 const POWERUP_GRAMMAR = {
  "pu1-u0": "自我介绍：What's your name? I'm … / How old are you? I'm …",
  "pu1-u1": "Where …? 方位介词 in/on/under/next to；this/these 单复数",
@@ -7002,42 +6800,43 @@ const POWERUP_GRAMMAR = {
  "pu3-r1": "复习：could、定语从句、as…as、should",
  "pu3-r2": "复习：比较副词、be made of、should",
  "pu3-r3": "复习：have to、be going to、时间从句",
- "pu4-u1": "like/love/enjoy + doing；序数词 first/second/third",
- "pu4-u2": "in + 月份；on + 具体日期；half past / a quarter to",
- "pu4-u3": "the largest/one of the ...（最高级初步）；whale/dolphin 量词搭配",
- "pu4-r1": "复习：enjoy+doing、序数词、最高级初步",
- "pu4-u4": "will 表预测（It will rain）；wear + 服装建议",
- "pu4-u5": "have to / has to 表示必须；频率副词 always/usually/sometimes",
- "pu4-u6": "be + 性格形容词；who 描述人（a friend who is kind）",
- "pu4-r2": "复习：will、have to、性格形容词",
- "pu4-u7": "How much is/are ...? too + 形容词（too expensive）",
- "pu4-u8": "be going to 表计划；by plane / on foot",
- "pu4-u9": "like/love + doing 复习；句型 There is a programme about ...",
- "pu4-r3": "复习：How much、be going to、媒体与艺术词",
- "pu5-u1": "must/mustn't 表示义务与禁止；protect + 名词",
- "pu5-u2": "形状/尺寸形容词排序（a big round …）；made of 材质表达",
- "pu5-u3": "How often ...? 频率回答；stay + 形容词（stay healthy）",
- "pu5-r1": "复习：must/mustn't、描述事物、How often",
- "pu5-u4": "祈使指路 Turn left / Go along；near/far from",
- "pu5-u5": "play the + 乐器（play the piano） vs play + 球类 的区别",
- "pu5-u6": "邮件格式 Dear ... / Best wishes；send/收到 的搭配",
- "pu5-r2": "复习：祈使指路、play the+乐器、邮件格式",
- "pu5-u7": "want to be / hope to do；when I grow up 时间状语从句",
- "pu5-u8": "both/and 与 but/however 的对比句式",
- "pu5-u9": "people in + 国家；语言与国籍词的关联记忆",
- "pu5-r3": "复习：want to be、both/however、国家与语言",
- "pu6-u1": "一般将来 will/going to 复习；动名词作主语（Learning English is ...）",
- "pu6-u2": "must/have to/need to 的强弱；because 从句说理",
- "pu6-u3": "be + 形容词 + to do（It's kind of you to ...）",
- "pu6-r1": "复习：动名词主语、must/have to、品格形容词",
- "pu6-u4": "比较级 + than 的论证句式； agree/disagree 表达",
- "pu6-u5": "should/shouldn't/ought to 建议；so that 目的从句",
- "pu6-u6": "used to 表示过去习惯；一般过去 vs 现在完成的对比",
- "pu6-r2": "复习：比较级论证、should/ought to、used to",
- "pu6-u7": "if 条件句（真实条件）；cost/spend/pay/take 的区分",
- "pu6-u8": "一般现在/现在完成的时间标志词对比（ever/never/already）",
- "pu6-u9": "计划表达 plan to / decide to；目标句型 My goal is to ...",
- "pu6-r3": "复习：if 条件句、ever/never、目标句型"
+ "pu4-u0": "复习 Level 3 全部语法",
+ "pu4-u1": "might/may 表推测（It might be hot.）；不定代词 everywhere/somewhere/anywhere/nowhere、everyone/someone/anyone/no-one、everything/something/anything/nothing",
+ "pu4-u2": "一般过去时复习：规则与不规则动词 + ago（We got here three days ago.）；too 和 enough（There is too much pollution. / There is not enough ice.）",
+ "pu4-u3": "现在完成时表经历（Have you ever won a competition?）；现在完成时 + just/already/yet（I have already taken more than 100 photos. / I have not seen the pyramids yet.）",
+ "pu4-r1": "复习：might/may、不定代词、ago、too/enough、现在完成时",
+ "pu4-u4": "过去进行时（We were waiting at the bus stop when it started to rain. / While we were getting on the bus, I was looking for my ticket.）；现在完成时 + since/for（I have worked in restaurants since I was a teenager.）",
+ "pu4-u5": "will/won't（We will not go outside today. / You will stay at home.）；连词 so 和 because（We did not go skiing because it was foggy. / We could not see very well, so it was not safe to ski.）",
+ "pu4-u6": "反义疑问句（You are a mechanic, are not you? / You cannot fix robots, can you?）；短问句（I have got a problem. — Have you? / I cannot find my mobile phone. — Can not you?）",
+ "pu4-r2": "复习：过去进行时、since/for、will/won't、so/because、反义疑问句",
+ "pu4-u7": "过去分词 seen/found/driven/ridden/taken/broken/gone/left/tried/forgotten/put/stood/fallen/cut；be used for/to（They were used to bury the Egyptian kings. / They are used for teaching people about the Ancient Egyptians.）",
+ "pu4-u8": "will 和 going to（We are going to have a special visitor. / Some people think we will live on Mars.）；过去时态总复习",
+ "pu4-u9": "It smells/tastes/looks/feels/sounds like …（It felt like dry grass. / It smelt like carrot cake.）；make somebody + adjective（The smell is making me hungry.）",
+ "pu4-r3": "复习：过去分词、be used for/to、will 和 going to、感官动词 like",
+ "pu5-u1": "比较级形容词、副词与 as … as（The blue jacket is more expensive than the grey jacket, but it fits better. / It is not as heavy as the grey jacket.）；一般现在时表将来（What time does the fashion show start tomorrow?）",
+ "pu5-u2": "第一条件句（If something breaks, a robot will fix it.）；零条件句（If you press this button, it turns on.）",
+ "pu5-u3": "一般现在时被动语态（The hosts are decided by the World Rugby Council.）；shall/could/should 提议（Shall we watch the wheelchair rugby? / I think we should ask Mum and Dad.）",
+ "pu5-r1": "复习：as…as、一般现在时表将来、第一/零条件句、被动语态",
+ "pu5-u4": "现在完成时 + how long/for/since（How long has your arm been sore? / I have felt worried about it since yesterday.）；现在进行时表将来（I am seeing the doctor again.）",
+ "pu5-u5": "prefer、would prefer 和 would rather（I prefer eating salad to potatoes! / I would rather have steak.）；一般过去时被动语态（Pizza was first made in southern Italy! / Chocolate-chip cookies were invented by Ruth Wakefield!）",
+ "pu5-u6": "a few/a little/a lot of/lots of（There are a lot of old clothes in this box.）；反义疑问句（We could be more environmentally friendly, could we not? / We should not throw plastic into the wrong bin, should we?）",
+ "pu5-r2": "复习：现在完成时 how long/for/since、prefer/would rather、a few/a little、反义疑问句",
+ "pu5-u7": "have to/don't have to/needn't/must/mustn't（I really must study for the history test tomorrow. / You need not worry — you have studied a lot.）；so … that / such … that（I felt so scared that I wanted to go home!）",
+ "pu5-u8": "间接疑问句（Could you tell us what that big building is, please?）；used to / didn't use to（People didn't use to have running water in their kitchens.）",
+ "pu5-u9": "have / get something done（We are having the costumes made.）；第二条件句（If I had €250 million, I would give lots of it to charity.）",
+ "pu5-r3": "复习：have to/mustn't、so/such…that、间接疑问句、used to、第二条件句",
+ "pu6-u1": "形容词 + 介词（I am interested in all kinds of music. / It is perfect for people who are keen on music.）；so 和 nor 的短答（I had lots of fun! So have we! / I don't know. Nor do I.）",
+ "pu6-u2": "关系从句（My cousins who live in Portugal speak Portuguese.）；more … than, fewer … than, less … than, the most, the fewest, the best, the worst（People can drink less water than camels.）",
+ "pu6-u3": "动词+动名词、动词+不定式（They need to sleep and play! / Do you fancy buying one?）；动名词作主语和宾语（Shopping is great! / She's keen on learning about tea.）",
+ "pu6-r1": "复习：形容词+介词、so/nor 短答、关系从句、比较结构、动词+动名词",
+ "pu6-u4": "被动语态复习（Singapore Airport was built to be fun. / It has been open since 2011.）；短语动词与宾语（He put on his swimming trunks. / He put them on.）",
+ "pu6-u5": "一般过去时与现在完成时的时间短语（Ten days ago, I borrowed some books. / I have never felt so great!）；过去完成时（I thought that I could never get good marks. / There were two essay questions that I hadn't seen!）",
+ "pu6-u6": "情态动词表推测（It must be an old printer. / I think it might be an old hairdryer. / It can't be an ice-cream maker.）；现在完成进行时（I have been working full-time for the last four years.）",
+ "pu6-r2": "复习：被动语态、短语动词、过去完成时、情态推测、现在完成进行时",
+ "pu6-u7": "间接引语（He said she could walk in a circle or go to jail! / He said that the man had to do a bike ride for charity.）；间接引语的疑问句（Luis asked Clara why her hair was wet. / Luis asked Dan if he could tell him the answer.）",
+ "pu6-u8": "反身代词（We really enjoyed ourselves! / My mum makes them herself.）；too 和 enough（They are too messy to hold in your hands. / It is not sweet enough for me to want to drink.）",
+ "pu6-u9": "第一/第二条件句复习（If it is sunny this weekend, I will play football and fly my kite. / If I was delighted if there was no more lightning!）；I wish …（I wish it was snowing today. / I wish I could talk to animals.）",
+ "pu6-r3": "复习：间接引语、反身代词、too/enough、第一/第二条件句、I wish"
 };
 
 window.POWERUP_LEVELS = POWERUP_LEVELS;

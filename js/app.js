@@ -7,7 +7,7 @@
 /* 构建标识：家长中心底部会显示它。
    用户报"还是有问题"时，第一句要问的就是"你手上是哪一版" ——
    Service Worker 缓存 + 离线包分发，两个都会造成版本混用（已经踩过两次）。 */
-const BUILD = '2026-11-27.34';
+const BUILD = '2026-11-28.35';
 
 /* 游戏数量的唯一真相源：首页岛屿文案、SEO 元信息、games.html 的 GAMES 数组
    都跟它对账。增删游戏时改这里 + 各页 meta，并跑 _audit/check_facts.py。
@@ -355,7 +355,16 @@ function addStars(n) {
 }
 
 function letterCount() { return Object.keys(Store.d.letters).length; }
-function wordMasteredCount() { return Object.values(Store.d.words).filter(w => w.box >= 2).length; }
+/* 词库归属集合：防御脏键（字母题/语法生成器曾写入词库外键，虚增掌握数。2026-11-28 加过滤） */
+let __wordKeysCache = null;
+function wordBankKeys() {
+  if (__wordKeysCache) return __wordKeysCache;
+  const set = new Set();
+  (typeof GRADES !== 'undefined' ? GRADES : []).forEach(g => g.themes.forEach(t => t.words.forEach(w => set.add(w.w.toLowerCase()))));
+  __wordKeysCache = set;
+  return set;
+}
+function wordMasteredCount() { const keys = wordBankKeys(); return Object.keys(Store.d.words).filter(k => keys.has(k.toLowerCase()) && Store.d.words[k].box >= 2).length; }
 function wordSeenCount() { return Object.keys(Store.d.words).length; }
 function grammarDoneCount() { return Object.keys(Store.d.grammar).length; }
 /* 词库总量：从 THEMES 现算，不写死。
@@ -439,8 +448,9 @@ function planWords() {
 }
 /* 错题本：答错过的词 */
 function wrongWords() {
+  const keys = wordBankKeys();
   return Object.entries(Store.d.words)
-    .filter(([w, r]) => (r.wrong || 0) > 0)
+    .filter(([w, r]) => (r.wrong || 0) > 0 && keys.has(w.toLowerCase()))  /* 词库归属过滤：字母题脏键不进错题本 */
     .sort((a, b) => (b[1].wrong || 0) - (a[1].wrong || 0))
     .map(([w, r]) => {
       const th = THEMES.find(t => t.words.some(x => x.w === w));
@@ -1968,7 +1978,7 @@ const localAudioURL = t => {
 };
 /* 音源：只认站内自有 mp3，一个外部 URL 都不产生。
    以前这里第二顺位是有道，用来兜「本地没有的短语/生僻词」；v8 之后
-   全站发音目标都在包里（2452 个），兜底改成本机 speechSynthesis，
+   全站发音目标都在包里（3137 个），兜底改成本机 speechSynthesis，
    所以这里返回空数组 = 调用方知道「这段包内没有」。
    bust 参数保留兼容（本地文件不可变，不需要靠参数绕缓存）。 */
 const __audioSources = t => {

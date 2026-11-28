@@ -6,12 +6,12 @@
      （听过一次就永久零网络；重建音频时换一个缓存名，activate 里删掉旧的那个）
    - 外站请求：v8 起站内不再有任何第三方发音请求，这里也就不再为它留分支。
      历史遗留的 opaque 缓存会在 activate 时随旧缓存一起清掉。 */
-const CACHE = 'birdie-abc-v309';
+const CACHE = 'birdie-abc-v310';
 const AUDIO_CACHE = 'birdie-audio-v7';   // 每次重做音频换新名，旧的在 activate 里删掉
 /* 绘本插画单独一个缓存（2026-11-21.2）：① 图片按同名文件原地重画，改一张不该让全站重下；
    ② 同源静态资源是「缓存优先」，图片留在 CACHE 里就永远刷不到新图 —— 所以重画一批
    就换一次 ART_CACHE 名，activate 把上一代整包删掉，按需重下（每页约 59KB）。 */
-const ART_CACHE = 'birdie-art-v4';
+const ART_CACHE = 'birdie-art-v5';
 /* 三个 async 图库都不进 BOOT（会拖慢激活），但都列进 CORE 后台补齐：
    emoji-core.js 给轻页面，emoji-svg.js 是 7 个重页面唯一图库（由 app.js
    动态注入，不在 HTML 里静态引用），emoji-svg2.js 只给 getsmart/pep。
@@ -20,7 +20,7 @@ const ART_CACHE = 'birdie-art-v4';
 const CORE = [
   './', './index.html', './learn.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './phonics.html', './read.html', './powerup.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=61', './js/words-data.js?v=49', './svg/word-svg.js?v=7', './js/data.js?v=48', './js/shell.js?v=1', './js/app.js?v=246', './js/books-data.js?v=29', './js/phonics.js?v=17', './js/sentence.js?v=52', './js/speech.js?v=1', './js/speech-dtw.js?v=1', './js/grammar-engine.js?v=10', './js/ipa.js?v=12', './js/ipa-gs.js?v=4', './js/build-data.js?v=3', './js/getsmart-data.js?v=19', './js/pep-data.js?v=3', './js/pep-lessons.js?v=3', './js/powerup-data.js?v=1', './js/powerup-points.js?v=1', './js/pep-points-more.js?v=2', './js/pep-mem.js?v=11', './js/pbx-fix.js?v=6', './js/pep-points.js?v=36', './svg/emoji-core.js?v=3', './svg/emoji-svg.js?v=6', './svg/emoji-svg2.js?v=3',
+  './css/style.css?v=61', './js/words-data.js?v=49', './svg/word-svg.js?v=7', './js/data.js?v=48', './js/shell.js?v=1', './js/app.js?v=247', './js/books-data.js?v=29', './js/phonics.js?v=17', './js/sentence.js?v=52', './js/speech.js?v=1', './js/speech-dtw.js?v=1', './js/grammar-engine.js?v=10', './js/ipa.js?v=12', './js/ipa-gs.js?v=4', './js/build-data.js?v=3', './js/getsmart-data.js?v=19', './js/pep-data.js?v=3', './js/pep-lessons.js?v=3', './js/powerup-data.js?v=1', './js/powerup-points.js?v=1', './js/pep-points-more.js?v=2', './js/pep-mem.js?v=11', './js/pbx-fix.js?v=6', './js/pep-points.js?v=36', './svg/emoji-core.js?v=3', './svg/emoji-svg.js?v=6', './svg/emoji-svg2.js?v=3',
   './manifest.json', './js/audio-list.js?v=19', './favicon.ico', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
@@ -29,7 +29,7 @@ const CORE = [
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
   './', './index.html', './css/style.css?v=61',
-  './js/app.js?v=246', './js/data.js?v=48'
+  './js/app.js?v=247', './js/data.js?v=48'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -55,7 +55,7 @@ self.addEventListener('activate', e => {
           const u = new URL(req.url);
           if (u.origin !== location.origin) return;        // 外站响应不迁
           if (/\.html?$|\/$/.test(u.pathname)) return;      // 导航页用新版本
-          if (/^\/art\//.test(u.pathname)) return;          // 插画走 ART_CACHE，见下
+          if (/\/art\//.test(u.pathname)) return;          // 插画走 ART_CACHE，见下
           if (await nc.match(req)) return;                  // 已有不覆盖
           const res = await oc.match(req);
           if (res && (res.ok || res.type === 'opaque')) await nc.put(req, res).catch(() => {});
@@ -184,7 +184,7 @@ self.addEventListener('fetch', e => {
   }
   /* 绘本插画：独立缓存、缓存优先。重画换 ART_CACHE 名即可整批刷新。
      只在成功时写入，坏响应不落盘（与全站同一条红线）。 */
-  if (url.origin === location.origin && /^\/art\//.test(url.pathname)) {
+  if (url.origin === location.origin && /\/art\//.test(url.pathname)) {
     e.respondWith(
       caches.open(ART_CACHE).then(c => c.match(e.request).then(hit => {
         if (good(hit)) return hit;

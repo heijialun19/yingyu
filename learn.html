@@ -75,7 +75,9 @@
 }
 </style>
 </head>
+<noscript><div style="padding:24px;font-size:16px;line-height:1.8"><b>小鸟英语乐园 · 学习中心</b><br>这个页面需要开启 JavaScript 才能学习。<br>全站内容：999 个小学必背词（按 61 个主题）、26 个字母的自然拼读、120 本分级读物、7 个复习游戏，以及人教 PEP / Get Smart / 剑桥 Power Up 三套课本同步。<br>进度只保存在本机，不上传、不注册。</div></noscript>
 <body>
+<h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">小鸟英语乐园 · 学习中心</h1>
   <div id="bootLoader" style="position:fixed;inset:0;background:#E8F4FD;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:12px;transition:opacity .3s">
     <img class="boot-chick" src="art/brand/chick-128.png" alt="" width="92" height="92">
     <div style="font-size:.9rem;color:#3F4658;font-weight:700">加载中，请稍等…</div>
@@ -101,7 +103,7 @@
 <script src="js/words-data.js?v=49"></script>
 <script src="js/data.js?v=48"></script>
 <script src="js/shell.js?v=1"></script>
-<script src="js/app.js?v=246"></script>
+<script src="js/app.js?v=247"></script>
 <script src="js/getsmart-data.js?v=19"></script>
 <script>
 renderNav('learn'); renderDecor();
@@ -148,7 +150,7 @@ renderNav('learn'); renderDecor();
                now:0, all:0, tip:'从 28 词读到 212 词' },
     pep:     { e:'🏫', n:'人教课本', d:'3-6 年级逐单元同步', href:'pep.html', now:0, all:0, tip:'跟着课本一课一课' },
     getsmart:{ e:'🎓', n:'Get Smart', d:gsLevelProgress(), href:'getsmart.html', now:0, all:0, tip:'外教课本同步' },
-    powerup: { e:'🚀', n:'Power Up', d:'剑桥体系 · 6 级 72 单元', href:'powerup.html',
+    powerup: { e:'🚀', n:'Power Up', d:'剑桥体系 · 6 级 54 课 + 复习', href:'powerup.html',
                now:0, all:0, tip:'Pre A1 → B1' },
     grammar: { e:'🚂', n:'句子工厂', d:`已通过 ${grDone}/${grAll} 关`, href:'grammar.html', now:grDone, all:grAll },
   };
