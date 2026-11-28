@@ -1,4 +1,4 @@
 {
- "build": "2026-11-28.37",
- "note": "2026-11-28.37 · 记忆法科学性校对修正：whole 同音词（原「字母顺序相反」表述错误）、bench 归 nch 发音族（原 -ench 韵族归并不成立）、clear/sense/measure 措辞收紧（去中文复述、纯拼写拆分）。仅 words-data.js 一个文件。"
+ "build": "2026-11-28.38",
+ "note": "2026-11-28.38 · CSS 兼容兜底批：inset 长写化（5 处）/ :focus-visible 补 :focus（2 处）/ aspect-ratio 补 min-height（letter-card、mem-card）。JS 基线 Cr60 不变；CSS 主基线 Cr84（flex gap），87-88 特性全部兜底化——老平板布局可用。"
 }

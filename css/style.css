@@ -66,7 +66,7 @@ a { color: inherit; text-decoration: none; }
 ruby rt { font-size: .5em; color: var(--ink2); letter-spacing: 1px; }
 
 /* ---------- 天空装饰 ---------- */
-.sky-decor { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.sky-decor { position: fixed; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none; z-index: 0; overflow: hidden; }
 .cloud { position: absolute; font-size: 56px; opacity: .75; animation: drift 60s linear infinite; }
 .cloud.c1 { top: 7%; animation-duration: 80s; }
 .cloud.c2 { top: 26%; animation-duration: 55s; animation-delay: -20s; font-size: 44px; }
@@ -467,7 +467,7 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 
 /* 小伙伴档案弹窗 */
 .modal-mask {
-  position: fixed; inset: 0; z-index: 90; background: rgba(45,49,66,.45);
+  position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 90; background: rgba(45,49,66,.45);
   display: flex; align-items: center; justify-content: center; padding: 16px;
   animation: fadeIn .2s;
 }
@@ -591,7 +591,7 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
    原来 .mem-card .face{display:flex} 与 .mem-card .front{display:none} 权重相同、却写在后面，
    于是"正面"永远显示：卡片一开局全部朝上，问号从图案背后透出来，翻牌机制完全失效。
    现在：默认只显示背面，翻开的卡只显示正面。 */
-.mem-card .face { position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+.mem-card .face { position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: none; align-items: center; justify-content: center;
   border-radius: 17px; padding: 6px; overflow: hidden; }
 .mem-card .back { display: flex; background: linear-gradient(135deg, var(--grape), #B79CFF); font-size: 30px; }
 .mem-card.open .back { display: none; }
@@ -667,7 +667,7 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 /* ★ 2026-11-11.11（F3）彩带原来 z-index 98、飘 1.8 秒，正好压在「答对后的
    解析文字」上（孩子刚要读就被盖住）。降到 toast 之下，并把单颗时长压到
    ≤0.8 秒、透明度末段淡出，读完之前就散干净。数量在 app.js 里也减了。 */
-.confetti-box { position: fixed; inset: 0; pointer-events: none; z-index: 40; overflow: hidden; }
+.confetti-box { position: fixed; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none; z-index: 40; overflow: hidden; }
 .confetti-box i {
   position: absolute; top: -4vh; width: 10px; height: 15px; border-radius: 3px;
   animation: fall linear forwards; opacity: .95;
@@ -978,7 +978,7 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   color:#3D4459;font:700 11px/1 system-ui,-apple-system,sans-serif;cursor:pointer;
 }
 .ipa-note{position:relative}
-.ipa-note::after{content:'';position:absolute;inset:-8px}
+.ipa-note::after{content:'';position:absolute;top: -8px; right: -8px; bottom: -8px; left: -8px}
 .ipa-note:hover{background:#E4EEF8;border-color:#3D4459}
 .ipa-note:focus-visible{outline:2px solid #2D3142;outline-offset:2px}
 .ipa-modal{padding:20px 22px}
@@ -1028,3 +1028,30 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
   background:#FFF6EC;border-radius:7px;padding:5px 8px;margin-top:3px}
 .pbx-slim{font-size:.8rem}
 .pbx-slim .pbx-b{min-width:24px;min-height:30px;padding:2px 5px;font-size:.84rem}
+
+/* === 2026-11-28 兼容性兜底（audit C-1/C-3）：仅在不支持 gap/aspect-ratio 的旧内核生效 === */
+@supports not (gap: 1px) {
+  .letter-card { margin: 6px; }
+  #letterGrid > * { margin: 6px; }
+}
+@supports not (aspect-ratio: 1) {
+  .letter-card { min-height: 96px; }
+}
+/* === audit D1：孩子要读的教学小字移动端 ≥12px === */
+@media (max-width: 720px) {
+  .wl-part small, .word-card .dec, .pos-chip { font-size: 12px !important; }
+}
+/* === audit D2：低对比符号加深 ≥3:1 === */
+.wl-formula b, .fam .op, .pbx-dot { color: #6B7280; }
+.pbx-slash { color: #6B7280; }
+
+/* === 2026-11-28 兼容兜底（audit C-1）：老内核没有 :focus-visible，用 :focus 补焦点环 === */
+@supports not selector(:focus-visible) {
+  :focus { outline: 4px solid #1746A2; outline-offset: 3px; border-radius: 8px; }
+}
+@supports not (aspect-ratio: 1) {
+  .letter-card { min-height: 96px; }
+  .mem-card .face { min-height: 96px; }
+}
+/* 版本口径（audit C-2 结论）：JS 基线 Cr60；CSS 主基线 Cr84（flex gap）。
+   Cr87-88 特性（inset/aspect-ratio/:focus-visible）已全部长写/兜底化——全浏览器布局可用。 */
