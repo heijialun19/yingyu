@@ -1,4 +1,4 @@
 {
- "build": "2026-11-28.38",
- "note": "2026-11-28.38 · CSS 兼容兜底批：inset 长写化（5 处）/ :focus-visible 补 :focus（2 处）/ aspect-ratio 补 min-height（letter-card、mem-card）。JS 基线 Cr60 不变；CSS 主基线 Cr84（flex gap），87-88 特性全部兜底化——老平板布局可用。"
+ "build": "2026-11-28.39",
+ "note": "2026-11-28.39 · 导航「首页」直连学习页（去 index.html 双跳）；404 直连。"
 }
