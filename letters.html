@@ -184,14 +184,6 @@ function renderStage(speakIt) {
       </div>
       ${l.py ? `<div class="py-note">🌉 <b>拼音小桥梁：</b>${l.py}</div>` : ''}
 
-      <div class="word-mini-row">
-        ${l.words.map(w => `
-          <div class="word-mini" onclick="sayWord(this,'${String(w.w).replace(/'/g, "\\'")}')" title="点一下，读一遍">
-            <div class="we">${wordIcon(w)}</div>
-            <b>${w.w}</b><span>${w.zh}</span>
-            ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : ''}
-          </div>`).join('')}
-      </div>
 
       <div class="card quiz-area" style="margin-top:16px">
         <h2>🎯 小练习（答对得星星）</h2>
@@ -206,6 +198,14 @@ function renderStage(speakIt) {
         <div class="explain" id="quizExplain" aria-live="polite"></div>
       </div>
       </details>
+      <div class="word-mini-row">
+        ${l.words.map(w => `
+          <div class="word-mini" onclick="sayWord(this,'${String(w.w).replace(/'/g, "\\'")}')" title="点一下，读一遍">
+            <div class="we">${wordIcon(w)}</div>
+            <b>${w.w}</b><span>${w.zh}</span>
+            ${w.dec ? `<div class="dec">🔎 ${w.dec}</div>` : ''}
+          </div>`).join('')}
+      </div>
 
       <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;align-items:center">
         <button class="btn mint big" id="learnBtn" onclick="learnNow(this)">${learned ? '✅ 已经学会啦（再练练）' : '🌟 我学会这个字母啦！'}</button>
