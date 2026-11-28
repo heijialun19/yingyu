@@ -1047,10 +1047,7 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 
 /* === 2026-11-28 兼容兜底（audit C-1）：老内核没有 :focus-visible，用 :focus 补焦点环 === */
 @supports not selector(:focus-visible) {
-  /* 只给可交互元素补焦点环，去掉 border-radius（全局圆角会让卡片/布局漂移） */
-  button:focus, a:focus, input:focus, textarea:focus, select:focus {
-    outline: 2px solid #1746A2; outline-offset: 2px;
-  }
+  :focus { outline: 4px solid #1746A2; outline-offset: 3px; border-radius: 8px; }
 }
 @supports not (aspect-ratio: 1) {
   .letter-card { min-height: 96px; }
@@ -1058,3 +1055,12 @@ main { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; paddin
 }
 /* 版本口径（audit C-2 结论）：JS 基线 Cr60；CSS 主基线 Cr84（flex gap）。
    Cr87-88 特性（inset/aspect-ratio/:focus-visible）已全部长写/兜底化——全浏览器布局可用。 */
+
+/* === 2026-11-28.47 长列表页一屏化（手机） === */
+@media (max-width: 560px) {
+  .level-grid, .game-grid, .island-grid, .word-grid, .grade-grid, .pos-grid { gap: 8px !important; }
+  .level-grid > *, .game-grid > *, .island-grid > *, .word-grid > * { padding: 10px !important; min-height: 0 !important; }
+  .level-grid .card, .level-grid > div { padding: 10px !important; }
+  .level-grid img, .game-grid img { max-height: 110px !important; }
+  .gs-book, .grade-grid > div { padding: 10px !important; }
+}

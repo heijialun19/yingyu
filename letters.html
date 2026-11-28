@@ -19,8 +19,27 @@
 <link rel="canonical" href="https://heijialun19.github.io/yingyu/letters.html">
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="css/style.css?v=63" onerror="this.onerror=null;this.href='css/style.css?v=63&amp;retry=1'">
+<style>
+.letter-more{margin-top:10px}
+.letter-more>summary{cursor:pointer;padding:9px 12px;background:#EAF7FF;border:2px dashed var(--lake);
+  border-radius:12px;font-size:.85rem;font-weight:700;color:#2F6EA8;list-style:none;text-align:center}
+.letter-more>summary::-webkit-details-marker{display:none}
+.letter-more[open]>summary{margin-bottom:8px;border-style:solid}
+@media(max-width:560px){
+  main{padding:8px 10px 60px!important}
+  .letter-stage{gap:10px!important}
+  .letter-hero{padding:12px 14px!important;border-radius:18px!important}
+  .letter-hero .glyph{font-size:4.2rem!important;line-height:1!important}
+  .word-mini-row{gap:8px!important;margin-top:8px!important}
+  .word-mini .we{font-size:28px!important}
+  .story-box{padding:10px!important}
+  .story-box p{font-size:.85rem!important;line-height:1.6!important}
+  .quiz-area{margin-top:10px!important;padding:12px!important}
+  .quiz-q{font-size:.85rem!important;margin-top:10px!important}
+}
+</style>
 </head>
-<!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
+<!--：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
 <body data-emoji="full">
 <noscript>
   <section class="card" style="margin-top:18px">
@@ -52,7 +71,7 @@
        要换课的人从「学习」页选，不需要在每页顶部重复导航。 -->
 
   <!-- 字母选格 -->
-  <section class="section">
+  <section class="section" id="gridSection">
     <div class="card">
       <h2>👀 点一个字母，认识它</h2>
       <div class="letter-grid" id="letterGrid" style="margin-top:12px"></div>
@@ -60,7 +79,8 @@
   </section>
 
   <!-- 字母详情 -->
-  <section class="section">
+  <section class="section" id="stageSection" style="display:none">
+    <button class="btn ghost" style="margin-bottom:8px;padding:6px 14px;font-size:.8rem" onclick="backToGrid()">← 返回字母表</button>
     <div class="letter-stage" id="letterStage"></div>
   </section>
 <div style="text-align:center;margin-top:20px;font-size:.75rem"><a href="disclaimer.html" style="color:#4A5162">📋 免责声明 · 隐私政策 · 使用条款</a></div></main>
@@ -74,11 +94,7 @@
 <script src="js/sentence.js?v=52"></script>
 <script>
 renderNav('letters'); renderDecor();
-function skipLetters() {
-  askConfirm('确认：把 26 个字母都标记为已学会？<br><small style="color:#4A5162">以后直接从单词开始。</small>', function () {
-    markAllLettersKnown();
-    setTimeout(() => location.href = 'words.html', 800);
-  });
+);
 }
 
 let cur = 0;
@@ -95,7 +111,15 @@ function renderGrid() {
   }).join('');
 }
 
-function pick(i) { cur = i; q1ok = q2ok = false; renderGrid(); renderStage(true); window.scrollTo({ top: $('#letterStage').offsetTop - 90, behavior: 'smooth' }); }
+function pick(i) { cur = i; q1ok = q2ok = false; renderGrid(); renderStage(true);
+  document.getElementById('gridSection').style.display='none';
+  document.getElementById('stageSection').style.display='';
+  window.scrollTo({ top: 0, behavior: 'instant' }); }
+function backToGrid() {
+  document.getElementById('stageSection').style.display='none';
+  document.getElementById('gridSection').style.display='';
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
 
 /* ---------------- 详情舞台 ---------------- */
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
@@ -142,6 +166,8 @@ function renderStage(speakIt) {
     </div>
 
     <div>
+      <details class="letter-more">
+        <summary>📖 故事 · 口诀 · 小练习（点开展开）</summary>
       <div class="story-box">
         <h3>📖 ${l.L} 的故事：${l.shape}</h3>
         <p style="margin:0;line-height:1.9;font-size:.95rem">${l.story}</p>
@@ -175,6 +201,7 @@ function renderStage(speakIt) {
         </div>
         <div class="explain" id="quizExplain" aria-live="polite"></div>
       </div>
+      </details>
 
       <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;align-items:center">
         <button class="btn mint big" id="learnBtn" onclick="learnNow(this)">${learned ? '✅ 已经学会啦（再练练）' : '🌟 我学会这个字母啦！'}</button>
