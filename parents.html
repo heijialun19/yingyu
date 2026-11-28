@@ -66,8 +66,8 @@
 .mini-grade button.on{border-color:var(--lemon);background:#FFF7DA}
 </style>
 </head>
-<!--：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
-<body>
+<!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
+<body data-emoji="full">
 <noscript>
   <section class="card" style="margin-top:18px">
     <p style="font-size:1.1rem;font-weight:700;margin:0 0 8px">👨‍👩‍👧 家长中心 · 看什么（不依赖脚本）</p>
@@ -377,8 +377,8 @@
   engineCard.innerHTML = '<h2>🗣️ 语音评测引擎</h2>'
     + '<p style="color:#3F4658;font-size:.82rem;margin:6px 0">默认本地打分（不需要网络）。开启云评测后发音更准，但需要联网，且录音会发送至讯飞服务器用于即时评分（不存储）。</p>'
     + '<div style="display:flex;gap:8px;margin-top:8px">'
-    + '<button class="btn" id="engLocal" onclick="setEngine('dtw')">🔊 本地打分</button>'
-    + '<button class="btn mint" id="engXfei" onclick="setEngine('xfei')">☁️ 云评测</button>'
+    + '<button class="btn" id="engLocal" onclick="setEngine(&quot;dtw&quot;)">🔊 本地打分</button>'
+    + '<button class="btn mint" id="engXfei" onclick="setEngine(&quot;xfei&quot;)">☁️ 云评测</button>'
     + '</div>'
     + '<div id="xfeiCreds" style="display:none;margin-top:10px">'
     + '<p style="font-size:.78rem;color:#8A93A6">讯飞开放平台 APPID / APIKey / APISecret（在 xfyun.cn 控制台复制粘贴）</p>'

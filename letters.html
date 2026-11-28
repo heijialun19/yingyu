@@ -20,7 +20,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="css/style.css?v=63" onerror="this.onerror=null;this.href='css/style.css?v=63&amp;retry=1'">
 </head>
-<!--：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
+<!-- data-emoji="full"：这一页要画词卡/徽章，直接取全量表情库（见 app.js 加载器） -->
 <body data-emoji="full">
 <noscript>
   <section class="card" style="margin-top:18px">
@@ -74,7 +74,11 @@
 <script src="js/sentence.js?v=52"></script>
 <script>
 renderNav('letters'); renderDecor();
-);
+function skipLetters() {
+  askConfirm('确认：把 26 个字母都标记为已学会？<br><small style="color:#4A5162">以后直接从单词开始。</small>', function () {
+    markAllLettersKnown();
+    setTimeout(() => location.href = 'words.html', 800);
+  });
 }
 
 let cur = 0;
