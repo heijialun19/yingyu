@@ -20,7 +20,7 @@ const ART_CACHE = 'birdie-art-v5';
 const CORE = [
   './', './index.html', './learn.html', './letters.html', './words.html', './getsmart.html', './pep.html',
   './grammar.html', './games.html', './phonics.html', './read.html', './powerup.html', './parents.html', './disclaimer.html', './404.html',
-  './css/style.css?v=62', './js/words-data.js?v=49', './svg/word-svg.js?v=7', './js/data.js?v=48', './js/shell.js?v=1', './js/app.js?v=249', './js/books-data.js?v=29', './js/phonics.js?v=17', './js/sentence.js?v=52', './js/speech.js?v=1', './js/speech-dtw.js?v=1', './js/grammar-engine.js?v=10', './js/ipa.js?v=12', './js/ipa-gs.js?v=4', './js/build-data.js?v=3', './js/getsmart-data.js?v=19', './js/pep-data.js?v=3', './js/pep-lessons.js?v=3', './js/powerup-data.js?v=1', './js/powerup-points.js?v=1', './js/pep-points-more.js?v=2', './js/pep-mem.js?v=11', './js/pbx-fix.js?v=6', './js/pep-points.js?v=36', './svg/emoji-core.js?v=3', './svg/emoji-svg.js?v=6', './svg/emoji-svg2.js?v=3',
+  './css/style.css?v=62', './js/words-data.js?v=49', './svg/word-svg.js?v=7', './js/data.js?v=48', './js/shell.js?v=1', './js/app.js?v=250', './js/books-data.js?v=29', './js/phonics.js?v=17', './js/sentence.js?v=52', './js/speech.js?v=1', './js/speech-dtw.js?v=1', './js/grammar-engine.js?v=10', './js/ipa.js?v=12', './js/ipa-gs.js?v=4', './js/build-data.js?v=3', './js/getsmart-data.js?v=19', './js/pep-data.js?v=3', './js/pep-lessons.js?v=3', './js/powerup-data.js?v=1', './js/powerup-points.js?v=1', './js/pep-points-more.js?v=2', './js/pep-mem.js?v=11', './js/pbx-fix.js?v=6', './js/pep-points.js?v=36', './svg/emoji-core.js?v=3', './svg/emoji-svg.js?v=6', './svg/emoji-svg2.js?v=3',
   './manifest.json', './js/audio-list.js?v=19', './favicon.ico', './icon.svg?v=2', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png?v=2', './og-cover.png'
 ];
 /* 启动最小集：只等这几个就激活接管，慢网下几秒内让缓存策略生效。
@@ -29,7 +29,7 @@ const CORE = [
    其余资源在 activate 后逐个后台补，失败只跳过自己、不连累别人。 */
 const BOOT = [
   './', './index.html', './css/style.css?v=62',
-  './js/app.js?v=249', './js/data.js?v=48'
+  './js/app.js?v=250', './js/data.js?v=48'
 ];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
